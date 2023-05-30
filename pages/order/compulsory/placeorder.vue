@@ -24,12 +24,12 @@
                       <div class="form-placeorder">
 
                         <div class="row">
-                          <div class="col">
+                          <div class="col-sm-12 col-md-6">
                             <FormKit type="text" label="ทะเบียนรถ" name="CarLicense" placeholder="เลขป้ายทะเบียนรถ"
                               validation="required" :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
                               autocomplete="false" />
                           </div>
-                          <div class="col">
+                          <div class="col-sm-12 col-md-6">
                             <FormKit type="select" label="จังหวัดของทะเบียนรถ" name="CarLicenseProvince"
                               placeholder="จังหวัดบนป้ายทะเบียนรถ" :options="{
                                 1: 'กทม',
@@ -43,11 +43,7 @@
 
                         <div class="row">
                           <div class="col">
-                            <div class="form-hide-label">
-                              <FormKit type="checkbox" label="ป้ายแดง" name="CarLicenseClassifier" :options="{
-                                temporary: 'ป้ายแดง',
-                              }" />
-                            </div>
+                            <FormKit type="toggle" label="ป้ายแดง" name="CarLicenseClassifier" on-value="temporary" />
                           </div>
                         </div>
 
@@ -492,11 +488,7 @@
                         </section>
 
                         <div class="placeorder-action">
-                          <div class="form-hide-label">
-                            <FormKit type="checkbox" label="ต้องการออกใบกำกับภาษี" :options="{
-                              request: 'ออกใบกำกับภาษี'
-                            }" />
-                          </div>
+                          <FormKit type="toggle" label="ต้องการออกใบกำกับภาษี" name="RequestTax" on-value="request" />
                         </div>
 
                         <section class="request-tax-address">

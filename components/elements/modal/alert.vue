@@ -1,0 +1,15 @@
+<template>
+  <div class="alert alert-warning d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Warning:">
+      <use xlink:href="#exclamation-triangle-fill" />
+    </svg>
+    <div>
+      {{ message }}
+    </div>
+  </div>
+</template>
+<script setup>
+const props = defineProps({
+  message: String,
+});
+</script>

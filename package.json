@@ -1,0 +1,35 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
+    "@types/node": "^18.15.11",
+    "@vue/eslint-config-prettier": "^7.1.0",
+    "@vue/eslint-config-typescript": "^11.0.2",
+    "@vueuse/core": "^9.13.0",
+    "@vueuse/nuxt": "^9.13.0",
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-vue": "^9.9.0",
+    "nuxt": "^3.5.2",
+    "prettier": "^2.8.6"
+  },
+  "dependencies": {
+    "@formatjs/intl": "^2.7.1",
+    "@formkit/nuxt": "latest",
+    "@formkit/pro": "latest",
+    "@pinia/nuxt": "^0.4.7",
+    "npm": "^9.6.2",
+    "pinia": "^2.0.33",
+    "pinia-plugin-persistedstate": "^3.1.0"
+  },
+  "overrides": {
+    "vue": "latest"
+  }
+}

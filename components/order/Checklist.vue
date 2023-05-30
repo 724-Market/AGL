@@ -1,0 +1,29 @@
+<template>
+    <div class="card-footer">
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb vertical fa-divider fa-icon" v-if="list && list.length>0">
+                
+                <!-- <li :class="item.className"><em><i class="fa-solid fa-circle-check" v-for="item in list" v-bind:key="item.id"></i>{{item.desc}}</em></li> -->
+                <li :class="item.className"  v-for="item in list" :key="item.id"><em><i class="fa-solid fa-circle-check"></i>{{item.desc}}</em></li>
+            </ol>
+        </nav>
+    </div>
+</template>
+<script setup lang="ts">
+import { IChecklist } from "~~/shared/entities/checklist-entity";
+
+const props = defineProps({
+    list:{
+        type:Array<IChecklist>,
+        default: Array<IChecklist>,
+    }
+
+})
+const checklist:globalThis.Ref<IChecklist[]>   = ref([])
+const onLoad = onMounted( () => {
+    
+    console.log(JSON.stringify(props.list))
+    
+})
+</script>

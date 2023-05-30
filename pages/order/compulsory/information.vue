@@ -30,9 +30,9 @@
               </div>
 
               <div class="form-inline">
-                <FormKit type="select" label="ปีที่จดทะเบียน" name="CarYear" placeholder="เลือกข้อมูล" :options="carYesrs"
-                  :value="carYesrs.value" v-model="carYesrsText" @change="handleCarYesrsChange" validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                <FormKit type="autocomplete" label="ปีที่จดทะเบียน" name="CarYear" placeholder="เลือกข้อมูล"
+                  :options="carYears" :value="carYears.value" v-model="carYearsText" @change="handleCarYearsChange"
+                  validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
               </div>
 
               <div class="form-inline">
@@ -192,8 +192,8 @@ var carType: globalThis.Ref<SelectOption[]> = ref([])
 var carTypeText: String = ""
 var carSize: globalThis.Ref<SelectOption[]> = ref([])
 var carSizeText: String = ""
-var carYesrs: globalThis.Ref<SelectOption[]> = ref([])
-var carYesrsText: String = ""
+var carYears: globalThis.Ref<SelectOption[]> = ref([])
+var carYearsText: String = ""
 var carBrand: globalThis.Ref<SelectOption[]> = ref([])
 var carBrandText: String = ""
 var carModel: globalThis.Ref<SelectOption[]> = ref([])
@@ -234,7 +234,7 @@ let values = reactive({})
 
 // Page Load Event Load CarYear, CarUse, Call Api Default CarType And Check Data In Store
 const onLoad = onMounted(async () => {
-  await loadcarYesr('')
+  await loadcarYear('')
   await loadCarUse()
   await handleRadioCarUseChange('PERSONAL', '')
 
@@ -245,7 +245,7 @@ const onLoad = onMounted(async () => {
     carUseText.value = info.CarUse
     await handleRadioCarUseChange(info.CarUse, info.CarType)
     await loadCarSize(info.CarType, info.CarSize)
-    await loadcarYesr(info.CarYear)
+    await loadcarYear(info.CarYear)
     await loadCarBrand(info.CarYear, info.CarBrand)
     await loadCarModel(info.CarBrand, info.CarModel)
     await loadSubcarModel(info.CarModel, info.SubCarModel)
@@ -279,7 +279,7 @@ const handleRadioCarUseChange = async (event: String, optionText: String) => {
     carModel.value = [];
     subcarModel.value = [];
 
-    carYesrsText = "";
+    carYearsText = "";
     carTypeText = "";
     carSizeText = "";
     carBrandText = "";
@@ -320,7 +320,7 @@ const handleCarSizeChange = async (event: any) => {
   carModel.value = []
   subcarModel.value = []
 
-  carYesrsText = ''
+  carYearsText = ''
   carBrandText = ''
   carModelText = ''
   subcarModelText = ''
@@ -328,8 +328,8 @@ const handleCarSizeChange = async (event: any) => {
   carCC.value = ''
 }
 
-// Event Handle CarYesrs Change Call function loadCarBrand
-const handleCarYesrsChange = async (event: any) => {
+// Event Handle CarYears Change Call function loadCarBrand
+const handleCarYearsChange = async (event: any) => {
   await loadCarBrand(event.target.value, "");
 };
 
@@ -428,18 +428,18 @@ const setExpireDate = async (dateCount: number) => {
 };
 
 // Function For Calculate And Set CarYear
-const loadcarYesr = async (optionText: String) => {
-  let yesrNow = dateNow.getFullYear() + 543;
-  let carYesrsList: SelectOption[] = [];
+const loadcarYear = async (optionText: String) => {
+  let yearNow = dateNow.getFullYear() + 543;
+  let carYearsList: SelectOption[] = [];
   for (let i = 0; i < 20; i++) {
     let year: SelectOption = {
-      label: `${yesrNow - i}`,
-      value: `${yesrNow - i}`,
+      label: `${yearNow - i}`,
+      value: `${yearNow - i}`,
     };
-    carYesrsList.push(year);
+    carYearsList.push(year);
   }
-  carYesrs.value = carYesrsList;
-  if (optionText != "") carYesrsText = optionText;
+  carYears.value = carYearsList;
+  if (optionText != "") carYearsText = optionText;
 };
 
 // Function For Call Api Get usecar
@@ -468,7 +468,7 @@ const loadCarSize = async (params: String, optionText: String) => {
   subcarModel.value = []
 
   carSizeText = ''
-  carYesrsText = ''
+  carYearsText = ''
   carBrandText = ''
   carModelText = ''
   subcarModelText = ''
@@ -544,7 +544,7 @@ const loadCarModel = async (params: String, optionText: String) => {
     URL: "/Master/carmodel/list",
     CarBrandID: params,
     CarCategoryID: carSizeText,
-    CarSalesYear: `${Number(carYesrsText) - 543}`,
+    CarSalesYear: `${Number(carYearsText) - 543}`,
   });
   response.apiResponse.Data?.forEach((obj: ICarModelResponse) => {
     let car: SelectOption = {
@@ -576,7 +576,7 @@ const loadSubcarModel = async (params: String, optionText: String) => {
     URL: "/Master/subcarmodel/list",
     CarBrandID: carBrandText,
     CarModelID: params,
-    CarSalesYear: `${Number(carYesrsText) - 543}`,
+    CarSalesYear: `${Number(carYearsText) - 543}`,
   });
   response.apiResponse.Data?.forEach((obj: ISubCarModelResponse) => {
     let car: SelectOption = {
@@ -592,7 +592,7 @@ const loadSubcarModel = async (params: String, optionText: String) => {
 
 // Function For Check Form Car Data For CheckList
 const checkFromCar = async () => {
-  if (carTypeText != '' && carSizeText != '' && carYesrsText != '' && carBrandText != '' && carModelText != '') {
+  if (carTypeText != '' && carSizeText != '' && carYearsText != '' && carBrandText != '' && carModelText != '') {
     checklist.value[0].className = 'current'
   }
   else {

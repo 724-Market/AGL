@@ -1,11 +1,17 @@
 {
   "private": true,
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
+    "build": "nuxt build --dotenv .env.prd",
+    "build:uat": "nuxt generate --dotenv .env.uat",
+    "dev": "nuxt dev --dotenv .env.dev",
+    "uat": "nuxt dev --dotenv .env.uat",
+    "generate": "nuxt generate --dotenv .env.prd",
+    "generate:uat": "nuxt generate --dotenv .env.uat",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@pinia-plugin-persistedstate/nuxt": "^1.1.1",

@@ -30,9 +30,9 @@
               </div>
 
               <div class="form-inline">
-                <FormKit type="autocomplete" label="ปีที่จดทะเบียน" name="CarYear" placeholder="เลือกข้อมูล"
-                  :options="carYears" :value="carYears.value" v-model="carYearsText" @change="handleCarYearsChange"
-                  validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                <FormKit type="select" label="ปีที่จดทะเบียน" name="CarYear" placeholder="เลือกข้อมูล" :options="carYesrs"
+                  :value="carYesrs.value" v-model="carYesrsText" @change="handleCarYesrsChange" validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
               </div>
 
               <div class="form-inline">
@@ -111,25 +111,7 @@
 
             <div class="card-body">
 
-              <div class="selected-item">
-                <figure class="brand">
-                  <i class="fa-duotone fa-car"></i>
-                </figure>
-
-                <div class="detail">
-                  <h4 class="topic">TOYOTA Yaris 1.2 Smart Auto 2019</h4>
-                  <div class="info">
-                    <p class="description">คุ้มครอง 345 วัน<span>04/05/2566–05/08/2567</span></p>
-                  </div>
-                </div>
-
-                <div class="meta">
-                  <div class="tags">
-                    <span class="badge"><i class="fa-solid fa-car-circle-bolt"></i>รถให้เช่า</span>
-                    <span class="badge-bg-danger"><i class="fa-solid fa-sparkles"></i>ป้ายแดง</span>
-                  </div>
-                </div>
-              </div>
+              <OrderCartCar></OrderCartCar>
             </div>
 
             <OrderChecklist :list="checklist" v-if="checklist && checklist.length > 0" />
@@ -192,8 +174,8 @@ var carType: globalThis.Ref<SelectOption[]> = ref([])
 var carTypeText: String = ""
 var carSize: globalThis.Ref<SelectOption[]> = ref([])
 var carSizeText: String = ""
-var carYears: globalThis.Ref<SelectOption[]> = ref([])
-var carYearsText: String = ""
+var carYesrs: globalThis.Ref<SelectOption[]> = ref([])
+var carYesrsText: String = ""
 var carBrand: globalThis.Ref<SelectOption[]> = ref([])
 var carBrandText: String = ""
 var carModel: globalThis.Ref<SelectOption[]> = ref([])
@@ -234,7 +216,7 @@ let values = reactive({})
 
 // Page Load Event Load CarYear, CarUse, Call Api Default CarType And Check Data In Store
 const onLoad = onMounted(async () => {
-  await loadcarYear('')
+  await loadcarYesr('')
   await loadCarUse()
   await handleRadioCarUseChange('PERSONAL', '')
 
@@ -245,7 +227,7 @@ const onLoad = onMounted(async () => {
     carUseText.value = info.CarUse
     await handleRadioCarUseChange(info.CarUse, info.CarType)
     await loadCarSize(info.CarType, info.CarSize)
-    await loadcarYear(info.CarYear)
+    await loadcarYesr(info.CarYear)
     await loadCarBrand(info.CarYear, info.CarBrand)
     await loadCarModel(info.CarBrand, info.CarModel)
     await loadSubcarModel(info.CarModel, info.SubCarModel)
@@ -279,7 +261,7 @@ const handleRadioCarUseChange = async (event: String, optionText: String) => {
     carModel.value = [];
     subcarModel.value = [];
 
-    carYearsText = "";
+    carYesrsText = "";
     carTypeText = "";
     carSizeText = "";
     carBrandText = "";
@@ -320,7 +302,7 @@ const handleCarSizeChange = async (event: any) => {
   carModel.value = []
   subcarModel.value = []
 
-  carYearsText = ''
+  carYesrsText = ''
   carBrandText = ''
   carModelText = ''
   subcarModelText = ''
@@ -328,8 +310,8 @@ const handleCarSizeChange = async (event: any) => {
   carCC.value = ''
 }
 
-// Event Handle CarYears Change Call function loadCarBrand
-const handleCarYearsChange = async (event: any) => {
+// Event Handle CarYesrs Change Call function loadCarBrand
+const handleCarYesrsChange = async (event: any) => {
   await loadCarBrand(event.target.value, "");
 };
 
@@ -428,18 +410,18 @@ const setExpireDate = async (dateCount: number) => {
 };
 
 // Function For Calculate And Set CarYear
-const loadcarYear = async (optionText: String) => {
-  let yearNow = dateNow.getFullYear() + 543;
-  let carYearsList: SelectOption[] = [];
+const loadcarYesr = async (optionText: String) => {
+  let yesrNow = dateNow.getFullYear() + 543;
+  let carYesrsList: SelectOption[] = [];
   for (let i = 0; i < 20; i++) {
     let year: SelectOption = {
-      label: `${yearNow - i}`,
-      value: `${yearNow - i}`,
+      label: `${yesrNow - i}`,
+      value: `${yesrNow - i}`,
     };
-    carYearsList.push(year);
+    carYesrsList.push(year);
   }
-  carYears.value = carYearsList;
-  if (optionText != "") carYearsText = optionText;
+  carYesrs.value = carYesrsList;
+  if (optionText != "") carYesrsText = optionText;
 };
 
 // Function For Call Api Get usecar
@@ -468,7 +450,7 @@ const loadCarSize = async (params: String, optionText: String) => {
   subcarModel.value = []
 
   carSizeText = ''
-  carYearsText = ''
+  carYesrsText = ''
   carBrandText = ''
   carModelText = ''
   subcarModelText = ''
@@ -544,7 +526,7 @@ const loadCarModel = async (params: String, optionText: String) => {
     URL: "/Master/carmodel/list",
     CarBrandID: params,
     CarCategoryID: carSizeText,
-    CarSalesYear: `${Number(carYearsText) - 543}`,
+    CarSalesYear: `${Number(carYesrsText) - 543}`,
   });
   response.apiResponse.Data?.forEach((obj: ICarModelResponse) => {
     let car: SelectOption = {
@@ -576,7 +558,7 @@ const loadSubcarModel = async (params: String, optionText: String) => {
     URL: "/Master/subcarmodel/list",
     CarBrandID: carBrandText,
     CarModelID: params,
-    CarSalesYear: `${Number(carYearsText) - 543}`,
+    CarSalesYear: `${Number(carYesrsText) - 543}`,
   });
   response.apiResponse.Data?.forEach((obj: ISubCarModelResponse) => {
     let car: SelectOption = {
@@ -592,7 +574,7 @@ const loadSubcarModel = async (params: String, optionText: String) => {
 
 // Function For Check Form Car Data For CheckList
 const checkFromCar = async () => {
-  if (carTypeText != '' && carSizeText != '' && carYearsText != '' && carBrandText != '' && carModelText != '') {
+  if (carTypeText != '' && carSizeText != '' && carYesrsText != '' && carBrandText != '' && carModelText != '') {
     checklist.value[0].className = 'current'
   }
   else {

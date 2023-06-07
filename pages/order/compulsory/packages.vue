@@ -76,52 +76,13 @@
             </div>
             <div class="card-body">
 
-              <div class="selected-item">
-                <figure class="brand">
-                  <i class="fa-duotone fa-car"></i>
-                </figure>
-
-                <div class="detail">
-                  <h4 class="topic">TOYOTA Yaris 1.2 Smart Auto 2019</h4>
-                  <div class="info">
-                    <p class="description">คุ้มครอง 345 วัน<span>04/05/2566–05/08/2567</span></p>
-                  </div>
-                </div>
-
-                <div class="meta">
-                  <div class="tags">
-                    <span class="badge"><i class="fa-solid fa-car-circle-bolt"></i>รถให้เช่า</span>
-                    <span class="badge-bg-danger"><i class="fa-solid fa-sparkles"></i>ป้ายแดง</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="selected-item">
-                <figure class="brand">
-                  <img src="https://724.co.th/image/logo_insurance_company/logo_TIP.png" alt="">
-                </figure>
-
-                <div class="detail">
-                  <h4 class="topic">พ.ร.บ. สำหรับรถยนต์นั่งส่วนบุคคล</h4>
-                  <div class="info">
-                    <span class="price">645.21</span>
-                    <p class="description">ค่าส่งเสริมการขาย 1,135.49 บาท</p>
-                  </div>
-                </div>
-
-                <div class="meta">
-                  <div class="tags">
-                    <span class="badge-bg-success"><i class="fa-solid fa-bolt"></i>ได้กรมธรรม์ทันที</span>
-                    <span class="badge-secondary"><i class="fa-regular fa-memo-circle-check"></i>พร้อมใบกำกับภาษี</span>
-                  </div>
-                </div>
-              </div>
-
-              <OrderCart v-if="packageSelect && packageSelect.CompanyName != ''" :is-online="packageSelect.IsOnlineActive"
+              <OrderCartCar></OrderCartCar>
+              <OrderCartPackage></OrderCartPackage>
+              <!-- <OrderCart v-if="packageSelect && packageSelect.CompanyName != ''" :is-online="packageSelect.IsOnlineActive"
                 :company-name="packageSelect.CompanyName"
                 :company-image="getCompanyPath(packageSelect.PackageResult[0].CompanyImage)"
                 :price="getCurrency(packageSelect.PackageResult[0].PriceACT)" :price-discount="getCurrency(packageSelect.PackageResult[0].PriceACTDiscount)
-                  " :car-name="packageSelect.PackageResult[0].UseCarName" />
+                  " :car-name="packageSelect.PackageResult[0].UseCarName" /> -->
 
             </div>
 

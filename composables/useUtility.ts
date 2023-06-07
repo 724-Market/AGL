@@ -49,10 +49,26 @@ export default () => {
         console.log(formattedCurrency) // "$1,234.56"
         return formattedCurrency
     }
+    const getStepMenuFromUri = ():number=>{
+        let step=0
+        if (process.client) {
+            console.log(window.location.pathname)
+            const menu = window.location.pathname
+
+            switch(menu){
+                case '/order/compulsory/information' : step=1;break
+                case '/order/compulsory/packages' : step = 2;break
+                case '/order/compulsory/placeorder' : step=3;break
+            }
+            
+          }
+        return step
+    }
 
     return {
         getCompanyImage,
         getCurrency,
-        getToken
+        getToken,
+        getStepMenuFromUri
     }
 }

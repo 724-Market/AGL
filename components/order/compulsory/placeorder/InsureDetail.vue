@@ -230,3 +230,22 @@
             </div>
           </div>
 </template>
+<style scoped>
+.insured-classifier,
+.company-classifier,
+.insured-thai-information,
+.insured-foreigner-information,
+.insured-headoffice-information,
+.insured-branch-information {
+  display: none;
+}
+
+.insured-type:has(.formkit-input[value="person" i]:checked)~.insured-classifier,
+.insured-type:has(.formkit-input[value="company" i]:checked)~.company-classifier,
+.insured-classifier:has(.formkit-input[value="thai" i]:checked) .insured-thai-information,
+.insured-classifier:has(.formkit-input[value="foreigner" i]:checked) .insured-foreigner-information,
+.company-classifier:has(.formkit-input[value="headoffice" i]:checked) .insured-headoffice-information,
+.company-classifier:has(.formkit-input[value="branch" i]:checked) .insured-branch-information {
+  display: block;
+}
+</style>

@@ -90,3 +90,22 @@
             </div>
           </div>
 </template>
+<style scoped>
+
+.shipping-email-pdf,
+.shipping-print,
+.shipping-method,
+.shipping-address,
+.new-shipping-address {
+  display: none;
+}
+
+.shipping-type:has(.formkit-input[value="pdf" i]:checked)~.shipping-email-pdf,
+.shipping-type:has(.formkit-input[value="print" i]:checked)~.shipping-print,
+.shipping-type:has(.formkit-input[value="print" i]:checked)~.notice-shipping-print,
+.shipping-type:has(.formkit-input[value="postal" i]:checked)~.shipping-method,
+.shipping-type:has(.formkit-input[value="postal" i]:checked)~.shipping-address,
+.shipping-address:has(.formkit-input[value="addnew" i]:checked) .new-shipping-address {
+  display: block;
+}
+</style>

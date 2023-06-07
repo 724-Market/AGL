@@ -179,3 +179,12 @@
           </div>
 
 </template>
+<style scoped>
+.basic-tax-address:has(.formkit-input[value="addnew" i]:checked) .new-basic-tax-address,
+.request-tax-address:has(.formkit-input[value="addnew" i]:checked) .new-request-tax-address,
+.shipped-tax-address:has(.formkit-input[value="addnew" i]:checked) .new-shipped-tax-address {
+  display: block;
+}
+
+
+</style>

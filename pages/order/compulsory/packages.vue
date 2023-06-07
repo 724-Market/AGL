@@ -105,7 +105,7 @@
 <script setup lang="ts">
 // Define import
 import { IInformation } from "~~/shared/entities/information-entity";
-import { IPackageRequest, IPackageResponse } from "~~/shared/entities/packageList-entity";
+import { IPackageRequest, IPackageResponse, Paging } from "~~/shared/entities/packageList-entity";
 // Import store
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStorePackageList } from "~/stores/order/storePackageList";
@@ -153,42 +153,56 @@ const onInit = async () => {
 
   // check login
   if (AuthenInfo.value) {
-    const info = JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as
-      | IInformation
-      | undefined;
-    // check information package
-    if (info) {
-      // Get Package List
-      const store = useStorePackageList();
-      // set car detail
-      isError.value = false;
-      messageError.value = "";
-      carDetail.value = info.CarDetail;
-      const request: IPackageRequest = {
-        AgentCode: AuthenInfo.value.userName,
-        CarBrandID: info.CarBrand,
-        CarCategoryID: info.CarSize,
-        CarModelID: info.CarModel,
-        CarSalesYear: info.CarYear,
-        CarTypeCode: info.CarType,
-        EffectiveDate: info.EffectiveDate,
-        EffectiveType: info.EffectiveType,
-        ExpireDate: info.ExpireDate.split("/").reverse().join("-"),
-        SubCarModelID: info.SubCarModel.split("|")[0],
-        UseCarCode: info.CarUse,
-      };
-      const data = await store.getPackageList(request);
+    const json = sessionStorage.getItem("useStoreInformation") || ""
+    if (json != "") {
+      const info = JSON.parse(json) as
+        | IInformation
+        | undefined;
+      // check information package
+      if (info) {
+        // Get Package List
+        const store = useStorePackageList();
+        // set car detail
+        isError.value = false;
+        messageError.value = "";
+        carDetail.value = info.CarDetail;
+        const paging: Paging = {
+          Length: 20,
+          Page: 1,
+          TotalRecord: 0
+        }
 
-      if (data && data.Data) {
-        packageList.value = data.Data;
-      } else if (data.ErrorMessage && data.ErrorMessage != "") {
-        console.log(data.ErrorMessage)
-        isError.value = true;
-        messageError.value = data.ErrorMessage ? data.ErrorMessage : "";
+        const request: IPackageRequest = {
+          AgentCode: AuthenInfo.value.userName,
+          CarBrandID: info.CarBrand,
+          CarCategoryID: info.CarSize,
+          CarModelID: info.CarModel,
+          CarSalesYear: info.CarYear,
+          CarTypeCode: info.CarType,
+          EffectiveDate: info.EffectiveDate,
+          EffectiveType: info.EffectiveType,
+          ExpireDate: info.ExpireDate.split("/").reverse().join("-"),
+          SubCarModelID: info.SubCarModel.split("|")[0],
+          UseCarCode: info.CarUse,
+          Paging: paging
+        };
+        const data = await store.getPackageList(request);
+
+        if (data && data.Data) {
+          packageList.value = data.Data;
+        } else if (data.ErrorMessage && data.ErrorMessage != "") {
+          console.log(data.ErrorMessage)
+          isError.value = true;
+          messageError.value = data.ErrorMessage ? data.ErrorMessage : "";
+        }
+      } else {
+        router.push("/order/compulsory/information");
       }
-    } else {
+    }
+    else {
       router.push("/order/compulsory/information");
     }
+
   } else {
     router.push("/login");
   }

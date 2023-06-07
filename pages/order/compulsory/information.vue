@@ -125,6 +125,7 @@
         </div>
       </div>
     </FormKit>
+    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   </NuxtLayout>
 </template>
 
@@ -150,7 +151,7 @@ const { InformationInfo } = storeToRefs(store);
 
 // Define Variables
 // Loading state after form submiting
-const isLoading = ref(false);
+const isLoading = ref(true);
 
 // Submitted state after submit
 const submitted = ref(false);
@@ -216,6 +217,7 @@ let values = reactive({})
 
 // Page Load Event Load CarYear, CarUse, Call Api Default CarType And Check Data In Store
 const onLoad = onMounted(async () => {
+  isLoading.value = true
   await loadcarYesr('')
   await loadCarUse()
   await handleRadioCarUseChange('PERSONAL', '')
@@ -242,7 +244,10 @@ const onLoad = onMounted(async () => {
 
     checklist.value[0].className = 'current'
     checklist.value[1].className = 'current'
+   
   }
+  //isLoading.value = false
+    console.log("Loading = ",isLoading.value)
 });
 
 // Define watch For Radio CarUse Change

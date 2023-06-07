@@ -10,6 +10,7 @@ export interface IPackageRequest {
     EffectiveType: string
     EffectiveDate: string
     ExpireDate: string
+    Paging:Paging
 }
 
 export interface IPackageResponse {
@@ -26,7 +27,8 @@ export interface IPackageResponse {
     IsOnlineActive: boolean
     CountOfPolicy: number
     Price: number
-    PackageResult: PackageResult[]
+    PackageResult: PackageResult[],
+    Pagination:Pagination
 }
 
 export interface PackageResult {
@@ -60,4 +62,12 @@ export interface PackageResult {
     ComissionAgent: number
     AgentComDiscount: number
     ComOnlineDiscount: number
+}
+export interface Pagination{
+    Paging:Paging
+}
+export interface Paging {
+    Page:number
+    Length:number
+    TotalRecord:number
 }

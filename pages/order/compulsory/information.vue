@@ -246,7 +246,7 @@ const onLoad = onMounted(async () => {
     checklist.value[1].className = 'current'
    
   }
-  //isLoading.value = false
+  isLoading.value = false
     console.log("Loading = ",isLoading.value)
 });
 

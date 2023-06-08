@@ -1,4 +1,6 @@
+import { isString } from "@vueuse/core";
 import { storeToRefs } from "pinia";
+import { Paging } from "~/shared/entities/packageList-entity";
 import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
 
 export default () => {
@@ -49,26 +51,39 @@ export default () => {
         console.log(formattedCurrency) // "$1,234.56"
         return formattedCurrency
     }
-    const getStepMenuFromUri = ():number=>{
-        let step=0
+    const getStepMenuFromUri = (): number => {
+        let step = 0
         if (process.client) {
             console.log(window.location.pathname)
             const menu = window.location.pathname
 
-            switch(menu){
-                case '/order/compulsory/information' : step=1;break
-                case '/order/compulsory/packages' : step = 2;break
-                case '/order/compulsory/placeorder' : step=3;break
+            switch (menu) {
+                case '/order/compulsory/information': step = 1; break
+                case '/order/compulsory/packages': step = 2; break
+                case '/order/compulsory/placeorder': step = 3; break
             }
-            
-          }
+
+        }
         return step
+    }
+
+    const getPaging = (page: Paging): Paging => {
+        const route = useRoute()
+        if (route.params && route.params.currentPage) {
+            if (isString(route.params.currentPage)) {
+                page.Page = parseInt(route.params.currentPage ?? 0)
+            }
+
+        }
+
+        return page
     }
 
     return {
         getCompanyImage,
         getCurrency,
         getToken,
-        getStepMenuFromUri
+        getStepMenuFromUri,
+        getPaging
     }
 }

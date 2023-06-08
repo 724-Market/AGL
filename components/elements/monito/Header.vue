@@ -15,7 +15,7 @@
 const step = ref(0)
 const menus = ref([
     {step:1,url:'/order/compulsory/information',name:'กรอกข้อมูล'},
-    {step:2,url:'/order/compulsory/packages',name:'กรอกข้อมูล'},
+    {step:2,url:'/order/compulsory/packages',name:'เลือกแพคเกจ'},
     {step:3,url:'/order/compulsory/placeorder',name:'ข้อมูลสั่งซื้อ'},
     {step:4,url:'#',name:'วิธีชำระเงิน'},
     {step:5,url:'#',name:'สรุปรายการ'}

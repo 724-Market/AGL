@@ -217,7 +217,7 @@ let values = reactive({})
 
 // Page Load Event Load CarYear, CarUse, Call Api Default CarType And Check Data In Store
 const onLoad = onMounted(async () => {
-  isLoading.value = true
+  // isLoading.value = true
   await loadcarYesr('')
   await loadCarUse()
   await handleRadioCarUseChange('PERSONAL', '')
@@ -246,8 +246,8 @@ const onLoad = onMounted(async () => {
     checklist.value[1].className = 'current'
    
   }
-  //isLoading.value = false
-    console.log("Loading = ",isLoading.value)
+  // isLoading.value = false
+  // console.log("Loading = ",isLoading.value)
 });
 
 // Define watch For Radio CarUse Change
@@ -258,6 +258,7 @@ watch(carUseText, async (newCarUse) => {
 // Event Handle CarUse Change Call Api Cartype
 const handleRadioCarUseChange = async (event: String, optionText: String) => {
   if (event != undefined && (event == "PERSONAL" || event == "HIRE" || event == "RENT")) {
+    isLoading.value = true
     checklist.value[0].className = ''
     if (carUse.value.length == 0) await loadCarUse();
     carType.value = [];
@@ -290,6 +291,8 @@ const handleRadioCarUseChange = async (event: String, optionText: String) => {
     carType.value = carTypeList;
     if (optionText != "") carTypeText = optionText;
     // console.log("carType", carType.value)
+    isLoading.value = false
+    console.log("Loading = ",isLoading.value)
   }
 };
 
@@ -300,6 +303,7 @@ const handleCarTypeChange = async (event: any) => {
 
 // Event Handle CarSize Change Clear Data Under Self
 const handleCarSizeChange = async (event: any) => {
+  isLoading.value = true
   carSizeText = event.target.value
   checklist.value[0].className = ''
 
@@ -313,6 +317,7 @@ const handleCarSizeChange = async (event: any) => {
   subcarModelText = ''
   customSubCarModel.value = ''
   carCC.value = ''
+  isLoading.value = false
 }
 
 // Event Handle CarYesrs Change Call function loadCarBrand
@@ -353,9 +358,10 @@ const handleEffectiveTypeChange = async (event: any) => {
   switch (event) {
     case "FULLYEAR":
       if (selectDate != undefined) await setExpireDate(CoverageExpireDateFullYearMaxDay);
-      insuranceDay.value = CoverageExpireDateFullYearMaxDay;
+      // insuranceDay.value = CoverageExpireDateFullYearMaxDay;
+      setInsuranceDay(CoverageExpireDateFullYearMaxDay)
       break;
-    default:
+    case "NOTFULLYEAR": 
       if (selectDate != undefined) {
         // await setExpireDate(coverageExpireDateNotFullYearMinDay); // TODO Bug ExpireDate Here
         let expireMinDateText = new Date(selectDate);
@@ -365,8 +371,14 @@ const handleEffectiveTypeChange = async (event: any) => {
         let expireMaxDateText = new Date(selectDate);
         expireMaxDateText.setDate(expireMaxDateText.getDate() + coverageExpireDateNotFullYearMaxDay);
         expireMaxDate = expireMaxDateText.toLocaleDateString("en-CA");
+
+        // insuranceDay.value = CoverageExpireDateFullYearMaxDay;
+        setInsuranceDay(CoverageExpireDateFullYearMaxDay)
       }
-      insuranceDay.value = coverageExpireDateNotFullYearMinDay;
+      else {
+        // insuranceDay.value = 0;
+        setInsuranceDay(0)
+      }
   }
 };
 
@@ -379,7 +391,7 @@ const handleEffectiveDateChange = async (event: any) => {
     case "FULLYEAR":
       await setExpireDate(CoverageExpireDateFullYearMaxDay);
       break;
-    default:
+    case "NOTFULLYEAR":
       await setExpireDate(coverageExpireDateNotFullYearMinDay)
 
       let expireMinDateText = new Date(selectDate)
@@ -389,6 +401,9 @@ const handleEffectiveDateChange = async (event: any) => {
       let expireMaxDateText = new Date(selectDate)
       expireMaxDateText.setDate(expireMaxDateText.getDate() + coverageExpireDateNotFullYearMaxDay)
       expireMaxDate = expireMaxDateText.toLocaleDateString("en-CA")
+
+      // insuranceDay.value = coverageExpireDateNotFullYearMinDay;
+      setInsuranceDay(coverageExpireDateNotFullYearMinDay)
   }
   await checkFromDate()
 }
@@ -396,16 +411,23 @@ const handleEffectiveDateChange = async (event: any) => {
 // Event Handle ExpireDate Change Set Value To ExpireDate And Call Function checkFromDate
 const handleExpireDateChange = async (event: any) => {
   expireDateText.value = new Date(event.target.value).toLocaleDateString("en-CA")
+  
+  let efDate = new Date(effectiveDateText.value.toString())
+  let exDate = new Date(event.target.value)
+  let differenceMs = exDate.getTime() - efDate.getTime()
+  let differenceDays = Math.floor(differenceMs / (1000 * 60 * 60 * 24))
+  // insuranceDay.value = differenceDays
+  setInsuranceDay(differenceDays)
+
   await checkFromDate()
 }
 
 // Function For Set ExpireDate
 const setExpireDate = async (dateCount: number) => {
   expireDate = new Date(selectDate);
-  // expireDate.setDate(expireDate.getDate() + dateCount);
-  if (dateCount < 365) expireDate.setDate(expireDate.getDate() + dateCount);
+  if (dateCount < 365) expireDate.setDate(expireDate.getDate() + dateCount)
   else expireDate.setFullYear(expireDate.getFullYear() + 1)
-  expireDateText.value = expireDate.toLocaleDateString("en-CA");
+  expireDateText.value = expireDate.toLocaleDateString("en-CA")
 
   // expireDate = expireDate.toLocaleDateString("en-US", { // yyyy/MM/dd
   //   year: "numeric",
@@ -414,9 +436,13 @@ const setExpireDate = async (dateCount: number) => {
   // })
 };
 
+const setInsuranceDay = async (dateCount: number) => {
+  insuranceDay.value = dateCount
+};
+
 // Function For Calculate And Set CarYear
 const loadcarYesr = async (optionText: String) => {
-  let yesrNow = dateNow.getFullYear() + 543;
+  let yesrNow = dateNow.getFullYear() + 543
   let carYesrsList: SelectOption[] = [];
   for (let i = 0; i < 20; i++) {
     let year: SelectOption = {
@@ -431,7 +457,8 @@ const loadcarYesr = async (optionText: String) => {
 
 // Function For Call Api Get usecar
 const loadCarUse = async () => {
-  let carUseList: SelectOption[] = [];
+  isLoading.value = true
+  let carUseList: SelectOption[] = []
   const response = await useCallApi().post<IUseCarResponse[]>({
     URL: "/Master/usecar/list",
   });
@@ -443,10 +470,12 @@ const loadCarUse = async () => {
     carUseList.push(car);
   });
   carUse.value = carUseList;
+  isLoading.value = false
 };
 
 // Function For Call Api Get carcategory
 const loadCarSize = async (params: String, optionText: String) => {
+  isLoading.value = true
   checklist.value[0].className = ''
 
   carSize.value = []
@@ -477,10 +506,12 @@ const loadCarSize = async (params: String, optionText: String) => {
   });
   if (optionText != "") carSizeText = optionText;
   carSize.value = carSizeList;
+  isLoading.value = false
 };
 
 // Function For Call Api Get carbrand
 const loadCarBrand = async (params: String, optionText: String) => {
+  isLoading.value = true
   checklist.value[0].className = ''
 
   carBrand.value = []
@@ -510,10 +541,12 @@ const loadCarBrand = async (params: String, optionText: String) => {
   carBrand.value = carBrandList;
   if (optionText != "") carBrandText = optionText;
   // console.log("carBrand", carBrand.value)
+  isLoading.value = false
 };
 
 // Function For Call Api Get carmodel
 const loadCarModel = async (params: String, optionText: String) => {
+  isLoading.value = true
   checklist.value[0].className = ''
 
   carDetail = carBrand.value.find((e) => e.value == params)?.label ?? ''
@@ -543,10 +576,12 @@ const loadCarModel = async (params: String, optionText: String) => {
   carModel.value = carModelList;
   if (optionText != "") carModelText = optionText;
   // console.log("carModel", carModel.value)
+  isLoading.value = false
 };
 
 // Function For Call Api Get subcarmodel
 const loadSubcarModel = async (params: String, optionText: String) => {
+  isLoading.value = true
   checklist.value[0].className = ''
 
   subcarModel.value = []
@@ -575,6 +610,7 @@ const loadSubcarModel = async (params: String, optionText: String) => {
   subcarModel.value = subCarModelList;
   if (optionText != "") subcarModelText = optionText;
   // console.log("subcarModel", subcarModel.value)
+  isLoading.value = false
 };
 
 // Function For Check Form Car Data For CheckList
@@ -590,7 +626,7 @@ const checkFromCar = async () => {
 // Function For Check Form CoverageDate Data For CheckList
 const checkFromDate = async () => {
   // console.log('check effectiveDateText', effectiveDateText.value)
-  console.log('check expireDateText', expireDateText.value)
+  // console.log('check expireDateText', expireDateText.value)
   if (effectiveDateText.value != '' && expireDateText.value != '') {
     checklist.value[1].className = 'current'
   }

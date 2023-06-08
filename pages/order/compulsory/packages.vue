@@ -1,8 +1,16 @@
 <template>
   <NuxtLayout :name="layout">
     <!-- Content -->
-    <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
-      #default="{ value }" v-model="values" :incomplete-message="false">
+    <FormKit
+      type="form"
+      @submit="submitOrder"
+      :actions="false"
+      id="form-order"
+      form-class="form-order form-theme"
+      #default="{ value }"
+      v-model="values"
+      :incomplete-message="false"
+    >
       <div class="row">
         <div class="col-lg-8 col-xl-9">
           <div class="card">
@@ -23,7 +31,12 @@
           </div>
 
           <ElementsModalAlert v-if="isError" :message="messageError" />
-          <div class="card" v-for="item in packageList" v-bind:key="item.RefCompanyID" v-else>
+          <div
+            class="card"
+            v-for="item in packageList"
+            v-bind:key="item.RefCompanyID"
+            v-else
+          >
             <div class="card-body">
               <div class="package-item">
                 <figure class="brand">
@@ -36,15 +49,26 @@
                   </h4>
                   <div class="tags">
                     <span class="badge">{{ item.CompanyName }}</span>
-                    <span class="badge-bg-success" v-if="item.IsOnlineActive"><i
-                        class="fa-solid fa-bolt"></i>ได้กรมธรรม์ทันที</span>
-                    <span class="badge-bg-orange" v-else><i class="fa-solid fa-clock-four"></i>ได้กรมธรรม์ 1-3
-                      วันทำการ</span>
-                    <span class="badge-secondary"><i class="fa-regular fa-memo-circle-check"></i>พร้อมใบกำกับภาษี</span>
+                    <span class="badge-bg-success" v-if="item.IsOnlineActive"
+                      ><i class="fa-solid fa-bolt"></i>ได้กรมธรรม์ทันที</span
+                    >
+                    <span class="badge-bg-orange" v-else
+                      ><i class="fa-solid fa-clock-four"></i>ได้กรมธรรม์ 1-3
+                      วันทำการ</span
+                    >
+                    <span class="badge-secondary"
+                      ><i class="fa-regular fa-memo-circle-check"></i
+                      >พร้อมใบกำกับภาษี</span
+                    >
                   </div>
                   <div class="more">
-                    <a class="fa-icon" href="#" data-bs-toggle="modal"
-                      data-bs-target="#ModalCoverage">คลิกดูรายละเอียด</a>
+                    <a
+                      class="fa-icon"
+                      href="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#ModalCoverage"
+                      >คลิกดูรายละเอียด</a
+                    >
                   </div>
                 </div>
 
@@ -52,19 +76,43 @@
                   <span class="actual-price">{{
                     getCurrency(item.PackageResult[0].PriceACT)
                   }}</span>
-                  <span class="promotion">ค่าส่งเสริมการขาย
-                    {{ getCurrency(item.PackageResult[0].AgentComDiscount) }} บาท</span>
+                  <span class="promotion"
+                    >ค่าส่งเสริมการขาย
+                    {{ getCurrency(item.PackageResult[0].AgentComDiscount) }} บาท</span
+                  >
                 </div>
 
                 <div class="action">
                   <a class="btn-primary" @click="getPackageItem(item)">
                     เลือกแพ็กเกจนี้
                   </a>
-                  <span v-show="item.CountOfPolicy > 0">ขายแล้ว {{ item.CountOfPolicy }} งาน</span>
+                  <span v-show="item.CountOfPolicy > 0"
+                    >ขายแล้ว {{ item.CountOfPolicy }} งาน</span
+                  >
                 </div>
               </div>
             </div>
           </div>
+          <!-- Paginate Package List -->
+          <div class="text-center d-flex justify-content-center">
+            <div class="pagination p1">
+            <ul>
+              <a href="#"
+                ><li>{{ "<" }}</li></a
+              >
+              <a class="is-active" href="#"><li>1</li></a>
+              <a href="#"><li>2</li></a>
+              <a href="#"><li>3</li></a>
+              <a href="#"><li>4</li></a>
+              <a href="#"><li>5</li></a>
+              <a href="#"><li>6</li></a>
+              <a href="#"
+                ><li>{{ ">" }}</li></a
+              >
+            </ul>
+          </div>
+          </div>
+          
         </div>
 
         <!-- Sidebar -->
@@ -75,7 +123,6 @@
               <h3 class="card-title">รายการที่เลือก</h3>
             </div>
             <div class="card-body">
-
               <OrderCartCar></OrderCartCar>
               <OrderCartPackage></OrderCartPackage>
               <!-- <OrderCart v-if="packageSelect && packageSelect.CompanyName != ''" :is-online="packageSelect.IsOnlineActive"
@@ -83,16 +130,23 @@
                 :company-image="getCompanyPath(packageSelect.PackageResult[0].CompanyImage)"
                 :price="getCurrency(packageSelect.PackageResult[0].PriceACT)" :price-discount="getCurrency(packageSelect.PackageResult[0].PriceACTDiscount)
                   " :car-name="packageSelect.PackageResult[0].UseCarName" /> -->
-
             </div>
 
             <OrderChecklist :list="checklist" />
           </aside>
 
-          <FormKit type="submit" label="ไปกรอกข้อมูลสั่งซื้อ" name="order-submit" id="order-submit" :classes="{
-            input: 'btn-primary',
-            outer: 'form-actions',
-          }" :disabled="!isSelect" :loading="isLoading" />
+          <FormKit
+            type="submit"
+            label="ไปกรอกข้อมูลสั่งซื้อ"
+            name="order-submit"
+            id="order-submit"
+            :classes="{
+              input: 'btn-primary',
+              outer: 'form-actions',
+            }"
+            :disabled="!isSelect"
+            :loading="isLoading"
+          />
 
           <NuxtLink to="information" class="btn btn-back">ย้อนกลับ</NuxtLink>
         </div>
@@ -105,7 +159,11 @@
 <script setup lang="ts">
 // Define import
 import { IInformation } from "~~/shared/entities/information-entity";
-import { IPackageRequest, IPackageResponse, Paging } from "~~/shared/entities/packageList-entity";
+import {
+  IPackageRequest,
+  IPackageResponse,
+  Paging,
+} from "~~/shared/entities/packageList-entity";
 // Import store
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStorePackageList } from "~/stores/order/storePackageList";
@@ -136,11 +194,11 @@ const router = useRouter();
 const values = reactive({});
 const checklist: globalThis.Ref<IChecklist[]> = ref([
   {
-    id: '1',
-    className: '',
-    desc: 'เลือกแพ็กเกจ'
+    id: "1",
+    className: "",
+    desc: "เลือกแพ็กเกจ",
   },
-])
+]);
 
 // init event
 const onInit = async () => {
@@ -153,11 +211,9 @@ const onInit = async () => {
 
   // check login
   if (AuthenInfo.value) {
-    const json = sessionStorage.getItem("useStoreInformation") || ""
+    const json = sessionStorage.getItem("useStoreInformation") || "";
     if (json != "") {
-      const info = JSON.parse(json) as
-        | IInformation
-        | undefined;
+      const info = JSON.parse(json) as IInformation | undefined;
       // check information package
       if (info) {
         // Get Package List
@@ -167,10 +223,10 @@ const onInit = async () => {
         messageError.value = "";
         carDetail.value = info.CarDetail;
         const paging: Paging = {
-          Length: 20,
+          Length: 5,
           Page: 1,
-          TotalRecord: 0
-        }
+          TotalRecord: 0,
+        };
 
         const request: IPackageRequest = {
           AgentCode: AuthenInfo.value.userName,
@@ -184,25 +240,24 @@ const onInit = async () => {
           ExpireDate: info.ExpireDate.split("/").reverse().join("-"),
           SubCarModelID: info.SubCarModel.split("|")[0],
           UseCarCode: info.CarUse,
-          Paging: paging
+          Paging: paging,
         };
+        console.log(request);
         const data = await store.getPackageList(request);
 
         if (data && data.Data) {
           packageList.value = data.Data;
         } else if (data.ErrorMessage && data.ErrorMessage != "") {
-          console.log(data.ErrorMessage)
+          console.log(data.ErrorMessage);
           isError.value = true;
           messageError.value = data.ErrorMessage ? data.ErrorMessage : "";
         }
       } else {
         router.push("/order/compulsory/information");
       }
-    }
-    else {
+    } else {
       router.push("/order/compulsory/information");
     }
-
   } else {
     router.push("/login");
   }
@@ -228,12 +283,10 @@ const getPackageItem = (item: IPackageResponse) => {
   packageSelect.value = item;
 
   if (!packageSelect.value) {
-    checklist.value[0].className = ""
+    checklist.value[0].className = "";
+  } else {
+    checklist.value[0].className = "current";
   }
-  else {
-    checklist.value[0].className = "current"
-  }
-
 };
 // Submit form event
 const submitOrder = async (formData: any) => {
@@ -271,3 +324,37 @@ useHead({
   },
 });
 </script>
+<style setup>
+/* GENERAL STYLES */
+
+.pagination {
+  padding: 30px 0;
+}
+
+.pagination ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.pagination a {
+  display: inline-block;
+  padding: 10px 18px;
+  color: #222;
+}
+/* ONE */
+.p1 a {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  padding: 0;
+  text-align: center;
+  font-weight: bold;
+}
+.p1 a.is-active {
+  background-color: #2ecc71;
+  border-radius: 100%;
+  color: #fff;
+  font-weight: bold;
+}
+</style>

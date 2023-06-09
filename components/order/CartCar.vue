@@ -31,11 +31,4 @@ const props = defineProps({
     expireDate: String
 });
 
-const onLoad = onMounted(() => {
-    // console.log('carDetail', props.carDetail)
-    // console.log('insuranceDay', props.insuranceDay)
-    // console.log('effectiveDate', props.effectiveDate)
-    // console.log('expireDate', props.expireDate)
-})
-
 </script>

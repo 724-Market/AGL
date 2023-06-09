@@ -5,9 +5,11 @@
         </figure>
 
         <div class="detail">
-            <h4 class="topic">TOYOTA Yaris 1.2 Smart Auto 2019</h4>
+            <h4 class="topic">{{props.carDetail ?? 'TOYOTA Yaris 1.2 Smart Auto 2019'}}</h4>
             <div class="info">
-                <p class="description">คุ้มครอง 345 วัน<span>04/05/2566–05/08/2567</span></p>
+                <p class="description">คุ้มครอง {{insuranceDay ?? 365}} วัน
+                    <span>{{props.effectiveDate ?? '04/05/2566'}}–{{props.expireDate ?? '05/08/2567'}}</span>
+                </p>
             </div>
         </div>
 
@@ -19,3 +21,21 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+
+const props = defineProps({
+    carDetail: String,
+    insuranceDay: Number,
+    effectiveDate: String,
+    expireDate: String
+});
+
+const onLoad = onMounted(() => {
+    // console.log('carDetail', props.carDetail)
+    // console.log('insuranceDay', props.insuranceDay)
+    // console.log('effectiveDate', props.effectiveDate)
+    // console.log('expireDate', props.expireDate)
+})
+
+</script>

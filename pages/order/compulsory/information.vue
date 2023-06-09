@@ -111,7 +111,12 @@
 
             <div class="card-body">
 
-              <OrderCartCar></OrderCartCar>
+              <OrderCartCar 
+                :carDetail="carDetailForCart" 
+                :insuranceDay="insuranceDayForCart"
+                :effectiveDate="effectiveDateForCart"
+                :expireDate="expireDateForCart">
+              </OrderCartCar>
             </div>
 
             <OrderChecklist :list="checklist" v-if="checklist && checklist.length > 0" />
@@ -144,6 +149,11 @@ import { defineEventHandler } from "~/server/api/setting.post";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { storeToRefs } from "pinia";
 import { IChecklist } from "~/shared/entities/checklist-entity";
+
+const carDetailForCart: String = 'TOYOTA Yaris 1.2 Smart Auto 2019' // TODO: Mock Up Cart
+const insuranceDayForCart: Number = 365 // TODO: Mock Up Cart
+const effectiveDateForCart: String = '02/02/2023' // TODO: Mock Up Cart
+const expireDateForCart: String = '02/02/2024' // TODO: Mock Up Cart
 
 // Define Store
 const store = useStoreInformation();

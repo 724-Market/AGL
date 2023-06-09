@@ -119,6 +119,7 @@ const paging: globalThis.Ref<Paging> = ref({
 });
 const isSelect: globalThis.Ref<Boolean> = ref(false);
 const router = useRouter();
+const route = useRoute();
 const values = reactive({});
 const checklist: globalThis.Ref<IChecklist[]> = ref([
   {
@@ -128,19 +129,27 @@ const checklist: globalThis.Ref<IChecklist[]> = ref([
   },
 ]);
 const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
-
+//define store
+const storeAuth = useStoreUserAuth();
+// define getter in store
+const { AuthenInfo } = storeToRefs(storeAuth);
 // init event
 const onInit = async () => {
-  //define store
-  const storeAuth = useStoreUserAuth();
-  // define getter in store
-  const { AuthenInfo } = storeToRefs(storeAuth);
-
   // define parameter page
   const page = useUtility().getPaging(paging.value);
   paging.value = page;
   console.log(page);
   // check login
+  if (AuthenInfo.value) {
+    await showPackageList();
+  } else {
+    isLoading.value = false;
+
+    router.push("/login");
+  }
+};
+const showPackageList = async () => {
+  isLoading.value = true
   if (AuthenInfo.value) {
     const json = sessionStorage.getItem("useStoreInformation") || "";
     if (json != "") {
@@ -172,7 +181,7 @@ const onInit = async () => {
         const data = await store.getPackageList(request);
 
         if (data && data.Data) {
-          isLoading.value = false
+          isLoading.value = false;
           packageList.value = data.Data;
           // define parameter page
           if (data.Pagination) {
@@ -180,23 +189,21 @@ const onInit = async () => {
             paging.value = page;
           }
         } else if (data.ErrorMessage && data.ErrorMessage != "") {
-          isLoading.value = false
+          isLoading.value = false;
           console.log(data.ErrorMessage);
           isError.value = true;
           messageError.value = data.ErrorMessage ? data.ErrorMessage : "";
         }
       } else {
-        isLoading.value = false
+        isLoading.value = false;
         router.push("/order/compulsory/information");
       }
     } else {
-      isLoading.value = false
+      isLoading.value = false;
       router.push("/order/compulsory/information");
     }
-  } else {
+
     isLoading.value = false
-    
-    router.push("/login");
   }
 };
 // onmounted loading page
@@ -229,10 +236,20 @@ const submitOrder = async (formData: any) => {
   // statusMessageType.value = response.statusMessageType;
   submitted.value = false; // Form submitted status
 
-  const router = useRouter();
   router.push("/order/compulsory/placeorder");
 };
+watch(
+  () => route.query.currentPage, // Specify the query parameter to watch
+  async (newVal, oldVal) => {
+    // Handle the updated value
+    console.log("Query parameter updated:", newVal);
 
+    const page = useUtility().getPaging(paging.value);
+    paging.value = page;
+
+    await showPackageList();
+  }
+);
 // Define layout
 const layout = "monito";
 

@@ -28,7 +28,6 @@ export interface IPackageResponse {
     CountOfPolicy: number
     Price: number
     PackageResult: PackageResult[],
-    Pagination:Pagination
 }
 
 export interface PackageResult {
@@ -70,4 +69,5 @@ export interface Paging {
     Page:number
     Length:number
     TotalRecord:number
+    RedirectUrl:string
 }

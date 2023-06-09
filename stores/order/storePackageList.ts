@@ -8,8 +8,8 @@ export const useStorePackageList = defineStore('useStorePackageList', {
             Status: "",
         }
     },
-    getters:{
-        PackageList:state =>sessionStorage.getItem("useStorePackageList") ? JSON.parse(sessionStorage.getItem("useStorePackageList") || "") as WrapperResponse<IPackageResponse[]> : "",
+    getters: {
+        PackageList: state => sessionStorage.getItem("useStorePackageList") ? JSON.parse(sessionStorage.getItem("useStorePackageList") || "") as WrapperResponse<IPackageResponse[]> : "",
     },
     actions: {
         async getPackageList(request: any): Promise<WrapperResponse<IPackageResponse[]>> {
@@ -27,6 +27,7 @@ export const useStorePackageList = defineStore('useStorePackageList', {
                 EffectiveType: req.EffectiveType,
                 EffectiveDate: req.EffectiveDate,
                 ExpireDate: req.ExpireDate,
+                Paging: req.Paging
             })
             this.$state = response.apiResponse
 

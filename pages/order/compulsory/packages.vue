@@ -28,6 +28,7 @@
             </div>
           </div>
           <OrderCompulsoryPackagesList
+            :is-loading="isLoading"
             :checklist="checklist"
             :is-error="isError"
             :message-error="messageError"
@@ -97,7 +98,7 @@ import { IChecklist } from "~/shared/entities/checklist-entity";
 
 // Define Variables
 // Loading state after form submiting
-const isLoading = ref(false);
+const isLoading = ref(true);
 
 // Submitted state after submit
 const submitted = ref(false);
@@ -111,7 +112,7 @@ const isError = ref(false);
 const messageError = ref("");
 
 const paging: globalThis.Ref<Paging> = ref({
-  Length: 5,
+  Length: 2,
   Page: 1,
   TotalRecord: 0,
   RedirectUrl: "/order/compulsory/packages",
@@ -127,6 +128,7 @@ const checklist: globalThis.Ref<IChecklist[]> = ref([
   },
 ]);
 const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
+
 // init event
 const onInit = async () => {
   //define store
@@ -137,7 +139,7 @@ const onInit = async () => {
   // define parameter page
   const page = useUtility().getPaging(paging.value);
   paging.value = page;
-  console.log(page)
+  console.log(page);
   // check login
   if (AuthenInfo.value) {
     const json = sessionStorage.getItem("useStoreInformation") || "";
@@ -170,6 +172,7 @@ const onInit = async () => {
         const data = await store.getPackageList(request);
 
         if (data && data.Data) {
+          isLoading.value = false
           packageList.value = data.Data;
           // define parameter page
           if (data.Pagination) {
@@ -177,17 +180,22 @@ const onInit = async () => {
             paging.value = page;
           }
         } else if (data.ErrorMessage && data.ErrorMessage != "") {
+          isLoading.value = false
           console.log(data.ErrorMessage);
           isError.value = true;
           messageError.value = data.ErrorMessage ? data.ErrorMessage : "";
         }
       } else {
+        isLoading.value = false
         router.push("/order/compulsory/information");
       }
     } else {
+      isLoading.value = false
       router.push("/order/compulsory/information");
     }
   } else {
+    isLoading.value = false
+    
     router.push("/login");
   }
 };
@@ -198,9 +206,9 @@ const onLoad = onMounted(async () => {
 const handlerCheckList = (_checklist: IChecklist[]) => {
   checklist.value = _checklist;
 };
-const handlerSelect = (select:Boolean)=>{
-  isSelect.value = select
-}
+const handlerSelect = (select: Boolean) => {
+  isSelect.value = select;
+};
 // Submit form event
 const submitOrder = async (formData: any) => {
   console.log(

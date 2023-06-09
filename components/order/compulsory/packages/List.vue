@@ -55,9 +55,10 @@
   </div>
   <PagingList
     :current-page="currentPage"
-    :total-pages="totalPages"
-    :redirect-url="redirectUrl"
+    :length-page="lengthPage"
+    :total-record="totalRecord"
   ></PagingList>
+  <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
 </template>
 
 <script setup lang="ts">
@@ -66,6 +67,10 @@ import { IPackageResponse,Paging } from "~/shared/entities/packageList-entity";
 
 const emit = defineEmits(["changeChecklist","changeSelect"])
 const props = defineProps({
+    isLoading:{
+        type:Boolean,
+        default: Boolean
+    },
     checklist:{
         type:Array<IChecklist>,
         default: Array<IChecklist>,
@@ -87,8 +92,9 @@ const props = defineProps({
         default:Object,
     }
 })
-const totalPages = ref(0)
+const totalRecord = ref(0)
 const currentPage = ref(0)
+const lengthPage = ref(0)
 const redirectUrl = ref("")
 const checklist: globalThis.Ref<IChecklist[]> = ref([
   {
@@ -113,9 +119,11 @@ const onLoad = onMounted(()=>{
     }
     if(props.pages){
         const _props = props.pages as Paging
-        totalPages.value = _props.TotalRecord
+        totalRecord.value = _props.TotalRecord
+        lengthPage.value = _props.Length
         currentPage.value = _props.Page
         redirectUrl.value = _props.RedirectUrl
+
     }
 })
 
@@ -147,7 +155,8 @@ watch(
         console.log('pages value changed', props.pages)
         if (props.pages) {
             const _props = props.pages as Paging
-            totalPages.value = _props.TotalRecord
+            totalRecord.value = _props.TotalRecord
+            lengthPage.value = _props.Length
             currentPage.value = _props.Page
             redirectUrl.value = _props.RedirectUrl
         }
@@ -158,12 +167,12 @@ watch(
 // event hanlder function additional
 const getCompanyPath = (CompanyImage: string): string => {
   const image = useUtility().getCompanyImage() + CompanyImage.replace("LOGO", "logo");
-  console.log(image);
+  
   return image;
 };
 const getCurrency = (currency: number): string => {
   const formatCurrency = useUtility().getCurrency(currency);
-  console.log(formatCurrency);
+  
   return formatCurrency;
 };
 const getPackageItem = (item: IPackageResponse) => {

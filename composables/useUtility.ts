@@ -48,13 +48,11 @@ export default () => {
         }
         const numberFormat = new Intl.NumberFormat('th-TH', options)
         const formattedCurrency = numberFormat.format(currency)
-        console.log(formattedCurrency) // "$1,234.56"
         return formattedCurrency
     }
     const getStepMenuFromUri = (): number => {
         let step = 0
         if (process.client) {
-            console.log(window.location.pathname)
             const menu = window.location.pathname
 
             switch (menu) {
@@ -69,13 +67,13 @@ export default () => {
 
     const getPaging = (page: Paging): Paging => {
         const route = useRoute()
-        if (route.params && route.params.currentPage) {
-            if (isString(route.params.currentPage)) {
-                page.Page = parseInt(route.params.currentPage ?? 0)
+        if (route.query && route.query.currentPage) {
+            if (isString(route.query.currentPage)) {
+                page.Page = parseInt(route.query.currentPage ?? 0)
             }
 
         }
-
+        console.log(page)
         return page
     }
 

@@ -2,7 +2,7 @@
   <div class="text-center d-flex justify-content-center">
     <div class="pagination p1">
       <ul>
-        <a href="#" @click="previousPage" :class="{ disabled: currentPage === 1 }"
+        <a href="#" @click="previousPage"
           ><li>{{ "<" }}</li></a
         >
         <a
@@ -13,7 +13,7 @@
           @click="goToPage(page)"
           ><li>{{ page }}</li></a
         >
-        <a href="#" :class="{ disabled: currentPage === totalPages }" @click="nextPage"
+        <a href="#" @click="nextPage"
           ><li>{{ ">" }}</li></a
         >
       </ul>
@@ -26,31 +26,60 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  totalPages: {
+  lengthPage: {
     type: Number,
     required: true,
   },
-  redirectUrl: {
-    type: String,
+  totalRecord: {
+    type: Number,
     required: true,
   },
 });
-
+const redirect = ref('')
+const totalPages:globalThis.Ref<number[]> = ref([]);
 const router = useRouter();
+const onLoad = onMounted(() => {
+  if(window.location.pathname){
+    redirect.value = window.location.pathname
+  }
+  console.log(redirect.value)
+  CalculateTotalPage()
+});
+
+watch(
+  ()=>props.totalRecord,
+  (totalRecord)=>{
+    CalculateTotalPage()
+  }
+)
+
+const CalculateTotalPage = ()=>{
+  console.log(props.currentPage,props.totalRecord,props.lengthPage)
+  const total_pages = Math.ceil(props.totalRecord / props.lengthPage);
+  const array = []
+  for(let i=1;i<=total_pages;i++){
+    array.push(i)
+  }
+  if(array.length==0){
+    array.push(1)
+  }
+  totalPages.value = array
+}
 const previousPage = () => {
   if (props.currentPage > 1) {
-    router.push(props.redirectUrl + "?current-page=" + (props.currentPage - 1));
+    router.push(redirect.value + "?currentPage=" + (props.currentPage - 1));
+    
   }
 };
 const nextPage = () => {
-  if (props.currentPage < props.totalPages) {
-    router.push(props.redirectUrl + "?current-page=" + (props.currentPage + 1));
+  if (props.currentPage < totalPages.value.length) {
+    router.push(redirect.value + "?currentPage=" + (props.currentPage + 1));
     // this.$emit("page-change", props.currentPage + 1);
   }
 };
 const goToPage = (page: number) => {
-  if (page >= 1 && page <= props.totalPages) {
-    router.push(props.redirectUrl + "?current-page=" + page);
+  if (page >= 1 && page <= totalPages.value.length) {
+    router.push(redirect.value + "?currentPage=" + page);
     //this.$emit("page-change", page);
   }
 };

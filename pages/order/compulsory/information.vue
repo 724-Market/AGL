@@ -115,7 +115,9 @@
                 :carDetail="carDetailForCart" 
                 :insuranceDay="insuranceDayForCart"
                 :effectiveDate="effectiveDateForCart"
-                :expireDate="expireDateForCart">
+                :expireDate="expireDateForCart"
+                :carUse="carUseForCart"
+                :carLabel="carLabelForCart">
               </OrderCartCar>
             </div>
 
@@ -154,6 +156,8 @@ const carDetailForCart: String = 'TOYOTA Yaris 1.2 Smart Auto 2019' // TODO: Moc
 const insuranceDayForCart: Number = 365 // TODO: Mock Up Cart
 const effectiveDateForCart: String = '02/02/2023' // TODO: Mock Up Cart
 const expireDateForCart: String = '02/02/2024' // TODO: Mock Up Cart
+const carUseForCart: String = 'รถให้เช่า' // TODO: Mock Up Cart
+const carLabelForCart: String = 'ป้ายแดง' // TODO: Mock Up Cart
 
 // Define Store
 const store = useStoreInformation();

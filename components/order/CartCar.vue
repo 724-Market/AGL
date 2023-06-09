@@ -15,8 +15,8 @@
 
         <div class="meta">
             <div class="tags">
-                <span class="badge"><i class="fa-solid fa-car-circle-bolt"></i>รถให้เช่า</span>
-                <span class="badge-bg-danger"><i class="fa-solid fa-sparkles"></i>ป้ายแดง</span>
+                <span class="badge"><i class="fa-solid fa-car-circle-bolt"></i>{{props.carUse ?? 'รถให้เช่า'}}</span>
+                <span class="badge-bg-danger"><i class="fa-solid fa-sparkles"></i>{{props.carLabel ?? 'ป้ายแดง'}}</span>
             </div>
         </div>
     </div>
@@ -28,7 +28,9 @@ const props = defineProps({
     carDetail: String,
     insuranceDay: Number,
     effectiveDate: String,
-    expireDate: String
+    expireDate: String,
+    carUse: String,
+    carLabel: String
 });
 
 </script>

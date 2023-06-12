@@ -81,3 +81,8 @@
             </div>
           </div>
 </template>
+
+<script setup lang="ts">
+import { SelectOption } from "~/shared/entities/select-option";
+
+</script>

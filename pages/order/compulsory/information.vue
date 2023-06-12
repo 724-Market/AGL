@@ -109,8 +109,7 @@
               <h3 class="card-title">รายการที่เลือก</h3>
             </div>
 
-            <div class="card-body">
-
+            <!-- <div class="card-body">
               <OrderCartCar 
                 :carDetail="carDetailForCart" 
                 :insuranceDay="insuranceDayForCart"
@@ -119,7 +118,7 @@
                 :carUse="carUseForCart"
                 :carLabel="carLabelForCart">
               </OrderCartCar>
-            </div>
+            </div> -->
 
             <OrderChecklist :list="checklist" v-if="checklist && checklist.length > 0" />
 
@@ -152,12 +151,12 @@ import { useStoreInformation } from "~/stores/order/storeInformation";
 import { storeToRefs } from "pinia";
 import { IChecklist } from "~/shared/entities/checklist-entity";
 
-const carDetailForCart: String = 'TOYOTA Yaris 1.2 Smart Auto 2019' // TODO: Mock Up Cart
-const insuranceDayForCart: Number = 365 // TODO: Mock Up Cart
-const effectiveDateForCart: String = '02/02/2023' // TODO: Mock Up Cart
-const expireDateForCart: String = '02/02/2024' // TODO: Mock Up Cart
-const carUseForCart: String = 'รถให้เช่า' // TODO: Mock Up Cart
-const carLabelForCart: String = 'ป้ายแดง' // TODO: Mock Up Cart
+// const carDetailForCart: String = 'TOYOTA Yaris 1.2 Smart Auto 2019' // TODO: Mock Up Cart
+// const insuranceDayForCart: Number = 365 // TODO: Mock Up Cart
+// const effectiveDateForCart: String = '02/02/2023' // TODO: Mock Up Cart
+// const expireDateForCart: String = '02/02/2024' // TODO: Mock Up Cart
+// const carUseForCart: String = 'รถให้เช่า' // TODO: Mock Up Cart
+// const carLabelForCart: String = 'ป้ายแดง' // TODO: Mock Up Cart
 
 // Define Store
 const store = useStoreInformation();
@@ -227,6 +226,7 @@ const checklist: globalThis.Ref<IChecklist[]> = ref([
     desc: 'วันคุ้มครอง'
   }
 ])
+
 let values = reactive({})
 
 // Page Load Event Load CarYear, CarUse, Call Api Default CarType And Check Data In Store

@@ -48,8 +48,8 @@
             </div>
             <div class="card-body">
               <OrderCartCar></OrderCartCar>
-              <OrderCartPackage></OrderCartPackage>
-              <!-- <OrderCart v-if="packageSelect && packageSelect.CompanyName != ''" :is-online="packageSelect.IsOnlineActive"
+              <!-- <OrderCartPackage></OrderCartPackage> -->
+              <!-- <OrderCartPackage v-if="packageSelect && packageSelect.CompanyName != ''" :is-online="packageSelect.IsOnlineActive"
                 :company-name="packageSelect.CompanyName"
                 :company-image="getCompanyPath(packageSelect.PackageResult[0].CompanyImage)"
                 :price="getCurrency(packageSelect.PackageResult[0].PriceACT)" :price-discount="getCurrency(packageSelect.PackageResult[0].PriceACTDiscount)

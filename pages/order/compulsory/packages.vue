@@ -49,11 +49,10 @@
             <div class="card-body">
               <OrderCartCar></OrderCartCar>
               <!-- <OrderCartPackage></OrderCartPackage> -->
-              <!-- <OrderCartPackage v-if="packageSelect && packageSelect.CompanyName != ''" :is-online="packageSelect.IsOnlineActive"
-                :company-name="packageSelect.CompanyName"
-                :company-image="getCompanyPath(packageSelect.PackageResult[0].CompanyImage)"
-                :price="getCurrency(packageSelect.PackageResult[0].PriceACT)" :price-discount="getCurrency(packageSelect.PackageResult[0].PriceACTDiscount)
-                  " :car-name="packageSelect.PackageResult[0].UseCarName" /> -->
+              <OrderCartPackage 
+              v-if="packageSelect && packageSelect.CompanyName != ''" 
+             :package-select="packageSelect"
+                  />
             </div>
 
             <OrderChecklist :list="checklist" />
@@ -129,12 +128,14 @@ const checklist: globalThis.Ref<IChecklist[]> = ref([
   },
 ]);
 const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
+  const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
 //define store
 const storeAuth = useStoreUserAuth();
 // define getter in store
 const { AuthenInfo } = storeToRefs(storeAuth);
 // init event
 const onInit = async () => {
+  isLoading.value = true
   // define parameter page
   const page = useUtility().getPaging(paging.value);
   paging.value = page;
@@ -203,7 +204,7 @@ const showPackageList = async () => {
       router.push("/order/compulsory/information");
     }
 
-    isLoading.value = false
+    //isLoading.value = false
   }
 };
 // onmounted loading page
@@ -213,8 +214,10 @@ const onLoad = onMounted(async () => {
 const handlerCheckList = (_checklist: IChecklist[]) => {
   checklist.value = _checklist;
 };
-const handlerSelect = (select: Boolean) => {
+const handlerSelect = (select: Boolean,item:IPackageResponse) => {
+  console.log(select,item)
   isSelect.value = select;
+  packageSelect.value=item
 };
 // Submit form event
 const submitOrder = async (formData: any) => {
@@ -238,6 +241,7 @@ const submitOrder = async (formData: any) => {
 
   router.push("/order/compulsory/placeorder");
 };
+//watching check change paging
 watch(
   () => route.query.currentPage, // Specify the query parameter to watch
   async (newVal, oldVal) => {

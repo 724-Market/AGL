@@ -2,7 +2,7 @@
   <div class="text-center d-flex justify-content-center">
     <div class="pagination p1">
       <ul>
-        <a href="#" @click="previousPage"
+        <a href="#" @click="previousPage" v-show="currentPage>1"
           ><li>{{ "<" }}</li></a
         >
         <a
@@ -13,7 +13,7 @@
           @click="goToPage(page)"
           ><li>{{ page }}</li></a
         >
-        <a href="#" @click="nextPage"
+        <a href="#" @click="nextPage" v-show="currentPage < totalPages.length"
           ><li>{{ ">" }}</li></a
         >
       </ul>

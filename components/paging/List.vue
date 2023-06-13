@@ -93,6 +93,8 @@ const onLoad = onMounted(() => {
     text: props.currentPage.toString(),
   }
   lengthPage.value = props.lengthPage
+
+  console.log(props.currentPage)
   CalculateTotalPage()
 });
 
@@ -250,8 +252,6 @@ const nextPage = () => {
 
 };
 const goToPage = (page: Pages) => {
-
-
   currentPage.value = page
   emit("ChangePage", currentPage.value.value, lengthPage.value)
   if (currentPage.value.start < 1) {

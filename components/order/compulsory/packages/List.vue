@@ -74,8 +74,8 @@ const props = defineProps({
   }
 })
 const totalRecord = ref(0)
-const currentPage = ref(0)
-const lengthPage = ref(0)
+const currentPage = ref(1)
+const lengthPage = ref(5)
 const redirectUrl = ref("")
 const checklist: globalThis.Ref<IChecklist[]> = ref([
   {

@@ -38,7 +38,7 @@
       </div>
     </div>
   </div>
-  <PagingList :current-page="currentPage" :length-page="lengthPage" :total-record="totalRecord"></PagingList>
+  <PagingList :current-page="currentPage" :length-page="lengthPage" :total-record="totalRecord"  @change-page="handlerChangePage"></PagingList>
   <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
 </template>
 
@@ -46,7 +46,7 @@
 import { IChecklist } from "~/shared/entities/checklist-entity";
 import { IPackageResponse, Paging } from "~/shared/entities/packageList-entity";
 
-const emit = defineEmits(["changeChecklist", "changeSelect"])
+const emit = defineEmits(["changeChecklist", "changeSelect","changePage"])
 const props = defineProps({
   isLoading: {
     type: Boolean,
@@ -171,4 +171,9 @@ const getPackageItem = (item: IPackageResponse) => {
   checklist.value[0].className = "current";
   emit("changeChecklist", checklist.value)
 };
+
+// hanlder page function
+const handlerChangePage = (page:number,lengPage:number)=>{
+  emit("changePage",page,lengPage)
+}
 </script>

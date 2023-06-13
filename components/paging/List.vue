@@ -4,7 +4,7 @@
       <div class="col-lg-4 col-xl-4 col-sm-6">
         <div class="hint-text">
           <span class="fw-bol">แสดง : </span>
-          <select>
+          <select v-model="lengthPage" @change="changeLengthPage">
             <option>1</option>
             <option>2</option>
             <option>3</option>
@@ -16,19 +16,16 @@
           <span> จากทั้งหมด {{ totalRecord }} รายการ</span>
         </div>
       </div>
-      <div class="col-sm-6 col-lg-8 col-xl-8 d-flex justify-content-end">
+      <div class="col-sm-6 col-lg-8 col-xl-8 d-flex justify-content-end" v-if="currentPage">
         <!-- <div class="hint-text">แสดง : <b>5</b> จากทั้งหมด {{ totalRecord }} รายการ</div> -->
         <ul class="pagination">
-          <li class="page-item disabled"><a class="btn btn-light  btn-sm"><i class="fa-sharp fa-solid fa-arrow-left"></i>
-            ก่อนหน้า</a></li>
-          <li class="page-item active"><a href="#" class="page-link"><span class="text-center">1</span></a></li>
-          <li class="page-item"><a href="#" class="page-link">2</a></li>
-          <li class="page-item"><a href="#" class="page-link">3</a></li>
-          <li class="page-item"><a href="#" class="page-link">4</a></li>
-          <li class="page-item"><a href="#" class="page-link">5</a></li>
-          <li class="page-item"><a href="#" class="page-link">...</a></li>
-          <li class="page-item"><a href="#" class="page-link">12</a></li>
-          <li class="page-item">
+          <li class="page-item" @click="previousPage" v-show="currentPage.value > 1"><a class="btn btn-light btn-sm"><i
+                class="fa-sharp fa-solid fa-arrow-left"></i>
+              ก่อนหน้า</a></li>
+          <li :class="{ 'page-item': true, 'active': page.value === currentPage.value }" v-for="page in totalPages"
+            :key="page.id" @click="goToPage(page)"><a href="#" class="page-link"><span class="text-center">{{ page.text
+            }}</span></a></li>
+          <li class="page-item" @click="nextPage" v-show="currentPage.value < totalPages.length">
             <a class="btn btn-light  btn-sm"><i class="fa-sharp fa-solid fa-arrow-right"></i> หน้าถัดไป</a>
           </li>
         </ul>
@@ -59,6 +56,10 @@
   </div> -->
 </template>
 <script setup lang="ts">
+import { Pages } from '~/shared/entities/pages-entity';
+
+
+const emit = defineEmits(["ChangePage"])
 const props = defineProps({
   currentPage: {
     type: Number,
@@ -73,14 +74,25 @@ const props = defineProps({
     required: true,
   },
 });
+const lengthPage = ref(0)
+const currentPage:globalThis.Ref<Pages|null> = ref(null);
 const redirect = ref('')
-const totalPages: globalThis.Ref<number[]> = ref([]);
+const totalPages: globalThis.Ref<Pages[]> = ref([]);
 const router = useRouter();
+
 const onLoad = onMounted(() => {
   if (window.location.pathname) {
     redirect.value = window.location.pathname
+
   }
-  console.log(redirect.value)
+
+  currentPage.value = {
+    id: props.currentPage.toString(),
+    start: props.currentPage+1,
+    value: props.currentPage,
+    text:props.currentPage.toString(),
+  }
+  lengthPage.value = props.lengthPage
   CalculateTotalPage()
 });
 
@@ -90,37 +102,172 @@ watch(
     CalculateTotalPage()
   }
 )
+watch(
+  () => props.lengthPage,
+  (totalRecord) => {
+    lengthPage.value = props.lengthPage
+  }
+)
+const CalculateTotalPageMore = () => {
+  const maxPageCount = 7
+  const pageMore = 7
+  const totalRecord = 100
+  if(currentPage.value){
+    console.log(currentPage.value, props.totalRecord, props.lengthPage)
+  const total_pages = Math.ceil(totalRecord / props.lengthPage);
+  const array:Pages[] = []
+  array.push({
+        id:'1',
+        start:0,
+        text:'1',
+        value:1
+        })
+  
+        console.log(currentPage.value.start)
+  for (let i = currentPage.value.start; i <= currentPage.value.start+maxPageCount; i++) {
+    if(i<=total_pages){
+ // if (i == pageMore+currentPage.value.start) {
+      //   array.push({
+      //   id:i.toString(),
+      //   start:(currentPage.value.start+pageMore)-1,
+      //   text:"...",
+      //   value:-1
+      //   })
+      // } else 
+      if (i == maxPageCount+currentPage.value.start) {
+        if(array[array.length-1].value<total_pages)
+        {
+          array.push({
+          id:i.toString(),
+          start:i,
+          text:'...',
+          value:-1
+        })
+        }
+        array.push({
+          id:total_pages.toString(),
+          start:0,
+          text:total_pages.toString(),
+          value:total_pages
+        })
+      }
+      else {
+        array.push({
+          id:i.toString(),
+          start:0,
+          text:i.toString(),
+          value:i
+        })
+      }
 
+    }
+  }
+
+  totalPages.value = array
+  }
+  console.log(totalPages.value)
+}
 const CalculateTotalPage = () => {
-  console.log(props.currentPage, props.totalRecord, props.lengthPage)
-  const total_pages = Math.ceil(props.totalRecord / props.lengthPage);
-  const array = []
-  for (let i = 1; i <= total_pages; i++) {
-    array.push(i)
+  const maxPageCount = 8
+  const pageMore = 7
+  const totalRecord = 100
+  if(currentPage.value){
+    console.log(currentPage.value, props.totalRecord, props.lengthPage)
+  const total_pages = Math.ceil(totalRecord / props.lengthPage);
+  const array:Pages[] = []
+  for (let i = 1; i <= maxPageCount; i++) {
+      if (i == pageMore) {
+        array.push({
+        id:i.toString(),
+        start:(currentPage.value.start+pageMore)-1,
+        text:"...",
+        value:-1
+        })
+      } else if (i == maxPageCount) {
+
+        array.push({
+          id:total_pages.toString(),
+          start:0,
+          text:total_pages.toString(),
+          value:total_pages
+        })
+      }
+      else {
+        array.push({
+          id:i.toString(),
+          start:0,
+          text:i.toString(),
+          value:i
+        })
+      }
+
+
   }
   if (array.length == 0) {
-    array.push(1)
+    array.push({
+          id:'1',
+          start:0,
+          text:'1',
+          value:1
+        })
   }
   totalPages.value = array
+  }
+  console.log(totalPages.value)
 }
 const previousPage = () => {
-  if (props.currentPage > 1) {
-    router.push(redirect.value + "?currentPage=" + (props.currentPage - 1));
+  if(currentPage.value){
+    if (currentPage.value.value > 1) {
+      const p = currentPage.value.value-1
+      const page:Pages = {
+        id:p.toString(),
+        start:0,
+        text:p.toString(),
+        value:p
+      }
+      currentPage.value = page
+    goToPage(currentPage.value)
 
   }
+  }
+
 };
 const nextPage = () => {
-  if (props.currentPage < totalPages.value.length) {
-    router.push(redirect.value + "?currentPage=" + (props.currentPage + 1));
-    // this.$emit("page-change", props.currentPage + 1);
+  if(currentPage.value){
+    if (currentPage.value.value < totalPages.value.length) {
+    const p = currentPage.value.value+1
+      const page:Pages = {
+        id:p.toString(),
+        start:0,
+        text:p.toString(),
+        value:p
+      }
+      currentPage.value = page
+    goToPage(currentPage.value)
+  }
+  }
+
+  
+};
+const goToPage = (page: Pages) => {
+
+
+  currentPage.value =page
+  emit("ChangePage", currentPage.value.value, lengthPage.value)
+  if(currentPage.value.start<1)
+  {
+    CalculateTotalPage()
+  }
+  else{
+    CalculateTotalPageMore()
   }
 };
-const goToPage = (page: number) => {
-  if (page >= 1 && page <= totalPages.value.length) {
-    router.push(redirect.value + "?currentPage=" + page);
-    //this.$emit("page-change", page);
+const changeLengthPage = (payload: Event) => {
+  if(currentPage.value){
+    emit("ChangePage", currentPage.value.value, lengthPage.value)
   }
-};
+  
+}
 </script>
 <style scope>
 /* .show-entries {
@@ -192,4 +339,5 @@ const goToPage = (page: number) => {
   float: left;
   margin-top: 10px;
   font-size: 13px;
-}</style>
+}
+</style>

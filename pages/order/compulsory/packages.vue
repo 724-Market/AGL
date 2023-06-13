@@ -1,14 +1,8 @@
 <template>
   <NuxtLayout :name="layout">
     <!-- Content -->
-    <FormKit
-      type="form"
-      @submit="submitOrder"
-      :actions="false"
-      id="form-order"
-      form-class="form-order form-theme"
-      :incomplete-message="false"
-    >
+    <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
+      :incomplete-message="false">
       <div class="row">
         <div class="col-lg-8 col-xl-9">
           <div class="card">
@@ -27,16 +21,9 @@
               </div>
             </div>
           </div>
-          <OrderCompulsoryPackagesList
-            :is-loading="isLoading"
-            :checklist="checklist"
-            :is-error="isError"
-            :message-error="messageError"
-            :package-list="packageList"
-            :pages="paging"
-            @change-checklist="handlerCheckList"
-            @change-select="handlerSelect"
-          ></OrderCompulsoryPackagesList>
+          <OrderCompulsoryPackagesList :is-loading="isLoading" :checklist="checklist" :is-error="isError"
+            :message-error="messageError" :package-list="packageList" :pages="paging" @change-checklist="handlerCheckList"
+            @change-select="handlerSelect" @change-page="handlerChangePage"></OrderCompulsoryPackagesList>
         </div>
 
         <!-- Sidebar -->
@@ -49,27 +36,16 @@
             <div class="card-body">
               <OrderCartCar></OrderCartCar>
               <!-- <OrderCartPackage></OrderCartPackage> -->
-              <OrderCartPackage 
-              v-if="packageSelect && packageSelect.CompanyName != ''" 
-             :package-select="packageSelect"
-                  />
+              <OrderCartPackage v-if="packageSelect && packageSelect.CompanyName != ''" :package-select="packageSelect" />
             </div>
 
             <OrderChecklist :list="checklist" />
           </aside>
 
-          <FormKit
-            type="submit"
-            label="ไปกรอกข้อมูลสั่งซื้อ"
-            name="order-submit"
-            id="order-submit"
-            :classes="{
-              input: 'btn-primary',
-              outer: 'form-actions',
-            }"
-            :disabled="!isSelect"
-            :loading="isLoading"
-          />
+          <FormKit type="submit" label="ไปกรอกข้อมูลสั่งซื้อ" name="order-submit" id="order-submit" :classes="{
+            input: 'btn-primary',
+            outer: 'form-actions',
+          }" :disabled="!isSelect" :loading="isLoading" />
 
           <NuxtLink to="information" class="btn btn-back">ย้อนกลับ</NuxtLink>
         </div>
@@ -128,7 +104,7 @@ const checklist: globalThis.Ref<IChecklist[]> = ref([
   },
 ]);
 const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
-  const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
+const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
 //define store
 const storeAuth = useStoreUserAuth();
 // define getter in store
@@ -214,11 +190,22 @@ const onLoad = onMounted(async () => {
 const handlerCheckList = (_checklist: IChecklist[]) => {
   checklist.value = _checklist;
 };
-const handlerSelect = (select: Boolean,item:IPackageResponse) => {
-  console.log(select,item)
+const handlerSelect = (select: Boolean, item: IPackageResponse) => {
+  console.log(select, item)
   isSelect.value = select;
-  packageSelect.value=item
+  packageSelect.value = item
 };
+const handlerChangePage = async (page: number, lengthPage: number) => {
+  console.log(page, lengthPage)
+  if (page != -1) {
+    const _page = useUtility().getPaging(paging.value);
+    _page.Length = lengthPage
+    _page.Page = page
+    paging.value = _page
+    await showPackageList();
+  }
+
+}
 // Submit form event
 const submitOrder = async (formData: any) => {
   console.log(
@@ -242,18 +229,18 @@ const submitOrder = async (formData: any) => {
   router.push("/order/compulsory/placeorder");
 };
 //watching check change paging
-watch(
-  () => route.query.currentPage, // Specify the query parameter to watch
-  async (newVal, oldVal) => {
-    // Handle the updated value
-    console.log("Query parameter updated:", newVal);
+// watch(
+//   () => route.query.currentPage, // Specify the query parameter to watch
+//   async (newVal, oldVal) => {
+//     // Handle the updated value
+//     console.log("Query parameter updated:", newVal);
 
-    const page = useUtility().getPaging(paging.value);
-    paging.value = page;
+//     const page = useUtility().getPaging(paging.value);
+//     paging.value = page;
 
-    await showPackageList();
-  }
-);
+//     await showPackageList();
+//   }
+// );
 // Define layout
 const layout = "monito";
 

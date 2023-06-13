@@ -16,7 +16,7 @@
             <span class="badge-bg-success" v-if="item.IsOnlineActive"><i
                 class="fa-solid fa-bolt"></i>ได้กรมธรรม์ทันที</span>
             <span class="badge-bg-orange" v-else><i class="fa-solid fa-clock-four"></i>ได้กรมธรรม์ 1-3 วันทำการ</span>
-            <span class="badge-secondary"><i class="fa-regular fa-memo-circle-check"></i>พร้อมใบกำกับภาษี</span>
+            <span class="badge-secondary" v-if="item.IsTaxInclude=='1'"><i class="fa-regular fa-memo-circle-check"></i>พร้อมใบกำกับภาษี</span>
           </div>
           <div class="more">
             <a class="fa-icon" href="#" data-bs-toggle="modal" data-bs-target="#ModalCoverage">คลิกดูรายละเอียด</a>

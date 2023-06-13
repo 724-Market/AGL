@@ -33,7 +33,7 @@ export const useStorePackageList = defineStore('useStorePackageList', {
 
             return this.$state
         },
-
+        
         clearPackageList() {
             this.$state = {
                 Status: ""

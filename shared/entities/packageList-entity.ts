@@ -27,7 +27,9 @@ export interface IPackageResponse {
     IsOnlineActive: boolean
     CountOfPolicy: number
     Price: number
-    PackageResult: PackageResult[],
+    PackageResult: PackageResult[]
+    IsTaxInclude?:string
+    PaperBalance?:number
 }
 
 export interface PackageResult {

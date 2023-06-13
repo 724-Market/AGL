@@ -70,6 +70,7 @@ import { useStorePackageList } from "~/stores/order/storePackageList";
 // using pinia
 import { storeToRefs } from "pinia";
 import { IChecklist } from "~/shared/entities/checklist-entity";
+import { useStorePackage } from "~/stores/order/storePackage";
 
 // Define Variables
 // Loading state after form submiting
@@ -87,7 +88,7 @@ const isError = ref(false);
 const messageError = ref("");
 
 const paging: globalThis.Ref<Paging> = ref({
-  Length: 2,
+  Length: 5,
   Page: 1,
   TotalRecord: 0,
   RedirectUrl: "/order/compulsory/packages",
@@ -157,9 +158,12 @@ const showPackageList = async () => {
         console.log(request);
         const data = await store.getPackageList(request);
 
+        
         if (data && data.Data) {
+          // set default value
+        const packages = useDefaulValue().setDefaultPackageListValue(data.Data)
           isLoading.value = false;
-          packageList.value = data.Data;
+          packageList.value = packages;
           // define parameter page
           if (data.Pagination) {
             const page = useUtility().getPaging(data.Pagination.Paging);
@@ -216,32 +220,18 @@ const submitOrder = async (formData: any) => {
     formData
   );
 
-  // const response = await useCallApi().get({
-  //   URL: "/Agent/user/check",
-  //   AgentCode: formData.username,
-  //   IDCard: formData.idcard,
-  // });
+  if (packageSelect.value) {
+    //define store
+    const storePackage = useStorePackage();
+    const data = storePackage.setPackage(packageSelect.value);
 
-  // statusMessage.value = response.statusMessage;
-  // statusMessageType.value = response.statusMessageType;
-  submitted.value = false; // Form submitted status
+    submitted.value = false; // Form submitted status
 
-  router.push("/order/compulsory/placeorder");
+    router.push("/order/compulsory/placeorder");
+  }
+
 };
-//watching check change paging
-// watch(
-//   () => route.query.currentPage, // Specify the query parameter to watch
-//   async (newVal, oldVal) => {
-//     // Handle the updated value
-//     console.log("Query parameter updated:", newVal);
 
-//     const page = useUtility().getPaging(paging.value);
-//     paging.value = page;
-
-//     await showPackageList();
-//   }
-// );
-// Define layout
 const layout = "monito";
 
 // Define meta seo

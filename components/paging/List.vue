@@ -75,7 +75,7 @@ const props = defineProps({
   },
 });
 const lengthPage = ref(0)
-const currentPage:globalThis.Ref<Pages|null> = ref(null);
+const currentPage: globalThis.Ref<Pages | null> = ref(null);
 const redirect = ref('')
 const totalPages: globalThis.Ref<Pages[]> = ref([]);
 const router = useRouter();
@@ -88,9 +88,9 @@ const onLoad = onMounted(() => {
 
   currentPage.value = {
     id: props.currentPage.toString(),
-    start: props.currentPage+1,
+    start: props.currentPage + 1,
     value: props.currentPage,
-    text:props.currentPage.toString(),
+    text: props.currentPage.toString(),
   }
   lengthPage.value = props.lengthPage
   CalculateTotalPage()
@@ -110,163 +110,163 @@ watch(
 )
 const CalculateTotalPageMore = () => {
   const maxPageCount = 7
-  const pageMore = 7
-  const totalRecord = 100
-  if(currentPage.value){
+  // const pageMore = 7
+  // const totalRecord = 100
+  if (currentPage.value) {
     console.log(currentPage.value, props.totalRecord, props.lengthPage)
-  const total_pages = Math.ceil(totalRecord / props.lengthPage);
-  const array:Pages[] = []
-  array.push({
-        id:'1',
-        start:0,
-        text:'1',
-        value:1
-        })
-  
-        console.log(currentPage.value.start)
-  for (let i = currentPage.value.start; i <= currentPage.value.start+maxPageCount; i++) {
-    if(i<=total_pages){
- // if (i == pageMore+currentPage.value.start) {
-      //   array.push({
-      //   id:i.toString(),
-      //   start:(currentPage.value.start+pageMore)-1,
-      //   text:"...",
-      //   value:-1
-      //   })
-      // } else 
-      if (i == maxPageCount+currentPage.value.start) {
-        if(array[array.length-1].value<total_pages)
-        {
+    const total_pages = Math.ceil(props.totalRecord / lengthPage.value);
+    const array: Pages[] = []
+    array.push({
+      id: '1',
+      start: 0,
+      text: '1',
+      value: 1
+    })
+
+    console.log(currentPage.value.start)
+    for (let i = currentPage.value.start; i <= currentPage.value.start + maxPageCount; i++) {
+      if (i <= total_pages) {
+        // กรณียังมีหน้าถัดไปเหลืออยู่
+        if (i == maxPageCount + currentPage.value.start) {
+          if (array[array.length - 1].value < total_pages) {
+            array.push({
+              id: i.toString(),
+              start: i,
+              text: '...',
+              value: -1
+            })
+          }
+          // แสดงหน้าสุดท้าย
           array.push({
-          id:i.toString(),
-          start:i,
-          text:'...',
-          value:-1
-        })
+            id: total_pages.toString(),
+            start: 0,
+            text: total_pages.toString(),
+            value: total_pages
+          })
         }
-        array.push({
-          id:total_pages.toString(),
-          start:0,
-          text:total_pages.toString(),
-          value:total_pages
-        })
-      }
-      else {
-        array.push({
-          id:i.toString(),
-          start:0,
-          text:i.toString(),
-          value:i
-        })
-      }
+        else {
+          array.push({
+            id: i.toString(),
+            start: 0,
+            text: i.toString(),
+            value: i
+          })
+        }
 
+      }
     }
-  }
 
-  totalPages.value = array
+    totalPages.value = array
   }
   console.log(totalPages.value)
 }
 const CalculateTotalPage = () => {
   const maxPageCount = 8
   const pageMore = 7
-  const totalRecord = 100
-  if(currentPage.value){
+  //const totalRecord = 100
+  if (currentPage.value) {
     console.log(currentPage.value, props.totalRecord, props.lengthPage)
-  const total_pages = Math.ceil(totalRecord / props.lengthPage);
-  const array:Pages[] = []
-  for (let i = 1; i <= maxPageCount; i++) {
+    const total_pages = Math.ceil(props.totalRecord / lengthPage.value);
+    const array: Pages[] = []
+    for (let i = 1; i <= maxPageCount; i++) {
+      if (i <= total_pages) {
+        // แสดง more page
       if (i == pageMore) {
         array.push({
-        id:i.toString(),
-        start:(currentPage.value.start+pageMore)-1,
-        text:"...",
-        value:-1
+          id: i.toString(),
+          start: (currentPage.value.start + pageMore) - 1,
+          text: "...",
+          value: -1
         })
+        // กำหนดหน้าสุดท้าย
       } else if (i == maxPageCount) {
 
         array.push({
-          id:total_pages.toString(),
-          start:0,
-          text:total_pages.toString(),
-          value:total_pages
+          id: total_pages.toString(),
+          start: 0,
+          text: total_pages.toString(),
+          value: total_pages
         })
       }
+      // แสดงหน้าปกติ
       else {
         array.push({
-          id:i.toString(),
-          start:0,
-          text:i.toString(),
-          value:i
+          id: i.toString(),
+          start: 0,
+          text: i.toString(),
+          value: i
         })
       }
+      }
+      
 
 
-  }
-  if (array.length == 0) {
-    array.push({
-          id:'1',
-          start:0,
-          text:'1',
-          value:1
-        })
-  }
-  totalPages.value = array
+    }
+    // กำหนด page default
+    if (array.length == 0) {
+      array.push({
+        id: '1',
+        start: 0,
+        text: '1',
+        value: 1
+      })
+    }
+    totalPages.value = array
   }
   console.log(totalPages.value)
 }
 const previousPage = () => {
-  if(currentPage.value){
+  if (currentPage.value) {
     if (currentPage.value.value > 1) {
-      const p = currentPage.value.value-1
-      const page:Pages = {
-        id:p.toString(),
-        start:0,
-        text:p.toString(),
-        value:p
+      const p = currentPage.value.value - 1
+      const page: Pages = {
+        id: p.toString(),
+        start: 0,
+        text: p.toString(),
+        value: p
       }
       currentPage.value = page
-    goToPage(currentPage.value)
+      goToPage(currentPage.value)
 
-  }
+    }
   }
 
 };
 const nextPage = () => {
-  if(currentPage.value){
+  if (currentPage.value) {
     if (currentPage.value.value < totalPages.value.length) {
-    const p = currentPage.value.value+1
-      const page:Pages = {
-        id:p.toString(),
-        start:0,
-        text:p.toString(),
-        value:p
+      const p = currentPage.value.value + 1
+      const page: Pages = {
+        id: p.toString(),
+        start: 0,
+        text: p.toString(),
+        value: p
       }
       currentPage.value = page
-    goToPage(currentPage.value)
-  }
+      goToPage(currentPage.value)
+    }
   }
 
-  
+
 };
 const goToPage = (page: Pages) => {
 
 
-  currentPage.value =page
+  currentPage.value = page
   emit("ChangePage", currentPage.value.value, lengthPage.value)
-  if(currentPage.value.start<1)
-  {
+  if (currentPage.value.start < 1) {
     CalculateTotalPage()
   }
-  else{
+  else {
     CalculateTotalPageMore()
   }
 };
 const changeLengthPage = (payload: Event) => {
-  if(currentPage.value){
+  if (currentPage.value) {
+    goToPage(currentPage.value)
     emit("ChangePage", currentPage.value.value, lengthPage.value)
   }
-  
+
 }
 </script>
 <style scope>

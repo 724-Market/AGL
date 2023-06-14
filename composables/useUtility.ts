@@ -23,9 +23,9 @@ export default () => {
             // refresh token in store
             const refresToken = AuthenInfo.value ? AuthenInfo.value.refreshToken : ""
             if (refresToken && refresToken != "") {
-                const { data } = await useAsyncData("userAuth", () => store.refreshToken(refresToken));
-                if (data.value) {
-                    token = data.value.accessToken
+               const data = await store.refreshToken(refresToken)
+                if (data) {
+                    token = data.accessToken
                 }
 
             }

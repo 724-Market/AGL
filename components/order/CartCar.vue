@@ -15,7 +15,7 @@
 
         <div class="meta">
             <div class="tags">
-                <span class="badge"><i class="fa-solid fa-car-circle-bolt"></i>{{props.carUse ?? 'รถให้เช่า'}}</span>
+                <span class="badge"><i class="car-personal"></i>{{props.carUse ?? 'รถให้เช่า'}}</span>
                 <span class="badge-bg-danger"><i class="fa-solid fa-sparkles"></i>{{props.carLabel ?? 'ป้ายแดง'}}</span>
             </div>
         </div>
@@ -34,3 +34,19 @@ const props = defineProps({
 });
 
 </script>
+<style scoped>
+.car-personal {
+  font: var(--fa-font-solid);
+  content: "\f1b9";
+}
+
+.car-hire {
+  font: var(--fa-font-solid);
+  content: "\f1ba";
+}
+
+.car-rent {
+  font: var(--fa-font-solid);
+  content: "\e342";
+}
+</style>

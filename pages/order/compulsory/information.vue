@@ -653,9 +653,10 @@ const checkFromDate = async () => {
 const submitOrder = async (formData: any) => {
   store.clearInformation();
 
-  let infarmationData = formData as IInformation;
-  infarmationData.CarDetail = `${carDetail} ${Number(infarmationData.CarYear) - 543}`;
-  store.setInformation(infarmationData);
+  let informationData = formData as IInformation;
+  informationData.InsuranceDay = insuranceDay.value
+  informationData.CarDetail = `${carDetail} ${Number(informationData.CarYear) - 543}`;
+  store.setInformation(informationData);
   // console.log("infarmationData", infarmationData)
 
   const router = useRouter();

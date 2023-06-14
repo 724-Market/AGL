@@ -18,8 +18,8 @@ export const useStoreInformation = defineStore('useStoreInformation', {
             CarDetail: ""
         }
     },
-    getters:{
-        InformationInfo:state => sessionStorage.getItem("useStoreInformation") ? JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as IInformation : undefined,
+    getters: {
+        InformationInfo: state => sessionStorage.getItem("useStoreInformation") ? JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as IInformation : undefined,
     },
     actions: {
         setInformation(request: IInformation): IInformation {

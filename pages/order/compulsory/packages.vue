@@ -34,7 +34,7 @@
               <h3 class="card-title">รายการที่เลือก</h3>
             </div>
             <div class="card-body">
-              <OrderCartCar></OrderCartCar>
+              <OrderCartCar v-if="InformationInfo" :car-detail="InformationInfo.CarDetail" :car-use="InformationInfo.CarUse" :car-label="''" :effective-date="InformationInfo.EffectiveDate" :expire-date="InformationInfo.ExpireDate" :insurance-day="InformationInfo.InsuranceDay"></OrderCartCar>
               <!-- <OrderCartPackage></OrderCartPackage> -->
               <OrderCartPackage v-if="packageSelect && packageSelect.CompanyName != ''" :package-select="packageSelect" />
             </div>
@@ -58,6 +58,7 @@
 <script setup lang="ts">
 // Define import
 import { IInformation } from "~~/shared/entities/information-entity";
+import { IChecklist } from "~/shared/entities/checklist-entity";
 import {
   IPackageRequest,
   IPackageResponse,
@@ -66,11 +67,11 @@ import {
 // Import store
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStorePackageList } from "~/stores/order/storePackageList";
+import { useStorePackage } from "~/stores/order/storePackage";
+import { useStoreInformation } from "~/stores/order/storeInformation";
 
 // using pinia
 import { storeToRefs } from "pinia";
-import { IChecklist } from "~/shared/entities/checklist-entity";
-import { useStorePackage } from "~/stores/order/storePackage";
 
 // Define Variables
 // Loading state after form submiting
@@ -110,6 +111,11 @@ const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
 const storeAuth = useStoreUserAuth();
 // define getter in store
 const { AuthenInfo } = storeToRefs(storeAuth);
+
+//define store
+const storeInfo = useStoreInformation();
+// define getter in store
+//const {InformationInfo} = storeToRefs(storeInfo);
 // init event
 const onInit = async () => {
   isLoading.value = true
@@ -117,6 +123,7 @@ const onInit = async () => {
   const page = useUtility().getPaging(paging.value);
   paging.value = page;
   console.log(page);
+  //console.log(InformationInfo.value)
   // check login
   if (AuthenInfo.value) {
     await showPackageList();
@@ -158,10 +165,10 @@ const showPackageList = async () => {
         console.log(request);
         const data = await store.getPackageList(request);
 
-        
+
         if (data && data.Data) {
           // set default value
-        const packages = useDefaulValue().setDefaultPackageListValue(data.Data)
+          const packages = useDefaulValue().setDefaultPackageListValue(data.Data)
           isLoading.value = false;
           packageList.value = packages;
           // define parameter page

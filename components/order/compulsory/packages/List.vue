@@ -74,8 +74,8 @@ const props = defineProps({
   }
 })
 const totalRecord = ref(0)
-const currentPage = ref(0)
-const lengthPage = ref(0)
+const currentPage = ref(1)
+const lengthPage = ref(5)
 const redirectUrl = ref("")
 const checklist: globalThis.Ref<IChecklist[]> = ref([
   {
@@ -111,7 +111,7 @@ const onLoad = onMounted(() => {
 watch(
   () => props.packageList,
   () => {
-    console.log('packageList value changed', props.packageList)
+    //console.log('packageList value changed', props.packageList)
     if (props.packageList.length > 0) {
       packageList.value = props.packageList
     }
@@ -122,7 +122,7 @@ watch(
 watch(
   () => props.checklist,
   () => {
-    console.log('checklist value changed', props.checklist)
+    //console.log('checklist value changed', props.checklist)
     if (props.checklist.length > 0) {
       checklist.value = props.checklist
     }
@@ -133,7 +133,7 @@ watch(
 watch(
   () => props.pages,
   () => {
-    console.log('pages value changed', props.pages)
+    //console.log('pages value changed', props.pages)
     if (props.pages) {
       const _props = props.pages as Paging
       totalRecord.value = _props.TotalRecord
@@ -147,7 +147,7 @@ watch(
 watch(
   () => props.isLoading,
   () => {
-    console.log('loading value changed', props.isLoading)
+    //console.log('loading value changed', props.isLoading)
 
 
   }

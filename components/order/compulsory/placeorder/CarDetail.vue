@@ -17,19 +17,16 @@
 
                         <div class="row">
                           <div class="col">
-                            <FormKit type="text" label="ทะเบียนรถ" name="CarLicense" placeholder="เลขป้ายทะเบียนรถ"
-                              validation="required" :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
+                            <FormKit type="text" label="ทะเบียนรถ" id="CarLicense" name="CarLicense" placeholder="เลขป้ายทะเบียนรถ"
+                              :validation="[['required'],
+                                            ['length', 6, 7]]"
+                              :validation-messages="{ required: 'กรุณาใส่ข้อมูล', length: 'ทะเบียนรถควรมีอย่างน้อย 6 แต่ไม่เกิน 7 ตัว' }"
                               autocomplete="false" />
                           </div>
                           <div class="col">
-                            <FormKit type="select" label="จังหวัดของทะเบียนรถ" name="CarLicenseProvince"
-                              placeholder="จังหวัดบนป้ายทะเบียนรถ" :options="{
-                                1: 'กทม',
-                                2: 'กรุงเทพ',
-                                3: 'กรุงเทพฯ',
-                                4: 'กรุงเทพมหานคร',
-                                5: 'นครพนมเปญ',
-                              }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                            <FormKit type="select" label="จังหวัดของทะเบียนรถ" name="CarLicenseProvince" placeholder="จังหวัดบนป้ายทะเบียนรถ" 
+                              :options="carProvince" :value="carProvince.value" v-model="carProvinceText"
+                              validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
                           </div>
                         </div>
 
@@ -45,17 +42,19 @@
 
                         <div class="row">
                           <div class="col-sm-4 col-lg-3">
-                            <FormKit type="select" label="สีรถ" name="CarColor" placeholder="สีของรถ" :options="{
-                              1: 'ขาว',
-                              2: 'ดำ',
-                              3: 'เทา',
-                              4: 'บรอนด์',
-                            }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                            <FormKit type="select" label="สีรถ" name="CarColor" placeholder="สีของรถ" 
+                              :options="carColor" :value="carColor.value" v-model="carColorText"
+                              validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
                           </div>
                           <div class="col-sm-8 col-lg-5">
-                            <FormKit type="text" label="เลขตัวถัง" name="CarBodyNumber"
-                              placeholder="ตัวอย่าง: 1FTLP62W4Axxxxxx" validation="required"
-                              :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="false" />
+                            <FormKit type="text" label="เลขตัวถัง" name="CarBodyNumber" placeholder="ตัวอย่าง: 1FTLP62W4Axxxxxx" 
+                              :validation="[['required'],
+                                            ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).*$/],
+                                            ['length', 17]]"
+                              :validation-messages="{ required: 'กรุณาใส่ข้อมูล', 
+                                                      matches: 'รูปแบบของเลขตัวถังไม่ถูกต้อง', 
+                                                      length: 'เลขตัวถังควรมี 17 หลัก' }"
+                               autocomplete="false" />
                           </div>
                           <div class="col-sm-12 col-lg-4">
                             <FormKit type="text" label="เลขเครื่องยนต์" name="CarEngineNumber"
@@ -67,7 +66,9 @@
                           <div class="col">
                             <FormKit type="file" label="เอกสารประกอบ (สำเนาเล่มรถยนต์)" name="CarLicenseFile"
                               accept=".pdf,.jpg,.png" help="รองรับไฟล์นามสกุล pdf, jpg, png เท่านั้น"
-                              validation="required" :validation-messages="{ required: 'กรุณาอัปโหลดไฟล์เอกสาร' }" />
+                              :validation="SubCarModel === 'unknown' || SubCarModel === 'other' ? 'required' : ''" 
+                              :validation-messages="{ required: 'กรุณาอัปโหลดไฟล์เอกสาร' }" 
+                              />
                           </div>
                         </div>
 
@@ -80,9 +81,72 @@
 
             </div>
           </div>
+          <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
 </template>
 
 <script setup lang="ts">
 import { SelectOption } from "~/shared/entities/select-option";
+import { IInformation } from "~~/shared/entities/information-entity";
+import { IPackageResponse } from "~/shared/entities/packageList-entity";
+import { useStorePackageList } from "~/stores/order/storePackageList";
+import {
+  ICarColorResponse,
+  IProvinceResponse
+} from "~/shared/entities/placeorder-entity";
+
+import { storeToRefs } from "pinia";
+
+const isLoading = ref(false);
+const statusMessage = ref()
+const statusMessageType = ref()
+
+var info: IInformation;
+var packages: IPackageResponse;
+var SubCarModel: globalThis.Ref<String> = ref("")
+
+var carProvince: globalThis.Ref<SelectOption[]> = ref([])
+var carProvinceText: String = ""
+var carColor: globalThis.Ref<SelectOption[]> = ref([])
+var carColorText: String = ""
+
+const onLoad = onMounted(async () => {
+  isLoading.value = true
+
+  const jsonInfo = sessionStorage.getItem("useStoreInformation") || "";
+  info = JSON.parse(jsonInfo) as IInformation;
+  SubCarModel.value = info.SubCarModel
+
+  const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
+  packages = JSON.parse(jsonPackage) as IPackageResponse;
+
+  let carProvinceList: SelectOption[] = [];
+  const responseProvice = await useCallApi().post<IProvinceResponse[]>({
+    URL: "/Master/province/list",
+  });
+  responseProvice.apiResponse.Data?.forEach((obj: IProvinceResponse) => {
+    let province: SelectOption = {
+      label: obj.Name,
+      value: obj.ID,
+    };
+    carProvinceList.push(province);
+  });
+  carProvince.value = carProvinceList;
+
+  let carColorList: SelectOption[] = [];
+  const responseColor = await useCallApi().post<ICarColorResponse[]>({
+    URL: "/Master/carcolor/list",
+    CompanyCode: packages?.CompanyCode
+  });
+  responseColor.apiResponse.Data?.forEach((obj: ICarColorResponse) => {
+    let color: SelectOption = {
+      label: obj.Name,
+      value: obj.CarColorID,
+    };
+    carColorList.push(color);
+  });
+  carColor.value = carColorList;
+
+  isLoading.value = false
+});
 
 </script>

@@ -4,7 +4,7 @@ export interface ICarColorResponse {
     NameEn: string
 }
 
-export interface IProvinceResponse {
+export interface IProvinceResponse { //Prefix
     ID: string
     Name: string
 }

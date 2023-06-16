@@ -91,6 +91,7 @@ export interface OrderRequest {
     AddressText: string
     No: string
     Moo: string
+    Soi:string
     Place: string
     Building: string
     Floor: string

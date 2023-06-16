@@ -112,4 +112,23 @@ if(props.carColor){
  
 });
 
+
+watch(
+  ()=>props.carProvince,
+  ()=>{
+    if(props.carProvince && props.carProvince.length>0){
+      carProvince.value = props.carProvince
+    }
+  }
+)
+watch(
+  ()=>props.carColor,
+  ()=>{
+    if(props.carColor && props.carColor.length>0){
+      carColor.value = props.carColor
+    }
+  }
+)
+
+
 </script>

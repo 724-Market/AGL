@@ -24,14 +24,24 @@
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrict"
             @change-customer-type="handlerChangeCustomerType"
+            :prefix="prefix"
             :addr-province="addrProvince"
-            v-model:addr-district.sync="addrDistrict"
-            v-model:addr-sub-district.sync="addrSubDistrict"
+            :addr-district="addrDistrict"
+            :addr-sub-district="addrSubDistrict"
             :addr-zip-code="addrZipCode"
+            :insure-full-address="insureFullAddress"
           ></OrderCompulsoryPlaceorderInsureDetail>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # วิธีการรับกรมธรรม์ # # # # # # # # # # # # # # # # # # # # #-->
-          <OrderCompulsoryPlaceorderInsuranceRecieve></OrderCompulsoryPlaceorderInsuranceRecieve>
+          <OrderCompulsoryPlaceorderInsuranceRecieve @change-province="handlerChangeProvince"
+            @change-district="handlerChangeDistrict"
+            @change-sub-district="handlerChangeSubDistrict"
+            :insure-full-address="insureFullAddress"
+            :prefix="prefix"
+            :addr-province="addrProvince"
+            :addr-district="addrDistrict"
+            :addr-sub-district="addrSubDistrict"
+            :addr-zip-code="addrZipCode"></OrderCompulsoryPlaceorderInsuranceRecieve>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ใบกำกับภาษี # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderTaxInvoice></OrderCompulsoryPlaceorderTaxInvoice>
@@ -118,6 +128,7 @@ const addrDistrict: globalThis.Ref<SelectOption[]> = ref([]);
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([]);
 const addrZipCode = ref("");
 const delivery: globalThis.Ref<SelectOption[]> = ref([]);
+const insureFullAddress:globalThis.Ref<string> = ref('');
 const isSelect: globalThis.Ref<Boolean> = ref(false);
 
 let values = reactive({});
@@ -169,6 +180,7 @@ const onLoad = onMounted(async () => {
       await loadProvince();
       await loadCarColor();
       await loadDelivery();
+      await loadPrefix(true);
       isLoading.value = false;
     } else {
       router.push("/order/compulsory/packages");
@@ -312,6 +324,7 @@ const handlerChangeCustomerType = async (e: string)=>{
   if(e){
     isLoading.value = true
     await loadPrefix(e=="person")
+    console.log(prefix)
     isLoading.value = false
   }
 }
@@ -339,6 +352,11 @@ const handlerChangeSubDistrict = async (e: string) => {
     isLoading.value = false;
   }
 };
+const hnadlerChangeInsureFullAddress = async (addr:string)=>{
+  if(addr){
+
+  }
+}
 // Define layout
 const layout = "monito";
 

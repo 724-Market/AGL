@@ -21,15 +21,6 @@
             data-bs-parent="#accordion-insured-information"
           >
             <div class="accordion-body">
-              <FormKit
-                type="form"
-                :actions="false"
-                id="form-placeorder-insuredetail"
-                form-class="form-placeorder form-theme"
-                
-                v-model="values"
-                :incomplete-message="false"
-              >
                 <div class="form-placeorder">
                   <section class="insured-type">
                     <FormKit
@@ -74,7 +65,6 @@
                             name="Title"
                             placeholder="คำนำหน้า"
                             :options="Prefix"
-                            :value="Prefix.value"
                             validation="required"
                             :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
                           />
@@ -149,7 +139,6 @@
                             name="Title"
                             placeholder="Title"
                             :options="Prefix"
-                            :value="Prefix.value"
                             validation="required"
                             :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
                           />
@@ -241,7 +230,6 @@
                             name="CompanyType"
                             placeholder="ประเภทกิจการ"
                             :options="Prefix"
-                            :value="Prefix.value"
                             validation="required"
                             :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
                           />
@@ -301,11 +289,7 @@
                             label="ประเภทกิจการ"
                             name="CompanyType"
                             placeholder="ประเภทกิจการ"
-                            :options="{
-                              company: 'บริษัทจำกัด',
-                              public: 'บริษัทจำกัด (มหาชน)',
-                              partnership: 'ห้างหุ้นส่วนจำกัด',
-                            }"
+                            :options="Prefix"
                             validation="required"
                             :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
                           />
@@ -384,8 +368,8 @@
                     <div class="row">
                       <ElementsFormAddress
                         :addr-province="addrProvince"
-                        v-model:addr-district.sync="addrDistrict"
-                        v-model:addr-sub-district.sync="addrSubDistrict"
+                        :addr-district="addrDistrict"
+                        :addr-sub-district="addrSubDistrict"
                         :addr-zip-code="addrZipCode"
                         @change-province="handlerChangeProvince"
                         @change-district="handlerChangeDistrict"
@@ -394,7 +378,6 @@
                     </div>
                   </section>
                 </div>
-              </FormKit>
             </div>
           </div>
         </div>
@@ -405,16 +388,18 @@
 <script setup lang="ts">
 import { SelectOption } from "~/shared/entities/select-option";
 
+
 const props = defineProps({
-  Prefix:Array<SelectOption>,
+  prefix:Array<SelectOption>,
   addrProvince: Array<SelectOption>,
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
   addrZipCode:String,
+  insureFullAddress:String,
 });
 //const emit = defineEmits(['changeCustomerType','changeCompanyType','changeProvince','changeDistrict','changeSubDistrict'])
-const emit = defineEmits(['changeCustomerType','changeProvince','changeDistrict','changeSubDistrict'])
-const InsuredTypeText:globalThis.Ref<string> = ref('')
+const emit = defineEmits(['changeCustomerType','changeProvince','changeDistrict','changeSubDistrict','changeInsureFullAddress'])
+const InsuredTypeText:globalThis.Ref<String> = ref('person')
 const Prefix:globalThis.Ref<SelectOption[]> = ref([])
 const addrProvince:globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict:globalThis.Ref<SelectOption[]> = ref([])
@@ -423,8 +408,8 @@ const addrZipCode=ref('')
 
 const values = reactive({})
 const onLoad = onMounted(()=>{
-  if(props.Prefix){
-    Prefix.value = props.Prefix
+  if(props.prefix){
+    Prefix.value = props.prefix
   }
   if(props.addrProvince){
     addrProvince.value = props.addrProvince
@@ -441,8 +426,9 @@ const onLoad = onMounted(()=>{
 })
 
 // handler function for emit
-const handlerChangeCustomerType = (e: string)=>{
+const handlerChangeCustomerType = (e: String)=>{
   if(e){
+
     emit('changeCustomerType',e)
   }
 }
@@ -462,7 +448,11 @@ const handlerChangeSubDistrict = (e: string)=>{
     emit('changeSubDistrict',e)
   }
 }
-
+const handlerChangeInsureFullAddress = (addr:string)=>{
+  if(addr){
+    emit('changeInsureFullAddress',addr)
+  }
+}
 // watching data
 watch(
   ()=>props.addrProvince,
@@ -498,19 +488,21 @@ watch(
   }
 )
 watch(
-  ()=>InsuredTypeText,
+  ()=>props.prefix,
   ()=>{
+    console.log(props.prefix)
+    if(props.prefix && props.prefix.length>0){
+      Prefix.value = props.prefix
+    }
+  }
+)
 
-    console.log(InsuredTypeText.value)
-    //handlerChangeCustomerType(InsuredTypeText.value)
-  }
-)
-watch(
-  ()=>values,
-  ()=>{
-    console.log(values)
-  }
-)
+// watching data to Radio Formkit
+watch(InsuredTypeText, async (newInsuredTypeText) => {
+  handlerChangeCustomerType(newInsuredTypeText)
+  console.log(newInsuredTypeText)
+});
+
 </script>
 <style scoped>
 .insured-classifier,

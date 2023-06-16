@@ -74,7 +74,14 @@
                     <h4>ที่อยู่จัดส่งใหม่</h4>
 
                     <div class="row">
-                      <ElementsFormNewAddress />
+                      <ElementsFormNewAddress 
+                      :addr-province="addrProvince"
+                        :addr-district="addrDistrict"
+                        :addr-sub-district="addrSubDistrict"
+                        :addr-zip-code="addrZipCode"
+                        @change-province="handlerChangeProvince"
+                        @change-district="handlerChangeDistrict"
+                        @change-sub-district="handlerChangeSubDistrict"/>
                     </div>
 
                     <button class="btn-primary btn-save">บันทึกข้อมูล</button>
@@ -89,7 +96,6 @@
 
     </div>
   </div>
-  <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
 </template>
 
 <style scoped>
@@ -105,6 +111,18 @@
 <script setup lang="ts">
 import { IInformation } from "~~/shared/entities/information-entity";
 import { IPackageResponse } from "~/shared/entities/packageList-entity";
+import { SelectOption } from "~/shared/entities/select-option";
+
+const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict'])
+
+const props = defineProps({
+  prefix:Array<SelectOption>,
+  addrProvince: Array<SelectOption>,
+  addrDistrict: Array<SelectOption>,
+  addrSubDistrict: Array<SelectOption>,
+  addrZipCode:String,
+  insureFullAddress:String,
+})
 
 const isLoading = ref(false);
 
@@ -122,6 +140,14 @@ var postalAddressPolicyText: globalThis.Ref<String> = ref("")
 var isInsured: globalThis.Ref<boolean> = ref(false)
 var isAddnew: globalThis.Ref<boolean> = ref(false)
 
+const prefix: globalThis.Ref<SelectOption[]> = ref([])
+const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
+const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
+const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
+const addrZipCode = ref('')
+const insureFullAddress: globalThis.Ref<String> = ref('')
+
+
 const onLoad = onMounted(async () => {
   // isLoading.value = true
   const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
@@ -129,11 +155,29 @@ const onLoad = onMounted(async () => {
   companyName.value = packages?.CompanyName
   paperBalance.value = packages?.PaperBalance ?? 0
   // isLoading.value = false
+
+    if(props.prefix){
+        prefix.value = props.prefix
+    }
+    if (props.addrProvince) {
+        addrProvince.value = props.addrProvince
+    }
+    if (props.addrDistrict) {
+        addrDistrict.value = props.addrDistrict
+    }
+    if (props.addrSubDistrict) {
+        addrSubDistrict.value = props.addrSubDistrict
+    }
+    if (props.addrZipCode) {
+        addrZipCode.value = props.addrZipCode
+    }
+    if(props.insureFullAddress)
+    {
+      insureFullAddress.value = props.insureFullAddress
+    }
+
 });
 
-watch(shippingPolicyText, async (newShippingPolicy) => {
-  await handleRadioShippingPolicyChange(newShippingPolicy);
-});
 
 const handleRadioShippingPolicyChange = async (event: String) => {
   switch (event) {
@@ -157,9 +201,6 @@ const handleRadioShippingPolicyChange = async (event: String) => {
   }
 }
 
-watch(postalAddressPolicyText, async (newAddressPolicy) => {
-  await handleRadioPostalAddressPolicyChange(newAddressPolicy);
-});
 
 const handleRadioPostalAddressPolicyChange = async (event: String) => {
   switch (event) {
@@ -174,4 +215,70 @@ const handleRadioPostalAddressPolicyChange = async (event: String) => {
   }
 }
 
+// handler function for emit
+const handlerChangeProvince = (e: string)=>{
+  if(e){
+    console.log(e)
+    emit('changeProvince',e)
+  }
+}
+const handlerChangeDistrict = (e: string)=>{
+  if(e){
+    emit('changeDistrict',e)
+  }
+}
+const handlerChangeSubDistrict = (e: string)=>{
+  if(e){
+    emit('changeSubDistrict',e)
+  }
+}
+
+//watching props pass data
+watch(
+    () => props.addrProvince,
+    () => {
+        if (props.addrProvince && props.addrProvince.length > 0) {
+            addrProvince.value = props.addrProvince
+        }
+    }
+)
+watch(
+    () => props.addrDistrict,
+    () => {
+        if (props.addrDistrict && props.addrDistrict.length > 0) {
+            addrDistrict.value = props.addrDistrict
+        }
+    }
+)
+watch(
+    () => props.addrSubDistrict,
+    () => {
+        if (props.addrSubDistrict && props.addrSubDistrict.length > 0) {
+            addrSubDistrict.value = props.addrSubDistrict
+        }
+    }
+)
+watch(
+    () => props.addrZipCode,
+    () => {
+        if (props.addrZipCode && props.addrZipCode.length > 0) {
+            addrZipCode.value = props.addrZipCode
+        }
+    }
+)
+watch(
+    () => props.prefix,
+    () => {
+        if (props.prefix && props.prefix.length > 0) {
+            prefix.value = props.prefix
+        }
+    }
+)
+watch(postalAddressPolicyText, async (newAddressPolicy) => {
+  await handleRadioPostalAddressPolicyChange(newAddressPolicy);
+});
+
+watch(shippingPolicyText, async (newShippingPolicy) => {
+  await handleRadioShippingPolicyChange(newShippingPolicy);
+});
 </script>

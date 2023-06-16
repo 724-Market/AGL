@@ -128,9 +128,44 @@ export default () => {
         return result
 
     }
+
+    const apiRepository = async<T>(url:string,params: any): Promise<IAPIResponse<T>> => {
+        const wrapper: WrapperResponse<T> = {
+            Status: "",
+        }
+        let result: IAPIResponse<T> =
+        {
+            apiStatus: "",
+            respErrorCode: "",
+            serverStatus: 0,
+            statusMessage: "",
+            statusMessageType: "",
+            apiResponse: wrapper
+        }
+
+        // check token expire
+        params.Token = await useUtility().getToken()
+        params.URL = url
+        const { data, pending, error, refresh } = await useFetch('/api/aglove', {
+            method: "POST",
+            body: params,
+            onResponse({ request, response }) {
+                // console.log('%c' + params.URL + '%crequest', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', request)
+                // console.log('%c' + params.URL + '%cresponse', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(1, 77, 103);padding:3px;border-radius:2px', response)
+                // console.log('%c' + params.URL + '%cresponse.status', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', response.status)
+
+                result = getResponse<T>(response, params)
+
+            }
+        })
+
+        return result
+
+    }
     return {
         get,
-        post
+        post,
+        apiRepository
     }
 
 }

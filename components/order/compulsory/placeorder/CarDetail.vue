@@ -81,27 +81,18 @@
 
             </div>
           </div>
-          <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+          
 </template>
 
 <script setup lang="ts">
 import { SelectOption } from "~/shared/entities/select-option";
-import { IInformation } from "~~/shared/entities/information-entity";
-import { IPackageResponse } from "~/shared/entities/packageList-entity";
-import { useStorePackageList } from "~/stores/order/storePackageList";
-import {
-  ICarColorResponse,
-  IProvinceResponse
-} from "~/shared/entities/placeorder-entity";
 
-import { storeToRefs } from "pinia";
+const props = defineProps({
+  carProvince: Array<SelectOption>,
+  carColor: Array<SelectOption>,
+});
 
-const isLoading = ref(false);
-const statusMessage = ref()
-const statusMessageType = ref()
 
-var info: IInformation;
-var packages: IPackageResponse;
 var SubCarModel: globalThis.Ref<String> = ref("")
 
 var carProvince: globalThis.Ref<SelectOption[]> = ref([])
@@ -110,43 +101,15 @@ var carColor: globalThis.Ref<SelectOption[]> = ref([])
 var carColorText: String = ""
 
 const onLoad = onMounted(async () => {
-  isLoading.value = true
+if(props.carProvince)
+{
+  carProvince.value = props.carProvince
+}
 
-  const jsonInfo = sessionStorage.getItem("useStoreInformation") || "";
-  info = JSON.parse(jsonInfo) as IInformation;
-  SubCarModel.value = info.SubCarModel
-
-  const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
-  packages = JSON.parse(jsonPackage) as IPackageResponse;
-
-  let carProvinceList: SelectOption[] = [];
-  const responseProvice = await useCallApi().post<IProvinceResponse[]>({
-    URL: "/Master/province/list",
-  });
-  responseProvice.apiResponse.Data?.forEach((obj: IProvinceResponse) => {
-    let province: SelectOption = {
-      label: obj.Name,
-      value: obj.ID,
-    };
-    carProvinceList.push(province);
-  });
-  carProvince.value = carProvinceList;
-
-  let carColorList: SelectOption[] = [];
-  const responseColor = await useCallApi().post<ICarColorResponse[]>({
-    URL: "/Master/carcolor/list",
-    CompanyCode: packages?.CompanyCode
-  });
-  responseColor.apiResponse.Data?.forEach((obj: ICarColorResponse) => {
-    let color: SelectOption = {
-      label: obj.Name,
-      value: obj.CarColorID,
-    };
-    carColorList.push(color);
-  });
-  carColor.value = carColorList;
-
-  isLoading.value = false
+if(props.carColor){
+  carColor.value = props.carColor
+}
+ 
 });
 
 </script>

@@ -2,7 +2,7 @@
   <NuxtLayout :name="layout">
     <!-- Content -->
     <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
-      #default="{ value }" v-model="values" :incomplete-message="false">
+      :incomplete-message="false">
       <div class="row">
         <div class="col-lg-8 col-xl-9">
           <div class="card">
@@ -21,50 +21,9 @@
               </div>
             </div>
           </div>
-
-          <ElementsModalAlert v-if="isError" :message="messageError" />
-          <div class="card" v-for="item in packageList" v-bind:key="item.RefCompanyID" v-else>
-            <div class="card-body">
-              <div class="package-item">
-                <figure class="brand">
-                  <img :src="getCompanyPath(item.PackageResult[0].CompanyImage)" alt="" />
-                </figure>
-
-                <div class="detail">
-                  <h4 class="topic">
-                    พ.ร.บ. สำหรับรถยนต์นั่ง{{ item.PackageResult[0].UseCarName }}
-                  </h4>
-                  <div class="tags">
-                    <span class="badge">{{ item.CompanyName }}</span>
-                    <span class="badge-bg-success" v-if="item.IsOnlineActive"><i
-                        class="fa-solid fa-bolt"></i>ได้กรมธรรม์ทันที</span>
-                    <span class="badge-bg-orange" v-else><i class="fa-solid fa-clock-four"></i>ได้กรมธรรม์ 1-3
-                      วันทำการ</span>
-                    <span class="badge-secondary"><i class="fa-regular fa-memo-circle-check"></i>พร้อมใบกำกับภาษี</span>
-                  </div>
-                  <div class="more">
-                    <a class="fa-icon" href="#" data-bs-toggle="modal"
-                      data-bs-target="#ModalCoverage">คลิกดูรายละเอียด</a>
-                  </div>
-                </div>
-
-                <div class="price">
-                  <span class="actual-price">{{
-                    getCurrency(item.PackageResult[0].PriceACT)
-                  }}</span>
-                  <span class="promotion">ค่าส่งเสริมการขาย
-                    {{ getCurrency(item.PackageResult[0].AgentComDiscount) }} บาท</span>
-                </div>
-
-                <div class="action">
-                  <a class="btn-primary" @click="getPackageItem(item)">
-                    เลือกแพ็กเกจนี้
-                  </a>
-                  <span v-show="item.CountOfPolicy > 0">ขายแล้ว {{ item.CountOfPolicy }} งาน</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <OrderCompulsoryPackagesList :is-loading="isLoading" :checklist="checklist" :is-error="isError"
+            :message-error="messageError" :package-list="packageList" :pages="paging" @change-checklist="handlerCheckList"
+            @change-select="handlerSelect" @change-page="handlerChangePage"></OrderCompulsoryPackagesList>
         </div>
 
         <!-- Sidebar -->
@@ -75,54 +34,9 @@
               <h3 class="card-title">รายการที่เลือก</h3>
             </div>
             <div class="card-body">
-
-              <div class="selected-item">
-                <figure class="brand">
-                  <i class="fa-duotone fa-car"></i>
-                </figure>
-
-                <div class="detail">
-                  <h4 class="topic">TOYOTA Yaris 1.2 Smart Auto 2019</h4>
-                  <div class="info">
-                    <p class="description">คุ้มครอง 345 วัน<span>04/05/2566–05/08/2567</span></p>
-                  </div>
-                </div>
-
-                <div class="meta">
-                  <div class="tags">
-                    <span class="badge"><i class="fa-solid fa-car-circle-bolt"></i>รถให้เช่า</span>
-                    <span class="badge-bg-danger"><i class="fa-solid fa-sparkles"></i>ป้ายแดง</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="selected-item">
-                <figure class="brand">
-                  <img src="https://724.co.th/image/logo_insurance_company/logo_TIP.png" alt="">
-                </figure>
-
-                <div class="detail">
-                  <h4 class="topic">พ.ร.บ. สำหรับรถยนต์นั่งส่วนบุคคล</h4>
-                  <div class="info">
-                    <span class="price">645.21</span>
-                    <p class="description">ค่าส่งเสริมการขาย 1,135.49 บาท</p>
-                  </div>
-                </div>
-
-                <div class="meta">
-                  <div class="tags">
-                    <span class="badge-bg-success"><i class="fa-solid fa-bolt"></i>ได้กรมธรรม์ทันที</span>
-                    <span class="badge-secondary"><i class="fa-regular fa-memo-circle-check"></i>พร้อมใบกำกับภาษี</span>
-                  </div>
-                </div>
-              </div>
-
-              <OrderCart v-if="packageSelect && packageSelect.CompanyName != ''" :is-online="packageSelect.IsOnlineActive"
-                :company-name="packageSelect.CompanyName"
-                :company-image="getCompanyPath(packageSelect.PackageResult[0].CompanyImage)"
-                :price="getCurrency(packageSelect.PackageResult[0].PriceACT)" :price-discount="getCurrency(packageSelect.PackageResult[0].PriceACTDiscount)
-                  " :car-name="packageSelect.PackageResult[0].UseCarName" />
-
+              <OrderCartCar v-if="InformationInfo" :car-detail="InformationInfo.CarDetail" :car-use="InformationInfo.CarUse" :car-label="''" :effective-date="InformationInfo.EffectiveDate" :expire-date="InformationInfo.ExpireDate" :insurance-day="InformationInfo.InsuranceDay"></OrderCartCar>
+              <!-- <OrderCartPackage></OrderCartPackage> -->
+              <OrderCartPackage v-if="packageSelect && packageSelect.CompanyName != ''" :package-select="packageSelect" />
             </div>
 
             <OrderChecklist :list="checklist" />
@@ -144,18 +58,24 @@
 <script setup lang="ts">
 // Define import
 import { IInformation } from "~~/shared/entities/information-entity";
-import { IPackageRequest, IPackageResponse } from "~~/shared/entities/packageList-entity";
+import { IChecklist } from "~/shared/entities/checklist-entity";
+import {
+  IPackageRequest,
+  IPackageResponse,
+  Paging,
+} from "~/shared/entities/packageList-entity";
 // Import store
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStorePackageList } from "~/stores/order/storePackageList";
+import { useStorePackage } from "~/stores/order/storePackage";
+import { useStoreInformation } from "~/stores/order/storeInformation";
 
 // using pinia
 import { storeToRefs } from "pinia";
-import { IChecklist } from "~~/shared/entities/checklist-entity";
 
 // Define Variables
 // Loading state after form submiting
-const isLoading = ref(false);
+const isLoading = ref(true);
 
 // Submitted state after submit
 const submitted = ref(false);
@@ -167,99 +87,136 @@ const statusMessageType = ref();
 let carDetail = ref("");
 const isError = ref(false);
 const messageError = ref("");
-const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
-const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
-const isSelect: globalThis.Ref<Boolean> = ref(false);
 
+const paging: globalThis.Ref<Paging> = ref({
+  Length: 5,
+  Page: 1,
+  TotalRecord: 0,
+  RedirectUrl: "/order/compulsory/packages",
+});
+const isSelect: globalThis.Ref<Boolean> = ref(false);
 const router = useRouter();
+const route = useRoute();
 const values = reactive({});
 const checklist: globalThis.Ref<IChecklist[]> = ref([
   {
-    id: '1',
-    className: '',
-    desc: 'เลือกแพ็กเกจ'
+    id: "1",
+    className: "",
+    desc: "เลือกแพ็กเกจ",
   },
-])
+]);
+const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
+const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
+//define store
+const storeAuth = useStoreUserAuth();
+// define getter in store
+const { AuthenInfo } = storeToRefs(storeAuth);
 
+//define store
+const storeInfo = useStoreInformation();
+// define getter in store
+//const {InformationInfo} = storeToRefs(storeInfo);
 // init event
 const onInit = async () => {
-  //define store
-  const storeAuth = useStoreUserAuth();
-  // define getter in store
-  const { AuthenInfo } = storeToRefs(storeAuth);
-
-  isSelect.value = false;
-
+  isLoading.value = true
+  // define parameter page
+  const page = useUtility().getPaging(paging.value);
+  paging.value = page;
+  console.log(page);
+  //console.log(InformationInfo.value)
   // check login
   if (AuthenInfo.value) {
-    const info = JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as
-      | IInformation
-      | undefined;
-    // check information package
-    if (info) {
-      // Get Package List
-      const store = useStorePackageList();
-      // set car detail
-      isError.value = false;
-      messageError.value = "";
-      carDetail.value = info.CarDetail;
-      const request: IPackageRequest = {
-        AgentCode: AuthenInfo.value.userName,
-        CarBrandID: info.CarBrand,
-        CarCategoryID: info.CarSize,
-        CarModelID: info.CarModel,
-        CarSalesYear: info.CarYear,
-        CarTypeCode: info.CarType,
-        EffectiveDate: info.EffectiveDate,
-        EffectiveType: info.EffectiveType,
-        ExpireDate: info.ExpireDate.split("/").reverse().join("-"),
-        SubCarModelID: info.SubCarModel.split("|")[0],
-        UseCarCode: info.CarUse,
-      };
-      const data = await store.getPackageList(request);
+    await showPackageList();
+  } else {
+    isLoading.value = false;
 
-      if (data && data.Data) {
-        packageList.value = data.Data;
-      } else if (data.ErrorMessage && data.ErrorMessage != "") {
-        console.log(data.ErrorMessage)
-        isError.value = true;
-        messageError.value = data.ErrorMessage ? data.ErrorMessage : "";
+    router.push("/login");
+  }
+};
+const showPackageList = async () => {
+  isLoading.value = true
+  if (AuthenInfo.value) {
+    const json = sessionStorage.getItem("useStoreInformation") || "";
+    if (json != "") {
+      const info = JSON.parse(json) as IInformation | undefined;
+      // check information package
+      if (info) {
+        // Get Package List
+        const store = useStorePackageList();
+        // set car detail
+        isError.value = false;
+        messageError.value = "";
+        carDetail.value = info.CarDetail;
+
+        const request: IPackageRequest = {
+          AgentCode: AuthenInfo.value.userName,
+          CarBrandID: info.CarBrand,
+          CarCategoryID: info.CarSize,
+          CarModelID: info.CarModel,
+          CarSalesYear: info.CarYear,
+          CarTypeCode: info.CarType,
+          EffectiveDate: info.EffectiveDate,
+          EffectiveType: info.EffectiveType,
+          ExpireDate: info.ExpireDate.split("/").reverse().join("-"),
+          SubCarModelID: info.SubCarModel.split("|")[0],
+          UseCarCode: info.CarUse,
+          Paging: paging.value,
+        };
+        console.log(request);
+        const data = await store.getPackageList(request);
+
+
+        if (data && data.Data) {
+          // set default value
+          const packages = useDefaulValue().setDefaultPackageListValue(data.Data)
+          isLoading.value = false;
+          packageList.value = packages;
+          // define parameter page
+          if (data.Pagination) {
+            const page = useUtility().getPaging(data.Pagination.Paging);
+            paging.value = page;
+          }
+        } else if (data.ErrorMessage && data.ErrorMessage != "") {
+          isLoading.value = false;
+          console.log(data.ErrorMessage);
+          isError.value = true;
+          messageError.value = data.ErrorMessage ? data.ErrorMessage : "";
+        }
+      } else {
+        isLoading.value = false;
+        router.push("/order/compulsory/information");
       }
     } else {
+      isLoading.value = false;
       router.push("/order/compulsory/information");
     }
-  } else {
-    router.push("/login");
+
+    //isLoading.value = false
   }
 };
 // onmounted loading page
 const onLoad = onMounted(async () => {
   await onInit();
 });
-
-// company path function
-const getCompanyPath = (CompanyImage: string): string => {
-  const image = useUtility().getCompanyImage() + CompanyImage.replace("LOGO", "logo");
-  console.log(image);
-  return image;
+const handlerCheckList = (_checklist: IChecklist[]) => {
+  checklist.value = _checklist;
 };
-const getCurrency = (currency: number): string => {
-  const formatCurrency = useUtility().getCurrency(currency);
-  console.log(formatCurrency);
-  return formatCurrency;
+const handlerSelect = (select: Boolean, item: IPackageResponse) => {
+  console.log(select, item)
+  isSelect.value = select;
+  packageSelect.value = item
 };
-const getPackageItem = (item: IPackageResponse) => {
-  isSelect.value = true;
-  packageSelect.value = item;
-
-  if (!packageSelect.value) {
-    checklist.value[0].className = ""
-  }
-  else {
-    checklist.value[0].className = "current"
+const handlerChangePage = async (page: number, lengthPage: number) => {
+  console.log(page, lengthPage)
+  if (page != -1) {
+    const _page = useUtility().getPaging(paging.value);
+    _page.Length = lengthPage
+    _page.Page = page
+    paging.value = _page
+    await showPackageList();
   }
 
-};
+}
 // Submit form event
 const submitOrder = async (formData: any) => {
   console.log(
@@ -270,21 +227,18 @@ const submitOrder = async (formData: any) => {
     formData
   );
 
-  const response = await useCallApi().get({
-    URL: "/Agent/user/check",
-    AgentCode: formData.username,
-    IDCard: formData.idcard,
-  });
+  if (packageSelect.value) {
+    //define store
+    const storePackage = useStorePackage();
+    const data = storePackage.setPackage(packageSelect.value);
 
-  statusMessage.value = response.statusMessage;
-  statusMessageType.value = response.statusMessageType;
-  submitted.value = false; // Form submitted status
+    submitted.value = false; // Form submitted status
 
-  const router = useRouter();
-  router.push("/order/compulsory/placeorder");
+    router.push("/order/compulsory/placeorder");
+  }
+
 };
 
-// Define layout
 const layout = "monito";
 
 // Define meta seo

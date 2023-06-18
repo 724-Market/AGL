@@ -2,7 +2,12 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			BaseUrl: process.env.BASE_API || "http://localhost:3000",
-			CompanyImage: process.env.COMPANY_IMAGE || ""
+			CompanyImage: process.env.COMPANY_IMAGE || "",
+			FixDefaultPackageTaxInclude:process.env.FIX_DEFAULT_PACKAGE_TAXINCLUDE || "0",
+			FixValuePackageTaxInclude:process.env.FIX_VALUE_PACKAGE_TAXINCLUDE || "0",
+			FixDefaultPackagePaperBalance:process.env.FIX_DEFAULT_PACKAGE_PAPERBALANCE || "0",
+			FixValuePackagePaperBalance:process.env.FIX_VALUE_PACKAGE_PAPERBALANCE || "0",
+
 		}
 
 	},

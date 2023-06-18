@@ -9,12 +9,7 @@
             :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="false" />
     </div>
     <div class="col-sm-4 col-lg-3">
-        <FormKit type="select" label="คำนำหน้าผู้รับ" name="Title" placeholder="คำนำหน้า" :options="{
-            mr: 'นาย',
-            mrs: 'นาง',
-            ms: 'นางสาว',
-            others: 'ไม่ระบุ',
-        }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+        <FormKit type="select" label="คำนำหน้าผู้รับ" name="Title" placeholder="คำนำหน้า" :options="prefix" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
     </div>
     <div class="col-sm-8 col-lg-4">
         <FormKit type="text" label="ชื่อผู้รับ" name="FirstName" placeholder="ชื่อ" validation="required"
@@ -25,5 +20,104 @@
             :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="false" />
     </div>
 
-    <ElementsFormAddress />
+    <ElementsFormAddress :addr-province="addrProvince" :addr-district="addrDistrict" :addr-sub-district="addrSubDistrict"
+        :addr-zip-code="addrZipCode" @change-province="handlerChangeProvince" @change-district="handlerChangeDistrict"
+        @change-sub-district="handlerChangeSubDistrict" />
 </template>
+
+<script setup lang="ts">
+import { SelectOption } from "~/shared/entities/select-option";
+
+const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict'])
+
+const props = defineProps({
+    prefix:Array<SelectOption>,
+    addrProvince: Array<SelectOption>,
+    addrDistrict: Array<SelectOption>,
+    addrSubDistrict: Array<SelectOption>,
+    addrZipCode: String,
+})
+
+const prefix: globalThis.Ref<SelectOption[]> = ref([])
+const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
+const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
+const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
+const addrZipCode = ref('')
+
+const onLoad = onMounted(() => {
+    if(props.prefix){
+        prefix.value = props.prefix
+    }
+    if (props.addrProvince) {
+        addrProvince.value = props.addrProvince
+    }
+    if (props.addrDistrict) {
+        addrDistrict.value = props.addrDistrict
+    }
+    if (props.addrSubDistrict) {
+        addrSubDistrict.value = props.addrSubDistrict
+    }
+    if (props.addrZipCode) {
+        addrZipCode.value = props.addrZipCode
+    }
+})
+//watching props pass data
+watch(
+    () => props.addrProvince,
+    () => {
+        if (props.addrProvince && props.addrProvince.length > 0) {
+            addrProvince.value = props.addrProvince
+        }
+    }
+)
+watch(
+    () => props.addrDistrict,
+    () => {
+        if (props.addrDistrict && props.addrDistrict.length > 0) {
+            addrDistrict.value = props.addrDistrict
+        }
+    }
+)
+watch(
+    () => props.addrSubDistrict,
+    () => {
+        if (props.addrSubDistrict && props.addrSubDistrict.length > 0) {
+            addrSubDistrict.value = props.addrSubDistrict
+        }
+    }
+)
+watch(
+    () => props.addrZipCode,
+    () => {
+        if (props.addrZipCode && props.addrZipCode.length > 0) {
+            addrZipCode.value = props.addrZipCode
+        }
+    }
+)
+watch(
+    () => props.prefix,
+    () => {
+        if (props.prefix && props.prefix.length > 0) {
+            prefix.value = props.prefix
+        }
+    }
+)
+// handler function for emit
+const handlerChangeProvince = (e: string) => {
+
+    if (e) {
+        emit('changeProvince', e)
+
+    }
+}
+const handlerChangeDistrict = (e: string) => {
+    if (e) {
+        emit('changeDistrict', e)
+    }
+}
+const handlerChangeSubDistrict = (e: string) => {
+    if (e) {
+        emit('changeSubDistrict', e)
+    }
+}
+</script>

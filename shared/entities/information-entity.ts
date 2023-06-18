@@ -12,6 +12,7 @@ export interface IInformation {
     EffectiveDate: string
     ExpireDate: string
     CarDetail: string
+    InsuranceDay?:number
 }
 
 export interface IUseCarResponse {

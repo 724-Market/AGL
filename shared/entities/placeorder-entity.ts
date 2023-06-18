@@ -98,7 +98,8 @@ export interface OrderRequest {
     Room: string
     Branch: string
     Alley: string
-    Road: string
+    Road: string,
+    ZipCode:string
   }
   
   export interface DeliveryAddress {

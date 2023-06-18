@@ -1,21 +1,24 @@
 <template>
   <div v-if="ObjectAddress">
     <div class="col-6">
-      <FormKit type="text" label="บ้านเลขที่" name="AddressHouseNumber" placeholder="บ้านเลขที่" validation="required" v-model="ObjectAddress.No"
-        :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="false" />
+      <FormKit type="text" label="บ้านเลขที่" name="AddressHouseNumber" placeholder="บ้านเลขที่" validation="required"
+        v-model="ObjectAddress.No" :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="false" />
     </div>
     <div class="col-6">
-      <FormKit type="text" label="หมู่ที่" name="AddressMoo" placeholder="หมู่ที่" autocomplete="false" v-model="ObjectAddress.Moo"/>
+      <FormKit type="text" label="หมู่ที่" name="AddressMoo" placeholder="หมู่ที่" autocomplete="false"
+        v-model="ObjectAddress.Moo" />
     </div>
     <div class="col-xs-12 col-md-6">
-      <FormKit type="text" label="หมู่บ้าน/อาคาร" name="AddressVillage" placeholder="หมู่บ้าน/อาคาร" v-model="ObjectAddress.Building"
-        autocomplete="false" />
+      <FormKit type="text" label="หมู่บ้าน/อาคาร" name="AddressVillage" placeholder="หมู่บ้าน/อาคาร"
+        v-model="ObjectAddress.Building" autocomplete="false" />
     </div>
     <div class="col-6">
-      <FormKit type="text" label="ซอย/ตรอก/แยก" name="AddressSoi" placeholder="ซอย/ตรอก/แยก" autocomplete="false" v-model="ObjectAddress.Soi"/>
+      <FormKit type="text" label="ซอย/ตรอก/แยก" name="AddressSoi" placeholder="ซอย/ตรอก/แยก" autocomplete="false"
+        v-model="ObjectAddress.Soi" />
     </div>
     <div class="col-6">
-      <FormKit type="text" label="ถนน" name="AddressRoad" placeholder="ถนน" autocomplete="false" v-model="ObjectAddress.Road" />
+      <FormKit type="text" label="ถนน" name="AddressRoad" placeholder="ถนน" autocomplete="false"
+        v-model="ObjectAddress.Road" />
     </div>
     <div class="col-6">
       <FormKit type="text" label="รหัสไปรษณีย์" readonly name="AddressPostalCode" v-model="addrZipCode"
@@ -24,21 +27,22 @@
     </div>
     <div class="col-6">
       <FormKit type="autocomplete" label="จังหวัด" name="AddressProvince" placeholder="จังหวัด"
-        @input-raw="handlerChangeProvince" :options="addrProvince" validation="required" v-model="ObjectAddress.ProvinceID"
-        :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+        @input-raw="handlerChangeProvince" :options="addrProvince" validation="required"
+        v-model="ObjectAddress.ProvinceID" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
     </div>
     <div class="col-6">
       <FormKit type="autocomplete" label="เขต/อำเภอ" name="AddressDistrict" placeholder="เขต/อำเภอ"
-        :options="addrDistrict" @input-raw="handlerChangeDistrict" validation="required" v-model="ObjectAddress.DistrictID"
-        :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+        :options="addrDistrict" @input-raw="handlerChangeDistrict" validation="required"
+        v-model="ObjectAddress.DistrictID" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
     </div>
     <div class="col-6">
-      <FormKit type="autocomplete" label="แขวง/ตำบล" name="AddressSubdistrict" placeholder="แขวง/ตำบล" v-model="ObjectAddress.SubDistrictID"
-        :options="addrSubDistrict" @input-raw="handlerChangeSubDistrict" validation="required"
-        :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+      <FormKit type="autocomplete" label="แขวง/ตำบล" name="AddressSubdistrict" placeholder="แขวง/ตำบล"
+        v-model="ObjectAddress.SubDistrictID" :options="addrSubDistrict" @input-raw="handlerChangeSubDistrict"
+        validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
     </div>
     <div class="col-xs-12 col-md-6">
-      <FormKit type="text" label="ระบุที่อยู่เอง กรณีไม่มีข้อมูลให้เลือก" name="AddressCustom" autocomplete="false" v-model="ObjectAddress.AddressText"/>
+      <FormKit type="text" label="ระบุที่อยู่เอง กรณีไม่มีข้อมูลให้เลือก" name="AddressCustom" autocomplete="false"
+        v-model="ObjectAddress.AddressText" />
     </div>
   </div>
 </template>
@@ -46,7 +50,7 @@
 import { DefaultAddress } from "~/shared/entities/placeorder-entity";
 import { SelectOption } from "~/shared/entities/select-option";
 
-const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict'])
+const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict', 'changeFullAddress'])
 
 const props = defineProps({
   addrProvince: Array<SelectOption>,
@@ -61,7 +65,7 @@ const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
 
-const ObjectAddress: globalThis.Ref<DefaultAddress | null> = ref(null)
+const ObjectAddress: globalThis.Ref<DefaultAddress | undefined> = ref()
 
 const onLoad = onMounted(() => {
   const _defaultAddress: DefaultAddress = {
@@ -80,7 +84,7 @@ const onLoad = onMounted(() => {
     Moo: '',
     Name: '',
     No: '',
-    Soi:'',
+    Soi: '',
     PhoneNumber: '',
     Place: '',
     ProvinceID: '',
@@ -90,7 +94,8 @@ const onLoad = onMounted(() => {
     Room: '',
     SubDistrictID: '',
     TaxID: '',
-    Type: ''
+    Type: '',
+    ZipCode: '',
   }
   ObjectAddress.value = _defaultAddress
   if (props.addrProvince) {
@@ -139,13 +144,16 @@ watch(
     }
   }
 )
+
+watch(ObjectAddress, (newObjectAddressw) => {
+  if (newObjectAddressw) {
+    handlerChangeFullAddress()
+
+  }
+})
 // handler function for emit
 const handlerChangeProvince = (e: string) => {
   if (e) {
-    const filter = addrProvince.value.filter(x => x.value == e)
-    if (filter.length > 0) {
-
-    }
 
     emit('changeProvince', e)
 
@@ -160,5 +168,59 @@ const handlerChangeSubDistrict = (e: string) => {
   if (e) {
     emit('changeSubDistrict', e)
   }
+}
+const handlerChangeFullAddress = () => {
+  let fullAddress = "";
+  if (ObjectAddress && ObjectAddress.value) {
+    if (ObjectAddress.value.AddressID.length > 0) {
+      fullAddress += ObjectAddress.value.AddressID + " ";
+    }
+    if (ObjectAddress.value.Moo.length > 0) {
+      fullAddress += "หมู่ที่ " + ObjectAddress.value.Moo + " ";
+    }
+    if (ObjectAddress.value.Building.length > 0) {
+      fullAddress += ObjectAddress.value.Building + " "
+    }
+    if (ObjectAddress.value.Soi.length > 0) {
+      fullAddress += "ซอย " + ObjectAddress.value.Soi + " "
+    }
+    if (ObjectAddress.value.Road.length > 0) {
+      fullAddress += "ถนน " + ObjectAddress.value.Road + " "
+    }
+    if (ObjectAddress.value.SubDistrictID.length > 0) {
+      const id = ObjectAddress.value.SubDistrictID
+      const filter = addrSubDistrict.value.filter(x => x.value == id)
+      if (filter.length > 0) {
+        fullAddress += filter[0].label + " "
+      }
+    }
+    if (ObjectAddress.value.DistrictID.length > 0) {
+      const id = ObjectAddress.value.DistrictID
+      const filter = addrDistrict.value.filter(x => x.value == id)
+      if (filter.length > 0) {
+        fullAddress += filter[0].label + " "
+      }
+    }
+    if (ObjectAddress.value.ProvinceID.length > 0) {
+      const id = ObjectAddress.value.ProvinceID
+      const filter = addrProvince.value.filter(x => x.value == id)
+      if (filter.length > 0) {
+        fullAddress += filter[0].label + " "
+      }
+    }
+    if (addrZipCode.value.length > 0) {
+      ObjectAddress.value.ZipCode = addrZipCode.value
+      fullAddress += "รหัสไปรษณีย์ " + addrZipCode.value + " "
+    }
+    if (ObjectAddress.value.AddressID.length > 0 &&
+      ObjectAddress.value.SubDistrictID.length > 0 &&
+      ObjectAddress.value.DistrictID.length > 0 &&
+      ObjectAddress.value.ProvinceID.length > 0 &&
+      ObjectAddress.value.ZipCode.length > 0) {
+      emit('changeFullAddress', fullAddress, ObjectAddress.value)
+    }
+  }
+
+
 }
 </script>

@@ -14,6 +14,7 @@
         <div class="col-lg-8 col-xl-9">
           <!-- # # # # # # # # # # # # # # # # # # # # # รายละเอียดรถ # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderCarDetail
+            @check-cardetail="handleCheckCarDetail"
             :car-color="carColor"
             :car-province="carProvince"
             :info="infomation"
@@ -361,6 +362,14 @@ const handlerChangeSubDistrict = async (e: string) => {
 const hnadlerChangeInsureFullAddress = async (addr:string)=>{
   if(addr){
 
+  }
+}
+const handleCheckCarDetail = async (e: boolean) => {
+  if (e) {
+    checklist.value[0].className = 'current'
+  }
+  else {
+    checklist.value[0].className = ''
   }
 }
 // Define layout

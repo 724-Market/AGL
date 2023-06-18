@@ -1,5 +1,5 @@
 <template>
-  <div v-if="ObjectAddress">
+  <div v-if="ObjectAddress" class="row">
     <div class="col-6">
       <FormKit type="text" label="บ้านเลขที่" name="AddressHouseNumber" placeholder="บ้านเลขที่" validation="required"
         v-model="ObjectAddress.No" :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="false" />

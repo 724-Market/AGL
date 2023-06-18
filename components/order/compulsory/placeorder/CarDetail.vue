@@ -90,6 +90,8 @@
 import { SelectOption } from "~/shared/entities/select-option";
 import { IInformation } from "~~/shared/entities/information-entity";
 
+const emit = defineEmits(['checkCarDetail'])
+
 const props = defineProps({
   carProvince: Array<SelectOption>,
   carColor: Array<SelectOption>,
@@ -124,13 +126,14 @@ if(props.info){
 }
 });
 
-const checkCarDetail = async () => {
+const handleCheckCarDetail = async () => {
   if (carLicenseText != '' && carProvinceText != '' && carColorText != '' && carColorText != '') {
     isCheck.value = true
   }
   else {
     isCheck.value = false
   }
+  emit('checkCarDetail', isCheck.value)
 }
 
 watch(

@@ -147,8 +147,6 @@ const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
 const insureFullAddress: globalThis.Ref<String> = ref('')
 
-const insureFullOtherAddress: globalThis.Ref<String> = ref('')
-
 const onLoad = onMounted(async () => {
   const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
   packages = JSON.parse(jsonPackage) as IPackageResponse;

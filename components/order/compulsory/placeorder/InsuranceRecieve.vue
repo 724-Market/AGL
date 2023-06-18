@@ -81,7 +81,8 @@
                         :addr-zip-code="addrZipCode"
                         @change-province="handlerChangeProvince"
                         @change-district="handlerChangeDistrict"
-                        @change-sub-district="handlerChangeSubDistrict"/>
+                        @change-sub-district="handlerChangeSubDistrict"
+                        @change-full-address="handlerChangeFullAddress"/>
                     </div>
 
                     <button class="btn-primary btn-save">บันทึกข้อมูล</button>
@@ -112,6 +113,7 @@
 import { IInformation } from "~~/shared/entities/information-entity";
 import { IPackageResponse } from "~/shared/entities/packageList-entity";
 import { SelectOption } from "~/shared/entities/select-option";
+import { DefaultAddress } from "~/shared/entities/placeorder-entity";
 
 const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict'])
 
@@ -227,6 +229,13 @@ const handlerChangeDistrict = (e: string)=>{
 const handlerChangeSubDistrict = (e: string)=>{
   if(e){
     emit('changeSubDistrict',e)
+  }
+}
+const handlerChangeFullAddress = (addr:string,ObjectAddress:DefaultAddress)=>{
+  if(addr && ObjectAddress){
+    //TODO implement coding new address
+    console.log(addr,ObjectAddress)
+    //emit('changeFullAddress',addr,ObjectAddress)
   }
 }
 

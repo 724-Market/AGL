@@ -26,16 +26,17 @@
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrict"
             @change-customer-type="handlerChangeCustomerType"
+            @change-full-address="handlerChangeFullAddress"
             :prefix="prefix"
             :addr-province="addrProvince"
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
             :addr-zip-code="addrZipCode"
-            :insure-full-address="insureFullAddress"
           ></OrderCompulsoryPlaceorderInsureDetail>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # วิธีการรับกรมธรรม์ # # # # # # # # # # # # # # # # # # # # #-->
-          <OrderCompulsoryPlaceorderInsuranceRecieve @change-province="handlerChangeProvince"
+          <OrderCompulsoryPlaceorderInsuranceRecieve
+            @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrict"
             :insure-full-address="insureFullAddress"
@@ -43,10 +44,21 @@
             :addr-province="addrProvince"
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
-            :addr-zip-code="addrZipCode"></OrderCompulsoryPlaceorderInsuranceRecieve>
+            :addr-zip-code="addrZipCode"
+          ></OrderCompulsoryPlaceorderInsuranceRecieve>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ใบกำกับภาษี # # # # # # # # # # # # # # # # # # # # #-->
-          <OrderCompulsoryPlaceorderTaxInvoice></OrderCompulsoryPlaceorderTaxInvoice>
+          <OrderCompulsoryPlaceorderTaxInvoice
+          @change-province="handlerChangeProvince"
+            @change-district="handlerChangeDistrict"
+            @change-sub-district="handlerChangeSubDistrict"
+            :insure-full-address="insureFullAddress"
+            :prefix="prefix"
+            :addr-province="addrProvince"
+            :addr-district="addrDistrict"
+            :addr-sub-district="addrSubDistrict"
+            :addr-zip-code="addrZipCode"
+          ></OrderCompulsoryPlaceorderTaxInvoice>
         </div>
 
         <!-- # # # # # # # # # # # # # # # # # # # # # Right Slide Bar # # # # # # # # # # # # # # # # # # # # #-->
@@ -108,6 +120,7 @@ import {
 import { SelectOption } from "~/shared/entities/select-option";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStorePackage } from "~/stores/order/storePackage";
+import { DefaultAddress } from "~/shared/entities/placeorder-entity";
 
 // Define Variables
 // Loading state after form submiting
@@ -131,8 +144,9 @@ const addrDistrict: globalThis.Ref<SelectOption[]> = ref([]);
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([]);
 const addrZipCode = ref("");
 const delivery: globalThis.Ref<SelectOption[]> = ref([]);
-const insureFullAddress:globalThis.Ref<string> = ref('');
+const insureFullAddress: globalThis.Ref<string> = ref("");
 const isSelect: globalThis.Ref<Boolean> = ref(false);
+const defaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref();
 
 let values = reactive({});
 
@@ -179,7 +193,7 @@ const router = useRouter();
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
     const jsonInfo = sessionStorage.getItem("useStoreInformation") || "";
-    if (jsonInfo != ""){
+    if (jsonInfo != "") {
       infomation.value = JSON.parse(jsonInfo) as IInformation;
     }
     if (PackageInfo.value && InformationInfo.value) {
@@ -202,7 +216,7 @@ const submitOrder = async (formData: any) => {
   await new Promise((r) => setTimeout(r, 1000));
 };
 // handle loading api & set refs
-const loadPrefix = async (isPerson:boolean) => {
+const loadPrefix = async (isPerson: boolean) => {
   const req: PrefixReq = {
     IsPerson: isPerson,
   };
@@ -223,7 +237,6 @@ const loadPrefix = async (isPerson:boolean) => {
   }
 };
 const loadProvince = async () => {
-  
   const response = await useRepository().master.province();
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if (response.apiResponse.Data) {
@@ -288,7 +301,7 @@ const loadZipCode = async (subDistId: string) => {
     addrZipCode.value = filter[0].option ?? "";
   }
 };
-const loadDelivery = async()=>{
+const loadDelivery = async () => {
   const response = await useRepository().delivery.channel();
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if (response.apiResponse.Data) {
@@ -296,7 +309,7 @@ const loadDelivery = async()=>{
         const options: SelectOption = {
           label: x.Name,
           value: x.ID,
-          option:x.Cost.toString()
+          option: x.Cost.toString(),
         };
         return options;
       });
@@ -305,7 +318,7 @@ const loadDelivery = async()=>{
     }
   } else {
   }
-}
+};
 const loadCarColor = async () => {
   if (PackageInfo.value) {
     let carColorList: SelectOption[] = [];
@@ -326,21 +339,21 @@ const loadCarColor = async () => {
 };
 
 // handler function for emit
-const handlerChangeCustomerType = async (e: string)=>{
+const handlerChangeCustomerType = async (e: string) => {
   console.log("handlerChangeCustomerType", e);
-  if(e){
-    isLoading.value = true
-    await loadPrefix(e=="person")
-    console.log(prefix)
-    isLoading.value = false
+  if (e) {
+    isLoading.value = true;
+    await loadPrefix(e == "person");
+    console.log(prefix);
+    isLoading.value = false;
   }
-}
+};
 const handlerChangeProvince = async (e: string) => {
   console.log("handlerChangeProvince", e);
   if (e) {
     isLoading.value = true;
     await loadDistrict(e);
-    console.log(addrDistrict.value)
+    console.log(addrDistrict.value);
     isLoading.value = false;
   }
 };
@@ -348,7 +361,7 @@ const handlerChangeDistrict = async (e: string) => {
   if (e) {
     isLoading.value = true;
     await loadSubDistrict(e);
-    
+
     isLoading.value = false;
   }
 };
@@ -359,9 +372,13 @@ const handlerChangeSubDistrict = async (e: string) => {
     isLoading.value = false;
   }
 };
-const hnadlerChangeInsureFullAddress = async (addr:string)=>{
+const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) => {
+  if(ObjectAddress){
+    defaultAddress.value = ObjectAddress
+   
+  }
   if(addr){
-
+    insureFullAddress.value = addr
   }
 }
 const handleCheckCarDetail = async (e: boolean) => {

@@ -396,8 +396,7 @@ const props = defineProps({
   addrProvince: Array<SelectOption>,
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
-  addrZipCode:String,
-  insureFullAddress:String,
+  addrZipCode:String
 });
 //const emit = defineEmits(['changeCustomerType','changeCompanyType','changeProvince','changeDistrict','changeSubDistrict'])
 const emit = defineEmits(['changeCustomerType','changeProvince','changeDistrict','changeSubDistrict','changeFullAddress'])

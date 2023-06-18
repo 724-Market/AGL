@@ -374,6 +374,7 @@
                         @change-province="handlerChangeProvince"
                         @change-district="handlerChangeDistrict"
                         @change-sub-district="handlerChangeSubDistrict"
+                        @change-full-address="handlerChangeFullAddress"
                       />
                     </div>
                   </section>
@@ -386,6 +387,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { DefaultAddress } from "~/shared/entities/placeorder-entity";
 import { SelectOption } from "~/shared/entities/select-option";
 
 
@@ -398,7 +400,7 @@ const props = defineProps({
   insureFullAddress:String,
 });
 //const emit = defineEmits(['changeCustomerType','changeCompanyType','changeProvince','changeDistrict','changeSubDistrict'])
-const emit = defineEmits(['changeCustomerType','changeProvince','changeDistrict','changeSubDistrict','changeInsureFullAddress'])
+const emit = defineEmits(['changeCustomerType','changeProvince','changeDistrict','changeSubDistrict','changeFullAddress'])
 const InsuredTypeText:globalThis.Ref<String> = ref('person')
 const Prefix:globalThis.Ref<SelectOption[]> = ref([])
 const addrProvince:globalThis.Ref<SelectOption[]> = ref([])
@@ -448,9 +450,9 @@ const handlerChangeSubDistrict = (e: string)=>{
     emit('changeSubDistrict',e)
   }
 }
-const handlerChangeInsureFullAddress = (addr:string)=>{
-  if(addr){
-    emit('changeInsureFullAddress',addr)
+const handlerChangeFullAddress = (addr:string,ObjectAddress:DefaultAddress)=>{
+  if(addr && ObjectAddress){
+    emit('changeFullAddress',addr,ObjectAddress)
   }
 }
 // watching data

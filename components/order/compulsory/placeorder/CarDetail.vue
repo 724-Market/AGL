@@ -18,6 +18,7 @@
                         <div class="row">
                           <div class="col">
                             <FormKit type="text" label="ทะเบียนรถ" id="CarLicense" name="CarLicense" placeholder="เลขป้ายทะเบียนรถ"
+                              v-model="carLicenseText"
                               :validation="[['required'],
                                             ['length', 6, 7]]"
                               :validation-messages="{ required: 'กรุณาใส่ข้อมูล', length: 'ทะเบียนรถควรมีอย่างน้อย 6 แต่ไม่เกิน 7 ตัว' }"
@@ -48,6 +49,7 @@
                           </div>
                           <div class="col-sm-8 col-lg-5">
                             <FormKit type="text" label="เลขตัวถัง" name="CarBodyNumber" placeholder="ตัวอย่าง: 1FTLP62W4Axxxxxx" 
+                              v-model="carBodyNumberText"
                               :validation="[['required'],
                                             ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).*$/],
                                             ['length', 17]]"
@@ -86,19 +88,26 @@
 
 <script setup lang="ts">
 import { SelectOption } from "~/shared/entities/select-option";
+import { IInformation } from "~~/shared/entities/information-entity";
 
 const props = defineProps({
   carProvince: Array<SelectOption>,
   carColor: Array<SelectOption>,
+  info: {
+    type: Object as () => IInformation,
+  },
 });
 
-
+var isCheck: globalThis.Ref<Boolean> = ref(false)
 var SubCarModel: globalThis.Ref<String> = ref("")
 
-var carProvince: globalThis.Ref<SelectOption[]> = ref([])
+var carLicenseText: String = ""
+const carProvince: globalThis.Ref<SelectOption[]> = ref([])
 var carProvinceText: String = ""
-var carColor: globalThis.Ref<SelectOption[]> = ref([])
+const carColor: globalThis.Ref<SelectOption[]> = ref([])
 var carColorText: String = ""
+var carBodyNumberText: String = ""
+
 
 const onLoad = onMounted(async () => {
 if(props.carProvince)
@@ -110,8 +119,19 @@ if(props.carColor){
   carColor.value = props.carColor
 }
  
+if(props.info){
+  SubCarModel.value = props.info.SubCarModel
+}
 });
 
+const checkCarDetail = async () => {
+  if (carLicenseText != '' && carProvinceText != '' && carColorText != '' && carColorText != '') {
+    isCheck.value = true
+  }
+  else {
+    isCheck.value = false
+  }
+}
 
 watch(
   ()=>props.carProvince,

@@ -16,6 +16,7 @@
           <OrderCompulsoryPlaceorderCarDetail
             :car-color="carColor"
             :car-province="carProvince"
+            :info="infomation"
           ></OrderCompulsoryPlaceorderCarDetail>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลผู้เอาประกันภัย # # # # # # # # # # # # # # # # # # # # #-->
@@ -118,6 +119,7 @@ const submitted = ref(false);
 const statusMessage = ref();
 const statusMessageType = ref();
 
+const infomation: globalThis.Ref<IInformation | undefined> = ref();
 const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
 const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
 const carProvince: globalThis.Ref<SelectOption[]> = ref([]);
@@ -175,6 +177,10 @@ const router = useRouter();
 
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
+    const jsonInfo = sessionStorage.getItem("useStoreInformation") || "";
+    if (jsonInfo != ""){
+      infomation.value = JSON.parse(jsonInfo) as IInformation;
+    }
     if (PackageInfo.value && InformationInfo.value) {
       isLoading.value = true;
       await loadProvince();

@@ -75,7 +75,7 @@
 
                     <div class="row">
                       <ElementsFormNewAddress 
-                      :addr-province="addrProvince"
+                        :addr-province="addrProvince"
                         :addr-district="addrDistrict"
                         :addr-sub-district="addrSubDistrict"
                         :addr-zip-code="addrZipCode"
@@ -147,14 +147,13 @@ const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
 const insureFullAddress: globalThis.Ref<String> = ref('')
 
+const insureFullOtherAddress: globalThis.Ref<String> = ref('')
 
 const onLoad = onMounted(async () => {
-  // isLoading.value = true
   const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
   packages = JSON.parse(jsonPackage) as IPackageResponse;
   companyName.value = packages?.CompanyName
   paperBalance.value = packages?.PaperBalance ?? 0
-  // isLoading.value = false
 
     if(props.prefix){
         prefix.value = props.prefix

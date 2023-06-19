@@ -165,7 +165,7 @@
                             autocomplete="false"
                           />
                         </div>
-                        <div class="col-6">
+                        <div class="col-sm-4 col-lg-3">
                           <FormKit
                             type="date"
                             label="Birthdate"
@@ -176,8 +176,19 @@
                             autocomplete="false"
                           />
                         </div>
-                        <div class="col-6">
+                        <div class="col-sm-8 col-lg-4">
                           <ElementsFormPassport />
+                        </div>
+                        <div class="col-sm-4 col-lg-3">
+                          <FormKit
+                            type="select"
+                            label="Nationality"
+                            name="Nationality"
+                            placeholder="Nationality"
+                            :options="Nationality"
+                            validation="required"
+                            :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                          />
                         </div>
                         <div class="col-6">
                           <FormKit
@@ -393,6 +404,7 @@ import { SelectOption } from "~/shared/entities/select-option";
 
 const props = defineProps({
   prefix:Array<SelectOption>,
+  nationality:Array<SelectOption>,
   addrProvince: Array<SelectOption>,
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
@@ -402,6 +414,7 @@ const props = defineProps({
 const emit = defineEmits(['changeCustomerType','changeProvince','changeDistrict','changeSubDistrict','changeFullAddress'])
 const InsuredTypeText:globalThis.Ref<String> = ref('person')
 const Prefix:globalThis.Ref<SelectOption[]> = ref([])
+const Nationality:globalThis.Ref<SelectOption[]> = ref([])
 const addrProvince:globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict:globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict:globalThis.Ref<SelectOption[]> = ref([])
@@ -411,6 +424,9 @@ const values = reactive({})
 const onLoad = onMounted(()=>{
   if(props.prefix){
     Prefix.value = props.prefix
+  }
+  if(props.nationality){
+    Nationality.value = props.nationality
   }
   if(props.addrProvince){
     addrProvince.value = props.addrProvince
@@ -494,6 +510,14 @@ watch(
     console.log(props.prefix)
     if(props.prefix && props.prefix.length>0){
       Prefix.value = props.prefix
+    }
+  }
+)
+watch(
+  ()=>props.nationality,
+  ()=>{
+    if(props.nationality && props.nationality.length>0){
+      Nationality.value = props.nationality
     }
   }
 )

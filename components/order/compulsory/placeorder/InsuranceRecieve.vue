@@ -14,11 +14,6 @@
 
           <div id="collapse-shipping" class="accordion-collapse collapse show" data-bs-parent="#accordion-shipping">
             <div class="accordion-body">
-              
-              <div v-if="props.packageSelect.IsTaxInclude == '1'" class="notice-success">
-                <i class="fa-regular fa-circle-info"></i>
-                มีใบกำกับภาษีแนบท้ายอยู่กับไฟล์กรมธรรม์
-              </div>
 
               <div class="notice-info">
                 <i class="fa-regular fa-circle-info"></i>
@@ -118,7 +113,7 @@
 import { IInformation } from "~~/shared/entities/information-entity";
 import { IPackageResponse } from "~/shared/entities/packageList-entity";
 import { SelectOption } from "~/shared/entities/select-option";
-import { DefaultAddress } from "~/shared/entities/placeorder-entity";
+import { DefaultAddress, InsuranceRecieveObject } from "~/shared/entities/placeorder-entity";
 
 const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict'])
 

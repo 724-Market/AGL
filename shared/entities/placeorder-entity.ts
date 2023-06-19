@@ -189,3 +189,15 @@ export interface OrderRequest {
   export interface OrderResponse{
     OrderNo:string
   }
+
+  export interface InsuranceRecieveObject {
+    ShippingPolicy: string
+    Email: string
+    PostalDelivary: PostalDelivary
+  }
+  export interface PostalDelivary {
+    IsDeliveryAddressSameAsDefault: boolean
+    ShippingMethod: string
+    ShippingFee: string
+    DeliveryAddress: DeliveryAddress
+  }

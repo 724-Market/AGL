@@ -14,6 +14,7 @@
         <div class="col-lg-8 col-xl-9">
           <!-- # # # # # # # # # # # # # # # # # # # # # รายละเอียดรถ # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderCarDetail
+            @check-car-detail="handleCheckCarDetail"
             :car-color="carColor"
             :car-province="carProvince"
             :info="infomation"
@@ -44,6 +45,7 @@
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
             :addr-zip-code="addrZipCode"
+            :package-select="packageSelect"
           ></OrderCompulsoryPlaceorderInsuranceRecieve>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ใบกำกับภาษี # # # # # # # # # # # # # # # # # # # # #-->
@@ -119,7 +121,10 @@ import {
 import { SelectOption } from "~/shared/entities/select-option";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStorePackage } from "~/stores/order/storePackage";
-import { DefaultAddress } from "~/shared/entities/placeorder-entity";
+import { DefaultAddress, 
+  CarDetailsExtension,
+  DeliveryAddress
+} from "~/shared/entities/placeorder-entity";
 
 // Define Variables
 // Loading state after form submiting
@@ -131,6 +136,8 @@ const submitted = ref(false);
 // Response status for notice user
 const statusMessage = ref();
 const statusMessageType = ref();
+
+const SubCarModel: globalThis.Ref<String> = ref("")
 
 const infomation: globalThis.Ref<IInformation | undefined> = ref();
 const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
@@ -146,6 +153,9 @@ const delivery: globalThis.Ref<SelectOption[]> = ref([]);
 const insureFullAddress: globalThis.Ref<string> = ref("");
 const isSelect: globalThis.Ref<Boolean> = ref(false);
 const defaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref();
+
+const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
+const deliveryRecieve: globalThis.Ref<DeliveryAddress | undefined> = ref();
 
 let values = reactive({});
 
@@ -194,6 +204,11 @@ const onLoad = onMounted(async () => {
     const jsonInfo = sessionStorage.getItem("useStoreInformation") || "";
     if (jsonInfo != "") {
       infomation.value = JSON.parse(jsonInfo) as IInformation;
+      SubCarModel.value = infomation.value.SubCarModel
+    }
+    const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
+    if (jsonPackage != "") {
+      packageSelect.value = JSON.parse(jsonPackage) as IPackageResponse;
     }
     if (PackageInfo.value && InformationInfo.value) {
       isLoading.value = true;
@@ -380,7 +395,24 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
     insureFullAddress.value = addr
   }
 }
+const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
+  if (objectCarDetail.License != '' && objectCarDetail.LicenseProvinceID != '' && objectCarDetail.ColorID != '' && objectCarDetail.BodyNo != '') {
+    if(SubCarModel.value === 'unknown' || SubCarModel.value === 'other'){
+      if(objectCarDetail.LicenseFileID != '') checklist.value[0].className = 'current'
+      else checklist.value[0].className = ''
+    }
+    else checklist.value[0].className = 'current'
+  }
+  else {
+    checklist.value[0].className = ''
+  }
 
+  carDetail.value = objectCarDetail
+  // console.log('handleCheckCarDetail', carDetail.value)
+}
+const handleCheckInsuranceRecieve = async (objectCarDetail: CarDetailsExtension) => {
+  
+}
 // Define layout
 const layout = "monito";
 

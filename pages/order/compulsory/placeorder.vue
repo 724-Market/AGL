@@ -57,6 +57,7 @@
             @change-sub-district="handlerChangeSubDistrict"
             :insure-full-address="insureFullAddress"
             :prefix="prefix"
+            :delivery="delivery"
             :addr-province="addrProvince"
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
@@ -221,6 +222,7 @@ const onLoad = onMounted(async () => {
       await loadDelivery();
       await loadPrefix(true);
       await loadNationality();
+      await loadDelivery();
       isLoading.value = false;
     } else {
       router.push("/order/compulsory/packages");

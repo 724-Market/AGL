@@ -21,7 +21,7 @@
             data-bs-parent="#accordion-tax-invoice"
           >
             <div class="accordion-body">
-              <div class="notice-success" v-if="isIncludeTax=='1'">
+              <div class="notice-success" v-if="isIncludeTax == '1'">
                 <i class="fa-regular fa-memo-circle-check"></i
                 >มีใบกำกับภาษีแนบท้ายอยู่กับไฟล์กรมธรรม์แล้ว
               </div>
@@ -38,7 +38,7 @@
                   >
                 </div>
 
-                <section class="basic-tax-address"  v-if="isIncludeTax=='1'">
+                <section class="basic-tax-address" v-if="isIncludeTax == '1'">
                   <div class="form-hide-label">
                     <FormKit
                       type="radio"
@@ -46,8 +46,8 @@
                       :options="[
                         {
                           label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
-                          help:insureFullAddress,
-                            //'724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160',
+                          help: insureFullAddress,
+                          //'724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160',
                           value: 'insured',
                         },
                         {
@@ -141,7 +141,7 @@
                   </aside>
                 </section>
 
-                <div class="placeorder-action" v-hide="isIncludeTax=='1'">
+                <div class="placeorder-action" v-hide="isIncludeTax == '1'">
                   <div class="form-hide-label">
                     <FormKit
                       type="checkbox"
@@ -153,7 +153,7 @@
                     />
                   </div>
                 </div>
-                <section class="request-tax-address" v-if="requestIncludeTax.length>0">
+                <section class="request-tax-address" v-if="requestIncludeTax.length > 0">
                   <div class="form-hide-label">
                     <FormKit
                       type="radio"
@@ -256,13 +256,16 @@
                   </aside>
                 </section>
 
-                <div class="shippped-tax-type" v-show="shippingPolicy=='postal'">
+                <div class="shippped-tax-type" v-show="shippingPolicy == 'postal'">
                   <div class="form-hide-label">
                     <ElementsFormRadioShippedPolicy v-model="shippedPolicy" />
                   </div>
                 </div>
 
-                <section class="shipped-tax-address" v-if="shippingPolicy=='postal' && shippedPolicy=='separately'">
+                <section
+                  class="shipped-tax-address"
+                  v-if="shippingPolicy == 'postal' && shippedPolicy == 'separately'"
+                >
                   <div class="form-hide-label">
                     <FormKit
                       type="radio"
@@ -285,10 +288,21 @@
                   </div>
 
                   <aside class="new-shipped-tax-address inner-section">
-                    <h4>ที่อยู่จัดส่งใหม่</h4>
+                    <h3>วิธีการจัดส่ง</h3>
+                  <div class="row">
+                    <div class="col-6">
+                      <FormKit type="select" label="ช่องทางการจัดส่ง" name="ShippedMethod"
+                        placeholder="ช่องทางการจัดส่ง" :options="delivery" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                    </div>
 
+                    <div class="col-6">
+                      <FormKit type="text" label="ค่าจัดส่ง" name="ShippedFee" placeholder="ค่าจัดส่ง"
+                        value="50 บาท" readonly />
+                    </div>
+                  </div>
+                    <h4>ที่อยู่จัดส่งใหม่</h4>
                     <div class="row">
-                      <ElementsFormNewAddress 
+                      <ElementsFormNewAddress
                         :addr-province="addrProvince"
                         :addr-district="addrDistrict"
                         :addr-sub-district="addrSubDistrict"
@@ -296,7 +310,8 @@
                         @change-province="handlerChangeProvince"
                         @change-district="handlerChangeDistrict"
                         @change-sub-district="handlerChangeSubDistrict"
-                        @change-full-address="handlerChangeFullAddress"/>
+                        @change-full-address="handlerChangeFullAddress"
+                      />
                     </div>
 
                     <button class="btn-primary btn-save">บันทึกข้อมูล</button>
@@ -318,6 +333,7 @@ const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict']
 
 const props = defineProps({
   prefix:Array<SelectOption>,
+  delivery:Array<SelectOption>,
   addrProvince: Array<SelectOption>,
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
@@ -328,6 +344,7 @@ const props = defineProps({
 })
 
 const prefix: globalThis.Ref<SelectOption[]> = ref([])
+  const delivery: globalThis.Ref<SelectOption[]> = ref([])
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
@@ -341,6 +358,9 @@ const onLoad = onMounted(async () => {
 
     if(props.prefix){
         prefix.value = props.prefix
+    }
+    if(props.delivery){
+      delivery.value = props.delivery
     }
     if (props.addrProvince) {
         addrProvince.value = props.addrProvince
@@ -423,6 +443,14 @@ watch(
     () => {
         if (props.prefix && props.prefix.length > 0) {
             prefix.value = props.prefix
+        }
+    }
+)
+watch(
+    () => props.delivery,
+    () => {
+        if (props.delivery && props.delivery.length > 0) {
+          delivery.value = props.delivery
         }
     }
 )

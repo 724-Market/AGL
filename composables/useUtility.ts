@@ -2,7 +2,7 @@ import { isString } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { Paging } from "~/shared/entities/packageList-entity";
 import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
-
+import dayjs from 'dayjs';
 export default () => {
 
     const config = useRuntimeConfig()
@@ -23,7 +23,7 @@ export default () => {
             // refresh token in store
             const refresToken = AuthenInfo.value ? AuthenInfo.value.refreshToken : ""
             if (refresToken && refresToken != "") {
-               const data = await store.refreshToken(refresToken)
+                const data = await store.refreshToken(refresToken)
                 if (data) {
                     token = data.accessToken
                 }
@@ -49,6 +49,12 @@ export default () => {
         const numberFormat = new Intl.NumberFormat('th-TH', options)
         const formattedCurrency = numberFormat.format(currency)
         return formattedCurrency
+    }
+    const formatDate = (dateString: string, format: string): string => {
+        const date = dayjs(dateString);
+        // Then specify how you want your dates to be formatted
+        return date.format(format);
+
     }
     const getStepMenuFromUri = (): number => {
         let step = 0
@@ -82,6 +88,7 @@ export default () => {
         getCurrency,
         getToken,
         getStepMenuFromUri,
-        getPaging
+        getPaging,
+        formatDate
     }
 }

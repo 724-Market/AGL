@@ -74,10 +74,18 @@
             </div>
             <div class="card-body">
               <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลรถ # # # # # # # # # # # # # # # # # # # # #-->
-              <OrderCartCar></OrderCartCar>
+              <OrderCartCar
+                v-if="infomation && carDetail"
+                :car-detail="infomation.CarDetail"
+                :car-use="infomation.CarUse"
+                :is-car-red="carDetail.IsRedLicense"
+                :effective-date="infomation.EffectiveDate"
+                :expire-date="infomation.ExpireDate"
+                :insurance-day="infomation.InsuranceDay"
+              ></OrderCartCar>
 
               <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลแพคเกจ # # # # # # # # # # # # # # # # # # # # #-->
-              <OrderCartPackage></OrderCartPackage>
+              <OrderCartPackage v-if="packageSelect && packageSelect.CompanyName != ''" :package-select="packageSelect" />
               <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลผู้เอาประกัน # # # # # # # # # # # # # # # # # # # # #-->
               <OrderCartInsure></OrderCartInsure>
             </div>

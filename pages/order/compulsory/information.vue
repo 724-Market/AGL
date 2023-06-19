@@ -119,6 +119,15 @@
                 :carLabel="carLabelForCart">
               </OrderCartCar>
             </div> -->
+            <OrderCartCar
+                v-if="InformationInfo"
+                :car-detail="InformationInfo.CarDetail"
+                :car-use="InformationInfo.CarUse"
+                :is-car-red="false"
+                :effective-date="InformationInfo.EffectiveDate"
+                :expire-date="InformationInfo.ExpireDate"
+                :insurance-day="InformationInfo.InsuranceDay"
+              ></OrderCartCar>
 
             <OrderChecklist :list="checklist" v-if="checklist && checklist.length > 0" />
 

@@ -34,9 +34,11 @@
                         <div class="row">
                           <div class="col">
                             <div class="form-hide-label">
-                              <FormKit type="checkbox" label="ป้ายแดง" name="CarLicenseClassifier" :options="{
-                                temporary: 'ป้ายแดง',
-                              }" />
+                              <FormKit type="checkbox" label="ป้ายแดง" name="CarLicenseClassifier" 
+                                v-model="carLicenseClassifierText" @change="handleCarLicenseClassifierChange"
+                                :options="{
+                                  temporary: 'ป้ายแดง',
+                                  }" />
                             </div>
                           </div>
                         </div>
@@ -60,6 +62,7 @@
                           </div>
                           <div class="col-sm-12 col-lg-4">
                             <FormKit type="text" label="เลขเครื่องยนต์" name="CarEngineNumber"
+                              v-model="carEngineNumberText" @change="handleCarEngineNumberChange"
                               placeholder="ตัวอย่าง: 724XXX" autocomplete="false" />
                           </div>
                         </div>
@@ -89,7 +92,8 @@
 
 <script setup lang="ts">
 import { SelectOption } from "~/shared/entities/select-option";
-import { IInformation } from "~~/shared/entities/information-entity";
+import { IInformation } from "~~/shared/entities/information-entity"; 
+import { CarDetailsExtension } from "~~/shared/entities/placeorder-entity";
 
 const emit = defineEmits(['checkCarDetail'])
 
@@ -101,16 +105,28 @@ const props = defineProps({
   },
 });
 
-var isCheck: globalThis.Ref<Boolean> = ref(false)
-var SubCarModel: globalThis.Ref<String> = ref("")
+const SubCarModel: globalThis.Ref<String> = ref("")
 
-var carLicenseText: String = ""
+var carLicenseText: string = ""
+var carLicenseValue: string = ""
+
 const carProvince: globalThis.Ref<SelectOption[]> = ref([])
-var carProvinceText: String = ""
+var carProvinceText: string = ""
+
+var carLicenseClassifierText: globalThis.Ref<string> = ref("")
+var carLicenseClassifierValue: boolean = false
+
 const carColor: globalThis.Ref<SelectOption[]> = ref([])
-var carColorText: String = ""
-var carBodyNumberText: String = ""
-var CarLicenseFileText: String = ""
+var carColorText: string = ""
+
+var carBodyNumberText: string = ""
+var carBodyNumberValue: string = ""
+
+var carEngineNumberText: string = ""
+var carEngineNumberValue: string = ""
+
+var CarLicenseFileText: string = ""
+var base64FileString: string = ""
 
 const onLoad = onMounted(async () => {
 if(props.carProvince)
@@ -127,31 +143,41 @@ if(props.info){
 }
 });
 
+watch(carLicenseClassifierText, async (newValue) => {
+  await handleCarLicenseClassifierChange(newValue);
+});
+
 const handleCarLicenseChange = async (event: any) => {
-  console.log('event', event.target.value)
+  carLicenseValue = event.target.value
   await handleCheckCarDetail()
 }
 
 const handleCarProvinceChange = async (event: any) => {
-  console.log('event', event.target.value)
+  await handleCheckCarDetail()
+}
+
+const handleCarLicenseClassifierChange = async (event: string) => {
+  carLicenseClassifierValue = event[0] === undefined ? false : true;
   await handleCheckCarDetail()
 }
 
 const handleCarColorChange = async (event: any) => {
-  console.log('event', event.target.value)
   await handleCheckCarDetail()
 }
 
 const handlecarBodyNumberChange = async (event: any) => {
-  console.log('event', event.target.value)
+  carBodyNumberValue = event.target.value
+  await handleCheckCarDetail()
+}
+
+const handleCarEngineNumberChange = async (event: any) => {
+  carEngineNumberValue = event.target.value
   await handleCheckCarDetail()
 }
 
 const handleFileChange = async (event: any) => {
   let file = event.target.files[0]
-  const base64String = await convertFileToBase64(file)
-  console.log('base64String', base64String)
-
+  base64FileString = await convertFileToBase64(file)
   await handleCheckCarDetail()
 }
 
@@ -174,18 +200,17 @@ const convertFileToBase64 = async (file: File): Promise<string> => {
 }
 
 const handleCheckCarDetail = async () => {
-  if (carLicenseText != '' && carProvinceText != '' && carColorText != '' && carBodyNumberText != '') {
-    if(SubCarModel.value === 'unknown' || SubCarModel.value === 'other'){
-      if(CarLicenseFileText != '') isCheck.value = true
-      else isCheck.value = false
-    }
-    else isCheck.value = true
+  let carDetail: CarDetailsExtension = {
+    License: carLicenseValue,
+    BodyNo: carBodyNumberValue,
+    EngineNo: carEngineNumberValue,
+    ColorID: carColorText,
+    LicenseProvinceID: carProvinceText,
+    LicenseFileID: base64FileString,
+    IsRedLicense: carLicenseClassifierValue 
   }
-  else {
-    isCheck.value = false
-  }
-  console.log('isCheck.value', isCheck.value)
-  emit('checkCarDetail', isCheck.value)
+
+  emit('checkCarDetail', carDetail)
 }
 
 watch(

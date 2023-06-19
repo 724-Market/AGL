@@ -14,6 +14,11 @@
 
           <div id="collapse-shipping" class="accordion-collapse collapse show" data-bs-parent="#accordion-shipping">
             <div class="accordion-body">
+              
+              <div v-if="props.packageSelect.IsTaxInclude == '1'" class="notice-success">
+                <i class="fa-regular fa-circle-info"></i>
+                มีใบกำกับภาษีแนบท้ายอยู่กับไฟล์กรมธรรม์
+              </div>
 
               <div class="notice-info">
                 <i class="fa-regular fa-circle-info"></i>
@@ -39,7 +44,7 @@
                 </aside>
 
                 <aside v-if="isPrintShipping" class="shipping-print">
-                  <p>จำนวนกระดาษ <span>{{companyName}}</span> คงเหลือ <span>{{paperBalance}}</span> ใบ</p>
+                  <p>จำนวนกระดาษ <span>{{props.packageSelect.CompanyName}}</span> คงเหลือ <span>{{props.packageSelect.PaperBalance}}</span> ใบ</p>
                 </aside>
 
                 <section v-if="isPostalShipping" class="shipping-method">
@@ -183,6 +188,13 @@ const onLoad = onMounted(async () => {
     }
 });
 
+watch(shippingPolicyText, async (newShippingPolicy) => {
+  await handleRadioShippingPolicyChange(newShippingPolicy);
+});
+
+watch(postalAddressPolicyText, async (newAddressPolicy) => {
+  await handleRadioPostalAddressPolicyChange(newAddressPolicy);
+});
 
 const handleRadioShippingPolicyChange = async (event: String) => {
   switch (event) {
@@ -286,11 +298,4 @@ watch(
         }
     }
 )
-watch(postalAddressPolicyText, async (newAddressPolicy) => {
-  await handleRadioPostalAddressPolicyChange(newAddressPolicy);
-});
-
-watch(shippingPolicyText, async (newShippingPolicy) => {
-  await handleRadioShippingPolicyChange(newShippingPolicy);
-});
 </script>

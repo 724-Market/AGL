@@ -193,11 +193,11 @@ export interface OrderRequest {
   export interface InsuranceRecieveObject {
     ShippingPolicy: string
     Email: string
-    PostalDelivary: PostalDelivary
+    PostalDelivary?: PostalDelivary
   }
   export interface PostalDelivary {
     IsDeliveryAddressSameAsDefault: boolean
     ShippingMethod: string
     ShippingFee: string
-    DeliveryAddress: DeliveryAddress
+    DeliveryAddress?: DeliveryAddress
   }

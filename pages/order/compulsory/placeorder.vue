@@ -39,6 +39,7 @@
             @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrict"
+            @check-insurance-recieve="handleCheckInsuranceRecieve"
             :insure-full-address="insureFullAddress"
             :prefix="prefix"
             :addr-province="addrProvince"
@@ -123,7 +124,8 @@ import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStorePackage } from "~/stores/order/storePackage";
 import { DefaultAddress, 
   CarDetailsExtension,
-  DeliveryAddress
+  DeliveryAddress,
+  InsuranceRecieveObject
 } from "~/shared/entities/placeorder-entity";
 
 // Define Variables
@@ -155,7 +157,7 @@ const isSelect: globalThis.Ref<Boolean> = ref(false);
 const defaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref();
 
 const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
-const deliveryRecieve: globalThis.Ref<DeliveryAddress | undefined> = ref();
+const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
 
 let values = reactive({});
 
@@ -410,8 +412,22 @@ const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
   carDetail.value = objectCarDetail
   // console.log('handleCheckCarDetail', carDetail.value)
 }
-const handleCheckInsuranceRecieve = async (objectCarDetail: CarDetailsExtension) => {
-  
+const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject) => {
+  console.log('RecieveObject', RecieveObject)
+  switch(RecieveObject.ShippingPolicy){
+    case 'pdf':
+      if(RecieveObject.Email != '') checklist.value[2].className = 'current'
+      else checklist.value[2].className = ''
+      break
+    case 'print':
+      checklist.value[2].className = 'current'
+      break
+    case 'postal':
+      //TODO: Develop Check postal
+      break
+  }
+
+  insuranceRecieve.value = RecieveObject
 }
 // Define layout
 const layout = "monito";

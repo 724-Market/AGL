@@ -34,6 +34,7 @@
 
                 <aside v-if="isPdfShipping" class="shipping-email-pdf col-md-12 col-lg-4">
                   <FormKit type="email" label="อีเมลสำหรับรับไฟล์กรมธรรม์" name="Email"
+                    v-model="emailText" @change="handleEmailChange"
                     placeholder="xxxxxx@email.com" validation="required"
                     :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="false" />
                 </aside>
@@ -47,7 +48,8 @@
                   <div class="row">
                     <div class="col-6">
                       <FormKit type="select" label="ช่องทางการจัดส่ง" name="ShippingMethod"
-                        placeholder="ช่องทางการจัดส่ง" :options="{
+                        placeholder="ช่องทางการจัดส่ง" v-model="ShippingMethodText"
+                        :options="{
                           dhl: 'DHL Express',
                           kerry: 'Kerry'
                         }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
@@ -55,7 +57,7 @@
 
                     <div class="col-6">
                       <FormKit type="text" label="ค่าจัดส่ง" name="ShippingFee" placeholder="ค่าจัดส่ง"
-                        value="50 บาท" readonly />
+                        v-model="ShippingFeeText" readonly />
                     </div>
                   </div>
                 </section>
@@ -65,7 +67,7 @@
                   <div class="form-hide-label">
                     <FormKit type="radio" label="รายชื่อที่อยู่" name="PostalAddressPolicy" v-model="postalAddressPolicyText" 
                       :options="[
-                        { label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน', value: 'insured', help: '724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160' },
+                        { label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน', value: 'insured', help: insureFullAddress ?? '724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160' },
                         { label: 'เปลี่ยนที่อยู่ใหม่', value: 'addnew', attrs: { addnewaddress: true } },
                       ]" options-class="option-block-stack" />
                   </div>
@@ -115,7 +117,7 @@ import { IPackageResponse } from "~/shared/entities/packageList-entity";
 import { SelectOption } from "~/shared/entities/select-option";
 import { DefaultAddress, InsuranceRecieveObject } from "~/shared/entities/placeorder-entity";
 
-const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict'])
+const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict','checkInsuranceRecieve'])
 
 const props = defineProps({
   prefix:Array<SelectOption>,
@@ -144,12 +146,20 @@ var postalAddressPolicyText: globalThis.Ref<String> = ref("")
 var isInsured: globalThis.Ref<boolean> = ref(false)
 var isAddnew: globalThis.Ref<boolean> = ref(false)
 
+var emailText: string = ""
+var emailValue: string = ""
+var ShippingMethodText: string = ""
+var ShippingFeeText: string = "50 บาท"
+
 const prefix: globalThis.Ref<SelectOption[]> = ref([])
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
+
+const newAddressObject: globalThis.Ref<DefaultAddress | undefined> = ref() 
 const insureFullAddress: globalThis.Ref<String> = ref('')
+const insureFullNewAddress: globalThis.Ref<String> = ref('')
 
 const onLoad = onMounted(async () => {
   // const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
@@ -198,21 +208,23 @@ const handleRadioShippingPolicyChange = async (event: String) => {
       isPrintShipping.value = false
       isPostalShipping.value = false
       isInsured.value = true
+      await handleCheckInsuranceRecieve()
       break;
     case "print": 
       isPdfShipping.value = false
       isPrintShipping.value = true
       isPostalShipping.value = false
       isInsured.value = true
+      await handleCheckInsuranceRecieve()
       break;
     case "postal": 
       isPdfShipping.value = false
       isPrintShipping.value = false
       isPostalShipping.value = true
+      await handleCheckInsuranceRecieve()
       break;
   }
 }
-
 
 const handleRadioPostalAddressPolicyChange = async (event: String) => {
   switch (event) {
@@ -225,6 +237,12 @@ const handleRadioPostalAddressPolicyChange = async (event: String) => {
       isAddnew.value = true
       break;
   }
+}
+
+const handleEmailChange = async (event: any) => {
+  emailValue = event.target.value
+  await handleCheckInsuranceRecieve()
+  console.log('handleEmailChange', event.target.value);
 }
 
 // handler function for emit
@@ -244,14 +262,56 @@ const handlerChangeSubDistrict = (e: string)=>{
     emit('changeSubDistrict',e)
   }
 }
-const handlerChangeFullAddress = (addr:string,ObjectAddress:DefaultAddress)=>{
+const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddress)=>{
   if(addr && ObjectAddress){
     //TODO implement coding new address
+    insureFullNewAddress.value = addr
+    newAddressObject.value = ObjectAddress
     console.log(addr,ObjectAddress)
+    await handleCheckInsuranceRecieve()
     //emit('changeFullAddress',addr,ObjectAddress)
   }
 }
+const handleCheckInsuranceRecieve = async () => {
+  let RecieveObject: InsuranceRecieveObject = {
+    ShippingPolicy: shippingPolicyText.value.toString(),
+    Email: emailValue,
+    PostalDelivary: {
+      IsDeliveryAddressSameAsDefault: postalAddressPolicyText.value == 'insured' ? true : false,
+      ShippingMethod: ShippingMethodText,
+      ShippingFee: ShippingFeeText,
+      DeliveryAddress: {
+        AddressID: newAddressObject.value?.AddressID ?? '',
+        ReferenceID: newAddressObject.value?.ReferenceID ?? '',
+        ReferenceType: newAddressObject.value?.ReferenceType ?? '',
+        ProvinceID: newAddressObject.value?.ProvinceID ?? '',
+        DistrictID: newAddressObject.value?.DistrictID ?? '',
+        SubDistrictID: newAddressObject.value?.SubDistrictID ?? '',
+        TaxID: newAddressObject.value?.TaxID ?? '',
+        FirstName: newAddressObject.value?.FirstName ?? '',
+        LastName: newAddressObject.value?.LastName ?? '',
+        PhoneNumber: newAddressObject.value?.PhoneNumber ?? '',
+        Email: newAddressObject.value?.Email ?? '',
+        Name: newAddressObject.value?.Name ?? '',
+        Type: newAddressObject.value?.Type ?? '',
+        AddressLine1: newAddressObject.value?.AddressLine1 ?? '',
+        AddressLine2: newAddressObject.value?.AddressLine2 ?? '',
+        AddressText: newAddressObject.value?.AddressText ?? '',
+        No: newAddressObject.value?.No ?? '',
+        Moo: newAddressObject.value?.Moo ?? '',
+        Place: newAddressObject.value?.Place ?? '',
+        Building: newAddressObject.value?.Building ?? '',
+        Floor: newAddressObject.value?.Floor ?? '',
+        Room: newAddressObject.value?.Room ?? '',
+        Branch: newAddressObject.value?.Branch ?? '',
+        Alley: newAddressObject.value?.Alley ?? '',
+        Road: newAddressObject.value?.Road ?? '',
+      }
+    }
+  }
 
+  emit('checkInsuranceRecieve', RecieveObject)
+}
 //watching props pass data
 watch(
     () => props.addrProvince,

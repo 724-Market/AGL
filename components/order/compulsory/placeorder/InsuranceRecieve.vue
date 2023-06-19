@@ -15,12 +15,12 @@
           <div id="collapse-shipping" class="accordion-collapse collapse show" data-bs-parent="#accordion-shipping">
             <div class="accordion-body">
 
-              <div class="notice-info">
+              <div v-if="isPdfShipping" class="notice-info">
                 <i class="fa-regular fa-circle-info"></i>
                 ส่งกรมธรรม์ทางอีเมลหรือสามารถดาวน์โหลดได้จากระบบ
               </div>
 
-              <div class="notice-warning">
+              <div v-if="isPrintShipping" class="notice-warning">
                 <i class="fa-regular fa-circle-info"></i>
                 ควรเลือกกระดาษให้ตรงกับบริษัทประกันที่ซื้อและรายการกระดาษจะถูกหักออกจากคลัง หลังจากกดพิมพ์กรมธรรม์
               </div>

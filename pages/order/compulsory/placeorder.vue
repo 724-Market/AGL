@@ -14,7 +14,7 @@
         <div class="col-lg-8 col-xl-9">
           <!-- # # # # # # # # # # # # # # # # # # # # # รายละเอียดรถ # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderCarDetail
-            @check-cardetail="handleCheckCarDetail"
+            @check-car-detail="handleCheckCarDetail"
             :car-color="carColor"
             :car-province="carProvince"
             :info="infomation"
@@ -45,6 +45,7 @@
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
             :addr-zip-code="addrZipCode"
+            :package-select="packageSelect"
           ></OrderCompulsoryPlaceorderInsuranceRecieve>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ใบกำกับภาษี # # # # # # # # # # # # # # # # # # # # #-->
@@ -195,6 +196,10 @@ const onLoad = onMounted(async () => {
     const jsonInfo = sessionStorage.getItem("useStoreInformation") || "";
     if (jsonInfo != "") {
       infomation.value = JSON.parse(jsonInfo) as IInformation;
+    }
+    const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
+    if (jsonPackage != "") {
+      packageSelect.value = JSON.parse(jsonPackage) as IPackageResponse;
     }
     if (PackageInfo.value && InformationInfo.value) {
       isLoading.value = true;
@@ -382,6 +387,7 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
   }
 }
 const handleCheckCarDetail = async (e: boolean) => {
+  console.log('handleCheckCarDetail', e)
   if (e) {
     checklist.value[0].className = 'current'
   }

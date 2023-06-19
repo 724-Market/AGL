@@ -124,13 +124,15 @@ const props = defineProps({
   addrSubDistrict: Array<SelectOption>,
   addrZipCode:String,
   insureFullAddress:String,
+  packageSelect: {
+    type: Object as () => IPackageResponse,
+  },
 })
 
 const isLoading = ref(false);
 
-var info: IInformation;
-var packages: IPackageResponse;
-var companyName: globalThis.Ref<String> = ref("")
+var packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
+var companyName: globalThis.Ref<string> = ref("")
 var paperBalance: globalThis.Ref<Number> = ref(0)
 
 var shippingPolicyText: globalThis.Ref<String> = ref("")
@@ -150,10 +152,10 @@ const addrZipCode = ref('')
 const insureFullAddress: globalThis.Ref<String> = ref('')
 
 const onLoad = onMounted(async () => {
-  const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
-  packages = JSON.parse(jsonPackage) as IPackageResponse;
-  companyName.value = packages?.CompanyName
-  paperBalance.value = packages?.PaperBalance ?? 0
+  // const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
+  // packdageSelect = JSON.parse(jsonPackage) as IPackageResponse;
+  // companyName.value = packdageSelect?.CompanyName
+  // paperBalance.value = packdageSelect?.PaperBalance ?? 0
 
     if(props.prefix){
         prefix.value = props.prefix
@@ -174,7 +176,11 @@ const onLoad = onMounted(async () => {
     {
       insureFullAddress.value = props.insureFullAddress
     }
-
+    if(props.packageSelect){
+      packageSelect.value = props.packageSelect
+      companyName.value = props.packageSelect.CompanyName ?? ""
+      paperBalance.value = props.packageSelect.PaperBalance ?? 0
+    }
 });
 
 

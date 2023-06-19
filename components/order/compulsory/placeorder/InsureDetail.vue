@@ -179,7 +179,7 @@
                         <div class="col-sm-8 col-lg-4">
                           <ElementsFormPassport />
                         </div>
-                        <div class="col-sm-4 col-lg-3">
+                        <div class="col-md-12 col-lg-5">
                           <FormKit
                             type="select"
                             label="Nationality"

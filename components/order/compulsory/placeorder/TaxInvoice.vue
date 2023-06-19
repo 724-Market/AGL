@@ -21,12 +21,12 @@
             data-bs-parent="#accordion-tax-invoice"
           >
             <div class="accordion-body">
-              <div class="notice-success">
+              <div class="notice-success" v-if="isIncludeTax=='1'">
                 <i class="fa-regular fa-memo-circle-check"></i
                 >มีใบกำกับภาษีแนบท้ายอยู่กับไฟล์กรมธรรม์แล้ว
               </div>
 
-              <div class="notice-warning">
+              <div class="notice-warning" v-else>
                 <i class="fa-regular fa-circle-info"></i
                 >ไม่มีใบกำกับภาษีแนบท้ายในไฟล์กรมธรรม์ หากต้องการ ต้องกดออกใบกำกับภาษี
               </div>
@@ -38,7 +38,7 @@
                   >
                 </div>
 
-                <section class="basic-tax-address">
+                <section class="basic-tax-address"  v-if="isIncludeTax=='1'">
                   <div class="form-hide-label">
                     <FormKit
                       type="radio"
@@ -46,8 +46,8 @@
                       :options="[
                         {
                           label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
-                          help:
-                            '724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160',
+                          help:insureFullAddress,
+                            //'724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160',
                           value: 'insured',
                         },
                         {
@@ -141,19 +141,19 @@
                   </aside>
                 </section>
 
-                <div class="placeorder-action">
+                <div class="placeorder-action" v-hide="isIncludeTax=='1'">
                   <div class="form-hide-label">
                     <FormKit
                       type="checkbox"
                       label="ต้องการออกใบกำกับภาษี"
+                      v-model="requestIncludeTax"
                       :options="{
                         request: 'ออกใบกำกับภาษี',
                       }"
                     />
                   </div>
                 </div>
-                <h4>เลือกที่อยู่จัดส่งใบกำกับภาษี</h4>
-                <section class="request-tax-address">
+                <section class="request-tax-address" v-if="requestIncludeTax.length>0">
                   <div class="form-hide-label">
                     <FormKit
                       type="radio"
@@ -256,13 +256,13 @@
                   </aside>
                 </section>
 
-                <div class="shippped-tax-type">
+                <div class="shippped-tax-type" v-show="shippingPolicy=='postal'">
                   <div class="form-hide-label">
-                    <ElementsFormRadioShippedPolicy />
+                    <ElementsFormRadioShippedPolicy v-model="shippedPolicy" />
                   </div>
                 </div>
 
-                <section class="shipped-tax-address">
+                <section class="shipped-tax-address" v-if="shippingPolicy=='postal' && shippedPolicy=='separately'">
                   <div class="form-hide-label">
                     <FormKit
                       type="radio"
@@ -288,7 +288,15 @@
                     <h4>ที่อยู่จัดส่งใหม่</h4>
 
                     <div class="row">
-                      <ElementsFormNewAddress />
+                      <ElementsFormNewAddress 
+                        :addr-province="addrProvince"
+                        :addr-district="addrDistrict"
+                        :addr-sub-district="addrSubDistrict"
+                        :addr-zip-code="addrZipCode"
+                        @change-province="handlerChangeProvince"
+                        @change-district="handlerChangeDistrict"
+                        @change-sub-district="handlerChangeSubDistrict"
+                        @change-full-address="handlerChangeFullAddress"/>
                     </div>
 
                     <button class="btn-primary btn-save">บันทึกข้อมูล</button>
@@ -315,6 +323,8 @@ const props = defineProps({
   addrSubDistrict: Array<SelectOption>,
   addrZipCode:String,
   insureFullAddress:String,
+  isIncludeTax:String,//1,0
+  shippingPolicy:String // email,pdf,postal
 })
 
 const prefix: globalThis.Ref<SelectOption[]> = ref([])
@@ -323,6 +333,9 @@ const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
 const insureFullAddress: globalThis.Ref<String> = ref('')
+
+const shippedPolicy = ref('') //together,separately
+const requestIncludeTax = ref([])
 
 const onLoad = onMounted(async () => {
 
@@ -422,8 +435,10 @@ watch(
 }
 
 .basic-tax-address:has(.formkit-input[value="addnew" i]:checked) .new-basic-tax-address,
-.request-tax-address:has(.formkit-input[value="addnew" i]:checked) .new-request-tax-address,
-.shipped-tax-address:has(.formkit-input[value="addnew" i]:checked) .new-shipped-tax-address {
+.request-tax-address:has(.formkit-input[value="addnew" i]:checked)
+  .new-request-tax-address,
+.shipped-tax-address:has(.formkit-input[value="addnew" i]:checked)
+  .new-shipped-tax-address {
   display: block;
 }
 </style>

@@ -28,6 +28,7 @@
             @change-customer-type="handlerChangeCustomerType"
             @change-full-address="handlerChangeFullAddress"
             :prefix="prefix"
+            :nationality="nationality"
             :addr-province="addrProvince"
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
@@ -50,7 +51,8 @@
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ใบกำกับภาษี # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderTaxInvoice
-          @change-province="handlerChangeProvince"
+            v-if="packageSelect"
+            @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrict"
             :insure-full-address="insureFullAddress"
@@ -121,9 +123,10 @@ import {
 import { SelectOption } from "~/shared/entities/select-option";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStorePackage } from "~/stores/order/storePackage";
-import { DefaultAddress, 
+import {
+  DefaultAddress,
   CarDetailsExtension,
-  DeliveryAddress
+  DeliveryAddress,
 } from "~/shared/entities/placeorder-entity";
 
 // Define Variables
@@ -137,7 +140,7 @@ const submitted = ref(false);
 const statusMessage = ref();
 const statusMessageType = ref();
 
-const SubCarModel: globalThis.Ref<String> = ref("")
+const SubCarModel: globalThis.Ref<String> = ref("");
 
 const infomation: globalThis.Ref<IInformation | undefined> = ref();
 const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
@@ -145,6 +148,7 @@ const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
 const carProvince: globalThis.Ref<SelectOption[]> = ref([]);
 const carColor: globalThis.Ref<SelectOption[]> = ref([]);
 const prefix: globalThis.Ref<SelectOption[]> = ref([]);
+const nationality: globalThis.Ref<SelectOption[]> = ref([]);
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([]);
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([]);
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([]);
@@ -152,7 +156,7 @@ const addrZipCode = ref("");
 const delivery: globalThis.Ref<SelectOption[]> = ref([]);
 const insureFullAddress: globalThis.Ref<string> = ref("");
 const isSelect: globalThis.Ref<Boolean> = ref(false);
-const defaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref();
+const defaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref();
 
 const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const deliveryRecieve: globalThis.Ref<DeliveryAddress | undefined> = ref();
@@ -204,7 +208,7 @@ const onLoad = onMounted(async () => {
     const jsonInfo = sessionStorage.getItem("useStoreInformation") || "";
     if (jsonInfo != "") {
       infomation.value = JSON.parse(jsonInfo) as IInformation;
-      SubCarModel.value = infomation.value.SubCarModel
+      SubCarModel.value = infomation.value.SubCarModel;
     }
     const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
     if (jsonPackage != "") {
@@ -216,6 +220,7 @@ const onLoad = onMounted(async () => {
       await loadCarColor();
       await loadDelivery();
       await loadPrefix(true);
+      await loadNationality();
       isLoading.value = false;
     } else {
       router.push("/order/compulsory/packages");
@@ -333,6 +338,23 @@ const loadDelivery = async () => {
   } else {
   }
 };
+const loadNationality = async () => {
+  const response = await useRepository().master.nationality();
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data) {
+      nationality.value = response.apiResponse.Data.map((x) => {
+        const options: SelectOption = {
+          label: x.Name,
+          value: x.ID,
+        };
+        return options;
+      });
+    } else {
+      // data not found
+    }
+  } else {
+  }
+};
 const loadCarColor = async () => {
   if (PackageInfo.value) {
     let carColorList: SelectOption[] = [];
@@ -387,32 +409,32 @@ const handlerChangeSubDistrict = async (e: string) => {
   }
 };
 const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) => {
-  if(ObjectAddress){
-    defaultAddress.value = ObjectAddress
-   
+  if (ObjectAddress) {
+    defaultAddress.value = ObjectAddress;
   }
-  if(addr){
-    insureFullAddress.value = addr
+  if (addr) {
+    insureFullAddress.value = addr;
   }
-}
+};
 const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
-  if (objectCarDetail.License != '' && objectCarDetail.LicenseProvinceID != '' && objectCarDetail.ColorID != '' && objectCarDetail.BodyNo != '') {
-    if(SubCarModel.value === 'unknown' || SubCarModel.value === 'other'){
-      if(objectCarDetail.LicenseFileID != '') checklist.value[0].className = 'current'
-      else checklist.value[0].className = ''
-    }
-    else checklist.value[0].className = 'current'
-  }
-  else {
-    checklist.value[0].className = ''
+  if (
+    objectCarDetail.License != "" &&
+    objectCarDetail.LicenseProvinceID != "" &&
+    objectCarDetail.ColorID != "" &&
+    objectCarDetail.BodyNo != ""
+  ) {
+    if (SubCarModel.value === "unknown" || SubCarModel.value === "other") {
+      if (objectCarDetail.LicenseFileID != "") checklist.value[0].className = "current";
+      else checklist.value[0].className = "";
+    } else checklist.value[0].className = "current";
+  } else {
+    checklist.value[0].className = "";
   }
 
-  carDetail.value = objectCarDetail
+  carDetail.value = objectCarDetail;
   // console.log('handleCheckCarDetail', carDetail.value)
-}
-const handleCheckInsuranceRecieve = async (objectCarDetail: CarDetailsExtension) => {
-  
-}
+};
+const handleCheckInsuranceRecieve = async (objectCarDetail: CarDetailsExtension) => {};
 // Define layout
 const layout = "monito";
 

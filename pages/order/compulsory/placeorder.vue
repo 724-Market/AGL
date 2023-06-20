@@ -22,6 +22,7 @@
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลผู้เอาประกันภัย # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderInsureDetail
+           v-if="prefix.length>0 && nationality.length>0 && addrProvince.length>0"
             @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrict"
@@ -38,6 +39,7 @@
 
           <!-- # # # # # # # # # # # # # # # # # # # # # วิธีการรับกรมธรรม์ # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderInsuranceRecieve
+            v-if="prefix.length>0 && addrProvince.length>0"
             @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrict"
@@ -53,7 +55,7 @@
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ใบกำกับภาษี # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderTaxInvoice
-            v-if="packageSelect"
+            v-if="packageSelect && prefix.length>0 && delivery.length>0 && addrProvince.length>0"
             @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrict"

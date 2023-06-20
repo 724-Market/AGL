@@ -114,7 +114,7 @@
                           type="date"
                           label="วันเดือนปีเกิด"
                           name="ฺBirthDate"
-                          :min="effectiveMinDate"
+                         :max="effectiveMinDate"
                           v-model="personProfile.BirthDate"
                           @input-raw="handlerChangePersonalProfile"
                           placeholder="วัน/เดือน/ปี"
@@ -220,7 +220,7 @@
                           v-model="personProfile.BirthDate"
                           @input-raw="handlerChangePersonalProfile"
                           validation="required"
-                          :min="effectiveMinDate"
+                         :max="effectiveMinDate"
                           :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
                           autocomplete="false"
                         />
@@ -630,8 +630,9 @@ const onLoad = onMounted(()=>{
 const special_characters = function ({value}) {
 
   return new Promise((resolve) => {
-    const reg = new RegExp("^[a-zA-Z0-9ก-ฮ.]*$")
+    const reg = new RegExp(/^(?!.*[!@#$%^&*()_+=\[\]{};':\"\\|,.<>\/?`~])[\w\W]*$/g)
     const validate = reg.test(value)
+    console.log(validate)
     resolve(validate)
   })
 }

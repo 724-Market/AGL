@@ -64,6 +64,8 @@
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
             :addr-zip-code="addrZipCode"
+            :is-include-tax="packageSelect.IsTaxInclude"
+            :shipping-policy="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
           ></OrderCompulsoryPlaceorderTaxInvoice>
         </div>
 
@@ -176,10 +178,7 @@ const defaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref();
 
 const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
-const insureDetail: globalThis.Ref<InsureDetailObject> = ref({
-  IsPerson: false,
-  IsBranch: false,
-});
+const insureDetail: globalThis.Ref<CustomerOrderRequest> = ref({});
 let values = reactive({});
 
 const checklist: globalThis.Ref<IChecklist[]> = ref([

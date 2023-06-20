@@ -66,10 +66,7 @@
                   <h3>ที่อยู่สำหรับจัดส่ง</h3>
                   <div class="form-hide-label">
                     <FormKit type="radio" label="รายชื่อที่อยู่" name="PostalAddressPolicy" v-model="postalAddressPolicyText" 
-                      :options="[
-                        { label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน', value: 'insured', help: insureFullAddress ?? '724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160' },
-                        { label: 'เปลี่ยนที่อยู่ใหม่', value: 'addnew', attrs: { addnewaddress: true } },
-                      ]" options-class="option-block-stack" />
+                      :options="postalAddressPolicy" options-class="option-block-stack" />
                   </div>
 
                   <aside v-if="isAddnew" class="new-shipping-address inner-section">
@@ -88,7 +85,7 @@
                         @change-full-address="handlerChangeFullAddress"/>
                     </div>
 
-                    <button class="btn-primary btn-save">บันทึกข้อมูล</button>
+                    <button class="btn-primary btn-save" @click.prevent="handleButtonSaveClick" :disabled="insureFullNewAddress == ''">บันทึกข้อมูล</button>
                   </aside>
                 </section>
               </div>
@@ -115,7 +112,7 @@
 <script setup lang="ts">
 import { IInformation } from "~~/shared/entities/information-entity";
 import { IPackageResponse } from "~/shared/entities/packageList-entity";
-import { SelectOption } from "~/shared/entities/select-option";
+import { SelectOption, RadioOption } from "~/shared/entities/select-option";
 import { DefaultAddress, InsuranceRecieveObject } from "~/shared/entities/placeorder-entity";
 
 const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict','checkInsuranceRecieve'])
@@ -143,6 +140,7 @@ var isPdfShipping: globalThis.Ref<boolean> = ref(false)
 var isPrintShipping: globalThis.Ref<boolean> = ref(false)
 var isPostalShipping: globalThis.Ref<boolean> = ref(false)
 
+const postalAddressPolicy: globalThis.Ref<RadioOption[]> = ref([])
 var postalAddressPolicyText: globalThis.Ref<String> = ref("insured")
 var isInsured: globalThis.Ref<boolean> = ref(false)
 var isAddnew: globalThis.Ref<boolean> = ref(false)
@@ -187,6 +185,8 @@ const onLoad = onMounted(async () => {
       companyName.value = props.packageSelect.CompanyName ?? ""
       paperBalance.value = props.packageSelect.PaperBalance ?? 0
     }
+
+    await setPostalAddressPolicy(insureFullAddress.value.toString(), '')
 });
 
 watch(shippingPolicyText, async (newShippingPolicy) => {
@@ -196,6 +196,26 @@ watch(shippingPolicyText, async (newShippingPolicy) => {
 watch(postalAddressPolicyText, async (newAddressPolicy) => {
   await handleRadioPostalAddressPolicyChange(newAddressPolicy);
 });
+
+// watch(insureFullNewAddress, async (newinsureFullNewAddress) => {
+//   await setPostalAddressPolicy(insureFullAddress.value.toString(), newinsureFullNewAddress.toString())
+// });
+
+const setPostalAddressPolicy = async (labelInsured: string, labelAddnew: string) => {
+  postalAddressPolicy.value = [
+    {
+      label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
+      value: 'insured',
+      help: labelInsured
+    },
+    {
+      label: 'เปลี่ยนที่อยู่ใหม่',
+      value: 'addnew',
+      help: labelAddnew,
+      attrs: { addnewaddress: true }
+    }
+  ]
+}
 
 const handleRadioShippingPolicyChange = async (event: String) => {
   switch (event) {
@@ -244,7 +264,10 @@ const handleRadioPostalAddressPolicyChange = async (event: String) => {
 const handleEmailChange = async (event: any) => {
   emailValue = event.target.value
   await handleCheckInsuranceRecieve()
-  console.log('handleEmailChange', event.target.value);
+}
+
+const handleButtonSaveClick = async (event: any) => {
+  await setPostalAddressPolicy(insureFullAddress.value.toString(), insureFullNewAddress.value.toString())
 }
 
 // handler function for emit
@@ -269,13 +292,13 @@ const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddres
     //TODO implement coding new address
     insureFullNewAddress.value = addr
     newAddressObject.value = ObjectAddress
+
     console.log(addr,ObjectAddress)
     await handleCheckInsuranceRecieve()
     //emit('changeFullAddress',addr,ObjectAddress)
   }
 }
 const handleCheckInsuranceRecieve = async () => {
-  console.log('ShippingMethodText', ShippingMethodText)
   let RecieveObject: InsuranceRecieveObject = {
     ShippingPolicy: shippingPolicyText.value.toString(),
     Email: emailValue,
@@ -312,7 +335,6 @@ const handleCheckInsuranceRecieve = async () => {
       }
     }
   }
-
   emit('checkInsuranceRecieve', RecieveObject)
 }
 //watching props pass data
@@ -353,6 +375,15 @@ watch(
     () => {
         if (props.prefix && props.prefix.length > 0) {
             prefix.value = props.prefix
+        }
+    }
+)
+watch(
+    () => props.insureFullAddress,
+    () => {
+        if (props.insureFullAddress && props.insureFullAddress.length > 0) {
+            insureFullAddress.value = props.insureFullAddress
+            setPostalAddressPolicy(insureFullAddress.value.toString(), insureFullNewAddress.value.toString() ?? '')
         }
     }
 )

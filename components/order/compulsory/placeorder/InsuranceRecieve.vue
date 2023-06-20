@@ -77,6 +77,7 @@
 
                     <div class="row">
                       <ElementsFormNewAddress 
+                        :prefix="prefix"
                         :addr-province="addrProvince"
                         :addr-district="addrDistrict"
                         :addr-sub-district="addrSubDistrict"
@@ -162,11 +163,6 @@ const insureFullAddress: globalThis.Ref<String> = ref('')
 const insureFullNewAddress: globalThis.Ref<String> = ref('')
 
 const onLoad = onMounted(async () => {
-  // const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
-  // packdageSelect = JSON.parse(jsonPackage) as IPackageResponse;
-  // companyName.value = packdageSelect?.CompanyName
-  // paperBalance.value = packdageSelect?.PaperBalance ?? 0
-
     if(props.prefix){
         prefix.value = props.prefix
     }

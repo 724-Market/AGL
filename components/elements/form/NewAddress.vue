@@ -5,6 +5,7 @@
       label="ตั้งชื่อเรียกรายการนี้"
       name="LabelAddress"
       placeholder="เพื่อให้ง่ายต่อการเรียกใช้งานครั้งต่อไป"
+      @change="handleLabelAddressChange"
       validation="required"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
       autocomplete="false"
@@ -16,6 +17,7 @@
       label="หมายเลขโทรศัพท์"
       name="PhoneNumber"
       placeholder="098765XXXX"
+      @change="handlePhoneNumberChange"
       validation="required"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
       autocomplete="false"
@@ -27,6 +29,7 @@
       label="คำนำหน้าผู้รับ"
       name="Title"
       placeholder="คำนำหน้า"
+      @change="handleTitleChange"
       :options="prefix"
       validation="required"
       :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
@@ -38,6 +41,7 @@
       label="ชื่อผู้รับ"
       name="FirstName"
       placeholder="ชื่อ"
+      @change="handleFirstNameChange"
       validation="required"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
       autocomplete="false"
@@ -49,6 +53,7 @@
       label="นามสกุลผู้รับ"
       name="LastName"
       placeholder="นามสกุล"
+      @change="handleLastNameChange"
       validation="required"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
       autocomplete="false"
@@ -81,6 +86,15 @@ const props = defineProps({
     addrZipCode: String,
 })
 
+var LabelAddressText: string = ''
+var PhoneNumberText: string = ''
+var TitleText: string = ''
+var FirstNameText: string = ''
+var LastNameText: string = ''
+
+const insureFullAddress: globalThis.Ref<String> = ref('')
+const AddressObject: globalThis.Ref<DefaultAddress | undefined> = ref() 
+
 const prefix: globalThis.Ref<SelectOption[]> = ref([])
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
@@ -104,6 +118,28 @@ const onLoad = onMounted(() => {
         addrZipCode.value = props.addrZipCode
     }
 })
+
+const handleLabelAddressChange = async (event: any) => {
+  LabelAddressText = event.target.value
+  await handlerChangeFullAddress(insureFullAddress.value.toString(), AddressObject.value as DefaultAddress)
+}
+const handlePhoneNumberChange = async (event: any) => {
+  PhoneNumberText = event.target.value
+  await handlerChangeFullAddress(insureFullAddress.value.toString(), AddressObject.value as DefaultAddress)
+}
+const handleTitleChange = async (event: any) => {
+  TitleText = event.target.value
+  await handlerChangeFullAddress(insureFullAddress.value.toString(), AddressObject.value as DefaultAddress)
+}
+const handleFirstNameChange = async (event: any) => {
+  FirstNameText = event.target.value
+  await handlerChangeFullAddress(insureFullAddress.value.toString(), AddressObject.value as DefaultAddress)
+}
+const handleLastNameChange = async (event: any) => {
+  LastNameText = event.target.value
+  await handlerChangeFullAddress(insureFullAddress.value.toString(), AddressObject.value as DefaultAddress)
+}
+
 //watching props pass data
 watch(
     () => props.addrProvince,
@@ -163,9 +199,18 @@ const handlerChangeSubDistrict = (e: string) => {
         emit('changeSubDistrict', e)
     }
 }
-const handlerChangeFullAddress = (addr:string,ObjectAddress:DefaultAddress)=>{
+const handlerChangeFullAddress = (addr:string, ObjectAddress:DefaultAddress)=>{
   if(addr && ObjectAddress){
-    emit('changeFullAddress',addr,ObjectAddress)
+    insureFullAddress.value = addr
+    AddressObject.value = ObjectAddress
+
+    ObjectAddress.AddressText = LabelAddressText
+    ObjectAddress.PhoneNumber = PhoneNumberText
+    // ObjectAddress.Title = TitleText //TODO: ไม่มีใน model
+    ObjectAddress.FirstName = FirstNameText
+    ObjectAddress.LastName = LastNameText
+
+    emit('changeFullAddress', addr, ObjectAddress)
   }
 }
 </script>

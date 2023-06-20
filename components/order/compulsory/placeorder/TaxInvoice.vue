@@ -57,6 +57,7 @@
                         },
                       ]"
                       options-class="option-block-stack"
+                      v-model="addressIncludeTaxType"
                     />
                   </div>
 
@@ -141,7 +142,7 @@
                   </aside>
                 </section>
 
-                <div class="placeorder-action" v-hide="isIncludeTax == '1'">
+                <div class="placeorder-action" v-hide="isIncludeTax != '1'">
                   <div class="form-hide-label">
                     <FormKit
                       type="checkbox"
@@ -172,6 +173,7 @@
                         },
                       ]"
                       options-class="option-block-stack"
+                      v-model="addressOptionTaxType"
                     />
                   </div>
 
@@ -344,7 +346,7 @@ const props = defineProps({
 })
 
 const prefix: globalThis.Ref<SelectOption[]> = ref([])
-  const delivery: globalThis.Ref<SelectOption[]> = ref([])
+const delivery: globalThis.Ref<SelectOption[]> = ref([])
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
@@ -353,6 +355,8 @@ const insureFullAddress: globalThis.Ref<String> = ref('')
 
 const shippedPolicy = ref('') //together,separately
 const requestIncludeTax = ref([])
+const addressIncludeTaxType = ref('insured')
+const addressOptionTaxType = ref('insured')
 
 const onLoad = onMounted(async () => {
 

@@ -468,7 +468,17 @@ const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject
       else {
         let deliveryAddress = RecieveObject.PostalDelivary?.DeliveryAddress
         if(deliveryAddress && RecieveObject.PostalDelivary?.ShippingMethod != '') {
-          // if(deliveryAddress.LabelAddress.length > 0)
+          if(deliveryAddress.AddressText.length > 0
+            && deliveryAddress.PhoneNumber.length > 0
+            && deliveryAddress.FirstName.length > 0
+            && deliveryAddress.LastName.length > 0
+            && deliveryAddress.No.length > 0
+            && deliveryAddress.ProvinceID.length > 0
+            && deliveryAddress.DistrictID.length > 0
+            && deliveryAddress.SubDistrictID.length > 0) {
+              checklist.value[2].className = 'current'
+            }
+            else checklist.value[2].className = ''
         }
         else checklist.value[2].className = ''
       }

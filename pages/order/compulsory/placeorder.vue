@@ -27,6 +27,7 @@
             @change-sub-district="handlerChangeSubDistrict"
             @change-customer-type="handlerChangeCustomerType"
             @change-full-address="handlerChangeFullAddress"
+            @change-insure-detail="handlerChangeInsureDetail"
             :prefix="prefix"
             :nationality="nationality"
             :addr-province="addrProvince"
@@ -85,7 +86,10 @@
               ></OrderCartCar>
 
               <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลแพคเกจ # # # # # # # # # # # # # # # # # # # # #-->
-              <OrderCartPackage v-if="packageSelect && packageSelect.CompanyName != ''" :package-select="packageSelect" />
+              <OrderCartPackage
+                v-if="packageSelect && packageSelect.CompanyName != ''"
+                :package-select="packageSelect"
+              />
               <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลผู้เอาประกัน # # # # # # # # # # # # # # # # # # # # #-->
               <OrderCartInsure></OrderCartInsure>
             </div>
@@ -138,6 +142,8 @@ import {
   CarDetailsExtension,
   DeliveryAddress,
   InsuranceRecieveObject,
+  OrderRequest,
+  CustomerOrderRequest,
 } from "~/shared/entities/placeorder-entity";
 
 // Define Variables
@@ -170,7 +176,10 @@ const defaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref();
 
 const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
-
+const insureDetail: globalThis.Ref<InsureDetailObject> = ref({
+  IsPerson: false,
+  IsBranch: false,
+});
 let values = reactive({});
 
 const checklist: globalThis.Ref<IChecklist[]> = ref([
@@ -204,7 +213,7 @@ const { AuthenInfo } = storeToRefs(storeAuth);
 //define store
 const storeInfo = useStoreInformation();
 // define getter in store
-const { InformationInfo } = storeToRefs(storeInfo);
+const { CarInfo } = storeToRefs(storeInfo);
 
 //define store
 const storePackage = useStorePackage();
@@ -224,11 +233,11 @@ const onLoad = onMounted(async () => {
     if (jsonPackage != "") {
       packageSelect.value = JSON.parse(jsonPackage) as IPackageResponse;
     }
-    if (PackageInfo.value && InformationInfo.value) {
+    console.log(PackageInfo.value, CarInfo.value);
+    if (PackageInfo.value && CarInfo.value) {
       isLoading.value = true;
       await loadProvince();
       await loadCarColor();
-      await loadDelivery();
       await loadPrefix(true);
       await loadNationality();
       await loadDelivery();
@@ -459,8 +468,10 @@ const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject
       //TODO: Develop Check postal
       break;
   }
-
   insuranceRecieve.value = RecieveObject;
+};
+const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
+  insureDetail.value = InsureDetail;
 };
 // Define layout
 const layout = "monito";

@@ -398,9 +398,9 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
   }
 }
 const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
-  if (objectCarDetail.License != '' && objectCarDetail.LicenseProvinceID != '' && objectCarDetail.ColorID != '' && objectCarDetail.BodyNo != '') {
+  if (objectCarDetail.License.length > 0 && objectCarDetail.LicenseProvinceID.length > 0 && objectCarDetail.ColorID.length > 0 && objectCarDetail.BodyNo.length > 0) {
     if(SubCarModel.value === 'unknown' || SubCarModel.value === 'other'){
-      if(objectCarDetail.LicenseFileID != '') checklist.value[0].className = 'current'
+      if(objectCarDetail.LicenseFileID.length > 0) checklist.value[0].className = 'current'
       else checklist.value[0].className = ''
     }
     else checklist.value[0].className = 'current'
@@ -416,14 +416,24 @@ const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject
   console.log('RecieveObject', RecieveObject)
   switch(RecieveObject.ShippingPolicy){
     case 'pdf':
-      if(RecieveObject.Email != '') checklist.value[2].className = 'current'
+      if(RecieveObject.Email.length > 0) checklist.value[2].className = 'current'
       else checklist.value[2].className = ''
       break
     case 'print':
       checklist.value[2].className = 'current'
       break
     case 'postal':
-      //TODO: Develop Check postal
+      if(RecieveObject.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
+        if(RecieveObject.PostalDelivary?.ShippingMethod.length > 0) checklist.value[2].className = 'current'
+        else checklist.value[2].className = ''
+      }
+      else {
+        let deliveryAddress = RecieveObject.PostalDelivary?.DeliveryAddress
+        if(deliveryAddress && RecieveObject.PostalDelivary?.ShippingMethod != '') {
+          // if(deliveryAddress.LabelAddress.length > 0)
+        }
+        else checklist.value[2].className = ''
+      }
       break
   }
 

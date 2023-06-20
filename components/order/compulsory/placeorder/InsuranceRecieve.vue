@@ -48,7 +48,7 @@
                   <div class="row">
                     <div class="col-6">
                       <FormKit type="select" label="ช่องทางการจัดส่ง" name="ShippingMethod"
-                        placeholder="ช่องทางการจัดส่ง" v-model="ShippingMethodText"
+                        placeholder="ช่องทางการจัดส่ง" v-model="ShippingMethodText" @change="handleShippingMethodChange"
                         :options="{
                           dhl: 'DHL Express',
                           kerry: 'Kerry'
@@ -142,7 +142,7 @@ var isPdfShipping: globalThis.Ref<boolean> = ref(false)
 var isPrintShipping: globalThis.Ref<boolean> = ref(false)
 var isPostalShipping: globalThis.Ref<boolean> = ref(false)
 
-var postalAddressPolicyText: globalThis.Ref<String> = ref("")
+var postalAddressPolicyText: globalThis.Ref<String> = ref("insured")
 var isInsured: globalThis.Ref<boolean> = ref(false)
 var isAddnew: globalThis.Ref<boolean> = ref(false)
 
@@ -226,15 +226,21 @@ const handleRadioShippingPolicyChange = async (event: String) => {
   }
 }
 
+const handleShippingMethodChange = async (event: any) => {
+  await handleCheckInsuranceRecieve()
+}
+
 const handleRadioPostalAddressPolicyChange = async (event: String) => {
   switch (event) {
     case "insured":
       isInsured.value = true
       isAddnew.value = false
+      await handleCheckInsuranceRecieve()
       break;
     case "addnew": 
       isInsured.value = false
       isAddnew.value = true
+      await handleCheckInsuranceRecieve()
       break;
   }
 }
@@ -273,6 +279,7 @@ const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddres
   }
 }
 const handleCheckInsuranceRecieve = async () => {
+  console.log('ShippingMethodText', ShippingMethodText)
   let RecieveObject: InsuranceRecieveObject = {
     ShippingPolicy: shippingPolicyText.value.toString(),
     Email: emailValue,

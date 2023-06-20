@@ -119,6 +119,15 @@
                 :carLabel="carLabelForCart">
               </OrderCartCar>
             </div> -->
+            <OrderCartCar
+                v-if="InformationInfo"
+                :car-detail="InformationInfo.CarDetail"
+                :car-use="InformationInfo.CarUse"
+                :is-car-red="false"
+                :effective-date="InformationInfo.EffectiveDate"
+                :expire-date="InformationInfo.ExpireDate"
+                :insurance-day="InformationInfo.InsuranceDay"
+              ></OrderCartCar>
 
             <OrderChecklist :list="checklist" v-if="checklist && checklist.length > 0" />
 
@@ -160,7 +169,7 @@ import { IChecklist } from "~/shared/entities/checklist-entity";
 
 // Define Store
 const store = useStoreInformation();
-const { InformationInfo } = storeToRefs(store);
+const { CarInfo } = storeToRefs(store);
 
 // Define Variables
 // Loading state after form submiting
@@ -173,7 +182,7 @@ const submitted = ref(false);
 const statusMessage = ref()
 const statusMessageType = ref()
 
-const dateNow: Date = new Date()
+
 const CoverageExpireDateFullYearMaxDay: number = defineEventHandler.compulsory.CoverageExpireDateFullYearMaxDay
 const coverageExpireDateNotFullYearMinDay: number = defineEventHandler.compulsory.CoverageExpireDateNotFullYearMinDay
 const coverageExpireDateNotFullYearMaxDay: number = defineEventHandler.compulsory.CoverageExpireDateNotFullYearMaxDay
@@ -204,6 +213,7 @@ var effectiveType: globalThis.Ref<String> = ref("FULLYEAR")
 
 var selectDate: Date
 var effectiveDateText: globalThis.Ref<String> = ref("")
+const dateNow: Date = new Date()
 const effectiveMinDate: String = dateNow.toLocaleDateString("en-CA") // en-CA or sv => yyyy-MM-dd 
 const effectiveMaxDate: String = new Date(dateNow.setDate(dateNow.getDate() + defineEventHandler.compulsory.CoverageFuture)).toLocaleDateString("en-CA")
 

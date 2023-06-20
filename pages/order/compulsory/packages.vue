@@ -1,8 +1,14 @@
 <template>
   <NuxtLayout :name="layout">
     <!-- Content -->
-    <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
-      :incomplete-message="false">
+    <FormKit
+      type="form"
+      @submit="submitOrder"
+      :actions="false"
+      id="form-order"
+      form-class="form-order form-theme"
+      :incomplete-message="false"
+    >
       <div class="row">
         <div class="col-lg-8 col-xl-9">
           <div class="card">
@@ -21,9 +27,17 @@
               </div>
             </div>
           </div>
-          <OrderCompulsoryPackagesList :is-loading="isLoading" :checklist="checklist" :is-error="isError"
-            :message-error="messageError" :package-list="packageList" :pages="paging" @change-checklist="handlerCheckList"
-            @change-select="handlerSelect" @change-page="handlerChangePage"></OrderCompulsoryPackagesList>
+          <OrderCompulsoryPackagesList
+            :is-loading="isLoading"
+            :checklist="checklist"
+            :is-error="isError"
+            :message-error="messageError"
+            :package-list="packageList"
+            :pages="paging"
+            @change-checklist="handlerCheckList"
+            @change-select="handlerSelect"
+            @change-page="handlerChangePage"
+          ></OrderCompulsoryPackagesList>
         </div>
 
         <!-- Sidebar -->
@@ -34,18 +48,37 @@
               <h3 class="card-title">รายการที่เลือก</h3>
             </div>
             <div class="card-body">
-              <OrderCartCar v-if="InformationInfo" :car-detail="InformationInfo.CarDetail" :car-use="InformationInfo.CarUse" :car-label="''" :effective-date="InformationInfo.EffectiveDate" :expire-date="InformationInfo.ExpireDate" :insurance-day="InformationInfo.InsuranceDay"></OrderCartCar>
+              <OrderCartCar
+                v-if="informationSelect"
+                :car-detail="informationSelect.CarDetail"
+                :car-use="informationSelect.CarUse"
+                :is-car-red="false"
+                :effective-date="informationSelect.EffectiveDate"
+                :expire-date="informationSelect.ExpireDate"
+                :insurance-day="informationSelect.InsuranceDay"
+              ></OrderCartCar>
               <!-- <OrderCartPackage></OrderCartPackage> -->
-              <OrderCartPackage v-if="packageSelect && packageSelect.CompanyName != ''" :package-select="packageSelect" />
+              <OrderCartPackage
+                v-if="packageSelect && packageSelect.CompanyName != ''"
+                :package-select="packageSelect"
+              />
             </div>
 
             <OrderChecklist :list="checklist" />
           </aside>
 
-          <FormKit type="submit" label="ไปกรอกข้อมูลสั่งซื้อ" name="order-submit" id="order-submit" :classes="{
-            input: 'btn-primary',
-            outer: 'form-actions',
-          }" :disabled="!isSelect" :loading="isLoading" />
+          <FormKit
+            type="submit"
+            label="ไปกรอกข้อมูลสั่งซื้อ"
+            name="order-submit"
+            id="order-submit"
+            :classes="{
+              input: 'btn-primary',
+              outer: 'form-actions',
+            }"
+            :disabled="!isSelect"
+            :loading="isLoading"
+          />
 
           <NuxtLink to="information" class="btn btn-back">ย้อนกลับ</NuxtLink>
         </div>
@@ -115,10 +148,10 @@ const { AuthenInfo } = storeToRefs(storeAuth);
 //define store
 const storeInfo = useStoreInformation();
 // define getter in store
-//const {InformationInfo} = storeToRefs(storeInfo);
+const informationSelect: globalThis.Ref<IInformation | undefined> = ref();
 // init event
 const onInit = async () => {
-  isLoading.value = true
+  isLoading.value = true;
   // define parameter page
   const page = useUtility().getPaging(paging.value);
   paging.value = page;
@@ -134,13 +167,14 @@ const onInit = async () => {
   }
 };
 const showPackageList = async () => {
-  isLoading.value = true
+  isLoading.value = true;
   if (AuthenInfo.value) {
     const json = sessionStorage.getItem("useStoreInformation") || "";
     if (json != "") {
       const info = JSON.parse(json) as IInformation | undefined;
       // check information package
       if (info) {
+        informationSelect.value = info;
         // Get Package List
         const store = useStorePackageList();
         // set car detail
@@ -165,10 +199,9 @@ const showPackageList = async () => {
         console.log(request);
         const data = await store.getPackageList(request);
 
-
         if (data && data.Data) {
           // set default value
-          const packages = useDefaulValue().setDefaultPackageListValue(data.Data)
+          const packages = useDefaulValue().setDefaultPackageListValue(data.Data);
           isLoading.value = false;
           packageList.value = packages;
           // define parameter page
@@ -202,21 +235,20 @@ const handlerCheckList = (_checklist: IChecklist[]) => {
   checklist.value = _checklist;
 };
 const handlerSelect = (select: Boolean, item: IPackageResponse) => {
-  console.log(select, item)
+  console.log(select, item);
   isSelect.value = select;
-  packageSelect.value = item
+  packageSelect.value = item;
 };
 const handlerChangePage = async (page: number, lengthPage: number) => {
-  console.log(page, lengthPage)
+  console.log(page, lengthPage);
   if (page != -1) {
     const _page = useUtility().getPaging(paging.value);
-    _page.Length = lengthPage
-    _page.Page = page
-    paging.value = _page
+    _page.Length = lengthPage;
+    _page.Page = page;
+    paging.value = _page;
     await showPackageList();
   }
-
-}
+};
 // Submit form event
 const submitOrder = async (formData: any) => {
   console.log(
@@ -236,7 +268,6 @@ const submitOrder = async (formData: any) => {
 
     router.push("/order/compulsory/placeorder");
   }
-
 };
 
 const layout = "monito";

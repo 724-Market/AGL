@@ -1,48 +1,128 @@
 <template>
   <div v-if="ObjectAddress" class="row">
     <div class="col-6">
-      <FormKit type="text" label="บ้านเลขที่" name="AddressHouseNumber" placeholder="บ้านเลขที่" validation="required"
-        v-model="ObjectAddress.No" :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="false" />
+      <FormKit
+        type="text"
+        label="บ้านเลขที่"
+        name="AddressHouseNumber"
+        placeholder="บ้านเลขที่"
+        v-model="ObjectAddress.No"
+        @input-raw="handlerChangeFullAddress"
+        :validation-rules="{ address_characters }"
+        validation="required|address_characters"
+        :validation-messages="{
+          required: 'กรุณาใส่ข้อมูล',
+          address_characters: 'กรุณากรอกรูปแบบบ้านเลขที่ให้ถูกต้อง',
+        }"
+        autocomplete="false"
+      />
     </div>
     <div class="col-6">
-      <FormKit type="text" label="หมู่ที่" name="AddressMoo" placeholder="หมู่ที่" autocomplete="false"
-        v-model="ObjectAddress.Moo" />
+      <FormKit
+        type="text"
+        label="หมู่ที่"
+        name="AddressMoo"
+        placeholder="หมู่ที่"
+        autocomplete="false"
+        v-model="ObjectAddress.Moo"
+        @input-raw="handlerChangeFullAddress"
+      />
     </div>
     <div class="col-xs-12 col-md-6">
-      <FormKit type="text" label="หมู่บ้าน/อาคาร" name="AddressVillage" placeholder="หมู่บ้าน/อาคาร"
-        v-model="ObjectAddress.Building" autocomplete="false" />
+      <FormKit
+        type="text"
+        label="หมู่บ้าน/อาคาร"
+        name="AddressVillage"
+        placeholder="หมู่บ้าน/อาคาร"
+        v-model="ObjectAddress.Building"
+        @input-raw="handlerChangeFullAddress"
+        autocomplete="false"
+      />
     </div>
     <div class="col-6">
-      <FormKit type="text" label="ซอย/ตรอก/แยก" name="AddressSoi" placeholder="ซอย/ตรอก/แยก" autocomplete="false"
-        v-model="ObjectAddress.Soi" />
+      <FormKit
+        type="text"
+        label="ซอย/ตรอก/แยก"
+        name="AddressSoi"
+        placeholder="ซอย/ตรอก/แยก"
+        autocomplete="false"
+        v-model="ObjectAddress.Soi"
+        @input-raw="handlerChangeFullAddress"
+      />
     </div>
     <div class="col-6">
-      <FormKit type="text" label="ถนน" name="AddressRoad" placeholder="ถนน" autocomplete="false"
-        v-model="ObjectAddress.Road" />
+      <FormKit
+        type="text"
+        label="ถนน"
+        name="AddressRoad"
+        placeholder="ถนน"
+        autocomplete="false"
+        v-model="ObjectAddress.Road"
+        @input-raw="handlerChangeFullAddress"
+      />
     </div>
     <div class="col-6">
-      <FormKit type="text" label="รหัสไปรษณีย์" readonly name="AddressPostalCode" v-model="addrZipCode"
-        placeholder="รหัสไปรษณีย์" validation="required" :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-        autocomplete="false" />
+      <FormKit
+        type="text"
+        label="รหัสไปรษณีย์"
+        readonly
+        name="AddressPostalCode"
+        v-model="addrZipCode"
+        @input-raw="handlerChangeFullAddress"
+        placeholder="รหัสไปรษณีย์"
+        validation="required"
+        :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
+        autocomplete="false"
+      />
     </div>
     <div class="col-6">
-      <FormKit type="autocomplete" label="จังหวัด" name="AddressProvince" placeholder="จังหวัด"
-        @input-raw="handlerChangeProvince" :options="addrProvince" validation="required"
-        v-model="ObjectAddress.ProvinceID" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+      <FormKit
+        type="autocomplete"
+        label="จังหวัด"
+        name="AddressProvince"
+        placeholder="จังหวัด"
+        @input-raw="handlerChangeProvince"
+        :options="addrProvince"
+        validation="required"
+        v-model="ObjectAddress.ProvinceID"
+        :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+      />
     </div>
     <div class="col-6">
-      <FormKit type="autocomplete" label="เขต/อำเภอ" name="AddressDistrict" placeholder="เขต/อำเภอ"
-        :options="addrDistrict" @input-raw="handlerChangeDistrict" validation="required"
-        v-model="ObjectAddress.DistrictID" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+      <FormKit
+        type="autocomplete"
+        label="เขต/อำเภอ"
+        name="AddressDistrict"
+        placeholder="เขต/อำเภอ"
+        :options="addrDistrict"
+        @input-raw="handlerChangeDistrict"
+        validation="required"
+        v-model="ObjectAddress.DistrictID"
+        :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+      />
     </div>
     <div class="col-6">
-      <FormKit type="autocomplete" label="แขวง/ตำบล" name="AddressSubdistrict" placeholder="แขวง/ตำบล"
-        v-model="ObjectAddress.SubDistrictID" :options="addrSubDistrict" @input-raw="handlerChangeSubDistrict"
-        validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+      <FormKit
+        type="autocomplete"
+        label="แขวง/ตำบล"
+        name="AddressSubdistrict"
+        placeholder="แขวง/ตำบล"
+        v-model="ObjectAddress.SubDistrictID"
+        :options="addrSubDistrict"
+        @input-raw="handlerChangeSubDistrict"
+        validation="required"
+        :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+      />
     </div>
     <div class="col-xs-12 col-md-6">
-      <FormKit type="text" label="ระบุที่อยู่เอง กรณีไม่มีข้อมูลให้เลือก" name="AddressCustom" autocomplete="false"
-        v-model="ObjectAddress.AddressText" />
+      <FormKit
+        type="text"
+        label="ระบุที่อยู่เอง กรณีไม่มีข้อมูลให้เลือก"
+        name="AddressCustom"
+        autocomplete="false"
+        v-model="ObjectAddress.AddressText"
+        @input-raw="handlerChangeFullAddress"
+      />
     </div>
   </div>
 </template>
@@ -111,6 +191,15 @@ const onLoad = onMounted(() => {
     addrZipCode.value = props.addrZipCode
   }
 })
+// handler validate function
+const address_characters = function ({value}) {
+
+  return new Promise((resolve) => {
+    const reg = new RegExp("^[0-9,\/,\-.]*$")
+    const validate = reg.test(value)
+    resolve(validate)
+  })
+}
 //watching data
 watch(
   () => props.addrProvince,
@@ -145,35 +234,33 @@ watch(
   }
 )
 
-watch(ObjectAddress, (newObjectAddressw) => {
-  if (newObjectAddressw) {
-    handlerChangeFullAddress()
 
-  }
-})
 // handler function for emit
 const handlerChangeProvince = (e: string) => {
   if (e) {
-
+    handlerChangeFullAddress()
     emit('changeProvince', e)
 
   }
 }
 const handlerChangeDistrict = (e: string) => {
   if (e) {
+    handlerChangeFullAddress()
     emit('changeDistrict', e)
   }
 }
 const handlerChangeSubDistrict = (e: string) => {
   if (e) {
+    handlerChangeFullAddress()
     emit('changeSubDistrict', e)
   }
 }
 const handlerChangeFullAddress = () => {
   let fullAddress = "";
   if (ObjectAddress && ObjectAddress.value) {
-    if (ObjectAddress.value.AddressID.length > 0) {
-      fullAddress += ObjectAddress.value.AddressID + " ";
+
+    if (ObjectAddress.value.No.length > 0) {
+      fullAddress += ObjectAddress.value.No + " ";
     }
     if (ObjectAddress.value.Moo.length > 0) {
       fullAddress += "หมู่ที่ " + ObjectAddress.value.Moo + " ";
@@ -212,7 +299,7 @@ const handlerChangeFullAddress = () => {
       ObjectAddress.value.ZipCode = addrZipCode.value
       fullAddress += "รหัสไปรษณีย์ " + addrZipCode.value + " "
     }
-    if (ObjectAddress.value.AddressID.length > 0 &&
+    if (ObjectAddress.value.No.length > 0 &&
       ObjectAddress.value.SubDistrictID.length > 0 &&
       ObjectAddress.value.DistrictID.length > 0 &&
       ObjectAddress.value.ProvinceID.length > 0 &&
@@ -220,7 +307,5 @@ const handlerChangeFullAddress = () => {
       emit('changeFullAddress', fullAddress, ObjectAddress.value)
     }
   }
-
-
 }
 </script>

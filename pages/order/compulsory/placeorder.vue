@@ -27,7 +27,9 @@
             @change-sub-district="handlerChangeSubDistrict"
             @change-customer-type="handlerChangeCustomerType"
             @change-full-address="handlerChangeFullAddress"
+            @change-insure-detail="handlerChangeInsureDetail"
             :prefix="prefix"
+            :nationality="nationality"
             :addr-province="addrProvince"
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
@@ -51,15 +53,19 @@
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ใบกำกับภาษี # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderTaxInvoice
-          @change-province="handlerChangeProvince"
+            v-if="packageSelect"
+            @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrict"
             :insure-full-address="insureFullAddress"
             :prefix="prefix"
+            :delivery="delivery"
             :addr-province="addrProvince"
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
             :addr-zip-code="addrZipCode"
+            :is-include-tax="packageSelect.IsTaxInclude"
+            :shipping-policy="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
           ></OrderCompulsoryPlaceorderTaxInvoice>
         </div>
 
@@ -71,10 +77,21 @@
             </div>
             <div class="card-body">
               <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลรถ # # # # # # # # # # # # # # # # # # # # #-->
-              <OrderCartCar></OrderCartCar>
+              <OrderCartCar
+                v-if="infomation && carDetail"
+                :car-detail="infomation.CarDetail"
+                :car-use="infomation.CarUse"
+                :is-car-red="carDetail.IsRedLicense"
+                :effective-date="infomation.EffectiveDate"
+                :expire-date="infomation.ExpireDate"
+                :insurance-day="infomation.InsuranceDay"
+              ></OrderCartCar>
 
               <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลแพคเกจ # # # # # # # # # # # # # # # # # # # # #-->
-              <OrderCartPackage></OrderCartPackage>
+              <OrderCartPackage
+                v-if="packageSelect && packageSelect.CompanyName != ''"
+                :package-select="packageSelect"
+              />
               <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลผู้เอาประกัน # # # # # # # # # # # # # # # # # # # # #-->
               <OrderCartInsure></OrderCartInsure>
             </div>
@@ -122,10 +139,13 @@ import {
 import { SelectOption } from "~/shared/entities/select-option";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStorePackage } from "~/stores/order/storePackage";
-import { DefaultAddress, 
+import {
+  DefaultAddress,
   CarDetailsExtension,
   DeliveryAddress,
-  InsuranceRecieveObject
+  InsuranceRecieveObject,
+  OrderRequest,
+  CustomerOrderRequest,
 } from "~/shared/entities/placeorder-entity";
 
 // Define Variables
@@ -139,14 +159,14 @@ const submitted = ref(false);
 const statusMessage = ref();
 const statusMessageType = ref();
 
-const SubCarModel: globalThis.Ref<String> = ref("")
+const SubCarModel: globalThis.Ref<String> = ref("");
 
 const infomation: globalThis.Ref<IInformation | undefined> = ref();
-const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
 const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
 const carProvince: globalThis.Ref<SelectOption[]> = ref([]);
 const carColor: globalThis.Ref<SelectOption[]> = ref([]);
 const prefix: globalThis.Ref<SelectOption[]> = ref([]);
+const nationality: globalThis.Ref<SelectOption[]> = ref([]);
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([]);
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([]);
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([]);
@@ -154,11 +174,11 @@ const addrZipCode = ref("");
 const delivery: globalThis.Ref<SelectOption[]> = ref([]);
 const insureFullAddress: globalThis.Ref<string> = ref("");
 const isSelect: globalThis.Ref<Boolean> = ref(false);
-const defaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref();
+const defaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref();
 
 const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
-
+const insureDetail: globalThis.Ref<CustomerOrderRequest> = ref({});
 let values = reactive({});
 
 const checklist: globalThis.Ref<IChecklist[]> = ref([
@@ -192,7 +212,7 @@ const { AuthenInfo } = storeToRefs(storeAuth);
 //define store
 const storeInfo = useStoreInformation();
 // define getter in store
-const { InformationInfo } = storeToRefs(storeInfo);
+const { CarInfo } = storeToRefs(storeInfo);
 
 //define store
 const storePackage = useStorePackage();
@@ -206,18 +226,20 @@ const onLoad = onMounted(async () => {
     const jsonInfo = sessionStorage.getItem("useStoreInformation") || "";
     if (jsonInfo != "") {
       infomation.value = JSON.parse(jsonInfo) as IInformation;
-      SubCarModel.value = infomation.value.SubCarModel
+      SubCarModel.value = infomation.value.SubCarModel;
     }
     const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
     if (jsonPackage != "") {
       packageSelect.value = JSON.parse(jsonPackage) as IPackageResponse;
     }
-    if (PackageInfo.value && InformationInfo.value) {
+    console.log(PackageInfo.value, CarInfo.value);
+    if (PackageInfo.value && CarInfo.value) {
       isLoading.value = true;
       await loadProvince();
       await loadCarColor();
-      await loadDelivery();
       await loadPrefix(true);
+      await loadNationality();
+      await loadDelivery();
       isLoading.value = false;
     } else {
       router.push("/order/compulsory/packages");
@@ -335,6 +357,23 @@ const loadDelivery = async () => {
   } else {
   }
 };
+const loadNationality = async () => {
+  const response = await useRepository().master.nationality();
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data) {
+      nationality.value = response.apiResponse.Data.map((x) => {
+        const options: SelectOption = {
+          label: x.Name,
+          value: x.ID,
+        };
+        return options;
+      });
+    } else {
+      // data not found
+    }
+  } else {
+  }
+};
 const loadCarColor = async () => {
   if (PackageInfo.value) {
     let carColorList: SelectOption[] = [];
@@ -389,14 +428,13 @@ const handlerChangeSubDistrict = async (e: string) => {
   }
 };
 const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) => {
-  if(ObjectAddress){
-    defaultAddress.value = ObjectAddress
-   
+  if (ObjectAddress) {
+    defaultAddress.value = ObjectAddress;
   }
-  if(addr){
-    insureFullAddress.value = addr
+  if (addr) {
+    insureFullAddress.value = addr;
   }
-}
+};
 const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
   if (objectCarDetail.License.length > 0 && objectCarDetail.LicenseProvinceID.length > 0 && objectCarDetail.ColorID.length > 0 && objectCarDetail.BodyNo.length > 0) {
     if(SubCarModel.value === 'unknown' || SubCarModel.value === 'other'){
@@ -409,9 +447,9 @@ const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
     checklist.value[0].className = ''
   }
 
-  carDetail.value = objectCarDetail
+  carDetail.value = objectCarDetail;
   // console.log('handleCheckCarDetail', carDetail.value)
-}
+};
 const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject) => {
   console.log('RecieveObject', RecieveObject)
   switch(RecieveObject.ShippingPolicy){
@@ -436,9 +474,11 @@ const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject
       }
       break
   }
-
-  insuranceRecieve.value = RecieveObject
-}
+  insuranceRecieve.value = RecieveObject;
+};
+const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
+  insureDetail.value = InsureDetail;
+};
 // Define layout
 const layout = "monito";
 

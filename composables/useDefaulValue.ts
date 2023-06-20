@@ -8,7 +8,7 @@ export default () => {
                 list[index].IsTaxInclude = config.public.FixValuePackageTaxInclude
             }
             if (!value.PaperBalance && config.public.FixDefaultPackagePaperBalance=='1') {
-                if (value.CompanyCode.toLowerCase().includes('trisri') || value.CompanyName.toLowerCase().includes('trisri')) {
+                if (value.CompanyCode.toUpperCase().includes('TMW')) {
                     list[index].PaperBalance = 0
                 }
                 list[index].PaperBalance = parseInt(config.public.FixValuePackagePaperBalance)

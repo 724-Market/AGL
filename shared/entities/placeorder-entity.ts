@@ -189,6 +189,7 @@ export interface TaxInvoiceDeliveryAddress {
 export interface OrderResponse {
   OrderNo: string
 }
+
 export interface InsuranceRecieveObject {
   ShippingPolicy: string
   Email: string
@@ -199,5 +200,4 @@ export interface PostalDelivary {
   ShippingMethod: string
   ShippingFee: string
   DeliveryAddress?: DeliveryAddress
-
 }

@@ -46,6 +46,7 @@
             @check-insurance-recieve="handleCheckInsuranceRecieve"
             :insure-full-address="insureFullAddress"
             :prefix="prefix"
+            :delivery="delivery"
             :addr-province="addrProvince"
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"

@@ -49,10 +49,7 @@
                     <div class="col-6">
                       <FormKit type="select" label="ช่องทางการจัดส่ง" name="ShippingMethod"
                         placeholder="ช่องทางการจัดส่ง" v-model="ShippingMethodText" @change="handleShippingMethodChange"
-                        :options="{
-                          dhl: 'DHL Express',
-                          kerry: 'Kerry'
-                        }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                        :options="delivery" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
                     </div>
 
                     <div class="col-6">
@@ -119,6 +116,7 @@ const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict',
 
 const props = defineProps({
   prefix:Array<SelectOption>,
+  delivery:Array<SelectOption>,
   addrProvince: Array<SelectOption>,
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
@@ -151,6 +149,7 @@ var ShippingMethodText: string = ""
 var ShippingFeeText: string = "50 บาท"
 
 const prefix: globalThis.Ref<SelectOption[]> = ref([])
+const delivery: globalThis.Ref<SelectOption[]> = ref([])
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
@@ -163,6 +162,9 @@ const insureFullNewAddress: globalThis.Ref<String> = ref('')
 const onLoad = onMounted(async () => {
     if(props.prefix){
         prefix.value = props.prefix
+    }
+    if(props.delivery){
+      delivery.value = props.delivery
     }
     if (props.addrProvince) {
         addrProvince.value = props.addrProvince
@@ -375,6 +377,14 @@ watch(
     () => {
         if (props.prefix && props.prefix.length > 0) {
             prefix.value = props.prefix
+        }
+    }
+)
+watch(
+    () => props.delivery,
+    () => {
+        if (props.delivery && props.delivery.length > 0) {
+          delivery.value = props.delivery
         }
     }
 )

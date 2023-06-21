@@ -252,8 +252,36 @@ const onLoad = onMounted(async () => {
 });
 // Submit form event
 const submitOrder = async (formData: any) => {
+  insureDetail.value.DeliveryAddress = insuranceRecieve.value?.PostalDelivary?.DeliveryAddress //TODO: Add from other component
+
+  let orderReq: OrderRequest = {
+    Package: {
+      UseCarCode: infomation.value?.CarUse ?? "",
+      CarTypeCode: infomation.value?.CarType ?? "",
+      CarCategoryID: infomation.value?.CarSize ?? "",
+      CarSalesYear: infomation.value?.CarYear ?? "",
+      CarBrandID: infomation.value?.CarBrand ?? "",
+      CarModelID: infomation.value?.CarModel ?? "",
+      SubCarModelID: infomation.value?.SubCarModel ?? "",
+      CompanyCode: packageSelect.value?.CompanyCode ?? "",
+      AgentCode: "",
+      EffectiveType: infomation.value?.EffectiveType ?? "",
+      EffectiveDate: infomation.value?.EffectiveDate ?? "",
+      ExpireDate: infomation.value?.ExpireDate ?? ""
+    },
+    CarDetailsExtension: carDetail.value,
+    Customer: insureDetail.value, 
+    DeliveryType: insuranceRecieve.value?.ShippingPolicy,
+    DeliveryEmail: insuranceRecieve.value?.Email,
+    IsTaxInvoice: packageSelect.value?.IsTaxInclude == '1' ? true : false
+  }
+
+  const response = await useRepository().order.create(orderReq);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    //TODO: Implement next step
+  }
   // Add waiting time for debug
-  await new Promise((r) => setTimeout(r, 1000));
+  // await new Promise((r) => setTimeout(r, 1000));
 };
 // handle loading api & set refs
 const loadPrefix = async (isPerson: boolean) => {

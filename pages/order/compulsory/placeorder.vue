@@ -253,7 +253,40 @@ const onLoad = onMounted(async () => {
 });
 // Submit form event
 const submitOrder = async (formData: any) => {
-  insureDetail.value.DeliveryAddress = insuranceRecieve.value?.PostalDelivary?.DeliveryAddress //TODO: Add from other component
+  if(insuranceRecieve.value?.ShippingPolicy == 'postal'){
+    if(insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault){
+      insureDetail.value.DeliveryAddress = {
+        AddressID: insureDetail.value.DefaultAddress?.AddressID ?? '',
+        ReferenceID: insureDetail.value.DefaultAddress?.ReferenceID ?? '',
+        ReferenceType: insureDetail.value.DefaultAddress?.ReferenceType ?? '',
+        ProvinceID: insureDetail.value.DefaultAddress?.ProvinceID ?? '',
+        DistrictID: insureDetail.value.DefaultAddress?.DistrictID ?? '',
+        SubDistrictID: insureDetail.value.DefaultAddress?.SubDistrictID ?? '',
+        TaxID: insureDetail.value.DefaultAddress?.TaxID ?? '',
+        FirstName: insureDetail.value.DefaultAddress?.FirstName ?? '',
+        LastName: insureDetail.value.DefaultAddress?.LastName ?? '',
+        PhoneNumber: insureDetail.value.DefaultAddress?.PhoneNumber ?? '',
+        Email: insureDetail.value.DefaultAddress?.Email ?? '',
+        Name: insureDetail.value.DefaultAddress?.Name ?? '',
+        Type: insureDetail.value.DefaultAddress?.Type ?? '',
+        AddressLine1: insureDetail.value.DefaultAddress?.AddressLine1 ?? '',
+        AddressLine2: insureDetail.value.DefaultAddress?.AddressLine2 ?? '',
+        AddressText: insureDetail.value.DefaultAddress?.AddressText ?? '',
+        No: insureDetail.value.DefaultAddress?.No ?? '',
+        Moo: insureDetail.value.DefaultAddress?.Moo ?? '',
+        Place: insureDetail.value.DefaultAddress?.Place ?? '',
+        Building: insureDetail.value.DefaultAddress?.Building ?? '',
+        Floor: insureDetail.value.DefaultAddress?.Floor ?? '',
+        Room: insureDetail.value.DefaultAddress?.Room ?? '',
+        Branch: insureDetail.value.DefaultAddress?.Branch ?? '',
+        Alley: insureDetail.value.DefaultAddress?.Alley ?? '',
+        Road: insureDetail.value.DefaultAddress?.Road ?? '',
+      }
+    }
+    else{
+      insureDetail.value.DeliveryAddress = insuranceRecieve.value?.PostalDelivary?.DeliveryAddress 
+    }
+  }
 
   let orderReq: OrderRequest = {
     Package: {

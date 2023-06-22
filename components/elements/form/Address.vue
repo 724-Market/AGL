@@ -145,10 +145,7 @@ const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
 
-const ObjectAddress: globalThis.Ref<DefaultAddress | undefined> = ref()
-
-const onLoad = onMounted(() => {
-  const _defaultAddress: DefaultAddress = {
+const ObjectAddress: globalThis.Ref<DefaultAddress> = ref({
     AddressID: '',
     AddressLine1: '',
     AddressLine2: '',
@@ -176,8 +173,9 @@ const onLoad = onMounted(() => {
     TaxID: '',
     Type: '',
     ZipCode: '',
-  }
-  ObjectAddress.value = _defaultAddress
+  })
+
+const onLoad = onMounted(() => {
   if (props.addrProvince) {
     addrProvince.value = props.addrProvince
   }
@@ -238,6 +236,10 @@ watch(
 // handler function for emit
 const handlerChangeProvince = (e: string) => {
   if (e) {
+    if(ObjectAddress.value){
+      ObjectAddress.value.ProvinceID = e
+    }
+    console.log(ObjectAddress.value.ProvinceID )
     handlerChangeFullAddress()
     emit('changeProvince', e)
 
@@ -245,12 +247,18 @@ const handlerChangeProvince = (e: string) => {
 }
 const handlerChangeDistrict = (e: string) => {
   if (e) {
+    if(ObjectAddress.value){
+      ObjectAddress.value.DistrictID = e
+    }
     handlerChangeFullAddress()
     emit('changeDistrict', e)
   }
 }
 const handlerChangeSubDistrict = (e: string) => {
   if (e) {
+    if(ObjectAddress.value){
+      ObjectAddress.value.SubDistrictID = e
+    }
     handlerChangeFullAddress()
     emit('changeSubDistrict', e)
   }

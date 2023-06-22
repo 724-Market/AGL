@@ -60,6 +60,9 @@
             @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrict"
+            @change-province2="handlerChangeProvince2"
+            @change-district2="handlerChangeDistrict2"
+            @change-sub-district2="handlerChangeSubDistrict2"
             :insure-full-address="insureFullAddress"
             :prefix="prefix"
             :delivery="delivery"
@@ -67,6 +70,9 @@
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
             :addr-zip-code="addrZipCode"
+            :addr-district2="addrDistrict"
+            :addr-sub-district2="addrSubDistrict"
+            :addr-zip-code2="addrZipCode"
             :is-include-tax="packageSelect.IsTaxInclude"
             :shipping-policy="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
           ></OrderCompulsoryPlaceorderTaxInvoice>
@@ -175,6 +181,9 @@ const addrProvince: globalThis.Ref<SelectOption[]> = ref([]);
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([]);
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([]);
 const addrZipCode = ref("");
+const addrDistrict2: globalThis.Ref<SelectOption[]> = ref([]);
+const addrSubDistrict2: globalThis.Ref<SelectOption[]> = ref([]);
+const addrZipCode2 = ref("");
 const delivery: globalThis.Ref<SelectOption[]> = ref([]);
 const insureFullAddress: globalThis.Ref<string> = ref("");
 const isSelect: globalThis.Ref<Boolean> = ref(false);
@@ -364,34 +373,38 @@ const loadProvince = async () => {
   }
   addrProvince.value = carProvince.value;
 };
-const loadDistrict = async (provId: string) => {
+const loadDistrict = async (provId: string):Promise<SelectOption[]> => {
+  let options:SelectOption[]  = [];
   const req: DistrictReq = {
     ProvinceID: provId,
   };
   const response = await useRepository().master.district(req);
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if (response.apiResponse.Data) {
-      addrDistrict.value = response.apiResponse.Data.map((x) => {
-        const options: SelectOption = {
+      options = response.apiResponse.Data.map((x) => {
+        const opt: SelectOption = {
           label: x.Name,
           value: x.ID,
         };
-        return options;
+        return opt;
       });
     } else {
       // data not found
     }
   } else {
   }
+
+  return options
 };
-const loadSubDistrict = async (distId: string) => {
+const loadSubDistrict = async (distId: string):Promise<SelectOption[]> => {
+  let options:SelectOption[]  = [];
   const req: SubDistrictReq = {
     DistrictID: distId,
   };
   const response = await useRepository().master.subDistrict(req);
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if (response.apiResponse.Data) {
-      addrSubDistrict.value = response.apiResponse.Data.map((x) => {
+      options = response.apiResponse.Data.map((x) => {
         const options: SelectOption = {
           label: x.Name,
           value: x.ID,
@@ -404,12 +417,17 @@ const loadSubDistrict = async (distId: string) => {
     }
   } else {
   }
+
+  return options
 };
-const loadZipCode = async (subDistId: string) => {
+const loadZipCode = async (subDistId: string):Promise<string> => {
+  let option = '';
   const filter = addrSubDistrict.value.filter((x) => x.value == subDistId);
   if (filter.length > 0) {
-    addrZipCode.value = filter[0].option ?? "";
+    option = filter[0].option ?? "";
   }
+
+  return option
 };
 const loadDelivery = async () => {
   const response = await useRepository().delivery.channel();
@@ -479,7 +497,7 @@ const handlerChangeProvince = async (e: string) => {
   console.log("handlerChangeProvince", e);
   if (e) {
     isLoading.value = true;
-    await loadDistrict(e);
+   addrDistrict.value =  await loadDistrict(e);
     console.log(addrDistrict.value);
     isLoading.value = false;
   }
@@ -487,7 +505,7 @@ const handlerChangeProvince = async (e: string) => {
 const handlerChangeDistrict = async (e: string) => {
   if (e) {
     isLoading.value = true;
-    await loadSubDistrict(e);
+  addrSubDistrict.value =  await loadSubDistrict(e);
 
     isLoading.value = false;
   }
@@ -495,7 +513,31 @@ const handlerChangeDistrict = async (e: string) => {
 const handlerChangeSubDistrict = async (e: string) => {
   if (e) {
     isLoading.value = true;
-    await loadZipCode(e);
+    addrZipCode.value =   await loadZipCode(e);
+    isLoading.value = false;
+  }
+};
+const handlerChangeProvince2 = async (e: string) => {
+  console.log("handlerChangeProvince", e);
+  if (e) {
+    isLoading.value = true;
+   addrDistrict2.value =  await loadDistrict(e);
+    console.log(addrDistrict.value);
+    isLoading.value = false;
+  }
+};
+const handlerChangeDistrict2 = async (e: string) => {
+  if (e) {
+    isLoading.value = true;
+  addrSubDistrict2.value =  await loadSubDistrict(e);
+
+    isLoading.value = false;
+  }
+};
+const handlerChangeSubDistrict2 = async (e: string) => {
+  if (e) {
+    isLoading.value = true;
+    addrZipCode2.value =   await loadZipCode(e);
     isLoading.value = false;
   }
 };

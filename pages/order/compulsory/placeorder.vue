@@ -142,6 +142,7 @@ import {
 import { SelectOption } from "~/shared/entities/select-option";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStorePackage } from "~/stores/order/storePackage";
+import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 import {
   DefaultAddress,
   CarDetailsExtension,
@@ -222,6 +223,11 @@ const storePackage = useStorePackage();
 // define getter in store
 const { PackageInfo } = storeToRefs(storePackage);
 
+//define store
+const storeOrder = useStorePlaceorder();
+// define getter in store
+const { OrderInfo } = storeToRefs(storeOrder);
+
 const router = useRouter();
 
 const onLoad = onMounted(async () => {
@@ -253,6 +259,7 @@ const onLoad = onMounted(async () => {
 });
 // Submit form event
 const submitOrder = async (formData: any) => {
+  storeOrder.clearOrder();
   if(insuranceRecieve.value?.ShippingPolicy == 'postal'){
     if(insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault){
       insureDetail.value.DeliveryAddress = {
@@ -309,6 +316,7 @@ const submitOrder = async (formData: any) => {
     DeliveryEmail: insuranceRecieve.value?.Email,
     IsTaxInvoice: packageSelect.value?.IsTaxInclude == '1' ? true : false
   }
+  storeOrder.setOrder(orderReq);
 
   const response = await useRepository().order.create(orderReq);
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {

@@ -632,7 +632,6 @@ const special_characters = function ({value}) {
   return new Promise((resolve) => {
     const reg = new RegExp(/^(?!.*[!@#$%^&*()_+=\[\]{};':\"\\|,.<>\/?`~])[\w\W]*$/g)
     const validate = reg.test(value)
-    console.log(validate)
     resolve(validate)
   })
 }
@@ -661,14 +660,12 @@ const handlerChangeSubDistrict = (e: string)=>{
 }
 const handlerChangeFullAddress = (addr:string,ObjectAddress:DefaultAddress)=>{
   if(addr && ObjectAddress){
-    console.log(addr,ObjectAddress)
     handlerChangeInsureDetail()
 
     emit('changeFullAddress',addr,ObjectAddress)
   }
 }
 const handlerChangePersonalProfile = ()=>{
-  console.log(personProfile)
   let _insureDetail = insureDetail.value
   _insureDetail.PersonProfile = personProfile.value
   insureDetail.value = _insureDetail
@@ -729,7 +726,6 @@ watch(
   ()=>props.addrDistrict,
   ()=>{
     if(props.addrDistrict && props.addrDistrict.length>0){
-      console.log(props.addrDistrict)
       addrDistrict.value = props.addrDistrict
     }
   }
@@ -753,7 +749,6 @@ watch(
 watch(
   ()=>props.prefix,
   ()=>{
-    console.log(props.prefix)
     if(props.prefix && props.prefix.length>0){
       Prefix.value = props.prefix
     }

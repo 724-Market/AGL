@@ -82,7 +82,15 @@
                         @change-full-address="handlerChangeFullAddress"/>
                     </div>
 
-                    <button class="btn-primary btn-save" @click.prevent="handleButtonSaveClick" :disabled="insureFullNewAddress == ''">บันทึกข้อมูล</button>
+                    <!-- <button class="btn-primary btn-save" @click.prevent="handleButtonSaveClick" :disabled="insureFullNewAddress == ''">บันทึกข้อมูล</button> -->
+                    <FormKit
+                      type="submit"
+                      label="บันทึกข้อมูล"
+                      @click.prevent="handleButtonSaveClick"
+                      :classes="{ input: 'btn-primary', outer: 'form-actions' }"
+                      :disabled="insureFullNewAddress == ''"
+                      :loading="isLoading"
+                    />
                   </aside>
                 </section>
               </div>

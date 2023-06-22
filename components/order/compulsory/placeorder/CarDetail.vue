@@ -53,7 +53,7 @@
                             <FormKit type="text" label="เลขตัวถัง" name="CarBodyNumber" placeholder="ตัวอย่าง: 1FTLP62W4Axxxxxx" 
                               v-model="carBodyNumberText" @change="handlecarBodyNumberChange"
                               :validation="[['required'],
-                                            ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).*$/],
+                                            ['matches', /^(?=.*?[A-Z])(?=.*?[0-9]).*$/],
                                             ['length', 17]]"
                               :validation-messages="{ required: 'กรุณาใส่ข้อมูล', 
                                                       matches: 'รูปแบบของเลขตัวถังไม่ถูกต้อง', 
@@ -103,9 +103,13 @@ const props = defineProps({
   info: {
     type: Object as () => IInformation,
   },
+  carDetailCache: {
+    type: Object as () => CarDetailsExtension,
+  },
 });
 
 const SubCarModel: globalThis.Ref<String> = ref("")
+const carDetailCache: globalThis.Ref<CarDetailsExtension | undefined> = ref()
 
 var carLicenseText: string = ""
 var carLicenseValue: string = ""
@@ -129,18 +133,19 @@ var CarLicenseFileText: string = ""
 var base64FileString: string = ""
 
 const onLoad = onMounted(async () => {
-if(props.carProvince)
-{
-  carProvince.value = props.carProvince
-}
-
-if(props.carColor){
-  carColor.value = props.carColor
-}
- 
-if(props.info){
-  SubCarModel.value = props.info.SubCarModel
-}
+  if(props.carProvince)
+  {
+    carProvince.value = props.carProvince
+  }
+  if(props.carColor){
+    carColor.value = props.carColor
+  }
+  if(props.info){
+    SubCarModel.value = props.info.SubCarModel
+  }
+  if(props.carDetailCache){
+    carDetailCache.value = props.carDetailCache
+  }
 });
 
 watch(carLicenseClassifierText, async (newValue) => {

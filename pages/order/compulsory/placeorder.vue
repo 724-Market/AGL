@@ -18,6 +18,7 @@
             :car-color="carColor"
             :car-province="carProvince"
             :info="infomation"
+            :car-detail-cache="carDetailCache"
           ></OrderCompulsoryPlaceorderCarDetail>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลผู้เอาประกันภัย # # # # # # # # # # # # # # # # # # # # #-->
@@ -108,7 +109,7 @@
             name="order-submit"
             id="order-submit"
             :classes="{ input: 'btn-primary', outer: 'form-actions' }"
-            :disabled="submitted"
+            :disabled="!checkSave"
             :loading="isLoading"
           />
 
@@ -180,9 +181,15 @@ const insureFullAddress: globalThis.Ref<string> = ref("");
 const isSelect: globalThis.Ref<Boolean> = ref(false);
 const defaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref();
 
+const carDetailCache: globalThis.Ref<CarDetailsExtension | undefined> = ref();
+const insuranceRecieveCache: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
+
 const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
 const insureDetail: globalThis.Ref<CustomerOrderRequest> = ref({});
+
+var checkSave: globalThis.Ref<Boolean> = ref(false);
+
 let values = reactive({});
 
 const checklist: globalThis.Ref<IChecklist[]> = ref([
@@ -230,19 +237,22 @@ const { OrderInfo } = storeToRefs(storeOrder);
 
 const router = useRouter();
 
+watch(checklist, async (newValue) => {
+  newValue.forEach((e: IChecklist) => {
+    if(e.className == 'current') checkSave.value = true
+    else checkSave.value = false
+  })
+});
+
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
-    const jsonInfo = sessionStorage.getItem("useStoreInformation") || "";
-    if (jsonInfo != "") {
-      infomation.value = JSON.parse(jsonInfo) as IInformation;
-      SubCarModel.value = infomation.value.SubCarModel;
-    }
-    const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
-    if (jsonPackage != "") {
-      packageSelect.value = JSON.parse(jsonPackage) as IPackageResponse;
-    }
     console.log(PackageInfo.value, CarInfo.value);
     if (PackageInfo.value && CarInfo.value) {
+      infomation.value = CarInfo.value
+      SubCarModel.value = infomation.value.SubCarModel;
+
+      packageSelect.value = PackageInfo.value
+
       isLoading.value = true;
       await loadProvince();
       await loadCarColor();
@@ -252,6 +262,22 @@ const onLoad = onMounted(async () => {
       isLoading.value = false;
     } else {
       router.push("/order/compulsory/packages");
+    }
+
+    console.log('OrderInfo', OrderInfo.value)
+    if(OrderInfo.value) {
+      carDetailCache.value = OrderInfo.value.CarDetailsExtension
+
+      let insuranceRecieve: InsuranceRecieveObject = {
+        ShippingPolicy: OrderInfo.value.DeliveryType ?? '',
+        Email: OrderInfo.value.DeliveryEmail ?? '',
+        PostalDelivary: {
+          IsDeliveryAddressSameAsDefault: true,
+          ShippingMethod: '92AFE865AA2041B1AC01E3DB2330C9D8', //TODO: Mock up 
+          ShippingFee: '50 บาท',  //TODO: Mock up
+          DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress
+        }
+      }
     }
   } else {
     router.push("/login");
@@ -294,6 +320,8 @@ const submitOrder = async (formData: any) => {
       insureDetail.value.DeliveryAddress = insuranceRecieve.value?.PostalDelivary?.DeliveryAddress 
     }
   }
+
+  insureDetail.value.IsDeliveryAddressSameAsDefault = insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault
 
   let orderReq: OrderRequest = {
     Package: {

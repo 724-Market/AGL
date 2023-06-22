@@ -283,7 +283,7 @@ const onLoad = onMounted(async () => {
         Email: OrderInfo.value.DeliveryEmail ?? '',
         PostalDelivary: {
           IsDeliveryAddressSameAsDefault: true,
-          ShippingMethod: '92AFE865AA2041B1AC01E3DB2330C9D8', //TODO: Mock up 
+          ShippingMethod: OrderInfo.value.DeliveryChannelType ?? '', 
           ShippingFee: '50 บาท',  //TODO: Mock up
           DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress
         }
@@ -325,6 +325,7 @@ const submitOrder = async (formData: any) => {
         Branch: insureDetail.value.DefaultAddress?.Branch ?? '',
         Alley: insureDetail.value.DefaultAddress?.Alley ?? '',
         Road: insureDetail.value.DefaultAddress?.Road ?? '',
+        ZipCode: insureDetail.value.DefaultAddress?.ZipCode ?? ''
       }
     }
     else{
@@ -352,6 +353,7 @@ const submitOrder = async (formData: any) => {
     CarDetailsExtension: carDetail.value,
     Customer: insureDetail.value, 
     DeliveryType: insuranceRecieve.value?.ShippingPolicy,
+    DeliveryChannelType: insuranceRecieve.value?.PostalDelivary?.ShippingMethod,
     DeliveryEmail: insuranceRecieve.value?.Email,
     IsTaxInvoice: packageSelect.value?.IsTaxInclude == '1' ? true : false
   }

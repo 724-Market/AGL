@@ -54,7 +54,7 @@
                               v-model="carBodyNumberText" @change="handlecarBodyNumberChange"
                               :validation="[['required'],
                                             ['matches', /^(?=.*?[A-Z])(?=.*?[0-9]).*$/],
-                                            ['length', 17]]"
+                                            ['length', 17, 17]]"
                               :validation-messages="{ required: 'กรุณาใส่ข้อมูล', 
                                                       matches: 'รูปแบบของเลขตัวถังไม่ถูกต้อง', 
                                                       length: 'เลขตัวถังควรมี 17 หลัก' }"

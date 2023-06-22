@@ -5,6 +5,7 @@
       label="ตั้งชื่อเรียกรายการนี้"
       name="LabelAddress"
       placeholder="เพื่อให้ง่ายต่อการเรียกใช้งานครั้งต่อไป"
+      v-model="LabelAddressText"
       @change="handleLabelAddressChange"
       validation="required"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
@@ -17,6 +18,7 @@
       label="หมายเลขโทรศัพท์"
       name="PhoneNumber"
       placeholder="098765XXXX"
+      v-model="PhoneNumberText"
       @change="handlePhoneNumberChange"
       validation="required"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
@@ -29,6 +31,7 @@
       label="คำนำหน้าผู้รับ"
       name="Title"
       placeholder="คำนำหน้า"
+      v-model="TitleText"
       @change="handleTitleChange"
       :options="prefix"
       validation="required"
@@ -41,6 +44,7 @@
       label="ชื่อผู้รับ"
       name="FirstName"
       placeholder="ชื่อ"
+      v-model="FirstNameText"
       @change="handleFirstNameChange"
       validation="required"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
@@ -53,6 +57,7 @@
       label="นามสกุลผู้รับ"
       name="LastName"
       placeholder="นามสกุล"
+      v-model="LastNameText"
       @change="handleLastNameChange"
       validation="required"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
@@ -65,6 +70,7 @@
     :addr-district="addrDistrict"
     :addr-sub-district="addrSubDistrict"
     :addr-zip-code="addrZipCode"
+    :default-address-cache="defaultAddressCache"
     @change-province="handlerChangeProvince"
     @change-district="handlerChangeDistrict"
     @change-sub-district="handlerChangeSubDistrict"
@@ -84,7 +90,12 @@ const props = defineProps({
     addrDistrict: Array<SelectOption>,
     addrSubDistrict: Array<SelectOption>,
     addrZipCode: String,
+    defaultAddressCache: {
+      type: Object as () => DefaultAddress,
+    },
 })
+
+const defaultAddressCache: globalThis.Ref<DefaultAddress | undefined> = ref() 
 
 var LabelAddressText: string = ''
 var PhoneNumberText: string = ''
@@ -116,6 +127,17 @@ const onLoad = onMounted(() => {
     }
     if (props.addrZipCode) {
         addrZipCode.value = props.addrZipCode
+    }
+    if(props.defaultAddressCache) {
+      defaultAddressCache.value = props.defaultAddressCache
+    }
+
+    if(defaultAddressCache.value) {
+      LabelAddressText = '' //TODO: without field
+      PhoneNumberText = defaultAddressCache.value.PhoneNumber
+      TitleText = '' //TODO: without field
+      FirstNameText = defaultAddressCache.value.FirstName
+      LastNameText = defaultAddressCache.value.LastName
     }
 })
 

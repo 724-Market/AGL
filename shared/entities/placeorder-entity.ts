@@ -4,6 +4,7 @@ export interface OrderRequest {
   CarDetailsExtension?: CarDetailsExtension
   Customer?: CustomerOrderRequest
   DeliveryType?: string
+  DeliveryChannelType?: string
   DeliveryEmail?: string
   IsTaxInvoice?: boolean
 }
@@ -121,7 +122,6 @@ export interface DeliveryAddress {
   AddressText: string
   No: string
   Moo: string
-  Soi: string
   Place: string
   Building: string
   Floor: string

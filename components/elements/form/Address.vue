@@ -137,7 +137,9 @@ const props = defineProps({
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
   addrZipCode: String,
-
+  defaultAddressCache: {
+    type: Object as () => DefaultAddress,
+  },
 })
 
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
@@ -173,7 +175,7 @@ const ObjectAddress: globalThis.Ref<DefaultAddress> = ref({
     TaxID: '',
     Type: '',
     ZipCode: '',
-  })
+})
 
 const onLoad = onMounted(() => {
   if (props.addrProvince) {
@@ -187,6 +189,9 @@ const onLoad = onMounted(() => {
   }
   if (props.addrZipCode) {
     addrZipCode.value = props.addrZipCode
+  }
+  if (props.defaultAddressCache) {
+    ObjectAddress.value = props.defaultAddressCache
   }
 })
 // handler validate function

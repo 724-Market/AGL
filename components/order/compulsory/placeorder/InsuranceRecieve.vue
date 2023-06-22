@@ -76,6 +76,7 @@
                         :addr-district="addrDistrict"
                         :addr-sub-district="addrSubDistrict"
                         :addr-zip-code="addrZipCode"
+                        :default-address-cache="newAddressCache"
                         @change-province="handlerChangeProvince"
                         @change-district="handlerChangeDistrict"
                         @change-sub-district="handlerChangeSubDistrict"
@@ -237,7 +238,7 @@ const onLoad = onMounted(async () => {
             AddressText: newAddress.AddressText,
             No: newAddress.No,
             Moo: newAddress.Moo,
-            Soi: newAddress.Soi,
+            Soi: '',
             Place: newAddress.Place,
             Building: newAddress.Building,
             Floor: newAddress.Floor,
@@ -390,7 +391,6 @@ const handleCheckInsuranceRecieve = async () => {
         AddressText: newAddressObject.value?.AddressText ?? '',
         No: newAddressObject.value?.No ?? '',
         Moo: newAddressObject.value?.Moo ?? '',
-        Soi: newAddressObject.value?.Soi ?? '',
         Place: newAddressObject.value?.Place ?? '',
         Building: newAddressObject.value?.Building ?? '',
         Floor: newAddressObject.value?.Floor ?? '',

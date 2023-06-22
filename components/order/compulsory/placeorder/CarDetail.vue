@@ -71,7 +71,7 @@
                           <div class="col">
                             <FormKit type="file" label="เอกสารประกอบ (สำเนาเล่มรถยนต์)" name="CarLicenseFile"
                               accept=".pdf,.jpg,.png" help="รองรับไฟล์นามสกุล pdf, jpg, png เท่านั้น" 
-                              v-model="CarLicenseFileText" @change="handleFileChange"
+                              v-model="CarLicenseFileText" @change="handleFileChange" :src="base64FileString"
                               :validation="SubCarModel === 'unknown' || SubCarModel === 'other' ? 'required' : ''" 
                               :validation-messages="{ required: 'กรุณาอัปโหลดไฟล์เอกสาร' }" 
                               />
@@ -145,6 +145,18 @@ const onLoad = onMounted(async () => {
   }
   if(props.carDetailCache){
     carDetailCache.value = props.carDetailCache
+  }
+
+  if(carDetailCache.value){
+    carLicenseText = carDetailCache.value.License
+    carProvinceText = carDetailCache.value.LicenseProvinceID
+    carLicenseClassifierText.value = carDetailCache.value.IsRedLicense ? 'temporary' : ''
+    carColorText = carDetailCache.value.ColorID
+    carBodyNumberText = carDetailCache.value.BodyNo
+    carEngineNumberText = carDetailCache.value.EngineNo
+    carLicenseText = carDetailCache.value.License
+    CarLicenseFileText = ''
+    base64FileString = carDetailCache.value.LicenseFileID
   }
 });
 

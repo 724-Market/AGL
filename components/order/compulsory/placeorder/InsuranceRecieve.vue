@@ -118,7 +118,7 @@
 import { IInformation } from "~~/shared/entities/information-entity";
 import { IPackageResponse } from "~/shared/entities/packageList-entity";
 import { SelectOption, RadioOption } from "~/shared/entities/select-option";
-import { DefaultAddress, InsuranceRecieveObject } from "~/shared/entities/placeorder-entity";
+import { DefaultAddress, DeliveryAddress, InsuranceRecieveObject } from "~/shared/entities/placeorder-entity";
 
 const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict','checkInsuranceRecieve'])
 
@@ -133,9 +133,15 @@ const props = defineProps({
   packageSelect: {
     type: Object as () => IPackageResponse,
   },
+  insuranceRecieveCache: {
+    type: Object as () => InsuranceRecieveObject,
+  },
 })
 
 const isLoading = ref(false);
+
+const insuranceRecieveCache: globalThis.Ref<InsuranceRecieveObject | undefined> = ref()
+const newAddressCache: globalThis.Ref<DefaultAddress | undefined> = ref()
 
 var packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
 var companyName: globalThis.Ref<string> = ref("")
@@ -194,6 +200,55 @@ const onLoad = onMounted(async () => {
       packageSelect.value = props.packageSelect
       companyName.value = props.packageSelect.CompanyName ?? ""
       paperBalance.value = props.packageSelect.PaperBalance ?? 0
+    }
+    if(props.insuranceRecieveCache){
+      insuranceRecieveCache.value = props.insuranceRecieveCache
+    }
+
+    if(insuranceRecieveCache.value) {
+      shippingPolicyText.value = insuranceRecieveCache.value.ShippingPolicy
+      emailText = insuranceRecieveCache.value.Email
+      // await handleRadioShippingPolicyChange(insuranceRecieveCache.value.ShippingPolicy)
+
+      if(insuranceRecieveCache.value.ShippingPolicy == 'postal') {
+        ShippingMethodText = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
+        ShippingFeeText = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
+        postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
+        // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')
+
+        if(postalAddressPolicyText.value == 'addnew') { 
+          let newAddress: DeliveryAddress = insuranceRecieveCache.value.PostalDelivary?.DeliveryAddress as DeliveryAddress
+          newAddressCache.value = {
+            AddressID: newAddress.AddressID,
+            ReferenceID: newAddress.ReferenceID,
+            ReferenceType: newAddress.ReferenceType,
+            ProvinceID: newAddress.ProvinceID,
+            DistrictID: newAddress.DistrictID,
+            SubDistrictID: newAddress.SubDistrictID,
+            TaxID: newAddress.TaxID,
+            FirstName: newAddress.FirstName,
+            LastName: newAddress.LastName,
+            PhoneNumber: newAddress.PhoneNumber,
+            Email: newAddress.Email,
+            Name: newAddress.Name,
+            Type: newAddress.Type,
+            AddressLine1: newAddress.AddressLine1,
+            AddressLine2: newAddress.AddressLine2,
+            AddressText: newAddress.AddressText,
+            No: newAddress.No,
+            Moo: newAddress.Moo,
+            Soi: newAddress.Soi,
+            Place: newAddress.Place,
+            Building: newAddress.Building,
+            Floor: newAddress.Floor,
+            Room: newAddress.Room,
+            Branch: newAddress.Branch,
+            Alley: newAddress.Alley,
+            Road: newAddress.Road,
+            ZipCode: newAddress.ZipCode
+          }
+        }
+      }
     }
 
     await setPostalAddressPolicy(insureFullAddress.value.toString(), '')
@@ -335,6 +390,7 @@ const handleCheckInsuranceRecieve = async () => {
         AddressText: newAddressObject.value?.AddressText ?? '',
         No: newAddressObject.value?.No ?? '',
         Moo: newAddressObject.value?.Moo ?? '',
+        Soi: newAddressObject.value?.Soi ?? '',
         Place: newAddressObject.value?.Place ?? '',
         Building: newAddressObject.value?.Building ?? '',
         Floor: newAddressObject.value?.Floor ?? '',
@@ -342,6 +398,7 @@ const handleCheckInsuranceRecieve = async () => {
         Branch: newAddressObject.value?.Branch ?? '',
         Alley: newAddressObject.value?.Alley ?? '',
         Road: newAddressObject.value?.Road ?? '',
+        ZipCode: newAddressObject.value?.ZipCode ?? '',
       }
     }
   }

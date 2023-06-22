@@ -53,6 +53,7 @@
             :addr-sub-district="addrSubDistrict"
             :addr-zip-code="addrZipCode"
             :package-select="packageSelect"
+            :insurance-recieve-cache="insuranceRecieveCache"
           ></OrderCompulsoryPlaceorderInsuranceRecieve>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ใบกำกับภาษี # # # # # # # # # # # # # # # # # # # # #-->
@@ -278,6 +279,7 @@ const onLoad = onMounted(async () => {
           DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress
         }
       }
+      insuranceRecieveCache.value = insuranceRecieve
     }
   } else {
     router.push("/login");

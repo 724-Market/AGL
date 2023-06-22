@@ -121,6 +121,7 @@ export interface DeliveryAddress {
   AddressText: string
   No: string
   Moo: string
+  Soi: string
   Place: string
   Building: string
   Floor: string
@@ -128,6 +129,7 @@ export interface DeliveryAddress {
   Branch: string
   Alley: string
   Road: string
+  ZipCode: string
 }
 
 export interface TaxInvoiceAddress {

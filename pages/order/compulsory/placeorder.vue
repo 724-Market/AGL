@@ -675,13 +675,15 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
       insureDetail.value.LegalPersonProfile &&
       insureDetail.value.DefaultAddress
     ) {
-      const LegalPersonProfile = insureDetail.value.LegalPersonProfile;
+      
       if (insureDetail.value.IsBranch) {
         if (
-          LegalPersonProfile.PrefixID.length > 0 &&
-          LegalPersonProfile.ContactFirstName.length > 0 &&
-          LegalPersonProfile.ContactPhoneNumber.length > 0 &&
-          LegalPersonProfile.TaxID.length > 0 &&
+          insureDetail.value.LegalPersonProfile.PrefixID.length > 0 &&
+          insureDetail.value.LegalPersonProfile.ContactFirstName.length > 0 &&
+          insureDetail.value.LegalPersonProfile.ContactPhoneNumber.length > 0 &&
+          insureDetail.value.LegalPersonProfile.TaxID.length > 0 &&
+          insureDetail.value.LegalPersonProfile.BranchID.length > 0 &&
+          insureDetail.value.LegalPersonProfile.BranchName.length > 0 &&
           insureDetail.value.DefaultAddress.No.length > 0 &&
           insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
           insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
@@ -694,12 +696,10 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
         }
       } else {
         if (
-          LegalPersonProfile.PrefixID.length > 0 &&
-          LegalPersonProfile.ContactFirstName.length > 0 &&
-          LegalPersonProfile.ContactPhoneNumber.length > 0 &&
-          LegalPersonProfile.TaxID.length > 0 &&
-          LegalPersonProfile.BranchID.length > 0 &&
-          LegalPersonProfile.BranchName.length > 0 &&
+          insureDetail.value.LegalPersonProfile.PrefixID.length > 0 &&
+          insureDetail.value.LegalPersonProfile.ContactFirstName.length > 0 &&
+          insureDetail.value.LegalPersonProfile.ContactPhoneNumber.length > 0 &&
+          insureDetail.value.LegalPersonProfile.TaxID.length > 0 &&
           insureDetail.value.DefaultAddress.No.length > 0 &&
           insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
           insureDetail.value.DefaultAddress.DistrictID.length > 0 &&

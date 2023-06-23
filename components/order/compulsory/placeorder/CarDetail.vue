@@ -20,8 +20,8 @@
                             <FormKit type="text" label="ทะเบียนรถ" id="CarLicense" name="CarLicense" placeholder="เลขป้ายทะเบียนรถ"
                               v-model="carLicenseText" @change="handleCarLicenseChange"
                               :validation="[['required'],
-                                            ['length', 6, 7]]"
-                              :validation-messages="{ required: 'กรุณาใส่ข้อมูล', length: 'ทะเบียนรถควรมีอย่างน้อย 6 แต่ไม่เกิน 7 ตัว' }"
+                                            ['length', 0, 7]]"
+                              :validation-messages="{ required: 'กรุณาใส่ข้อมูล', length: 'ทะเบียนรถควรมีม่เกิน 7 ตัว' }"
                               autocomplete="false" />
                           </div>
                           <div class="col">

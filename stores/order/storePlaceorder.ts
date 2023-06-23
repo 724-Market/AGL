@@ -28,6 +28,7 @@ export const useStorePlaceorder = defineStore('useStorePlaceorder', {
             },
             Customer: {},
             DeliveryType: "",
+            DeliveryChannelType: "",
             DeliveryEmail: "",
             IsTaxInvoice: false
         }
@@ -69,6 +70,7 @@ export const useStorePlaceorder = defineStore('useStorePlaceorder', {
                 },
                 Customer: {},
                 DeliveryType: "",
+                DeliveryChannelType: "",
                 DeliveryEmail: "",
                 IsTaxInvoice: false
             }

@@ -161,7 +161,7 @@ var isAddnew: globalThis.Ref<boolean> = ref(false)
 var emailText: string = ""
 var emailValue: string = ""
 var ShippingMethodText: string = ""
-var ShippingFeeText: string = "50 บาท"
+var ShippingFeeText = ref('')
 
 const prefix: globalThis.Ref<SelectOption[]> = ref([])
 const delivery: globalThis.Ref<SelectOption[]> = ref([])
@@ -213,7 +213,7 @@ const onLoad = onMounted(async () => {
 
       if(insuranceRecieveCache.value.ShippingPolicy == 'postal') {
         ShippingMethodText = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
-        ShippingFeeText = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
+        ShippingFeeText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
         postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
         // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')
 
@@ -308,6 +308,14 @@ const handleRadioShippingPolicyChange = async (event: String) => {
 }
 
 const handleShippingMethodChange = async (event: any) => {
+  const value = event.target.value
+  if(value){
+    const filter = delivery.value.filter(x=>x.value==value)
+    console.log(filter)
+    if(filter.length>0){
+      ShippingFeeText.value = filter[0].option ?? ""
+    }
+  }
   await handleCheckInsuranceRecieve()
 }
 
@@ -370,7 +378,7 @@ const handleCheckInsuranceRecieve = async () => {
     PostalDelivary: {
       IsDeliveryAddressSameAsDefault: postalAddressPolicyText.value == 'insured' ? true : false,
       ShippingMethod: ShippingMethodText,
-      ShippingFee: ShippingFeeText,
+      ShippingFee: ShippingFeeText.value,
       DeliveryAddress: {
         AddressID: newAddressObject.value?.AddressID ?? '',
         ReferenceID: newAddressObject.value?.ReferenceID ?? '',

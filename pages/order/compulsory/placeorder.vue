@@ -288,12 +288,12 @@ const onLoad = onMounted(async () => {
       carDetailCache.value = OrderInfo.value.CarDetailsExtension;
 
       let insuranceRecieve: InsuranceRecieveObject = {
-        ShippingPolicy: OrderInfo.value.DeliveryType ?? "",
-        Email: OrderInfo.value.DeliveryEmail ?? "",
+        ShippingPolicy: OrderInfo.value.DeliveryType ?? '',
+        Email: OrderInfo.value.DeliveryEmail ?? '',
         PostalDelivary: {
           IsDeliveryAddressSameAsDefault: true,
-          ShippingMethod: OrderInfo.value.DeliveryChannelType ?? "",
-          ShippingFee: "50 บาท", //TODO: Mock up
+          ShippingMethod: OrderInfo.value.DeliveryChannelType ?? '',
+          ShippingFee: '50 บาท', //TODO: Mock up
           DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
         },
       };

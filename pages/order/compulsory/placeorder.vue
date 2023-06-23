@@ -677,13 +677,14 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
       insureDetail.value.LegalPersonProfile &&
       insureDetail.value.DefaultAddress
     ) {
-      const LegalPersonProfile = insureDetail.value.LegalPersonProfile;
       if (insureDetail.value.IsBranch) {
         if (
-          LegalPersonProfile.PrefixID.length > 0 &&
-          LegalPersonProfile.ContactFirstName.length > 0 &&
-          LegalPersonProfile.ContactPhoneNumber.length > 0 &&
-          LegalPersonProfile.TaxID.length > 0 &&
+          insureDetail.value.LegalPersonProfile.PrefixID.length > 0 &&
+          insureDetail.value.LegalPersonProfile.ContactFirstName.length > 0 &&
+          insureDetail.value.LegalPersonProfile.ContactPhoneNumber.length > 0 &&
+          insureDetail.value.LegalPersonProfile.TaxID.length > 0 &&
+          insureDetail.value.LegalPersonProfile.BranchID.length > 0 &&
+          insureDetail.value.LegalPersonProfile.BranchName.length > 0 &&
           insureDetail.value.DefaultAddress.No.length > 0 &&
           insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
           insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
@@ -696,12 +697,10 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
         }
       } else {
         if (
-          LegalPersonProfile.PrefixID.length > 0 &&
-          LegalPersonProfile.ContactFirstName.length > 0 &&
-          LegalPersonProfile.ContactPhoneNumber.length > 0 &&
-          LegalPersonProfile.TaxID.length > 0 &&
-          LegalPersonProfile.BranchID.length > 0 &&
-          LegalPersonProfile.BranchName.length > 0 &&
+          insureDetail.value.LegalPersonProfile.PrefixID.length > 0 &&
+          insureDetail.value.LegalPersonProfile.ContactFirstName.length > 0 &&
+          insureDetail.value.LegalPersonProfile.ContactPhoneNumber.length > 0 &&
+          insureDetail.value.LegalPersonProfile.TaxID.length > 0 &&
           insureDetail.value.DefaultAddress.No.length > 0 &&
           insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
           insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
@@ -743,48 +742,50 @@ const handlerChangeTaxInvoice = (
       InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault;
   }
 
-  if (isIncludeTax) {
-    if (!insureDetail.value.IsTaxInvoiceAddressSameAsDefault) {
-      // ไม่ใช่ default จาก ที่อยู่ผู้เอาประกัน
-      if (insureDetail.value.TaxInvoiceAddress) {
-        if (
-          insureDetail.value.TaxInvoiceAddress.No.length > 0 &&
-          insureDetail.value.TaxInvoiceAddress.ProvinceID.length > 0 &&
-          insureDetail.value.TaxInvoiceAddress.DistrictID.length > 0 &&
-          insureDetail.value.TaxInvoiceAddress.SubDistrictID.length > 0
-        ) {
-          validate[0] = true;
+  if (insuranceRecieve.value && insuranceRecieve.value.ShippingPolicy.length>0) {
+    if (isIncludeTax) {
+      if (!insureDetail.value.IsTaxInvoiceAddressSameAsDefault) {
+        // ไม่ใช่ default จาก ที่อยู่ผู้เอาประกัน
+        if (insureDetail.value.TaxInvoiceAddress) {
+          if (
+            insureDetail.value.TaxInvoiceAddress.No.length > 0 &&
+            insureDetail.value.TaxInvoiceAddress.ProvinceID.length > 0 &&
+            insureDetail.value.TaxInvoiceAddress.DistrictID.length > 0 &&
+            insureDetail.value.TaxInvoiceAddress.SubDistrictID.length > 0
+          ) {
+            validate[0] = true;
+          } else {
+            validate[0] = false;
+          }
         } else {
           validate[0] = false;
         }
       } else {
-        validate[0] = false;
+        validate[0] = true;
       }
-    } else {
-      validate[0] = true;
-    }
 
-    if (
-      !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault &&
-      shippedPolicy == "separately"
-    ) {
-      if (insureDetail.value.TaxInvoiceDeliveryAddress) {
-        if (
-          insureDetail.value.TaxInvoiceDeliveryAddress.No.length > 0 &&
-          insureDetail.value.TaxInvoiceDeliveryAddress.ProvinceID.length > 0 &&
-          insureDetail.value.TaxInvoiceDeliveryAddress.DistrictID.length > 0 &&
-          insureDetail.value.TaxInvoiceDeliveryAddress.SubDistrictID.length > 0 &&
-          ShippingMethod.length > 0
-        ) {
-          validate[1] = true;
+      if (
+        !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault &&
+        shippedPolicy == "separately"
+      ) {
+        if (insureDetail.value.TaxInvoiceDeliveryAddress) {
+          if (
+            insureDetail.value.TaxInvoiceDeliveryAddress.No.length > 0 &&
+            insureDetail.value.TaxInvoiceDeliveryAddress.ProvinceID.length > 0 &&
+            insureDetail.value.TaxInvoiceDeliveryAddress.DistrictID.length > 0 &&
+            insureDetail.value.TaxInvoiceDeliveryAddress.SubDistrictID.length > 0 &&
+            ShippingMethod.length > 0
+          ) {
+            validate[1] = true;
+          } else {
+            validate[1] = false;
+          }
         } else {
-          validate[1] = false;
+          validate[1] = true;
         }
       } else {
         validate[1] = true;
       }
-    } else {
-      validate[1] = true;
     }
   }
 

@@ -124,7 +124,12 @@
                         />
                       </div>
                       <div class="col-6">
-                        <ElementsFormIdCard v-model="personProfile.PersonalID" />
+                        <ElementsFormIdCard v-model="personProfile.PersonalID" validation="required|+length:13|number"
+                          :validation-messages="{
+                            required: 'กรุณาใส่ข้อมูล',
+                            length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 13 ตัว',
+                            number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
+                          }" />
                       </div>
                       <div class="col-6">
                         <FormKit
@@ -341,11 +346,11 @@
                           label="เลขประจำตัวผู้เสียภาษี"
                           name="TaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี"
-                          :validation-rules="{ special_characters }"
-                          validation="required|special_characters"
+                          validation="required|+length:13|number"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
-                            special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
+                            length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 13 ตัว',
+                            number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
                           }"
                           autocomplete="false"
                           v-model="legalPersonProfile.TaxID"
@@ -427,11 +432,11 @@
                           label="เลขประจำตัวผู้เสียภาษี"
                           name="TaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี"
-                          :validation-rules="{ special_characters }"
-                          validation="required|special_characters"
+                          validation="required|+length:13|number"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
-                            special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
+                            length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 13 ตัว',
+                            number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
                           }"
                           autocomplete="false"
                           v-model="legalPersonProfile.TaxID"

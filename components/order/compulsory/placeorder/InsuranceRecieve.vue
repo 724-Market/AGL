@@ -238,7 +238,6 @@ const onLoad = onMounted(async () => {
             AddressText: newAddress.AddressText,
             No: newAddress.No,
             Moo: newAddress.Moo,
-            Soi: '',
             Place: newAddress.Place,
             Building: newAddress.Building,
             Floor: newAddress.Floor,

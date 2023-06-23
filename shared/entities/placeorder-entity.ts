@@ -92,7 +92,6 @@ export interface DefaultAddress {
   AddressText: string
   No: string
   Moo: string
-  Soi: string
   Place: string
   Building: string
   Floor: string

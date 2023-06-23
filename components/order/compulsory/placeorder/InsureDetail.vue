@@ -114,7 +114,7 @@
                           type="date"
                           label="วันเดือนปีเกิด"
                           name="ฺBirthDate"
-                         :max="effectiveMinDate"
+                          :max="effectiveMinDate"
                           v-model="personProfile.BirthDate"
                           @input-raw="handlerChangePersonalProfile"
                           placeholder="วัน/เดือน/ปี"
@@ -220,7 +220,7 @@
                           v-model="personProfile.BirthDate"
                           @input-raw="handlerChangePersonalProfile"
                           validation="required"
-                         :max="effectiveMinDate"
+                          :max="effectiveMinDate"
                           :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
                           autocomplete="false"
                         />
@@ -427,8 +427,12 @@
                           label="เลขประจำตัวผู้เสียภาษี"
                           name="TaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี"
-                          validation="required"
-                          :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
+                          :validation-rules="{ special_characters }"
+                          validation="required|special_characters"
+                          :validation-messages="{
+                            required: 'กรุณาใส่ข้อมูล',
+                            special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
+                          }"
                           autocomplete="false"
                           v-model="legalPersonProfile.TaxID"
                           @input-raw="handlerChangeLegalPersonProfile"
@@ -538,7 +542,10 @@ const props = defineProps({
   addrZipCode:String
 });
 //const emit = defineEmits(['changeCustomerType','changeCompanyType','changeProvince','changeDistrict','changeSubDistrict'])
-const insureDetail:globalThis.Ref<CustomerOrderRequest> = ref({})
+const insureDetail:globalThis.Ref<CustomerOrderRequest> = ref({
+  IsPerson: true,
+  IsBranch: false
+})
 const personProfile:globalThis.Ref<PersonProfile> = ref({
   CustomerID:'',
   PrefixID:'',
@@ -660,32 +667,48 @@ const handlerChangeSubDistrict = (e: string)=>{
 }
 const handlerChangeFullAddress = (addr:string,ObjectAddress:DefaultAddress)=>{
   if(addr && ObjectAddress){
+    insureDetail.value.DefaultAddress = ObjectAddress
     handlerChangeInsureDetail()
 
     emit('changeFullAddress',addr,ObjectAddress)
   }
 }
 const handlerChangePersonalProfile = ()=>{
-  let _insureDetail = insureDetail.value
-  _insureDetail.PersonProfile = personProfile.value
-  insureDetail.value = _insureDetail
+  insureDetail.value.PersonProfile = personProfile.value
 
   handlerChangeInsureDetail()
 }
 const handlerChangeLegalPersonProfile = ()=>{
-  let _insureDetail = insureDetail.value
-  _insureDetail.LegalPersonProfile = legalPersonProfile.value
-  insureDetail.value = _insureDetail
+
+  insureDetail.value.LegalPersonProfile = legalPersonProfile.value
 
   handlerChangeInsureDetail()
 }
 const handlerChangeInsureDetail = ()=>{
   let data:CustomerOrderRequest = insureDetail.value
-  data.DefaultAddress = defaultAddress.value
-  data.LegalPersonProfile = legalPersonProfile.value
-  data.PersonProfile = personProfile.value
+  data.DefaultAddress = insureDetail.value.DefaultAddress
+  data.LegalPersonProfile = insureDetail.value.LegalPersonProfile
+  data.PersonProfile = insureDetail.value.PersonProfile
+  console.log(data,insureDetail.value)
+  if(data.DefaultAddress){
+    if(data.IsPerson && data.PersonProfile)
+    {
+      data.DefaultAddress.TaxID = data.PersonProfile.PersonalID
+      data.DefaultAddress.FirstName = data.PersonProfile.FirstName
+      data.DefaultAddress.LastName = data.PersonProfile.LastName
+      data.DefaultAddress.Email = data.PersonProfile.Email
+      data.DefaultAddress.PhoneNumber = data.PersonProfile.PhoneNumber
+    }
+    else if (data.LegalPersonProfile){
+      data.DefaultAddress.TaxID = data.LegalPersonProfile.TaxID
+      data.DefaultAddress.FirstName = data.LegalPersonProfile.ContactFirstName
+      data.DefaultAddress.LastName = data.LegalPersonProfile.ContactLastName
+      data.DefaultAddress.Email = data.LegalPersonProfile.ContactEmail
+      data.DefaultAddress.PhoneNumber = data.LegalPersonProfile.ContactPhoneNumber
+    }
 
-  insureDetail.value = data
+  }
+
   emit('changeInsureDetail',data)
 }
 const clearData = ()=>{
@@ -766,6 +789,7 @@ watch(
 // watching data to Radio Formkit
 watch(InsuredTypeText, async (newInsuredTypeText) => {
   if(newInsuredTypeText.length>0){
+    insureDetail.value.IsBranch = false
     insureDetail.value.IsPerson = newInsuredTypeText=='person'
     // clear data when change to customer type
     clearData()
@@ -785,9 +809,12 @@ watch(InsuredClassifierText, async (newInsuredClassifierText) => {
 watch(CompanyClassifierText, async (newCompanyClassifierText) => {
   //headoffice: 'สำนักงานใหญ่',
   //branch: 'สาขา',
+
   if(newCompanyClassifierText.length>0){
     insureDetail.value.IsBranch = newCompanyClassifierText =='branch'
     insureDetail.value.IsPerson = false
+
+    clearData()
   }
 });
 </script>

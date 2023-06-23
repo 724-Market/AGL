@@ -23,7 +23,7 @@
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลผู้เอาประกันภัย # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderInsureDetail
-           v-if="prefix.length>0 && nationality.length>0 && addrProvince.length>0"
+            v-if="prefix.length > 0 && nationality.length > 0 && addrProvince.length > 0"
             @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrict"
@@ -40,7 +40,7 @@
 
           <!-- # # # # # # # # # # # # # # # # # # # # # วิธีการรับกรมธรรม์ # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderInsuranceRecieve
-            v-if="prefix.length>0 && addrProvince.length>0"
+            v-if="prefix.length > 0 && addrProvince.length > 0"
             @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrict"
@@ -58,7 +58,12 @@
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ใบกำกับภาษี # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderTaxInvoice
-            v-if="packageSelect && prefix.length>0 && delivery.length>0 && addrProvince.length>0"
+            v-if="
+              packageSelect &&
+              prefix.length > 0 &&
+              delivery.length > 0 &&
+              addrProvince.length > 0
+            "
             @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrict"
@@ -77,6 +82,7 @@
             :addr-zip-code2="addrZipCode"
             :is-include-tax="packageSelect.IsTaxInclude"
             :shipping-policy="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
+            @change-tax-invoice="handlerChangeTaxInvoice"
           ></OrderCompulsoryPlaceorderTaxInvoice>
         </div>
 
@@ -104,7 +110,11 @@
                 :package-select="packageSelect"
               />
               <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลผู้เอาประกัน # # # # # # # # # # # # # # # # # # # # #-->
-              <OrderCartInsure></OrderCartInsure>
+              <OrderCartInsure
+                v-if="insureDetail && insuranceRecieve"
+                :delivery-type="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
+                :insure-detail="insureDetail"
+              ></OrderCartInsure>
             </div>
 
             <OrderChecklist :list="checklist" />
@@ -197,7 +207,7 @@ const insuranceRecieveCache: globalThis.Ref<InsuranceRecieveObject | undefined> 
 const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
 const insureDetail: globalThis.Ref<CustomerOrderRequest> = ref({});
-
+const RequestIncludeTax = ref(false);
 var checkSave: globalThis.Ref<Boolean> = ref(false);
 
 let values = reactive({});
@@ -249,19 +259,18 @@ const router = useRouter();
 
 watch(checklist, async (newValue) => {
   newValue.forEach((e: IChecklist) => {
-    if(e.className == 'current') checkSave.value = true
-    else checkSave.value = false
-  })
+    if (e.className == "current") checkSave.value = true;
+    else checkSave.value = false;
+  });
 });
 
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
-    console.log(PackageInfo.value, CarInfo.value);
     if (PackageInfo.value && CarInfo.value) {
-      infomation.value = CarInfo.value
+      infomation.value = CarInfo.value;
       SubCarModel.value = infomation.value.SubCarModel;
 
-      packageSelect.value = PackageInfo.value
+      packageSelect.value = PackageInfo.value;
 
       isLoading.value = true;
       await loadProvince();
@@ -274,21 +283,21 @@ const onLoad = onMounted(async () => {
       router.push("/order/compulsory/packages");
     }
 
-    console.log('OrderInfo', OrderInfo.value)
-    if(OrderInfo.value) {
-      carDetailCache.value = OrderInfo.value.CarDetailsExtension
+    console.log("OrderInfo", OrderInfo.value);
+    if (OrderInfo.value) {
+      carDetailCache.value = OrderInfo.value.CarDetailsExtension;
 
       let insuranceRecieve: InsuranceRecieveObject = {
-        ShippingPolicy: OrderInfo.value.DeliveryType ?? '',
-        Email: OrderInfo.value.DeliveryEmail ?? '',
+        ShippingPolicy: OrderInfo.value.DeliveryType ?? "",
+        Email: OrderInfo.value.DeliveryEmail ?? "",
         PostalDelivary: {
           IsDeliveryAddressSameAsDefault: true,
-          ShippingMethod: OrderInfo.value.DeliveryChannelType ?? '', 
-          ShippingFee: '50 บาท',  //TODO: Mock up
-          DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress
-        }
-      }
-      insuranceRecieveCache.value = insuranceRecieve
+          ShippingMethod: OrderInfo.value.DeliveryChannelType ?? "",
+          ShippingFee: "50 บาท", //TODO: Mock up
+          DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
+        },
+      };
+      insuranceRecieveCache.value = insuranceRecieve;
     }
   } else {
     router.push("/login");
@@ -297,43 +306,44 @@ const onLoad = onMounted(async () => {
 // Submit form event
 const submitOrder = async (formData: any) => {
   storeOrder.clearOrder();
-  if(insuranceRecieve.value?.ShippingPolicy == 'postal'){
-    if(insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault){
+  if (insuranceRecieve.value?.ShippingPolicy == "postal") {
+    if (insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
       insureDetail.value.DeliveryAddress = {
-        AddressID: insureDetail.value.DefaultAddress?.AddressID ?? '',
-        ReferenceID: insureDetail.value.DefaultAddress?.ReferenceID ?? '',
-        ReferenceType: insureDetail.value.DefaultAddress?.ReferenceType ?? '',
-        ProvinceID: insureDetail.value.DefaultAddress?.ProvinceID ?? '',
-        DistrictID: insureDetail.value.DefaultAddress?.DistrictID ?? '',
-        SubDistrictID: insureDetail.value.DefaultAddress?.SubDistrictID ?? '',
-        TaxID: insureDetail.value.DefaultAddress?.TaxID ?? '',
-        FirstName: insureDetail.value.DefaultAddress?.FirstName ?? '',
-        LastName: insureDetail.value.DefaultAddress?.LastName ?? '',
-        PhoneNumber: insureDetail.value.DefaultAddress?.PhoneNumber ?? '',
-        Email: insureDetail.value.DefaultAddress?.Email ?? '',
-        Name: insureDetail.value.DefaultAddress?.Name ?? '',
-        Type: insureDetail.value.DefaultAddress?.Type ?? '',
-        AddressLine1: insureDetail.value.DefaultAddress?.AddressLine1 ?? '',
-        AddressLine2: insureDetail.value.DefaultAddress?.AddressLine2 ?? '',
-        AddressText: insureDetail.value.DefaultAddress?.AddressText ?? '',
-        No: insureDetail.value.DefaultAddress?.No ?? '',
-        Moo: insureDetail.value.DefaultAddress?.Moo ?? '',
-        Place: insureDetail.value.DefaultAddress?.Place ?? '',
-        Building: insureDetail.value.DefaultAddress?.Building ?? '',
-        Floor: insureDetail.value.DefaultAddress?.Floor ?? '',
-        Room: insureDetail.value.DefaultAddress?.Room ?? '',
-        Branch: insureDetail.value.DefaultAddress?.Branch ?? '',
-        Alley: insureDetail.value.DefaultAddress?.Alley ?? '',
-        Road: insureDetail.value.DefaultAddress?.Road ?? '',
-        ZipCode: insureDetail.value.DefaultAddress?.ZipCode ?? ''
-      }
-    }
-    else{
-      insureDetail.value.DeliveryAddress = insuranceRecieve.value?.PostalDelivary?.DeliveryAddress 
+        AddressID: insureDetail.value.DefaultAddress?.AddressID ?? "",
+        ReferenceID: insureDetail.value.DefaultAddress?.ReferenceID ?? "",
+        ReferenceType: insureDetail.value.DefaultAddress?.ReferenceType ?? "",
+        ProvinceID: insureDetail.value.DefaultAddress?.ProvinceID ?? "",
+        DistrictID: insureDetail.value.DefaultAddress?.DistrictID ?? "",
+        SubDistrictID: insureDetail.value.DefaultAddress?.SubDistrictID ?? "",
+        TaxID: insureDetail.value.DefaultAddress?.TaxID ?? "",
+        FirstName: insureDetail.value.DefaultAddress?.FirstName ?? "",
+        LastName: insureDetail.value.DefaultAddress?.LastName ?? "",
+        PhoneNumber: insureDetail.value.DefaultAddress?.PhoneNumber ?? "",
+        Email: insureDetail.value.DefaultAddress?.Email ?? "",
+        Name: insureDetail.value.DefaultAddress?.Name ?? "",
+        Type: insureDetail.value.DefaultAddress?.Type ?? "",
+        AddressLine1: insureDetail.value.DefaultAddress?.AddressLine1 ?? "",
+        AddressLine2: insureDetail.value.DefaultAddress?.AddressLine2 ?? "",
+        AddressText: insureDetail.value.DefaultAddress?.AddressText ?? "",
+        No: insureDetail.value.DefaultAddress?.No ?? "",
+        Moo: insureDetail.value.DefaultAddress?.Moo ?? "",
+        Place: insureDetail.value.DefaultAddress?.Place ?? "",
+        Building: insureDetail.value.DefaultAddress?.Building ?? "",
+        Floor: insureDetail.value.DefaultAddress?.Floor ?? "",
+        Room: insureDetail.value.DefaultAddress?.Room ?? "",
+        Branch: insureDetail.value.DefaultAddress?.Branch ?? "",
+        Alley: insureDetail.value.DefaultAddress?.Alley ?? "",
+        Road: insureDetail.value.DefaultAddress?.Road ?? "",
+        ZipCode: insureDetail.value.DefaultAddress?.ZipCode ?? "",
+      };
+    } else {
+      insureDetail.value.DeliveryAddress =
+        insuranceRecieve.value?.PostalDelivary?.DeliveryAddress;
     }
   }
 
-  insureDetail.value.IsDeliveryAddressSameAsDefault = insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault
+  insureDetail.value.IsDeliveryAddressSameAsDefault =
+    insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault;
 
   let orderReq: OrderRequest = {
     Package: {
@@ -348,15 +358,15 @@ const submitOrder = async (formData: any) => {
       AgentCode: "",
       EffectiveType: infomation.value?.EffectiveType ?? "",
       EffectiveDate: infomation.value?.EffectiveDate ?? "",
-      ExpireDate: infomation.value?.ExpireDate ?? ""
+      ExpireDate: infomation.value?.ExpireDate ?? "",
     },
     CarDetailsExtension: carDetail.value,
-    Customer: insureDetail.value, 
+    Customer: insureDetail.value,
     DeliveryType: insuranceRecieve.value?.ShippingPolicy,
     DeliveryChannelType: insuranceRecieve.value?.PostalDelivary?.ShippingMethod,
     DeliveryEmail: insuranceRecieve.value?.Email,
-    IsTaxInvoice: packageSelect.value?.IsTaxInclude == '1' ? true : false
-  }
+    IsTaxInvoice: RequestIncludeTax.value,
+  };
   storeOrder.setOrder(orderReq);
 
   const response = await useRepository().order.create(orderReq);
@@ -405,8 +415,8 @@ const loadProvince = async () => {
   }
   addrProvince.value = carProvince.value;
 };
-const loadDistrict = async (provId: string):Promise<SelectOption[]> => {
-  let options:SelectOption[]  = [];
+const loadDistrict = async (provId: string): Promise<SelectOption[]> => {
+  let options: SelectOption[] = [];
   const req: DistrictReq = {
     ProvinceID: provId,
   };
@@ -426,10 +436,10 @@ const loadDistrict = async (provId: string):Promise<SelectOption[]> => {
   } else {
   }
 
-  return options
+  return options;
 };
-const loadSubDistrict = async (distId: string):Promise<SelectOption[]> => {
-  let options:SelectOption[]  = [];
+const loadSubDistrict = async (distId: string): Promise<SelectOption[]> => {
+  let options: SelectOption[] = [];
   const req: SubDistrictReq = {
     DistrictID: distId,
   };
@@ -450,16 +460,16 @@ const loadSubDistrict = async (distId: string):Promise<SelectOption[]> => {
   } else {
   }
 
-  return options
+  return options;
 };
-const loadZipCode = async (subDistId: string):Promise<string> => {
-  let option = '';
+const loadZipCode = async (subDistId: string): Promise<string> => {
+  let option = "";
   const filter = addrSubDistrict.value.filter((x) => x.value == subDistId);
   if (filter.length > 0) {
     option = filter[0].option ?? "";
   }
 
-  return option
+  return option;
 };
 const loadDelivery = async () => {
   const response = await useRepository().delivery.channel();
@@ -517,27 +527,25 @@ const loadCarColor = async () => {
 
 // handler function for emit
 const handlerChangeCustomerType = async (e: string) => {
-  console.log("handlerChangeCustomerType", e);
   if (e) {
     isLoading.value = true;
     await loadPrefix(e == "person");
-    console.log(prefix);
+
     isLoading.value = false;
   }
 };
 const handlerChangeProvince = async (e: string) => {
-  console.log("handlerChangeProvince", e);
   if (e) {
     isLoading.value = true;
-   addrDistrict.value =  await loadDistrict(e);
-    console.log(addrDistrict.value);
+    addrDistrict.value = await loadDistrict(e);
+
     isLoading.value = false;
   }
 };
 const handlerChangeDistrict = async (e: string) => {
   if (e) {
     isLoading.value = true;
-  addrSubDistrict.value =  await loadSubDistrict(e);
+    addrSubDistrict.value = await loadSubDistrict(e);
 
     isLoading.value = false;
   }
@@ -545,23 +553,22 @@ const handlerChangeDistrict = async (e: string) => {
 const handlerChangeSubDistrict = async (e: string) => {
   if (e) {
     isLoading.value = true;
-    addrZipCode.value =   await loadZipCode(e);
+    addrZipCode.value = await loadZipCode(e);
     isLoading.value = false;
   }
 };
 const handlerChangeProvince2 = async (e: string) => {
-  console.log("handlerChangeProvince", e);
   if (e) {
     isLoading.value = true;
-   addrDistrict2.value =  await loadDistrict(e);
-    console.log(addrDistrict.value);
+    addrDistrict2.value = await loadDistrict(e);
+
     isLoading.value = false;
   }
 };
 const handlerChangeDistrict2 = async (e: string) => {
   if (e) {
     isLoading.value = true;
-  addrSubDistrict2.value =  await loadSubDistrict(e);
+    addrSubDistrict2.value = await loadSubDistrict(e);
 
     isLoading.value = false;
   }
@@ -569,7 +576,7 @@ const handlerChangeDistrict2 = async (e: string) => {
 const handlerChangeSubDistrict2 = async (e: string) => {
   if (e) {
     isLoading.value = true;
-    addrZipCode2.value =   await loadZipCode(e);
+    addrZipCode2.value = await loadZipCode(e);
     isLoading.value = false;
   }
 };
@@ -582,58 +589,208 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
   }
 };
 const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
-  if (objectCarDetail.License.length > 0 && objectCarDetail.LicenseProvinceID.length > 0 && objectCarDetail.ColorID.length > 0 && objectCarDetail.BodyNo.length > 0) {
-    if(SubCarModel.value === 'unknown' || SubCarModel.value === 'other'){
-      if(objectCarDetail.LicenseFileID.length > 0) checklist.value[0].className = 'current'
-      else checklist.value[0].className = ''
-    }
-    else checklist.value[0].className = 'current'
-  }
-  else {
-    checklist.value[0].className = ''
+  if (
+    objectCarDetail.License.length > 0 &&
+    objectCarDetail.LicenseProvinceID.length > 0 &&
+    objectCarDetail.ColorID.length > 0 &&
+    objectCarDetail.BodyNo.length > 0
+  ) {
+    if (SubCarModel.value === "unknown" || SubCarModel.value === "other") {
+      if (objectCarDetail.LicenseFileID.length > 0)
+        checklist.value[0].className = "current";
+      else checklist.value[0].className = "";
+    } else checklist.value[0].className = "current";
+  } else {
+    checklist.value[0].className = "";
   }
 
   carDetail.value = objectCarDetail;
-  // console.log('handleCheckCarDetail', carDetail.value)
 };
 const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject) => {
-  console.log('RecieveObject', RecieveObject)
-  switch(RecieveObject.ShippingPolicy){
-    case 'pdf':
-      if(RecieveObject.Email.length > 0) checklist.value[2].className = 'current'
-      else checklist.value[2].className = ''
-      break
-    case 'print':
-      checklist.value[2].className = 'current'
-      break
-    case 'postal':
-      if(RecieveObject.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
-        if(RecieveObject.PostalDelivary?.ShippingMethod.length > 0) checklist.value[2].className = 'current'
-        else checklist.value[2].className = ''
+  switch (RecieveObject.ShippingPolicy) {
+    case "pdf":
+      if (RecieveObject.Email.length > 0) checklist.value[2].className = "current";
+      else checklist.value[2].className = "";
+      break;
+    case "print":
+      checklist.value[2].className = "current";
+      break;
+    case "postal":
+      if (RecieveObject.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
+        if (RecieveObject.PostalDelivary?.ShippingMethod.length > 0)
+          checklist.value[2].className = "current";
+        else checklist.value[2].className = "";
+      } else {
+        let deliveryAddress = RecieveObject.PostalDelivary?.DeliveryAddress;
+        if (deliveryAddress && RecieveObject.PostalDelivary?.ShippingMethod != "") {
+          if (
+            deliveryAddress.AddressText.length > 0 &&
+            deliveryAddress.PhoneNumber.length > 0 &&
+            deliveryAddress.FirstName.length > 0 &&
+            deliveryAddress.LastName.length > 0 &&
+            deliveryAddress.No.length > 0 &&
+            deliveryAddress.ProvinceID.length > 0 &&
+            deliveryAddress.DistrictID.length > 0 &&
+            deliveryAddress.SubDistrictID.length > 0
+          ) {
+            checklist.value[2].className = "current";
+          } else checklist.value[2].className = "";
+        } else checklist.value[2].className = "";
       }
-      else {
-        let deliveryAddress = RecieveObject.PostalDelivary?.DeliveryAddress
-        if(deliveryAddress && RecieveObject.PostalDelivary?.ShippingMethod != '') {
-          if(deliveryAddress.AddressText.length > 0
-            && deliveryAddress.PhoneNumber.length > 0
-            && deliveryAddress.FirstName.length > 0
-            && deliveryAddress.LastName.length > 0
-            && deliveryAddress.No.length > 0
-            && deliveryAddress.ProvinceID.length > 0
-            && deliveryAddress.DistrictID.length > 0
-            && deliveryAddress.SubDistrictID.length > 0) {
-              checklist.value[2].className = 'current'
-            }
-            else checklist.value[2].className = ''
-        }
-        else checklist.value[2].className = ''
-      }
-      break
+      break;
   }
   insuranceRecieve.value = RecieveObject;
 };
 const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
+  checklist.value[1].className = "";
+
   insureDetail.value = InsureDetail;
+  //insureDetail.value.DefaultAddress = defaultAddress.value
+  console.log(InsureDetail);
+  // set checklist
+  if (insureDetail.value) {
+    if (
+      insureDetail.value.IsPerson &&
+      insureDetail.value.PersonProfile &&
+      insureDetail.value.DefaultAddress
+    ) {
+      if (
+        insureDetail.value.PersonProfile.PrefixID.length > 0 &&
+        insureDetail.value.PersonProfile.FirstName.length > 0 &&
+        insureDetail.value.PersonProfile.LastName.length > 0 &&
+        insureDetail.value.PersonProfile.BirthDate.length > 0 &&
+        insureDetail.value.PersonProfile.PersonalID.length > 0 &&
+        insureDetail.value.PersonProfile.PhoneNumber.length > 0 &&
+        insureDetail.value.DefaultAddress.No.length > 0 &&
+        insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
+        insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
+        insureDetail.value.DefaultAddress.SubDistrictID.length > 0 &&
+        insureDetail.value.DefaultAddress.ZipCode.length > 0
+      ) {
+        checklist.value[1].className = "current";
+      } else {
+        checklist.value[1].className = "";
+      }
+    } else if (
+      insureDetail.value.LegalPersonProfile &&
+      insureDetail.value.DefaultAddress
+    ) {
+      const LegalPersonProfile = insureDetail.value.LegalPersonProfile;
+      if (insureDetail.value.IsBranch) {
+        if (
+          LegalPersonProfile.PrefixID.length > 0 &&
+          LegalPersonProfile.ContactFirstName.length > 0 &&
+          LegalPersonProfile.ContactPhoneNumber.length > 0 &&
+          LegalPersonProfile.TaxID.length > 0 &&
+          insureDetail.value.DefaultAddress.No.length > 0 &&
+          insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
+          insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
+          insureDetail.value.DefaultAddress.SubDistrictID.length > 0 &&
+          insureDetail.value.DefaultAddress.ZipCode.length > 0
+        ) {
+          checklist.value[1].className = "current";
+        } else {
+          checklist.value[1].className = "";
+        }
+      } else {
+        if (
+          LegalPersonProfile.PrefixID.length > 0 &&
+          LegalPersonProfile.ContactFirstName.length > 0 &&
+          LegalPersonProfile.ContactPhoneNumber.length > 0 &&
+          LegalPersonProfile.TaxID.length > 0 &&
+          LegalPersonProfile.BranchID.length > 0 &&
+          LegalPersonProfile.BranchName.length > 0 &&
+          insureDetail.value.DefaultAddress.No.length > 0 &&
+          insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
+          insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
+          insureDetail.value.DefaultAddress.SubDistrictID.length > 0 &&
+          insureDetail.value.DefaultAddress.ZipCode.length > 0
+        ) {
+          checklist.value[1].className = "current";
+        } else {
+          checklist.value[1].className = "";
+        }
+      }
+    }
+  }
+};
+const handlerChangeTaxInvoice = (
+  InsureDetail: CustomerOrderRequest,
+  isIncludeTax: boolean,
+  shippedPolicy: string,
+  ShippingMethod: string
+) => {
+  let validate = [false, false];
+  RequestIncludeTax.value = isIncludeTax;
+  if (!insureDetail.value) {
+    insureDetail.value = InsureDetail;
+  }
+
+  if (InsureDetail.TaxInvoiceAddress) {
+    insureDetail.value.TaxInvoiceAddress = InsureDetail.TaxInvoiceAddress;
+  }
+  if (InsureDetail.TaxInvoiceDeliveryAddress) {
+    insureDetail.value.TaxInvoiceDeliveryAddress = InsureDetail.TaxInvoiceDeliveryAddress;
+  }
+  if (InsureDetail.IsTaxInvoiceAddressSameAsDefault) {
+    insureDetail.value.IsTaxInvoiceAddressSameAsDefault =
+      InsureDetail.IsTaxInvoiceAddressSameAsDefault;
+  }
+  if (InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault) {
+    insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault =
+      InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault;
+  }
+
+  if (isIncludeTax) {
+    if (!insureDetail.value.IsTaxInvoiceAddressSameAsDefault) {
+      // ไม่ใช่ default จาก ที่อยู่ผู้เอาประกัน
+      if (insureDetail.value.TaxInvoiceAddress) {
+        if (
+          insureDetail.value.TaxInvoiceAddress.No.length > 0 &&
+          insureDetail.value.TaxInvoiceAddress.ProvinceID.length > 0 &&
+          insureDetail.value.TaxInvoiceAddress.DistrictID.length > 0 &&
+          insureDetail.value.TaxInvoiceAddress.SubDistrictID.length > 0
+        ) {
+          validate[0] = true;
+        } else {
+          validate[0] = false;
+        }
+      } else {
+        validate[0] = false;
+      }
+    } else {
+      validate[0] = true;
+    }
+
+    if (
+      !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault &&
+      shippedPolicy == "separately"
+    ) {
+      if (insureDetail.value.TaxInvoiceDeliveryAddress) {
+        if (
+          insureDetail.value.TaxInvoiceDeliveryAddress.No.length > 0 &&
+          insureDetail.value.TaxInvoiceDeliveryAddress.ProvinceID.length > 0 &&
+          insureDetail.value.TaxInvoiceDeliveryAddress.DistrictID.length > 0 &&
+          insureDetail.value.TaxInvoiceDeliveryAddress.SubDistrictID.length > 0 &&
+          ShippingMethod.length > 0
+        ) {
+          validate[1] = true;
+        } else {
+          validate[1] = false;
+        }
+      } else {
+        validate[1] = true;
+      }
+    } else {
+      validate[1] = true;
+    }
+  }
+
+  if (validate.filter((x) => x).length == 2) {
+    checklist.value[3].className = "current";
+  } else {
+    checklist.value[3].className = "";
+  }
 };
 // Define layout
 const layout = "monito";

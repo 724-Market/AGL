@@ -46,7 +46,7 @@
         name="AddressSoi"
         placeholder="ซอย/ตรอก/แยก"
         autocomplete="false"
-        v-model="ObjectAddress.Soi"
+        v-model="ObjectAddress.Alley"
         @input-raw="handlerChangeFullAddress"
       />
     </div>
@@ -281,8 +281,8 @@ const handlerChangeFullAddress = () => {
     if (ObjectAddress.value.Building.length > 0) {
       fullAddress += ObjectAddress.value.Building + " "
     }
-    if (ObjectAddress.value.Soi.length > 0) {
-      fullAddress += "ซอย " + ObjectAddress.value.Soi + " "
+    if (ObjectAddress.value.Alley.length > 0) {
+      fullAddress += "ซอย " + ObjectAddress.value.Alley + " "
     }
     if (ObjectAddress.value.Road.length > 0) {
       fullAddress += "ถนน " + ObjectAddress.value.Road + " "

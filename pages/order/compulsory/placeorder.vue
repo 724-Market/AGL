@@ -113,7 +113,9 @@
               <OrderCartInsure
                 v-if="insureDetail && insuranceRecieve"
                 :delivery-type="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
-                :insure-detail="insureDetail"
+                :is-person="insureDetail.IsPerson"
+                v-model:person-profile.sync="personProfile"
+                v-model:legal-person-profile="legalPersonProfile"
               ></OrderCartInsure>
             </div>
 
@@ -168,6 +170,8 @@ import {
   InsuranceRecieveObject,
   OrderRequest,
   CustomerOrderRequest,
+  PersonProfile,
+  LegalPersonProfile,
 } from "~/shared/entities/placeorder-entity";
 
 // Define Variables
@@ -207,6 +211,8 @@ const insuranceRecieveCache: globalThis.Ref<InsuranceRecieveObject | undefined> 
 const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
 const insureDetail: globalThis.Ref<CustomerOrderRequest> = ref({});
+const personProfile:  globalThis.Ref<PersonProfile | undefined> = ref();
+const legalPersonProfile:globalThis.Ref<LegalPersonProfile | undefined> = ref(); 
 const RequestIncludeTax = ref(false);
 var checkSave: globalThis.Ref<Boolean> = ref(false);
 
@@ -234,7 +240,7 @@ const checklist: globalThis.Ref<IChecklist[]> = ref([
     desc: "ใบกำกับภาษี",
   },
 ]);
-
+const changeInsure = ref(false)
 //define store
 const storeAuth = useStoreUserAuth();
 // define getter in store
@@ -288,11 +294,11 @@ const onLoad = onMounted(async () => {
       carDetailCache.value = OrderInfo.value.CarDetailsExtension;
 
       let insuranceRecieve: InsuranceRecieveObject = {
-        ShippingPolicy: OrderInfo.value.DeliveryType ?? '',
-        Email: OrderInfo.value.DeliveryEmail ?? '',
+        ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? '',
+        Email: OrderInfo.value.DeliveryMethod1?.DeliveryEmail ?? '',
         PostalDelivary: {
           IsDeliveryAddressSameAsDefault: true,
-          ShippingMethod: OrderInfo.value.DeliveryChannelType ?? '',
+          ShippingMethod: OrderInfo.value.DeliveryMethod1?.DeliveryChannelType ?? '',
           ShippingFee: '50 บาท', //TODO: Mock up
           DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
         },
@@ -364,9 +370,15 @@ const submitOrder = async (formData: any) => {
     },
     CarDetailsExtension: carDetail.value,
     Customer: insureDetail.value,
-    DeliveryType: insuranceRecieve.value?.ShippingPolicy,
-    DeliveryChannelType: insuranceRecieve.value?.PostalDelivary?.ShippingMethod,
-    DeliveryEmail: insuranceRecieve.value?.Email,
+    DeliveryMethod1:{
+      DeliveryChannelType:insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
+      DeliveryEmail:insuranceRecieve.value?.Email ?? "",
+      DeliveryType:insuranceRecieve.value?.ShippingPolicy ?? "",
+      MethodType:'',
+    },
+    // DeliveryType: insuranceRecieve.value?.ShippingPolicy,
+    // DeliveryChannelType: insuranceRecieve.value?.PostalDelivary?.ShippingMethod,
+    // DeliveryEmail: insuranceRecieve.value?.Email,
     IsTaxInvoice: RequestIncludeTax.value,
   };
   storeOrder.setOrder(orderReq);
@@ -480,7 +492,7 @@ const loadDelivery = async () => {
       delivery.value = response.apiResponse.Data.map((x) => {
         const options: SelectOption = {
           label: x.Name,
-          value: x.ID,
+          value: x.Type,
           option: x.Cost.toString(),
         };
         return options;
@@ -645,8 +657,10 @@ const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject
 };
 const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
   checklist.value[1].className = "";
-
+  changeInsure.value = true
   insureDetail.value = InsureDetail;
+  personProfile.value = InsureDetail.PersonProfile
+  legalPersonProfile.value = InsureDetail.LegalPersonProfile
   //insureDetail.value.DefaultAddress = defaultAddress.value
   console.log(InsureDetail);
   // set checklist
@@ -656,7 +670,9 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
       insureDetail.value.PersonProfile &&
       insureDetail.value.DefaultAddress
     ) {
-      if (
+      //บุคคลธรรมดา คนไทย
+      if(insureDetail.value.PersonProfile.NationalityID=='62ED0829703B4E589A2A63C740B88155'){
+        if (
         insureDetail.value.PersonProfile.PrefixID.length > 0 &&
         insureDetail.value.PersonProfile.FirstName.length > 0 &&
         insureDetail.value.PersonProfile.LastName.length > 0 &&
@@ -673,6 +689,29 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
       } else {
         checklist.value[1].className = "";
       }
+      }
+      else{
+         //บุคคลธรรมดา คนต่างชาติ
+        if (
+        insureDetail.value.PersonProfile.PrefixID.length > 0 &&
+        insureDetail.value.PersonProfile.FirstName.length > 0 &&
+        insureDetail.value.PersonProfile.LastName.length > 0 &&
+        insureDetail.value.PersonProfile.BirthDate.length > 0 &&
+        insureDetail.value.PersonProfile.PersonalID.length > 0 &&
+        insureDetail.value.PersonProfile.NationalityID.length > 0 &&
+        insureDetail.value.PersonProfile.PhoneNumber.length > 0 &&
+        insureDetail.value.DefaultAddress.No.length > 0 &&
+        insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
+        insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
+        insureDetail.value.DefaultAddress.SubDistrictID.length > 0 &&
+        insureDetail.value.DefaultAddress.ZipCode.length > 0
+      ) {
+        checklist.value[1].className = "current";
+      } else {
+        checklist.value[1].className = "";
+      }
+      }
+      
     } else if (
       insureDetail.value.LegalPersonProfile &&
       insureDetail.value.DefaultAddress
@@ -714,6 +753,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
       }
     }
   }
+  changeInsure.value = false
 };
 const handlerChangeTaxInvoice = (
   InsureDetail: CustomerOrderRequest,

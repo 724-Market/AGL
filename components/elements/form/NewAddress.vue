@@ -3,7 +3,7 @@
     <FormKit
       type="text"
       label="ตั้งชื่อเรียกรายการนี้"
-      name="LabelAddress"
+      :name="'LabelAddress' + props.elementKey"
       placeholder="เพื่อให้ง่ายต่อการเรียกใช้งานครั้งต่อไป"
       v-model="LabelAddressText"
       @change="handleLabelAddressChange"
@@ -16,7 +16,7 @@
     <FormKit
       type="text"
       label="หมายเลขโทรศัพท์"
-      name="PhoneNumber"
+      :name="'PhoneNumber' + props.elementKey"
       placeholder="098765XXXX"
       v-model="PhoneNumberText"
       @change="handlePhoneNumberChange"
@@ -29,7 +29,7 @@
     <FormKit
       type="select"
       label="คำนำหน้าผู้รับ"
-      name="Title"
+      :name="'Title' + elementKey"
       placeholder="คำนำหน้า"
       v-model="TitleText"
       @change="handleTitleChange"
@@ -42,7 +42,7 @@
     <FormKit
       type="text"
       label="ชื่อผู้รับ"
-      name="FirstName"
+      :name="'FirstName' + props.elementKey"
       placeholder="ชื่อ"
       v-model="FirstNameText"
       @change="handleFirstNameChange"
@@ -55,7 +55,7 @@
     <FormKit
       type="text"
       label="นามสกุลผู้รับ"
-      name="LastName"
+      :name="'LastName' + props.elementKey"
       placeholder="นามสกุล"
       v-model="LastNameText"
       @change="handleLastNameChange"
@@ -66,6 +66,7 @@
   </div>
 
   <ElementsFormAddress
+    :element-key="elementKey"
     :addr-province="addrProvince"
     :addr-district="addrDistrict"
     :addr-sub-district="addrSubDistrict"
@@ -85,6 +86,7 @@ import { SelectOption } from "~/shared/entities/select-option";
 const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict','changeFullAddress'])
 
 const props = defineProps({
+  elementKey:String,
     prefix:Array<SelectOption>,
     addrProvince: Array<SelectOption>,
     addrDistrict: Array<SelectOption>,
@@ -95,7 +97,7 @@ const props = defineProps({
     },
 })
 
-const defaultAddressCache: globalThis.Ref<DefaultAddress | undefined> = ref() 
+const defaultAddressCache: globalThis.Ref<DefaultAddress | undefined> = ref()
 
 var LabelAddressText: string = ''
 var PhoneNumberText: string = ''
@@ -104,15 +106,19 @@ var FirstNameText: string = ''
 var LastNameText: string = ''
 
 const insureFullAddress: globalThis.Ref<String> = ref('')
-const AddressObject: globalThis.Ref<DefaultAddress | undefined> = ref() 
+const AddressObject: globalThis.Ref<DefaultAddress | undefined> = ref()
 
 const prefix: globalThis.Ref<SelectOption[]> = ref([])
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
+const elementKey = ref('')
 
 const onLoad = onMounted(() => {
+  if(props.elementKey){
+    elementKey.value = props.elementKey
+  }
     if(props.prefix){
         prefix.value = props.prefix
     }
@@ -163,6 +169,14 @@ const handleLastNameChange = async (event: any) => {
 }
 
 //watching props pass data
+watch(
+  () => props.elementKey,
+  () => {
+    if (props.elementKey && props.elementKey.length > 0) {
+      elementKey.value = props.elementKey
+    }
+  }
+)
 watch(
     () => props.addrProvince,
     () => {

@@ -3,9 +3,11 @@ export interface OrderRequest {
   Package?: PackageOrderRequest
   CarDetailsExtension?: CarDetailsExtension
   Customer?: CustomerOrderRequest
-  DeliveryType?: string
-  DeliveryChannelType?: string
-  DeliveryEmail?: string
+  // DeliveryType?: string
+  // DeliveryChannelType?: string
+  // DeliveryEmail?: string
+  DeliveryMethod1?: DeliveryMethod
+  DeliveryMethod2?: DeliveryMethod
   IsTaxInvoice?: boolean
 }
 
@@ -185,6 +187,12 @@ export interface TaxInvoiceDeliveryAddress {
   Branch: string
   Alley: string
   Road: string
+}
+export interface DeliveryMethod {
+  MethodType: string
+  DeliveryType: string
+  DeliveryChannelType: string
+  DeliveryEmail: string
 }
 
 export interface OrderResponse {

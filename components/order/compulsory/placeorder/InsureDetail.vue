@@ -124,12 +124,15 @@
                         />
                       </div>
                       <div class="col-6">
-                        <ElementsFormIdCard v-model="personProfile.PersonalID" validation="required|+length:13|number"
+                        <ElementsFormIdCard
+                          v-model="personProfile.PersonalID"
+                          validation="required|length:13|number"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 13 ตัว',
                             number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
-                          }" />
+                          }"
+                        />
                       </div>
                       <div class="col-6">
                         <FormKit
@@ -346,7 +349,7 @@
                           label="เลขประจำตัวผู้เสียภาษี"
                           name="TaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี"
-                          validation="required|+length:13|number"
+                          validation="required|length:13|number"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 13 ตัว',
@@ -432,7 +435,7 @@
                           label="เลขประจำตัวผู้เสียภาษี"
                           name="TaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี"
-                          validation="required|+length:13|number"
+                          validation="required|length:13|number"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 13 ตัว',
@@ -514,6 +517,7 @@
 
                   <div class="row">
                     <ElementsFormAddress
+                      element-key="insured"
                       :addr-province="addrProvince"
                       :addr-district="addrDistrict"
                       :addr-sub-district="addrSubDistrict"
@@ -574,35 +578,7 @@ const legalPersonProfile:globalThis.Ref<LegalPersonProfile> = ref({
   ContactPhoneNumber: '',
   ContactEmail: '',
 })
-const defaultAddress:globalThis.Ref<DefaultAddress> = ref({
-  AddressID:'',
-  ReferenceID:'',
-  ReferenceType:'',
-  ProvinceID:'',
-  DistrictID:'',
-  SubDistrictID:'',
-  TaxID:'',
-  FirstName:'',
-  LastName:'',
-  PhoneNumber:'',
-  Email:'',
-  Name:'',
-  Type:'',
-  AddressLine1:'',
-  AddressLine2:'',
-  AddressText:'',
-  No:'',
-  Moo:'',
-  Soi:'',
-  Place:'',
-  Building:'',
-  Floor:'',
-  Room:'',
-  Branch:'',
-  Alley:'',
-  Road:'',
-  ZipCode:'',
-})
+const defaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref()
 
 const InsuredTypeText:globalThis.Ref<String> = ref('person')
 const InsuredClassifierText:globalThis.Ref<String> = ref('')
@@ -680,6 +656,9 @@ const handlerChangeFullAddress = (addr:string,ObjectAddress:DefaultAddress)=>{
 }
 const handlerChangePersonalProfile = ()=>{
   insureDetail.value.PersonProfile = personProfile.value
+  if(InsuredClassifierText.value=='thai'){
+    insureDetail.value.PersonProfile.NationalityID='62ED0829703B4E589A2A63C740B88155'
+  }
 
   handlerChangeInsureDetail()
 }
@@ -801,14 +780,6 @@ watch(InsuredTypeText, async (newInsuredTypeText) => {
     handlerChangeCustomerType(newInsuredTypeText)
   }
 
-});
-//InsuredClassifierText
-watch(InsuredClassifierText, async (newInsuredClassifierText) => {
-  //thai: 'คนไทย',
-  //foreigner: 'คนต่างชาติ',
-  if(newInsuredClassifierText.length>0){
-
-  }
 });
 //CompanyClassifierText
 watch(CompanyClassifierText, async (newCompanyClassifierText) => {

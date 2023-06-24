@@ -4,7 +4,7 @@
       <FormKit
         type="text"
         label="บ้านเลขที่"
-        name="AddressHouseNumber"
+        :name="'AddressHouseNumber' + props.elementKey"
         placeholder="บ้านเลขที่"
         v-model="ObjectAddress.No"
         @input-raw="handlerChangeFullAddress"
@@ -21,7 +21,7 @@
       <FormKit
         type="text"
         label="หมู่ที่"
-        name="AddressMoo"
+        :name="'AddressMoo' + props.elementKey"
         placeholder="หมู่ที่"
         autocomplete="false"
         v-model="ObjectAddress.Moo"
@@ -32,7 +32,7 @@
       <FormKit
         type="text"
         label="หมู่บ้าน/อาคาร"
-        name="AddressVillage"
+        :name="'AddressVillage' + props.elementKey"
         placeholder="หมู่บ้าน/อาคาร"
         v-model="ObjectAddress.Building"
         @input-raw="handlerChangeFullAddress"
@@ -43,7 +43,7 @@
       <FormKit
         type="text"
         label="ซอย/ตรอก/แยก"
-        name="AddressSoi"
+        :name="'AddressSoi' + props.elementKey"
         placeholder="ซอย/ตรอก/แยก"
         autocomplete="false"
         v-model="ObjectAddress.Alley"
@@ -54,7 +54,7 @@
       <FormKit
         type="text"
         label="ถนน"
-        name="AddressRoad"
+        :name="'AddressRoad' + props.elementKey"
         placeholder="ถนน"
         autocomplete="false"
         v-model="ObjectAddress.Road"
@@ -66,7 +66,7 @@
         type="text"
         label="รหัสไปรษณีย์"
         readonly
-        name="AddressPostalCode"
+        :name="'AddressPostalCode' + props.elementKey"
         v-model="addrZipCode"
         @input-raw="handlerChangeFullAddress"
         placeholder="รหัสไปรษณีย์"
@@ -79,7 +79,7 @@
       <FormKit
         type="autocomplete"
         label="จังหวัด"
-        name="AddressProvince"
+        :name="'AddressProvince' + props.elementKey"
         placeholder="จังหวัด"
         @input-raw="handlerChangeProvince"
         :options="addrProvince"
@@ -92,7 +92,7 @@
       <FormKit
         type="autocomplete"
         label="เขต/อำเภอ"
-        name="AddressDistrict"
+        :name="'AddressDistrict' + props.elementKey"
         placeholder="เขต/อำเภอ"
         :options="addrDistrict"
         @input-raw="handlerChangeDistrict"
@@ -105,7 +105,7 @@
       <FormKit
         type="autocomplete"
         label="แขวง/ตำบล"
-        name="AddressSubdistrict"
+        :name="'AddressSubdistrict' + props.elementKey"
         placeholder="แขวง/ตำบล"
         v-model="ObjectAddress.SubDistrictID"
         :options="addrSubDistrict"
@@ -118,7 +118,7 @@
       <FormKit
         type="text"
         label="ระบุที่อยู่เอง กรณีไม่มีข้อมูลให้เลือก"
-        name="AddressCustom"
+        :name="'AddressCustom' + props.elementKey"
         autocomplete="false"
         v-model="ObjectAddress.AddressText"
         @input-raw="handlerChangeFullAddress"
@@ -133,6 +133,7 @@ import { SelectOption } from "~/shared/entities/select-option";
 const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict', 'changeFullAddress'])
 
 const props = defineProps({
+  elementKey:String,
   addrProvince: Array<SelectOption>,
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
@@ -146,6 +147,7 @@ const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
+let elementKey= ''
 
 const ObjectAddress: globalThis.Ref<DefaultAddress> = ref({
     AddressID: '',
@@ -163,7 +165,6 @@ const ObjectAddress: globalThis.Ref<DefaultAddress> = ref({
     Moo: '',
     Name: '',
     No: '',
-    Soi: '',
     PhoneNumber: '',
     Place: '',
     ProvinceID: '',
@@ -178,6 +179,8 @@ const ObjectAddress: globalThis.Ref<DefaultAddress> = ref({
 })
 
 const onLoad = onMounted(() => {
+  console.log(props.elementKey)
+
   if (props.addrProvince) {
     addrProvince.value = props.addrProvince
   }
@@ -204,6 +207,7 @@ const address_characters = function ({value}) {
   })
 }
 //watching data
+
 watch(
   () => props.addrProvince,
   () => {
@@ -243,7 +247,11 @@ const handlerChangeProvince = (e: string) => {
   if (e) {
     if(ObjectAddress.value){
       ObjectAddress.value.ProvinceID = e
+      ObjectAddress.value.DistrictID=''
+    ObjectAddress.value.SubDistrictID=''
+    ObjectAddress.value.ZipCode=''
     }
+
     console.log(ObjectAddress.value.ProvinceID )
     handlerChangeFullAddress()
     emit('changeProvince', e)
@@ -254,6 +262,8 @@ const handlerChangeDistrict = (e: string) => {
   if (e) {
     if(ObjectAddress.value){
       ObjectAddress.value.DistrictID = e
+      ObjectAddress.value.SubDistrictID=''
+    ObjectAddress.value.ZipCode=''
     }
     handlerChangeFullAddress()
     emit('changeDistrict', e)
@@ -263,6 +273,7 @@ const handlerChangeSubDistrict = (e: string) => {
   if (e) {
     if(ObjectAddress.value){
       ObjectAddress.value.SubDistrictID = e
+      ObjectAddress.value.ZipCode=''
     }
     handlerChangeFullAddress()
     emit('changeSubDistrict', e)

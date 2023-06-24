@@ -166,7 +166,7 @@
                           value: 'insured',
                         },
                         {
-                          label: 'แก้ไขที่อยู่จัดส่งใบกำกับภาษี',
+                          label: 'แก้ไขใบกำกับภาษี',
                           value: 'addnew',
                           attrs: { addnewaddress: true },
                         },
@@ -177,7 +177,7 @@
                   </div>
 
                   <aside class="new-request-tax-address inner-section">
-                    <h4>แก้ไขที่อยู่จัดส่งใบกำกับภาษี</h4>
+                    <h4>แก้ไขใบกำกับภาษี</h4>
 
                     <div class="row">
                       <div class="col-6">
@@ -240,6 +240,7 @@
                       </div>
 
                       <ElementsFormAddress
+                      element-key="taxinvoice"
                         :addr-province="addrProvince"
                         :addr-district="addrDistrict"
                         :addr-sub-district="addrSubDistrict"
@@ -319,6 +320,7 @@
                     <h4>ที่อยู่จัดส่งใหม่</h4>
                     <div class="row">
                       <ElementsFormNewAddress
+                      key="taxinvoice_delivery"
                         :addr-province="addrProvince"
                         :addr-district="addrDistrict2"
                         :addr-sub-district="addrSubDistrict2"

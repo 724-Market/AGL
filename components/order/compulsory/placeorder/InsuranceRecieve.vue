@@ -1,20 +1,27 @@
 <template>
   <div class="card">
     <div class="card-body">
-
       <div class="accordion" id="accordion-shipping">
         <div class="accordion-item">
-
           <h2 class="accordion-header">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-              data-bs-target="#collapse-shipping" aria-expanded="true"
-              aria-controls="collapse-shipping">วิธีการรับกรมธรรม์
+            <button
+              class="accordion-button"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapse-shipping"
+              aria-expanded="true"
+              aria-controls="collapse-shipping"
+            >
+              วิธีการรับกรมธรรม์
             </button>
           </h2>
 
-          <div id="collapse-shipping" class="accordion-collapse collapse show" data-bs-parent="#accordion-shipping">
+          <div
+            id="collapse-shipping"
+            class="accordion-collapse collapse show"
+            data-bs-parent="#accordion-shipping"
+          >
             <div class="accordion-body">
-
               <div v-if="isPdfShipping" class="notice-info">
                 <i class="fa-regular fa-circle-info"></i>
                 ส่งกรมธรรม์ทางอีเมลหรือสามารถดาวน์โหลดได้จากระบบ
@@ -22,7 +29,8 @@
 
               <div v-if="isPrintShipping" class="notice-warning">
                 <i class="fa-regular fa-circle-info"></i>
-                ควรเลือกกระดาษให้ตรงกับบริษัทประกันที่ซื้อและรายการกระดาษจะถูกหักออกจากคลัง หลังจากกดพิมพ์กรมธรรม์
+                ควรเลือกกระดาษให้ตรงกับบริษัทประกันที่ซื้อและรายการกระดาษจะถูกหักออกจากคลัง
+                หลังจากกดพิมพ์กรมธรรม์
               </div>
 
               <div class="form-placeorder">
@@ -33,28 +41,52 @@
                 </section>
 
                 <aside v-if="isPdfShipping" class="shipping-email-pdf col-md-12 col-lg-4">
-                  <FormKit type="email" label="อีเมลสำหรับรับไฟล์กรมธรรม์" name="Email"
-                    v-model="emailText" @change="handleEmailChange"
-                    placeholder="xxxxxx@email.com" validation="required"
-                    :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="false" />
+                  <FormKit
+                    type="email"
+                    label="อีเมลสำหรับรับไฟล์กรมธรรม์"
+                    name="Email"
+                    v-model="emailText"
+                    @change="handleEmailChange"
+                    placeholder="xxxxxx@email.com"
+                    validation="required"
+                    :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
+                    autocomplete="false"
+                  />
                 </aside>
 
                 <aside v-if="isPrintShipping" class="shipping-print">
-                  <p>จำนวนกระดาษ <span>{{props.packageSelect.CompanyName}}</span> คงเหลือ <span>{{props.packageSelect.PaperBalance}}</span> ใบ</p>
+                  <p>
+                    จำนวนกระดาษ <span>{{ props.packageSelect.CompanyName }}</span> คงเหลือ
+                    <span>{{ props.packageSelect.PaperBalance }}</span> ใบ
+                  </p>
                 </aside>
 
                 <section v-if="isPostalShipping" class="shipping-method">
                   <h3>วิธีการจัดส่ง</h3>
                   <div class="row">
                     <div class="col-6">
-                      <FormKit type="select" label="ช่องทางการจัดส่ง" name="ShippingMethod"
-                        placeholder="ช่องทางการจัดส่ง" v-model="ShippingMethodText" @change="handleShippingMethodChange"
-                        :options="delivery" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                      <FormKit
+                        type="select"
+                        label="ช่องทางการจัดส่ง"
+                        name="ShippingMethod"
+                        placeholder="ช่องทางการจัดส่ง"
+                        v-model="ShippingMethodText"
+                        @change="handleShippingMethodChange"
+                        :options="delivery"
+                        validation="required"
+                        :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                      />
                     </div>
 
                     <div class="col-6">
-                      <FormKit type="text" label="ค่าจัดส่ง" name="ShippingFee" placeholder="ค่าจัดส่ง"
-                        v-model="ShippingFeeText" readonly />
+                      <FormKit
+                        type="text"
+                        label="ค่าจัดส่ง"
+                        name="ShippingFee"
+                        placeholder="ค่าจัดส่ง"
+                        v-model="ShippingFeeText"
+                        readonly
+                      />
                     </div>
                   </div>
                 </section>
@@ -62,15 +94,22 @@
                 <section v-if="isPostalShipping" class="shipping-address">
                   <h3>ที่อยู่สำหรับจัดส่ง</h3>
                   <div class="form-hide-label">
-                    <FormKit type="radio" label="รายชื่อที่อยู่" name="PostalAddressPolicy" v-model="postalAddressPolicyText" 
-                      :options="postalAddressPolicy" options-class="option-block-stack" />
+                    <FormKit
+                      type="radio"
+                      label="รายชื่อที่อยู่"
+                      name="PostalAddressPolicy"
+                      v-model="postalAddressPolicyText"
+                      :options="postalAddressPolicy"
+                      options-class="option-block-stack"
+                    />
                   </div>
 
                   <aside v-if="isAddnew" class="new-shipping-address inner-section">
                     <h4>ที่อยู่จัดส่งใหม่</h4>
 
                     <div class="row">
-                      <ElementsFormNewAddress 
+                      <ElementsFormNewAddress
+                        element-key="delivery"
                         :prefix="prefix"
                         :addr-province="addrProvince"
                         :addr-district="addrDistrict"
@@ -80,7 +119,8 @@
                         @change-province="handlerChangeProvince"
                         @change-district="handlerChangeDistrict"
                         @change-sub-district="handlerChangeSubDistrict"
-                        @change-full-address="handlerChangeFullAddress"/>
+                        @change-full-address="handlerChangeFullAddress"
+                      />
                     </div>
 
                     <!-- <button class="btn-primary btn-save" @click.prevent="handleButtonSaveClick" :disabled="insureFullNewAddress == ''">บันทึกข้อมูล</button> -->
@@ -97,10 +137,8 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -170,7 +208,7 @@ const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
 
-const newAddressObject: globalThis.Ref<DefaultAddress | undefined> = ref() 
+const newAddressObject: globalThis.Ref<DefaultAddress | undefined> = ref()
 const insureFullAddress: globalThis.Ref<String> = ref('')
 const insureFullNewAddress: globalThis.Ref<String> = ref('')
 
@@ -216,8 +254,8 @@ const onLoad = onMounted(async () => {
         ShippingFeeText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
         postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
         // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')
-
-        if(postalAddressPolicyText.value == 'addnew') { 
+        console.log(insuranceRecieveCache.value)
+        if(postalAddressPolicyText.value == 'addnew') {
           let newAddress: DeliveryAddress = insuranceRecieveCache.value.PostalDelivary?.DeliveryAddress as DeliveryAddress
           newAddressCache.value = {
             AddressID: newAddress.AddressID,
@@ -245,7 +283,7 @@ const onLoad = onMounted(async () => {
             Branch: newAddress.Branch,
             Alley: newAddress.Alley,
             Road: newAddress.Road,
-            ZipCode: newAddress.ZipCode
+            ZipCode: newAddress.ZipCode,
           }
         }
       }
@@ -291,14 +329,14 @@ const handleRadioShippingPolicyChange = async (event: String) => {
       isInsured.value = true
       await handleCheckInsuranceRecieve()
       break;
-    case "print": 
+    case "print":
       isPdfShipping.value = false
       isPrintShipping.value = true
       isPostalShipping.value = false
       isInsured.value = true
       await handleCheckInsuranceRecieve()
       break;
-    case "postal": 
+    case "postal":
       isPdfShipping.value = false
       isPrintShipping.value = false
       isPostalShipping.value = true
@@ -326,7 +364,7 @@ const handleRadioPostalAddressPolicyChange = async (event: String) => {
       isAddnew.value = false
       await handleCheckInsuranceRecieve()
       break;
-    case "addnew": 
+    case "addnew":
       isInsured.value = false
       isAddnew.value = true
       await handleCheckInsuranceRecieve()

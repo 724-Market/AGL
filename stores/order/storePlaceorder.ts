@@ -27,14 +27,26 @@ export const useStorePlaceorder = defineStore('useStorePlaceorder', {
                 IsRedLicense: false
             },
             Customer: {},
-            DeliveryType: "",
-            DeliveryChannelType: "",
-            DeliveryEmail: "",
+            DeliveryMethod1:{
+                MethodType: "",
+                DeliveryType: "",
+                DeliveryChannelType: "",
+                DeliveryEmail: "",
+            },
+            DeliveryMethod2:{
+                MethodType: "",
+                DeliveryType: "",
+                DeliveryChannelType: "",
+                DeliveryEmail: "",
+            },
+            // DeliveryType: "",
+            // DeliveryChannelType: "",
+            // DeliveryEmail: "",
             IsTaxInvoice: false
         }
     },
     getters: {
-        OrderInfo: state => sessionStorage.getItem("useStorePlaceorder") ? JSON.parse(sessionStorage.getItem("useStorePlaceorder") || "") as OrderRequest : "",
+        OrderInfo: state => sessionStorage.getItem("useStorePlaceorder") ? JSON.parse(sessionStorage.getItem("useStorePlaceorder") || "") as OrderRequest : undefined,
     },
     actions: {
         setOrder(request: OrderRequest): OrderRequest {
@@ -69,9 +81,18 @@ export const useStorePlaceorder = defineStore('useStorePlaceorder', {
                     IsRedLicense: false
                 },
                 Customer: {},
-                DeliveryType: "",
-                DeliveryChannelType: "",
-                DeliveryEmail: "",
+                DeliveryMethod1:{
+                    MethodType: "",
+                    DeliveryType: "",
+                    DeliveryChannelType: "",
+                    DeliveryEmail: "",
+                },
+                DeliveryMethod2:{
+                    MethodType: "",
+                    DeliveryType: "",
+                    DeliveryChannelType: "",
+                    DeliveryEmail: "",
+                },
                 IsTaxInvoice: false
             }
         }

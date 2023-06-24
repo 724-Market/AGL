@@ -254,7 +254,7 @@ const onLoad = onMounted(async () => {
         ShippingFeeText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
         postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
         // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')
-        console.log(insuranceRecieveCache.value)
+        
         if(postalAddressPolicyText.value == 'addnew') {
           let newAddress: DeliveryAddress = insuranceRecieveCache.value.PostalDelivary?.DeliveryAddress as DeliveryAddress
           newAddressCache.value = {
@@ -349,7 +349,7 @@ const handleShippingMethodChange = async (event: any) => {
   const value = event.target.value
   if(value){
     const filter = delivery.value.filter(x=>x.value==value)
-    console.log(filter)
+    
     if(filter.length>0){
       ShippingFeeText.value = filter[0].option ?? ""
     }
@@ -384,7 +384,7 @@ const handleButtonSaveClick = async (event: any) => {
 // handler function for emit
 const handlerChangeProvince = (e: string)=>{
   if(e){
-    console.log(e)
+    
     emit('changeProvince',e)
   }
 }
@@ -404,7 +404,7 @@ const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddres
     insureFullNewAddress.value = addr
     newAddressObject.value = ObjectAddress
 
-    console.log(addr,ObjectAddress)
+    
     await handleCheckInsuranceRecieve()
     //emit('changeFullAddress',addr,ObjectAddress)
   }

@@ -179,7 +179,7 @@ const ObjectAddress: globalThis.Ref<DefaultAddress> = ref({
 })
 
 const onLoad = onMounted(() => {
-  console.log(props.elementKey)
+  
 
   if (props.addrProvince) {
     addrProvince.value = props.addrProvince
@@ -252,7 +252,6 @@ const handlerChangeProvince = (e: string) => {
     ObjectAddress.value.ZipCode=''
     }
 
-    // console.log(ObjectAddress.value.ProvinceID )
     handlerChangeFullAddress()
     emit('changeProvince', e)
 

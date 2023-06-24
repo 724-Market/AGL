@@ -777,7 +777,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
   personProfile.value = InsureDetail.PersonProfile
   legalPersonProfile.value = InsureDetail.LegalPersonProfile
   //insureDetail.value.DefaultAddress = defaultAddress.value
-  console.log(InsureDetail);
+  
   // set checklist
   if (insureDetail.value) {
     if (
@@ -909,7 +909,7 @@ const handlerChangeTaxInvoice = (
         insureDetail.value.TaxInvoiceDeliveryAddress = insuranceRecieve.value.PostalDelivary?.DeliveryAddress as TaxInvoiceDeliveryAddress
       }
 
-      if (!insureDetail.value.IsTaxInvoiceAddressSameAsDefault) {
+      if (insureDetail.value.IsTaxInvoiceAddressSameAsDefault==false) {
         // ไม่ใช่ default จาก ที่อยู่ผู้เอาประกัน
         if (insureDetail.value.TaxInvoiceAddress) {
           if (
@@ -930,7 +930,7 @@ const handlerChangeTaxInvoice = (
       }
 
       if (
-        !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault
+        insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault == false
       ) {
         if (insureDetail.value.TaxInvoiceDeliveryAddress) {
 
@@ -951,6 +951,9 @@ const handlerChangeTaxInvoice = (
       } else {
         validate[1] = true;
       }
+    }
+    else{
+      validate = [true,true]
     }
   }
 

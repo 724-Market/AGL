@@ -673,7 +673,7 @@ const handlerChangeInsureDetail = ()=>{
   data.DefaultAddress = insureDetail.value.DefaultAddress
   data.LegalPersonProfile = insureDetail.value.LegalPersonProfile
   data.PersonProfile = insureDetail.value.PersonProfile
-  console.log(data,insureDetail.value)
+  
   if(data.DefaultAddress){
     if(data.IsPerson && data.PersonProfile)
     {

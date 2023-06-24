@@ -382,13 +382,11 @@ const insureDetail:globalThis.Ref<CustomerOrderRequest> = ref({})
   if (props.addrZipCode2) {
     addrZipCode2.value = props.addrZipCode2
   }
-  if (props.insureFullAddress) {
-    insureFullAddress.value = props.insureFullAddress
-  }
   if (props.isIncludeTax) {
     if (props.isIncludeTax == '1') {
       const array = ['request']
       requestIncludeTax.value = array
+      handlerChangeTaxInvoice()
     }
 
   }
@@ -399,15 +397,15 @@ const handlerChangeDelivery = (e:any)=>{
   const value = e.target.value
   if(value){
     const filter = delivery.value.filter(x=>x.value==value)
-  console.log(filter)
   if(filter.length>0){
     ShippingMethodFee.value = filter[0].option ?? ""
   }
+
+  handlerChangeTaxInvoice()
   }
 }
 const handlerChangeProvince = (e: string) => {
   if (e) {
-    console.log(e)
     emit('changeProvince', e)
   }
 }
@@ -423,7 +421,6 @@ const handlerChangeSubDistrict = (e: string) => {
 }
 const handlerChangeProvince2 = (e: string) => {
   if (e) {
-    console.log(e)
     emit('changeProvince2', e)
   }
 }
@@ -452,20 +449,19 @@ const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress:
   }
 }
 const handlerSubmitAddressTaxInvoice = ()=>{
-  insureDetail.value.IsTaxInvoiceAddressSameAsDefault = addressIncludeTaxType.value=='insured'
   insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
   newTaxInvoiceFullAddress.value = newTaxInvoiceFullAddressTemp.value
   handlerChangeTaxInvoice()
 }
 const handlerSubmitAddressTaxInvoiceDelivery = ()=>{
-  insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = addressDeliveryTaxType.value=='insured'
   insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
   newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
   handlerChangeTaxInvoice()
 }
 const handlerChangeTaxInvoice = ()=>{
   //TODO ImplementhandlerChangeTaxInvoice
-
+  insureDetail.value.IsTaxInvoiceAddressSameAsDefault = addressIncludeTaxType.value=='insured'
+  insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = addressDeliveryTaxType.value=='insured'
   emit('changeTaxInvoice',insureDetail.value,requestIncludeTax.value.length > 0,shippedPolicy.value,ShippingMethodText.value)
 }
 //watching props pass data
@@ -550,6 +546,47 @@ watch(
     }
   }
 )
+watch(
+  () => props.insureFullAddress,
+  () => {
+    if(props.insureFullAddress){
+      insureFullAddress.value = props.insureFullAddress
+    }
+    
+  }
+)
+watch(
+  addressIncludeTaxType,
+  () => {
+    if(addressIncludeTaxType.value){
+      handlerChangeTaxInvoice()
+    }
+    
+  }
+)
+watch(
+  addressDeliveryTaxType,
+  () => {
+    if(addressDeliveryTaxType.value){
+      handlerChangeTaxInvoice()
+    }
+    
+  }
+)
+watch(
+  shippedPolicy,
+  () => {
+    if(shippedPolicy.value){
+      handlerChangeTaxInvoice()
+    }
+    
+  }
+)
+watch(requestIncludeTax,()=>{
+  handlerChangeTaxInvoice()
+})
+
+
 // watch(
 //   () => props.shippingPolicy,
 //   () => {

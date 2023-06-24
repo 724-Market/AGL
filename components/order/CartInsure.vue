@@ -86,7 +86,6 @@ const  setInsureDetail = async () => {
   
 
   if (props.deliveryType) {
-    console.log(props.deliveryType);
     if (props.deliveryType == "pdf") {
       DeliveryType.value = "รับเป็นไฟล์ PDF";
       classNameDeliveryType.value = "fa-solid fa-file-pdf";
@@ -102,28 +101,24 @@ const  setInsureDetail = async () => {
 watch(
   () => props.isPerson,
   () => {
-    console.log(props.personProfile, props.legalPersonProfile);
     setInsureDetail();
   }
 );
 watch(
   () => props.personProfile,
   () => {
-    console.log(props.personProfile, props.legalPersonProfile);
     setInsureDetail();
   }
 );
 watch(
   () => props.legalPersonProfile,
   () => {
-    console.log(props.personProfile, props.legalPersonProfile);
     setInsureDetail();
   }
 );
 watch(
   () => props.deliveryType,
   () => {
-    console.log(props.deliveryType);
     setInsureDetail();
   }
 );

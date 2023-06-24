@@ -18,6 +18,7 @@
       label="หมายเลขโทรศัพท์"
       :name="'PhoneNumber' + props.elementKey"
       placeholder="098765XXXX"
+      maxlength="10"
       v-model="PhoneNumberText"
       @change="handlePhoneNumberChange"
       validation="required"

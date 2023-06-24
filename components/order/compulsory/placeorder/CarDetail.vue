@@ -51,7 +51,7 @@
                           </div>
                           <div class="col-sm-8 col-lg-5">
                             <FormKit type="text" label="เลขตัวถัง" name="CarBodyNumber" placeholder="ตัวอย่าง: 1FTLP62W4Axxxxxx" 
-                              v-model="carBodyNumberText" @change="handlecarBodyNumberChange"
+                              maxlength="17" v-model="carBodyNumberText" @change="handlecarBodyNumberChange"
                               :validation="[['required'],
                                             ['matches', /^(?=.*?[A-Z])(?=.*?[0-9]).*$/],
                                             ['length', 17, 17]]"
@@ -72,7 +72,7 @@
                             <FormKit type="file" label="เอกสารประกอบ (สำเนาเล่มรถยนต์)" name="CarLicenseFile"
                               accept=".pdf,.jpg,.png" help="รองรับไฟล์นามสกุล pdf, jpg, png เท่านั้น" 
                               v-model="CarLicenseFileText" @change="handleFileChange" :src="base64FileString"
-                              :validation="SubCarModel === 'unknown' || SubCarModel === 'other' ? 'required' : ''" 
+                              :validation="SubCarModel == 'unknown' || SubCarModel == 'other' ? 'required' : ''" 
                               :validation-messages="{ required: 'กรุณาอัปโหลดไฟล์เอกสาร' }" 
                               />
                           </div>
@@ -108,7 +108,8 @@ const props = defineProps({
   },
 });
 
-const SubCarModel: globalThis.Ref<String> = ref("")
+// const SubCarModel: globalThis.Ref<String> = ref("")
+var SubCarModel: string = ""
 const carDetailCache: globalThis.Ref<CarDetailsExtension | undefined> = ref()
 
 var carLicenseText: string = ""
@@ -141,7 +142,7 @@ const onLoad = onMounted(async () => {
     carColor.value = props.carColor
   }
   if(props.info){
-    SubCarModel.value = props.info.SubCarModel
+    SubCarModel = props.info.SubCarModel
   }
   if(props.carDetailCache){
     carDetailCache.value = props.carDetailCache
@@ -158,6 +159,7 @@ const onLoad = onMounted(async () => {
     CarLicenseFileText = ''
     base64FileString = carDetailCache.value.LicenseFileID
   }
+  // console.log('SubCarModel', SubCarModel)
 });
 
 watch(carLicenseClassifierText, async (newValue) => {

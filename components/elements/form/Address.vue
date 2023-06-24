@@ -252,7 +252,7 @@ const handlerChangeProvince = (e: string) => {
     ObjectAddress.value.ZipCode=''
     }
 
-    console.log(ObjectAddress.value.ProvinceID )
+    // console.log(ObjectAddress.value.ProvinceID )
     handlerChangeFullAddress()
     emit('changeProvince', e)
 

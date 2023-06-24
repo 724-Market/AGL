@@ -26,7 +26,7 @@
             v-if="prefix.length > 0 && nationality.length > 0 && addrProvince.length > 0"
             @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
-            @change-sub-district="handlerChangeSubDistrict"
+            @change-sub-district="handlerChangeSubDistrictForInsured"
             @change-customer-type="handlerChangeCustomerType"
             @change-full-address="handlerChangeFullAddress"
             @change-insure-detail="handlerChangeInsureDetail"
@@ -35,7 +35,7 @@
             :addr-province="addrProvince"
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
-            :addr-zip-code="addrZipCode"
+            :addr-zip-code="addrZipCodeForInsured"
           ></OrderCompulsoryPlaceorderInsureDetail>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # วิธีการรับกรมธรรม์ # # # # # # # # # # # # # # # # # # # # #-->
@@ -43,7 +43,7 @@
             v-if="prefix.length > 0 && addrProvince.length > 0"
             @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
-            @change-sub-district="handlerChangeSubDistrict"
+            @change-sub-district="handlerChangeSubDistrictForRecieve"
             @check-insurance-recieve="handleCheckInsuranceRecieve"
             :insure-full-address="insureFullAddress"
             :prefix="prefix"
@@ -51,7 +51,7 @@
             :addr-province="addrProvince"
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
-            :addr-zip-code="addrZipCode"
+            :addr-zip-code="addrZipCodeForRecieve"
             :package-select="packageSelect"
             :insurance-recieve-cache="insuranceRecieveCache"
           ></OrderCompulsoryPlaceorderInsuranceRecieve>
@@ -66,20 +66,20 @@
             "
             @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
-            @change-sub-district="handlerChangeSubDistrict"
+            @change-sub-district="handlerChangeSubDistrictForTax"
             @change-province2="handlerChangeProvince2"
             @change-district2="handlerChangeDistrict2"
-            @change-sub-district2="handlerChangeSubDistrict2"
+            @change-sub-district2="handlerChangeSubDistrictForTax2"
             :insure-full-address="insureFullAddress"
             :prefix="prefix"
             :delivery="delivery"
             :addr-province="addrProvince"
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
-            :addr-zip-code="addrZipCode"
+            :addr-zip-code="addrZipCodeForTax"
             :addr-district2="addrDistrict"
             :addr-sub-district2="addrSubDistrict"
-            :addr-zip-code2="addrZipCode"
+            :addr-zip-code2="addrZipCodeForTax2"
             :is-include-tax="packageSelect.IsTaxInclude"
             :shipping-policy="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
             @change-tax-invoice="handlerChangeTaxInvoice"
@@ -196,7 +196,11 @@ const nationality: globalThis.Ref<SelectOption[]> = ref([]);
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([]);
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([]);
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([]);
-const addrZipCode = ref("");
+// const addrZipCode = ref(""); //TODO: Bug ZipCode
+const addrZipCodeForInsured = ref("");
+const addrZipCodeForRecieve = ref("");
+const addrZipCodeForTax = ref("");
+const addrZipCodeForTax2 = ref("");
 const addrDistrict2: globalThis.Ref<SelectOption[]> = ref([]);
 const addrSubDistrict2: globalThis.Ref<SelectOption[]> = ref([]);
 const addrZipCode2 = ref("");
@@ -387,6 +391,7 @@ const submitOrder = async (formData: any) => {
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     //TODO: Implement next step
   }
+
   // Add waiting time for debug
   // await new Promise((r) => setTimeout(r, 1000));
 };
@@ -564,10 +569,38 @@ const handlerChangeDistrict = async (e: string) => {
     isLoading.value = false;
   }
 };
-const handlerChangeSubDistrict = async (e: string) => {
+// const handlerChangeSubDistrict = async (e: string) => { ////TODO: Bug ZipCode
+//   if (e) {
+//     isLoading.value = true;
+//     addrZipCode.value = await loadZipCode(e);
+//     isLoading.value = false;
+//   }
+// };
+const handlerChangeSubDistrictForInsured = async (e: string) => {
   if (e) {
     isLoading.value = true;
-    addrZipCode.value = await loadZipCode(e);
+    addrZipCodeForInsured.value = await loadZipCode(e);
+    isLoading.value = false;
+  }
+};
+const handlerChangeSubDistrictForRecieve = async (e: string) => {
+  if (e) {
+    isLoading.value = true;
+    addrZipCodeForRecieve.value = await loadZipCode(e);
+    isLoading.value = false;
+  }
+};
+const handlerChangeSubDistrictForTax = async (e: string) => {
+  if (e) {
+    isLoading.value = true;
+    addrZipCodeForTax.value = await loadZipCode(e);
+    isLoading.value = false;
+  }
+};
+const handlerChangeSubDistrictForTax2 = async (e: string) => {
+  if (e) {
+    isLoading.value = true;
+    addrZipCodeForTax2.value = await loadZipCode(e);
     isLoading.value = false;
   }
 };

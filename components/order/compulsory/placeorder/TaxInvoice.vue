@@ -37,111 +37,6 @@
                     ><i class="fa-solid fa-file-pdf"></i>ดูตัวอย่างใบกำกับภาษีที่แนบ</a
                   >
                 </div>
-
-                <!-- <section class="basic-tax-address" v-if="isIncludeTax == '1'">
-                  <div class="form-hide-label">
-                    <FormKit
-                      type="radio"
-                      label="รายชื่อที่อยู่"
-                      :options="[
-                        {
-                          label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
-                          help: insureFullAddress,
-                          //'724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160',
-                          value: 'insured',
-                        },
-                        {
-                          label: 'แก้ไขใบกำกับภาษี',
-                          value: 'addnew',
-                          attrs: { addnewaddress: true },
-                        },
-                      ]"
-                      options-class="option-block-stack"
-                      v-model="addressIncludeTaxType"
-                    />
-                  </div>
-
-                  <aside class="new-basic-tax-address inner-section">
-                    <h4>แก้ไขใบกำกับภาษี</h4>
-
-                    <div class="row">
-                      <div class="col-6">
-                        <FormKit
-                          type="text"
-                          label="ตั้งชื่อเรียกรายการนี้"
-                          name="NewLabelAddress"
-                          placeholder="เพื่อให้ง่ายต่อการเรียกใช้งานครั้งต่อไป"
-                          validation="required"
-                          :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-                          autocomplete="false"
-                        />
-                      </div>
-                      <div class="col-6">
-                        <FormKit
-                          type="text"
-                          label="หมายเลขโทรศัพท์"
-                          name="NewPhoneNumber"
-                          placeholder="098765XXXX"
-                          validation="required"
-                          :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-                          autocomplete="false"
-                        />
-                      </div>
-                      <div class="col-sm-4 col-lg-3">
-                        <FormKit
-                          type="select"
-                          label="คำนำหน้าผู้รับ"
-                          name="NewTitle"
-                          placeholder="คำนำหน้า"
-                          :options="{
-                            mr: 'นาย',
-                            mrs: 'นาง',
-                            ms: 'นางสาว',
-                            others: 'ไม่ระบุ',
-                          }"
-                          validation="required"
-                          :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                        />
-                      </div>
-                      <div class="col-sm-8 col-lg-4">
-                        <FormKit
-                          type="text"
-                          label="ชื่อผู้รับ"
-                          name="NewFirstName"
-                          placeholder="ชื่อ"
-                          validation="required"
-                          :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-                          autocomplete="false"
-                        />
-                      </div>
-                      <div class="col-md-12 col-lg-5">
-                        <FormKit
-                          type="text"
-                          label="นามสกุลผู้รับ"
-                          name="NewLastName"
-                          placeholder="นามสกุล"
-                          validation="required"
-                          :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-                          autocomplete="false"
-                        />
-                      </div>
-
-                      <ElementsFormAddress
-                        :addr-province="addrProvince"
-                        :addr-district="addrDistrict"
-                        :addr-sub-district="addrSubDistrict"
-                        :addr-zip-code="addrZipCode"
-                        @change-province="handlerChangeProvince"
-                        @change-district="handlerChangeDistrict"
-                        @change-sub-district="handlerChangeSubDistrict"
-                        @change-full-address="handlerChangeFullAddress"
-                      />
-                    </div>
-
-                    <button class="btn-primary btn-save">บันทึกข้อมูล</button>
-                  </aside>
-                </section> -->
-
                 <div class="placeorder-action">
                   <div class="form-hide-label">
                     <FormKit
@@ -168,6 +63,7 @@
                         {
                           label: 'แก้ไขใบกำกับภาษี',
                           value: 'addnew',
+                          help:newTaxInvoiceFullAddress,
                           attrs: { addnewaddress: true },
                         },
                       ]"
@@ -240,7 +136,7 @@
                       </div>
 
                       <ElementsFormAddress
-                      element-key="taxinvoice"
+                        element-key="taxinvoice"
                         :addr-province="addrProvince"
                         :addr-district="addrDistrict"
                         :addr-sub-district="addrSubDistrict"
@@ -248,24 +144,24 @@
                         @change-province="handlerChangeProvince"
                         @change-district="handlerChangeDistrict"
                         @change-sub-district="handlerChangeSubDistrict"
-                        @change-full-address="handlerChangeFullAddress"
+                        @change-full-address="handlerChangeFullAddressTaxInvoice"
                       />
                     </div>
 
-                    <button class="btn-primary btn-save">บันทึกข้อมูล</button>
+                    <button class="btn-primary btn-save" @click="handlerSubmitAddressTaxInvoice">บันทึกข้อมูล</button>
                   </aside>
                 </section>
 
                 <div class="shippped-tax-type" v-show="shippingPolicy == 'postal'">
                   <div class="form-hide-label">
-                    <ElementsFormRadioShippedPolicy v-model="shippedPolicy" />
+                    <ElementsFormRadioShippedPolicy
+                      v-model="shippedPolicy"
+                      :options="shippedPolicyOption"
+                    />
                   </div>
                 </div>
 
-                <section
-                  class="shipped-tax-address"
-                  v-if="shippingPolicy == 'postal' && shippedPolicy == 'separately'"
-                >
+                <section class="shipped-tax-address" v-if="(shippingPolicy=='postal' && shippedPolicy=='separately') || shippingPolicy!='postal'">
                   <h3>วิธีการจัดส่ง</h3>
                   <div class="row">
                     <div class="col-6">
@@ -308,6 +204,7 @@
                         {
                           label: 'เปลี่ยนที่อยู่ใหม่',
                           value: 'addnew',
+                          help:newTaxInvoiceDeliveryFullAddress,
                           attrs: { addnewaddress: true },
                         },
                       ]"
@@ -320,19 +217,20 @@
                     <h4>ที่อยู่จัดส่งใหม่</h4>
                     <div class="row">
                       <ElementsFormNewAddress
-                      key="taxinvoice_delivery"
+                        key="taxinvoice_delivery"
                         :addr-province="addrProvince"
                         :addr-district="addrDistrict2"
                         :addr-sub-district="addrSubDistrict2"
                         :addr-zip-code="addrZipCode2"
+                        :prefix="prefix"
                         @change-province="handlerChangeProvince2"
                         @change-district="handlerChangeDistrict2"
                         @change-sub-district="handlerChangeSubDistrict2"
-                        @change-full-address="handlerChangeFullAddress2"
+                        @change-full-address="handlerChangeFullAddressTaxInvoiceDelivery"
                       />
                     </div>
 
-                    <button class="btn-primary btn-save">บันทึกข้อมูล</button>
+                    <button class="btn-primary btn-save" @click="handlerSubmitAddressTaxInvoiceDelivery">บันทึกข้อมูล</button>
                   </aside>
                 </section>
               </div>
@@ -345,7 +243,7 @@
 </template>
 <script setup lang="ts">
 import { CustomerOrderRequest, DefaultAddress, TaxInvoiceAddress } from "~/shared/entities/placeorder-entity"
-import { SelectOption } from "~/shared/entities/select-option"
+import { RadioOption, SelectOption } from "~/shared/entities/select-option"
 
 const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict','changeProvince2', 'changeDistrict2', 'changeSubDistrict2','changeTaxInvoice'])
 
@@ -374,8 +272,22 @@ const addrDistrict2: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict2: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode2 = ref('')
 const insureFullAddress: globalThis.Ref<String> = ref('')
+const newTaxInvoiceFullAddress: globalThis.Ref<String> = ref('')
+const newTaxInvoiceDeliveryFullAddress: globalThis.Ref<String> = ref('')
+  const newTaxInvoiceFullAddressTemp: globalThis.Ref<String> = ref('')
+const newTaxInvoiceDeliveryFullAddressTemp: globalThis.Ref<String> = ref('')
 
-const shippedPolicy = ref('') //together,separately
+const shippedPolicy = ref('together') //together,separately
+const shippedPolicyOption: globalThis.Ref<RadioOption[]> = ref([
+  {
+      label: 'จัดส่งพร้อมกรมธรรม์',
+      value: 'together',
+    },
+    {
+      label: 'จัดส่งแยก',
+      value: 'separately',
+    },
+])
 const requestIncludeTax: globalThis.Ref<string[]> = ref([])
 const addressIncludeTaxType = ref('insured')
 const addressDeliveryTaxType = ref('insured')
@@ -525,33 +437,34 @@ const handlerChangeSubDistrict2 = (e: string) => {
     emit('changeSubDistrict2', e)
   }
 }
-const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) => {
+
+const handlerChangeFullAddressTaxInvoice = (addr: string, ObjectAddress: DefaultAddress) => {
   if (addr && ObjectAddress) {
     taxInvoiceAddress.value = ObjectAddress as TaxInvoiceAddress
-
-    console.log(addr, ObjectAddress)
-    handlerChangeTaxInvoice()
-    //emit('changeFullAddress',addr,ObjectAddress)
+    newTaxInvoiceFullAddressTemp.value = addr
   }
 }
-const handlerChangeFullAddress2 = (addr: string, ObjectAddress: DefaultAddress) => {
+const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress: DefaultAddress) => {
   if (addr && ObjectAddress) {
     taxInvoiceDeliveryAddress.value = ObjectAddress as TaxInvoiceAddress
-    taxInvoiceDeliveryAddress.value.FirstName = taxInvoiceAddress.value.FirstName
-    taxInvoiceDeliveryAddress.value.LastName = taxInvoiceAddress.value.LastName
-    taxInvoiceDeliveryAddress.value.PhoneNumber = taxInvoiceAddress.value.PhoneNumber
-    console.log(addr, ObjectAddress)
-    handlerChangeTaxInvoice()
-    //emit('changeFullAddress',addr,ObjectAddress)
+    newTaxInvoiceDeliveryFullAddressTemp.value = addr
+
   }
+}
+const handlerSubmitAddressTaxInvoice = ()=>{
+  insureDetail.value.IsTaxInvoiceAddressSameAsDefault = addressIncludeTaxType.value=='insured'
+  insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
+  newTaxInvoiceFullAddress.value = newTaxInvoiceFullAddressTemp.value
+  handlerChangeTaxInvoice()
+}
+const handlerSubmitAddressTaxInvoiceDelivery = ()=>{
+  insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = addressDeliveryTaxType.value=='insured'
+  insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
+  newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
+  handlerChangeTaxInvoice()
 }
 const handlerChangeTaxInvoice = ()=>{
   //TODO ImplementhandlerChangeTaxInvoice
-  insureDetail.value.IsTaxInvoiceAddressSameAsDefault = addressIncludeTaxType.value=='insured'
-  insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = addressDeliveryTaxType.value=='insured'
-
-  insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
-  insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
 
   emit('changeTaxInvoice',insureDetail.value,requestIncludeTax.value.length > 0,shippedPolicy.value,ShippingMethodText.value)
 }
@@ -637,6 +550,31 @@ watch(
     }
   }
 )
+// watch(
+//   () => props.shippingPolicy,
+//   () => {
+//     if (props.shippingPolicy == 'postal') {
+//       shippedPolicyOption.value = [
+//   {
+//       label: 'จัดส่งพร้อมกรมธรรม์',
+//       value: 'together',
+//     },
+//     {
+//       label: 'จัดส่งแยก',
+//       value: 'separately',
+//     },
+// ]
+//     }
+//     else{
+//       shippedPolicyOption.value = [
+//   {
+//       label: 'จัดส่งพร้อมกรมธรรม์',
+//       value: 'together',
+//     },
+// ]
+//     }
+//   }
+// )
 </script>
 <style scoped>
 .new-basic-tax-address,

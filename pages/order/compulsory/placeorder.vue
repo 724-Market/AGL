@@ -172,6 +172,8 @@ import {
   CustomerOrderRequest,
   PersonProfile,
   LegalPersonProfile,
+  TaxInvoiceDeliveryAddress,
+  DeliveryMethod,
 } from "~/shared/entities/placeorder-entity";
 
 // Define Variables
@@ -218,6 +220,8 @@ const insureDetail: globalThis.Ref<CustomerOrderRequest> = ref({});
 const personProfile:  globalThis.Ref<PersonProfile | undefined> = ref();
 const legalPersonProfile:globalThis.Ref<LegalPersonProfile | undefined> = ref(); 
 const RequestIncludeTax = ref(false);
+const TaxInvoiceAddressShipped = ref('')
+const TaxInvoiceAddressShipping = ref('')
 var checkSave: globalThis.Ref<Boolean> = ref(false);
 
 let values = reactive({});
@@ -356,7 +360,7 @@ const submitOrder = async (formData: any) => {
 
   insureDetail.value.IsDeliveryAddressSameAsDefault =
     insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault;
-
+  const DeliveryMethod = getDeliveryMethod()
   let orderReq: OrderRequest = {
     Package: {
       UseCarCode: infomation.value?.CarUse ?? "",
@@ -374,12 +378,8 @@ const submitOrder = async (formData: any) => {
     },
     CarDetailsExtension: carDetail.value,
     Customer: insureDetail.value,
-    DeliveryMethod1:{
-      DeliveryChannelType:insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
-      DeliveryEmail:insuranceRecieve.value?.Email ?? "",
-      DeliveryType:insuranceRecieve.value?.ShippingPolicy ?? "",
-      MethodType:'',
-    },
+    DeliveryMethod1:DeliveryMethod[0],
+    DeliveryMethod2:DeliveryMethod[1],
     // DeliveryType: insuranceRecieve.value?.ShippingPolicy,
     // DeliveryChannelType: insuranceRecieve.value?.PostalDelivary?.ShippingMethod,
     // DeliveryEmail: insuranceRecieve.value?.Email,
@@ -395,6 +395,88 @@ const submitOrder = async (formData: any) => {
   // Add waiting time for debug
   // await new Promise((r) => setTimeout(r, 1000));
 };
+const getDeliveryMethod = ():DeliveryMethod[]=>{
+let data:DeliveryMethod[] = [
+  {
+    DeliveryChannelType:'',
+    DeliveryEmail:'',
+    DeliveryType:'',
+    MethodType:''
+  },
+  {
+    DeliveryChannelType:'',
+    DeliveryEmail:'',
+    DeliveryType:'',
+    MethodType:''
+  }
+]
+if(insuranceRecieve.value){
+  switch(insuranceRecieve.value.ShippingPolicy){
+    //รับเป็นไฟล์ PDF
+    case "pdf" : data[0] = {
+                      DeliveryChannelType:insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
+                      DeliveryEmail:insuranceRecieve.value?.Email ?? "",
+                      DeliveryType:'ELECTRONIC',
+                      MethodType:'EXCLUDE'
+                    }
+                    data[1] = {
+                      DeliveryChannelType:TaxInvoiceAddressShipping.value,
+                      DeliveryEmail:'',
+                      DeliveryType:'DELIVERY',
+                      MethodType:'TAXINVOICE'
+                    }
+                    break
+    //พิมพ์ลงกระดาษมัดจำ
+    case "print" :data[0] = {
+                      DeliveryChannelType:insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
+                      DeliveryEmail:'',
+                      DeliveryType:'PAPER',
+                      MethodType:'EXCLUDE'
+                    }
+                    data[1] = {
+                      DeliveryChannelType:TaxInvoiceAddressShipping.value,
+                      DeliveryEmail:'',
+                      DeliveryType:'DELIVERY',
+                      MethodType:'TAXINVOICE'
+                    }
+                    break
+    // จัดส่งตัวจริง
+    case "postal" :
+                    //จัดส่งพร้อมกรมธรรม์
+                    if(TaxInvoiceAddressShipped.value=='together'){
+                      data[0] = {
+                        DeliveryChannelType:insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
+                        DeliveryEmail:'',
+                        DeliveryType:'DELIVERY',
+                        MethodType:'ALL_AT_ONCE'
+                      }
+                      data[1] = {
+                        DeliveryChannelType:'',
+                        DeliveryEmail:'',
+                        DeliveryType:'',
+                        MethodType:''
+                      }
+                    }
+                   //จัดส่งแยก
+                   else{
+                    data[0] = {
+                        DeliveryChannelType:insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
+                        DeliveryEmail:'',
+                        DeliveryType:'DELIVERY',
+                        MethodType:'POLICY'
+                      }
+                      data[1] = {
+                        DeliveryChannelType:TaxInvoiceAddressShipping.value,
+                        DeliveryEmail:'',
+                        DeliveryType:'DELIVERY',
+                        MethodType:'TAXINVOICE'
+                      }
+                   }
+                    break
+  }
+}
+return data
+}
 // handle loading api & set refs
 const loadPrefix = async (isPerson: boolean) => {
   const req: PrefixReq = {
@@ -796,6 +878,8 @@ const handlerChangeTaxInvoice = (
 ) => {
   let validate = [false, false];
   RequestIncludeTax.value = isIncludeTax;
+  TaxInvoiceAddressShipped.value = shippedPolicy;
+  TaxInvoiceAddressShipping.value = ShippingMethod
   if (!insureDetail.value) {
     insureDetail.value = InsureDetail;
   }
@@ -814,9 +898,17 @@ const handlerChangeTaxInvoice = (
     insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault =
       InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault;
   }
+  
 
   if (insuranceRecieve.value && insuranceRecieve.value.ShippingPolicy.length>0) {
+    
     if (isIncludeTax) {
+      // set ที่อยู่จีดส่งเอกสารใบกำกับภาษี กรณีเลือก วิธีรับกรมธรรม์ จัดส่งตัวจริง และเลือกเป็นจัดส่งพร้อมกรมธรรม์
+      if(insuranceRecieve.value.ShippingPolicy=="postal" && shippedPolicy=='together'){
+        insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = insuranceRecieve.value.PostalDelivary?.IsDeliveryAddressSameAsDefault
+        insureDetail.value.TaxInvoiceDeliveryAddress = insuranceRecieve.value.PostalDelivary?.DeliveryAddress as TaxInvoiceDeliveryAddress
+      }
+
       if (!insureDetail.value.IsTaxInvoiceAddressSameAsDefault) {
         // ไม่ใช่ default จาก ที่อยู่ผู้เอาประกัน
         if (insureDetail.value.TaxInvoiceAddress) {
@@ -838,10 +930,10 @@ const handlerChangeTaxInvoice = (
       }
 
       if (
-        !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault &&
-        shippedPolicy == "separately"
+        !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault
       ) {
         if (insureDetail.value.TaxInvoiceDeliveryAddress) {
+
           if (
             insureDetail.value.TaxInvoiceDeliveryAddress.No.length > 0 &&
             insureDetail.value.TaxInvoiceDeliveryAddress.ProvinceID.length > 0 &&

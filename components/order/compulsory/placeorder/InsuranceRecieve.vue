@@ -54,7 +54,7 @@
                   />
                 </aside>
 
-                <aside v-if="isPrintShipping" class="shipping-print">
+                <aside v-if="isPrintShipping && props.packageSelect" class="shipping-print">
                   <p>
                     จำนวนกระดาษ <span>{{ props.packageSelect.CompanyName }}</span> คงเหลือ
                     <span>{{ props.packageSelect.PaperBalance }}</span> ใบ

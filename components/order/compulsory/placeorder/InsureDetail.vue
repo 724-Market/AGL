@@ -82,7 +82,7 @@
                           name="FirstName"
                           placeholder="ชื่อ"
                           v-model="personProfile.FirstName"
-                          @input-raw="handlerChangePersonalProfile"
+                          @change="handlerChangePersonalProfile"
                           :validation-rules="{ special_characters }"
                           validation="required|special_characters"
                           :validation-messages="{
@@ -99,7 +99,7 @@
                           name="LastName"
                           placeholder="นามสกุล"
                           v-model="personProfile.LastName"
-                          @input-raw="handlerChangePersonalProfile"
+                          @change="handlerChangePersonalProfile"
                           :validation-rules="{ special_characters }"
                           validation="required|special_characters"
                           :validation-messages="{
@@ -116,7 +116,7 @@
                           name="ฺBirthDate"
                           :max="effectiveMinDate"
                           v-model="personProfile.BirthDate"
-                          @input-raw="handlerChangePersonalProfile"
+                          @change="handlerChangePersonalProfile"
                           placeholder="วัน/เดือน/ปี"
                           validation="required"
                           :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
@@ -141,7 +141,7 @@
                           name="PhoneNumber"
                           placeholder="098765XXXX"
                           v-model="personProfile.PhoneNumber"
-                          @input-raw="handlerChangePersonalProfile"
+                          @change="handlerChangePersonalProfile"
                           validation="required|+length:10|number"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
@@ -159,7 +159,7 @@
                           placeholder="xxxxxx@email.com"
                           autocomplete="false"
                           v-model="personProfile.Email"
-                          @input-raw="handlerChangePersonalProfile"
+                          @change="handlerChangePersonalProfile"
                         />
                       </div>
                     </div>
@@ -192,7 +192,7 @@
                           name="FirstName"
                           placeholder="Firstn-ame"
                           v-model="personProfile.FirstName"
-                          @input-raw="handlerChangePersonalProfile"
+                          @change="handlerChangePersonalProfile"
                           :validation-rules="{ special_characters }"
                           validation="required|special_characters"
                           :validation-messages="{
@@ -208,7 +208,7 @@
                           label="Lastname"
                           name="LastName"
                           v-model="personProfile.LastName"
-                          @input-raw="handlerChangePersonalProfile"
+                          @change="handlerChangePersonalProfile"
                           placeholder="Lastname"
                           :validation-rules="{ special_characters }"
                           validation="required|special_characters"
@@ -226,7 +226,7 @@
                           name="BirthDate"
                           placeholder="ฺBirthdate"
                           v-model="personProfile.BirthDate"
-                          @input-raw="handlerChangePersonalProfile"
+                          @change="handlerChangePersonalProfile"
                           validation="required"
                           :max="effectiveMinDate"
                           :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
@@ -236,7 +236,7 @@
                       <div class="col-sm-8 col-lg-4">
                         <ElementsFormPassport
                           v-model="personProfile.PersonalID"
-                          @input-raw="handlerChangePersonalProfile"
+                          @change="handlerChangePersonalProfile"
                           :validation-rules="{ special_characters }"
                           validation="required|special_characters"
                           :validation-messages="{
@@ -272,7 +272,7 @@
                           }"
                           autocomplete="false"
                           v-model="personProfile.PhoneNumber"
-                          @input-raw="handlerChangePersonalProfile"
+                          @change="handlerChangePersonalProfile"
                         />
                       </div>
                       <div class="col-6">
@@ -283,7 +283,7 @@
                           placeholder="xxxxxx@email.com"
                           autocomplete="false"
                           v-model="personProfile.Email"
-                          @input-raw="handlerChangePersonalProfile"
+                          @change="handlerChangePersonalProfile"
                         />
                       </div>
                     </div>
@@ -340,7 +340,7 @@
                           }"
                           autocomplete="false"
                           v-model="legalPersonProfile.ContactFirstName"
-                          @input-raw="handlerChangeLegalPersonProfile"
+                          @change="handlerChangeLegalPersonProfile"
                         />
                       </div>
                       <div class="col-md-12 col-lg-4">
@@ -357,7 +357,7 @@
                           }"
                           autocomplete="false"
                           v-model="legalPersonProfile.TaxID"
-                          @input-raw="handlerChangeLegalPersonProfile"
+                          @change="handlerChangeLegalPersonProfile"
                         />
                       </div>
                       <div class="col-6">
@@ -374,7 +374,7 @@
                           }"
                           autocomplete="false"
                           v-model="legalPersonProfile.ContactPhoneNumber"
-                          @input-raw="handlerChangeLegalPersonProfile"
+                          @change="handlerChangeLegalPersonProfile"
                         />
                       </div>
                       <div class="col-6">
@@ -385,7 +385,7 @@
                           placeholder="xxxxxx@email.com"
                           autocomplete="false"
                           v-model="legalPersonProfile.ContactEmail"
-                          @input-raw="handlerChangeLegalPersonProfile"
+                          @change="handlerChangeLegalPersonProfile"
                         />
                       </div>
                     </div>
@@ -426,7 +426,7 @@
                           }"
                           autocomplete="false"
                           v-model="legalPersonProfile.ContactFirstName"
-                          @input-raw="handlerChangeLegalPersonProfile"
+                          @change="handlerChangeLegalPersonProfile"
                         />
                       </div>
                       <div class="col-md-12 col-lg-4">
@@ -443,7 +443,7 @@
                           }"
                           autocomplete="false"
                           v-model="legalPersonProfile.TaxID"
-                          @input-raw="handlerChangeLegalPersonProfile"
+                          @change="handlerChangeLegalPersonProfile"
                         />
                       </div>
                       <div class="col-6">
@@ -460,7 +460,7 @@
                           }"
                           autocomplete="false"
                           v-model="legalPersonProfile.BranchID"
-                          @input-raw="handlerChangeLegalPersonProfile"
+                          @change="handlerChangeLegalPersonProfile"
                         />
                       </div>
                       <div class="col-6">
@@ -477,7 +477,7 @@
                           }"
                           autocomplete="false"
                           v-model="legalPersonProfile.BranchName"
-                          @input-raw="handlerChangeLegalPersonProfile"
+                          @change="handlerChangeLegalPersonProfile"
                         />
                       </div>
                       <div class="col-6">
@@ -494,7 +494,7 @@
                           }"
                           autocomplete="false"
                           v-model="legalPersonProfile.ContactPhoneNumber"
-                          @input-raw="handlerChangeLegalPersonProfile"
+                          @change="handlerChangeLegalPersonProfile"
                         />
                       </div>
                       <div class="col-6">
@@ -505,7 +505,7 @@
                           placeholder="xxxxxx@email.com"
                           autocomplete="false"
                           v-model="legalPersonProfile.ContactEmail"
-                          @input-raw="handlerChangeLegalPersonProfile"
+                          @change="handlerChangeLegalPersonProfile"
                         />
                       </div>
                     </div>

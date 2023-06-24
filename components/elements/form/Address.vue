@@ -323,13 +323,14 @@ const handlerChangeFullAddress = () => {
       ObjectAddress.value.ZipCode = addrZipCode.value
       fullAddress += "รหัสไปรษณีย์ " + addrZipCode.value + " "
     }
-    if (ObjectAddress.value.No.length > 0 &&
-      ObjectAddress.value.SubDistrictID.length > 0 &&
-      ObjectAddress.value.DistrictID.length > 0 &&
-      ObjectAddress.value.ProvinceID.length > 0 &&
-      ObjectAddress.value.ZipCode.length > 0) {
-      emit('changeFullAddress', fullAddress, ObjectAddress.value)
-    }
+    // if (ObjectAddress.value.No.length > 0 &&
+    //   ObjectAddress.value.SubDistrictID.length > 0 &&
+    //   ObjectAddress.value.DistrictID.length > 0 &&
+    //   ObjectAddress.value.ProvinceID.length > 0 &&
+    //   ObjectAddress.value.ZipCode.length > 0) {
+      
+    // }
+    emit('changeFullAddress', fullAddress, ObjectAddress.value)
   }
 }
 </script>

@@ -507,4 +507,12 @@ watch(
         }
     }
 )
+watch(
+  ()=>props.insuranceRecieveCache,
+  ()=>{
+    if(props.insuranceRecieveCache && props.insuranceRecieveCache != undefined){
+      insuranceRecieveCache.value = props.insuranceRecieveCache
+    }
+  }
+)
 </script>

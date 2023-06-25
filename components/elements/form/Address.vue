@@ -240,6 +240,14 @@ watch(
     }
   }
 )
+watch(
+  () => props.defaultAddressCache,
+  () => {
+    if (props.defaultAddressCache && props.defaultAddressCache != undefined) {
+      ObjectAddress.value = props.defaultAddressCache
+    }
+  }
+)
 
 
 // handler function for emit

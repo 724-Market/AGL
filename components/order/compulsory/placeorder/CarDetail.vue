@@ -248,6 +248,14 @@ watch(
     }
   }
 )
+watch(
+  ()=>props.carDetailCache,
+  ()=>{
+    if(props.carDetailCache && props.carDetailCache != undefined){
+      carDetailCache.value = props.carDetailCache
+    }
+  }
+)
 
 
 </script>

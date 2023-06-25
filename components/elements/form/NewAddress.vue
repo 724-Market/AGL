@@ -218,6 +218,15 @@ watch(
         }
     }
 )
+watch(
+    () => props.defaultAddressCache,
+    () => {
+        if (props.defaultAddressCache && props.defaultAddressCache != undefined) {
+            defaultAddressCache.value = props.defaultAddressCache
+        }
+    }
+)
+
 // handler function for emit
 const handlerChangeProvince = (e: string) => {
 

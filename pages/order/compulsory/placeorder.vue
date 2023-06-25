@@ -35,7 +35,7 @@
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
             :addr-zip-code="addrZipCodeForInsured"
-            :cache-order-request="OrderInfo"
+            :cache-order-request="insureDetailCache"
           ></OrderCompulsoryPlaceorderInsureDetail>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # วิธีการรับกรมธรรม์ # # # # # # # # # # # # # # # # # # # # #-->
@@ -82,7 +82,7 @@
             :addr-zip-code2="addrZipCodeForTax2"
             :is-include-tax="packageSelect.IsTaxInclude"
             :shipping-policy="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
-            :cache-order-request="OrderInfo"
+            :cache-order-request="taxInvoiceCache"
             @change-tax-invoice="handlerChangeTaxInvoice"
           ></OrderCompulsoryPlaceorderTaxInvoice>
           <ElementsModalAlert
@@ -220,7 +220,8 @@ const defaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref();
 
 const carDetailCache: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieveCache: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
-const insureDetailCache:globalThis.Ref<CustomerOrderRequest | undefined> = ref();
+const insureDetailCache:globalThis.Ref<OrderRequest | undefined> = ref();
+  const taxInvoiceCache:globalThis.Ref<OrderRequest | undefined> = ref();
 
 const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
@@ -302,10 +303,6 @@ const onLoad = onMounted(async () => {
 
     if (OrderInfo.value) {
       console.log("OrderInfo", OrderInfo.value);
-      carDetailCache.value = OrderInfo.value.CarDetailsExtension;
-      insureDetailCache.value = OrderInfo.value.Customer
-
-
       let insuranceRecieve: InsuranceRecieveObject = {
         ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? "",
         Email: OrderInfo.value.DeliveryMethod1?.DeliveryEmail ?? "",
@@ -316,7 +313,15 @@ const onLoad = onMounted(async () => {
           DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
         },
       };
+      // set cache Data Step1
+      carDetailCache.value = OrderInfo.value.CarDetailsExtension;
+      // set cache Data Step2
+      insureDetailCache.value = OrderInfo.value
+      // set cache Data Step3
       insuranceRecieveCache.value = insuranceRecieve;
+      // set cache Data Step4
+      taxInvoiceCache.value = OrderInfo.value
+      
     }
   } else {
     router.push("/login");
@@ -756,6 +761,7 @@ const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
   carDetail.value = objectCarDetail;
 };
 const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject) => {
+console.log(RecieveObject)
   switch (RecieveObject.ShippingPolicy) {
     case "pdf":
       if (RecieveObject.Email.length > 0) checklist.value[2].className = "current";
@@ -920,8 +926,8 @@ const handlerChangeTaxInvoice = (
     insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault =
       InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault;
   }
-
-  if (insuranceRecieve.value && insuranceRecieve.value.ShippingPolicy.length > 0) {
+  console.log(insuranceRecieve.value)
+  if (insuranceRecieve.value) {
     if (isIncludeTax) {
       // set ที่อยู่จีดส่งเอกสารใบกำกับภาษี กรณีเลือก วิธีรับกรมธรรม์ จัดส่งตัวจริง และเลือกเป็นจัดส่งพร้อมกรมธรรม์
       if (

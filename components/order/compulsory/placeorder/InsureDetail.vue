@@ -74,6 +74,7 @@
                           @change="handlerChangePersonalProfile"
                           :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
                         />
+                        PrefixID = {{ personProfile.PrefixID }}
                       </div>
                       <div class="col-sm-8 col-lg-4">
                         <FormKit
@@ -830,7 +831,38 @@ watch(CompanyClassifierText, async (newCompanyClassifierText) => {
   }
 });
 watch(()=>props.cacheOrderRequest,(newValue)=>{
-  //console.log(newValue)
+  if(props.cacheOrderRequest){
+    if(props.cacheOrderRequest.Customer){
+      // ประเภทผู้เอาประกัน
+      InsuredTypeText.value = props.cacheOrderRequest.Customer.IsPerson==true ? 'person' : 'company'
+
+
+      if(props.cacheOrderRequest.Customer.IsPerson==true && props.cacheOrderRequest.Customer.PersonProfile){
+        // ลักษณะบุคคลธรรมดา
+        InsuredClassifierText.value = props.cacheOrderRequest.Customer.PersonProfile.NationalityID=='62ED0829703B4E589A2A63C740B88155' ? 'thai' : 'foreigner'
+      }
+      else{
+        // ลักษณะนิติบุคคล
+        CompanyClassifierText.value= props.cacheOrderRequest.Customer.IsBranch==true ? 'branch' : 'headoffice'
+      }
+
+      insureDetail.value = props.cacheOrderRequest.Customer
+    if(props.cacheOrderRequest.Customer.PersonProfile){
+      personProfile.value =  props.cacheOrderRequest.Customer.PersonProfile
+      console.log(personProfile.value)
+    }
+    if(props.cacheOrderRequest.Customer.LegalPersonProfile){
+      legalPersonProfile.value =  props.cacheOrderRequest.Customer.LegalPersonProfile
+    }
+
+    if(props.cacheOrderRequest.Customer.DefaultAddress){
+      console.log(props.cacheOrderRequest.Customer.DefaultAddress)
+      defaultAddress.value = props.cacheOrderRequest.Customer.DefaultAddress
+    }
+    }
+    handlerChangeInsureDetail()
+  }
+
 })
 </script>
 <style scoped>

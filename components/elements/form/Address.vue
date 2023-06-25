@@ -258,17 +258,17 @@ watch(
 
 
 // handler function for emit
-const handlerChangeProvince = (e: string) => {
-  if (e) {
+const handlerChangeProvince = (e: any) => {
+  if (e && e.target.value) {
     if(ObjectAddress.value){
-      ObjectAddress.value.ProvinceID = e
+      ObjectAddress.value.ProvinceID = e.target.value
     ObjectAddress.value.DistrictID=''
     ObjectAddress.value.SubDistrictID=''
     ObjectAddress.value.ZipCode=''
     }
 
     handlerChangeFullAddress()
-    emit('changeProvince', e)
+    emit('changeProvince', e.target.value)
 
   }
 }
@@ -281,7 +281,7 @@ const handlerChangeDistrict = (e: any) => {
     ObjectAddress.value.ZipCode=''
     }
     handlerChangeFullAddress()
-    emit('changeDistrict', e)
+    emit('changeDistrict', e.target.value)
   }
 }
 const handlerChangeSubDistrict = (e: any) => {
@@ -291,7 +291,7 @@ const handlerChangeSubDistrict = (e: any) => {
       ObjectAddress.value.ZipCode=''
     }
     handlerChangeFullAddress()
-    emit('changeSubDistrict', e)
+    emit('changeSubDistrict', e.target.value)
   }
 }
 const handlerChangeFullAddress = () => {

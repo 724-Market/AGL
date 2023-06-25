@@ -230,19 +230,17 @@ watch(
   }
 )
 // handler function for emit
-const handlerChangeProvince = (e: string) => {
-
+const handlerChangeProvince = async (e: string) => {
     if (e) {
         emit('changeProvince', e)
-
     }
 }
-const handlerChangeDistrict = (e: string) => {
+const handlerChangeDistrict = async (e: string) => {
     if (e) {
         emit('changeDistrict', e)
     }
 }
-const handlerChangeSubDistrict = (e: string) => {
+const handlerChangeSubDistrict = async (e: string) => {
     if (e) {
         emit('changeSubDistrict', e)
     }

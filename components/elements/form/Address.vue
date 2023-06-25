@@ -239,10 +239,21 @@ watch(
     }
   }
 )
-watch(()=>props.defaultAddressCache,(newValue)=>{
+watch(
+  ()=>props.defaultAddressCache, 
+  async (newValue) => {
   console.log(newValue)
+
+  // let addressCache = newValue as DefaultAddress
+  await emit('changeProvince', ObjectAddress.value.ProvinceID)
+  // ObjectAddress.value.ProvinceID = addressCache.ProvinceID
+  await emit('changeDistrict', ObjectAddress.value.DistrictID)
+  // ObjectAddress.value.DistrictID = addressCache.DistrictID
+  await emit('changeSubDistrict', ObjectAddress.value.SubDistrictID)
+  // ObjectAddress.value.SubDistrictID = addressCache.SubDistrictID
+
   ObjectAddress.value = newValue as DefaultAddress
-    emit('changeProvince', ObjectAddress.value.ProvinceID)
+  // await emit('changeProvince', ObjectAddress.value.ProvinceID)
 })
 
 

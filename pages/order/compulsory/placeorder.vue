@@ -336,39 +336,7 @@ const submitOrder = async (formData: any) => {
     if (!insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
       insureDetail.value.DeliveryAddress =
         insuranceRecieve.value?.PostalDelivary?.DeliveryAddress;
-      // insureDetail.value.DeliveryAddress = {
-      //   AddressID: insureDetail.value.DefaultAddress?.AddressID ?? "",
-      //   ReferenceID: insureDetail.value.DefaultAddress?.ReferenceID ?? "",
-      //   ReferenceType: insureDetail.value.DefaultAddress?.ReferenceType ?? "",
-      //   ProvinceID: insureDetail.value.DefaultAddress?.ProvinceID ?? "",
-      //   DistrictID: insureDetail.value.DefaultAddress?.DistrictID ?? "",
-      //   SubDistrictID: insureDetail.value.DefaultAddress?.SubDistrictID ?? "",
-      //   TaxID: insureDetail.value.DefaultAddress?.TaxID ?? "",
-      //   FirstName: insureDetail.value.DefaultAddress?.FirstName ?? "",
-      //   LastName: insureDetail.value.DefaultAddress?.LastName ?? "",
-      //   PhoneNumber: insureDetail.value.DefaultAddress?.PhoneNumber ?? "",
-      //   Email: insureDetail.value.DefaultAddress?.Email ?? "",
-      //   Name: insureDetail.value.DefaultAddress?.Name ?? "",
-      //   Type: insureDetail.value.DefaultAddress?.Type ?? "",
-      //   AddressLine1: insureDetail.value.DefaultAddress?.AddressLine1 ?? "",
-      //   AddressLine2: insureDetail.value.DefaultAddress?.AddressLine2 ?? "",
-      //   AddressText: insureDetail.value.DefaultAddress?.AddressText ?? "",
-      //   No: insureDetail.value.DefaultAddress?.No ?? "",
-      //   Moo: insureDetail.value.DefaultAddress?.Moo ?? "",
-      //   Place: insureDetail.value.DefaultAddress?.Place ?? "",
-      //   Building: insureDetail.value.DefaultAddress?.Building ?? "",
-      //   Floor: insureDetail.value.DefaultAddress?.Floor ?? "",
-      //   Room: insureDetail.value.DefaultAddress?.Room ?? "",
-      //   Branch: insureDetail.value.DefaultAddress?.Branch ?? "",
-      //   Alley: insureDetail.value.DefaultAddress?.Alley ?? "",
-      //   Road: insureDetail.value.DefaultAddress?.Road ?? "",
-      //   ZipCode: insureDetail.value.DefaultAddress?.ZipCode ?? "",
-      // }
     }
-    // else {
-    //   insureDetail.value.DeliveryAddress =
-    //     insuranceRecieve.value?.PostalDelivary?.DeliveryAddress;
-    // }
   }
 
   insureDetail.value.IsDeliveryAddressSameAsDefault =
@@ -743,6 +711,7 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
   }
 };
 const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
+  console.log('handleCheckCarDetail',objectCarDetail)
   if (
     objectCarDetail.License.length > 0 &&
     objectCarDetail.LicenseProvinceID.length > 0 &&

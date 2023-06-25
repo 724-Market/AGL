@@ -217,7 +217,6 @@ const onLoad = onMounted(async () => {
     carColorText = carDetailCache.value.ColorID
     carBodyNumberText = carDetailCache.value.BodyNo
     carEngineNumberText = carDetailCache.value.EngineNo
-    carLicenseText = carDetailCache.value.License
     CarLicenseFileText = ''
     base64FileString = carDetailCache.value.LicenseFileID
   }
@@ -316,12 +315,21 @@ watch(
     if(props.carDetailCache){
       carDetailCache.value = props.carDetailCache
       carLicenseText = carDetailCache.value.License
+      carLicenseValue = carDetailCache.value.License
+
       carProvinceText = carDetailCache.value.LicenseProvinceID
+
       carLicenseClassifierText.value = carDetailCache.value.IsRedLicense ? 'temporary' : ''
       carLicenseClassifierValue = carDetailCache.value.IsRedLicense
+
       carColorText = carDetailCache.value.ColorID
+
       carBodyNumberText = carDetailCache.value.BodyNo
+      carBodyNumberValue = carDetailCache.value.BodyNo
+
       carEngineNumberText = carDetailCache.value.EngineNo
+      carEngineNumberValue = carDetailCache.value.EngineNo
+
       CarLicenseFileText = ''
       base64FileString = carDetailCache.value.LicenseFileID
 

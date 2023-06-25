@@ -54,7 +54,10 @@
                   />
                 </aside>
 
-                <aside v-if="isPrintShipping && props.packageSelect" class="shipping-print">
+                <aside
+                  v-if="isPrintShipping && props.packageSelect"
+                  class="shipping-print"
+                >
                   <p>
                     จำนวนกระดาษ <span>{{ props.packageSelect.CompanyName }}</span> คงเหลือ
                     <span>{{ props.packageSelect.PaperBalance }}</span> ใบ
@@ -242,19 +245,28 @@ const onLoad = onMounted(async () => {
     }
     if(props.insuranceRecieveCache){
       insuranceRecieveCache.value = props.insuranceRecieveCache
-    }
-
-    if(insuranceRecieveCache.value) {
-      shippingPolicyText.value = insuranceRecieveCache.value.ShippingPolicy
+      console.log(insuranceRecieveCache.value)
+      if(insuranceRecieveCache.value) {
+        //TODO fix shipping type
+        if(insuranceRecieveCache.value.ShippingPolicy=='ELECTRONIC'){
+          shippingPolicyText.value = 'pdf'
+        }
+        else if (insuranceRecieveCache.value.ShippingPolicy=='PAPER'){
+          shippingPolicyText.value = 'print'
+        }
+        else{
+          shippingPolicyText.value = 'postal'
+        }
+      
       emailText = insuranceRecieveCache.value.Email
       // await handleRadioShippingPolicyChange(insuranceRecieveCache.value.ShippingPolicy)
 
-      if(insuranceRecieveCache.value.ShippingPolicy == 'postal') {
+      if(shippingPolicyText.value == 'postal') {
         ShippingMethodText = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
         ShippingFeeText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
         postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
         // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')
-        
+
         if(postalAddressPolicyText.value == 'addnew') {
           let newAddress: DeliveryAddress = insuranceRecieveCache.value.PostalDelivary?.DeliveryAddress as DeliveryAddress
           newAddressCache.value = {
@@ -287,7 +299,12 @@ const onLoad = onMounted(async () => {
           }
         }
       }
+      handleCheckInsuranceRecieve()
     }
+    
+    }
+
+    
 
     await setPostalAddressPolicy(insureFullAddress.value.toString(), '')
 });
@@ -349,7 +366,7 @@ const handleShippingMethodChange = async (event: any) => {
   const value = event.target.value
   if(value){
     const filter = delivery.value.filter(x=>x.value==value)
-    
+
     if(filter.length>0){
       ShippingFeeText.value = filter[0].option ?? ""
     }
@@ -384,7 +401,7 @@ const handleButtonSaveClick = async (event: any) => {
 // handler function for emit
 const handlerChangeProvince = (e: string)=>{
   if(e){
-    
+
     emit('changeProvince',e)
   }
 }
@@ -404,7 +421,7 @@ const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddres
     insureFullNewAddress.value = addr
     newAddressObject.value = ObjectAddress
 
-    
+
     await handleCheckInsuranceRecieve()
     //emit('changeFullAddress',addr,ObjectAddress)
   }
@@ -512,6 +529,61 @@ watch(
   ()=>{
     if(props.insuranceRecieveCache && props.insuranceRecieveCache != undefined){
       insuranceRecieveCache.value = props.insuranceRecieveCache
+      if(insuranceRecieveCache.value) {
+     //TODO fix shipping type
+     if(insuranceRecieveCache.value.ShippingPolicy=='ELECTRONIC'){
+          shippingPolicyText.value = 'pdf'
+        }
+        else if (insuranceRecieveCache.value.ShippingPolicy=='PAPER'){
+          shippingPolicyText.value = 'print'
+        }
+        else{
+          shippingPolicyText.value = 'postal'
+        }
+      emailText = insuranceRecieveCache.value.Email
+      // await handleRadioShippingPolicyChange(insuranceRecieveCache.value.ShippingPolicy)
+
+      if(shippingPolicyText.value == 'postal') {
+        ShippingMethodText = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
+        ShippingFeeText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
+        postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
+        // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')
+
+        if(postalAddressPolicyText.value == 'addnew') {
+          let newAddress: DeliveryAddress = insuranceRecieveCache.value.PostalDelivary?.DeliveryAddress as DeliveryAddress
+          newAddressCache.value = {
+            AddressID: newAddress.AddressID,
+            ReferenceID: newAddress.ReferenceID,
+            ReferenceType: newAddress.ReferenceType,
+            ProvinceID: newAddress.ProvinceID,
+            DistrictID: newAddress.DistrictID,
+            SubDistrictID: newAddress.SubDistrictID,
+            TaxID: newAddress.TaxID,
+            FirstName: newAddress.FirstName,
+            LastName: newAddress.LastName,
+            PhoneNumber: newAddress.PhoneNumber,
+            Email: newAddress.Email,
+            Name: newAddress.Name,
+            Type: newAddress.Type,
+            AddressLine1: newAddress.AddressLine1,
+            AddressLine2: newAddress.AddressLine2,
+            AddressText: newAddress.AddressText,
+            No: newAddress.No,
+            Moo: newAddress.Moo,
+            Place: newAddress.Place,
+            Building: newAddress.Building,
+            Floor: newAddress.Floor,
+            Room: newAddress.Room,
+            Branch: newAddress.Branch,
+            Alley: newAddress.Alley,
+            Road: newAddress.Road,
+            ZipCode: newAddress.ZipCode,
+          }
+        }
+      }
+
+      handleCheckInsuranceRecieve()
+    }
     }
   }
 )

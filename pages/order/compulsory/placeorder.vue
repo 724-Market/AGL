@@ -82,6 +82,7 @@
             :addr-zip-code2="addrZipCodeForTax2"
             :is-include-tax="packageSelect.IsTaxInclude"
             :shipping-policy="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
+            :cache-order-request="OrderInfo"
             @change-tax-invoice="handlerChangeTaxInvoice"
           ></OrderCompulsoryPlaceorderTaxInvoice>
           <ElementsModalAlert
@@ -896,6 +897,7 @@ const handlerChangeTaxInvoice = (
   shippedPolicy: string,
   ShippingMethod: string
 ) => {
+  //console.log(InsureDetail,isIncludeTax,shippedPolicy,ShippingMethod)
   let validate = [false, false];
   RequestIncludeTax.value = isIncludeTax;
   TaxInvoiceAddressShipped.value = shippedPolicy;

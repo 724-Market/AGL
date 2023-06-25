@@ -599,7 +599,7 @@ const effectiveMinDate: string = dateNow.toLocaleDateString("en-CA") // en-CA or
 
 const values = reactive({})
 const onLoad = onMounted(()=>{
-  console.log(props.cacheOrderRequest)
+  //console.log(props.cacheOrderRequest)
   if(props.cacheOrderRequest){
 
     if(props.cacheOrderRequest.Customer){
@@ -629,7 +629,7 @@ const onLoad = onMounted(()=>{
       defaultAddress.value = props.cacheOrderRequest.Customer.DefaultAddress
     }
     }
-
+    handlerChangeInsureDetail()
   }
   if(props.prefix){
     Prefix.value = props.prefix
@@ -830,7 +830,7 @@ watch(CompanyClassifierText, async (newCompanyClassifierText) => {
   }
 });
 watch(()=>props.cacheOrderRequest,(newValue)=>{
-  console.log(newValue)
+  //console.log(newValue)
 })
 </script>
 <style scoped>

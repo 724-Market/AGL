@@ -63,7 +63,7 @@
                         {
                           label: 'แก้ไขใบกำกับภาษี',
                           value: 'addnew',
-                          help:newTaxInvoiceFullAddress,
+                          help: newTaxInvoiceFullAddress,
                           attrs: { addnewaddress: true },
                         },
                       ]"
@@ -141,6 +141,7 @@
                         :addr-district="addrDistrict"
                         :addr-sub-district="addrSubDistrict"
                         :addr-zip-code="addrZipCode"
+                        :default-address-cache="taxInvoiceAddress"
                         @change-province="handlerChangeProvince"
                         @change-district="handlerChangeDistrict"
                         @change-sub-district="handlerChangeSubDistrict"
@@ -148,7 +149,12 @@
                       />
                     </div>
 
-                    <button class="btn-primary btn-save" @click="handlerSubmitAddressTaxInvoice">บันทึกข้อมูล</button>
+                    <button
+                      class="btn-primary btn-save"
+                      @click="handlerSubmitAddressTaxInvoice"
+                    >
+                      บันทึกข้อมูล
+                    </button>
                   </aside>
                 </section>
 
@@ -161,7 +167,13 @@
                   </div>
                 </div>
 
-                <section class="shipped-tax-address" v-if="(shippingPolicy=='postal' && shippedPolicy=='separately') || shippingPolicy!='postal'">
+                <section
+                  class="shipped-tax-address"
+                  v-if="
+                    (shippingPolicy == 'postal' && shippedPolicy == 'separately') ||
+                    shippingPolicy != 'postal'
+                  "
+                >
                   <h3>วิธีการจัดส่ง</h3>
                   <div class="row">
                     <div class="col-6">
@@ -204,7 +216,7 @@
                         {
                           label: 'เปลี่ยนที่อยู่ใหม่',
                           value: 'addnew',
-                          help:newTaxInvoiceDeliveryFullAddress,
+                          help: newTaxInvoiceDeliveryFullAddress,
                           attrs: { addnewaddress: true },
                         },
                       ]"
@@ -223,6 +235,7 @@
                         :addr-sub-district="addrSubDistrict2"
                         :addr-zip-code="addrZipCode2"
                         :prefix="prefix"
+                        :default-address-cache="cacheDefaultAddress"
                         @change-province="handlerChangeProvince2"
                         @change-district="handlerChangeDistrict2"
                         @change-sub-district="handlerChangeSubDistrict2"
@@ -230,7 +243,12 @@
                       />
                     </div>
 
-                    <button class="btn-primary btn-save" @click="handlerSubmitAddressTaxInvoiceDelivery">บันทึกข้อมูล</button>
+                    <button
+                      class="btn-primary btn-save"
+                      @click="handlerSubmitAddressTaxInvoiceDelivery"
+                    >
+                      บันทึกข้อมูล
+                    </button>
                   </aside>
                 </section>
               </div>
@@ -242,7 +260,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { CustomerOrderRequest, DefaultAddress, TaxInvoiceAddress } from "~/shared/entities/placeorder-entity"
+import { CustomerOrderRequest, DefaultAddress, OrderRequest, TaxInvoiceAddress, TaxInvoiceDeliveryAddress } from "~/shared/entities/placeorder-entity"
 import { RadioOption, SelectOption } from "~/shared/entities/select-option"
 
 const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict','changeProvince2', 'changeDistrict2', 'changeSubDistrict2','changeTaxInvoice'])
@@ -259,7 +277,10 @@ const props = defineProps({
   addrZipCode2: String,
   insureFullAddress: String,
   isIncludeTax: String,//1,0
-  shippingPolicy: String // email,pdf,postal
+  shippingPolicy: String, // email,pdf,postal
+  cacheOrderRequest:{
+    type:Object as ()=> OrderRequest
+  }
 })
 
 const prefix: globalThis.Ref<SelectOption[]> = ref([])
@@ -274,7 +295,7 @@ const addrZipCode2 = ref('')
 const insureFullAddress: globalThis.Ref<String> = ref('')
 const newTaxInvoiceFullAddress: globalThis.Ref<String> = ref('')
 const newTaxInvoiceDeliveryFullAddress: globalThis.Ref<String> = ref('')
-  const newTaxInvoiceFullAddressTemp: globalThis.Ref<String> = ref('')
+const newTaxInvoiceFullAddressTemp: globalThis.Ref<String> = ref('')
 const newTaxInvoiceDeliveryFullAddressTemp: globalThis.Ref<String> = ref('')
 
 const shippedPolicy = ref('together') //together,separately
@@ -349,9 +370,12 @@ const taxInvoiceDeliveryAddress:globalThis.Ref<TaxInvoiceAddress> = ref({
 const ShippingMethodText = ref('')
 const ShippingMethodFee = ref('')
 const insureDetail:globalThis.Ref<CustomerOrderRequest> = ref({})
-
+const cacheDefaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref()
   const onLoad = onMounted(async () => {
-
+    console.log(props.cacheOrderRequest)
+    if(props.cacheOrderRequest){
+      setCacheData()
+    }
   if (props.prefix) {
     prefix.value = props.prefix
   }
@@ -459,11 +483,41 @@ const handlerSubmitAddressTaxInvoiceDelivery = ()=>{
   handlerChangeTaxInvoice()
 }
 const handlerChangeTaxInvoice = ()=>{
-  
+
   insureDetail.value.IsTaxInvoiceAddressSameAsDefault = addressIncludeTaxType.value=='insured'
   insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = addressDeliveryTaxType.value=='insured'
   //console.log(insureDetail.value,requestIncludeTax.value.length > 0,shippedPolicy.value,ShippingMethodText.value)
   emit('changeTaxInvoice',insureDetail.value,requestIncludeTax.value.length > 0,shippedPolicy.value,ShippingMethodText.value)
+}
+
+const setCacheData = ()=>{
+  //console.log(props.cacheOrderRequest)
+  if(props.cacheOrderRequest){
+    requestIncludeTax.value =props.cacheOrderRequest.IsTaxInvoice==true? ['1'] : []
+    if(props.cacheOrderRequest.Customer){
+      addressIncludeTaxType.value=props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault==true ? 'insured' : 'addnew'
+      addressDeliveryTaxType.value=props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault==true ? 'insured' : 'addnew'
+
+      if(props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault==false && props.cacheOrderRequest.Customer.TaxInvoiceAddress){
+        taxInvoiceAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceAddress
+      }
+      if(props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault==false && props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress){
+        cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress
+        //const deliveryMethod1 = props.cacheOrderRequest.DeliveryMethod1
+          
+
+      }
+      const deliveryMethod2 = props.cacheOrderRequest.DeliveryMethod2
+          if(props.delivery && deliveryMethod2){
+          const filter = props.delivery.filter(x=>x.value == deliveryMethod2.DeliveryChannelType)
+          if(filter.length>0){
+            ShippingMethodText.value = deliveryMethod2.DeliveryChannelType
+            ShippingMethodFee.value = filter[0].option ?? "0"
+          }
+        }
+    }
+    handlerChangeTaxInvoice()
+  }
 }
 //watching props pass data
 watch(
@@ -553,7 +607,7 @@ watch(
     if(props.insureFullAddress){
       insureFullAddress.value = props.insureFullAddress
     }
-    
+
   }
 )
 watch(
@@ -562,7 +616,7 @@ watch(
     if(addressIncludeTaxType.value){
       handlerChangeTaxInvoice()
     }
-    
+
   }
 )
 watch(
@@ -571,7 +625,7 @@ watch(
     if(addressDeliveryTaxType.value){
       handlerChangeTaxInvoice()
     }
-    
+
   }
 )
 watch(
@@ -580,13 +634,15 @@ watch(
     if(shippedPolicy.value){
       handlerChangeTaxInvoice()
     }
-    
+
   }
 )
 watch(requestIncludeTax,()=>{
   handlerChangeTaxInvoice()
 })
-
+watch(()=>props.cacheOrderRequest,(newValue)=>{
+  setCacheData()
+})
 
 // watch(
 //   () => props.shippingPolicy,

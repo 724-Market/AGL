@@ -218,6 +218,17 @@ watch(
         }
     }
 )
+watch(
+  ()=>props.defaultAddressCache,
+  (newValue)=>{
+    if(props.defaultAddressCache){
+      defaultAddressCache.value = newValue
+      FirstNameText = defaultAddressCache.value?.FirstName ?? ""
+      LabelAddressText = defaultAddressCache.value?.LastName ?? ""
+      PhoneNumberText = defaultAddressCache.value?.PhoneNumber ?? ""
+    }
+  }
+)
 // handler function for emit
 const handlerChangeProvince = (e: string) => {
 

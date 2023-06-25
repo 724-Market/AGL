@@ -138,9 +138,7 @@ const props = defineProps({
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
   addrZipCode: String,
-  defaultAddressCache: {
-    type: Object as () => DefaultAddress,
-  },
+  defaultAddressCache:Object,
 })
 
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
@@ -179,7 +177,6 @@ const ObjectAddress: globalThis.Ref<DefaultAddress> = ref({
 })
 
 const onLoad = onMounted(() => {
-  
 
   if (props.addrProvince) {
     addrProvince.value = props.addrProvince
@@ -194,7 +191,9 @@ const onLoad = onMounted(() => {
     addrZipCode.value = props.addrZipCode
   }
   if (props.defaultAddressCache) {
-    ObjectAddress.value = props.defaultAddressCache
+
+    ObjectAddress.value = props.defaultAddressCache as DefaultAddress
+    emit('changeProvince', ObjectAddress.value.ProvinceID)
   }
 })
 // handler validate function
@@ -240,6 +239,11 @@ watch(
     }
   }
 )
+watch(()=>props.defaultAddressCache,(newValue)=>{
+  console.log(newValue)
+  ObjectAddress.value = newValue as DefaultAddress
+    emit('changeProvince', ObjectAddress.value.ProvinceID)
+})
 
 
 // handler function for emit
@@ -247,7 +251,7 @@ const handlerChangeProvince = (e: string) => {
   if (e) {
     if(ObjectAddress.value){
       ObjectAddress.value.ProvinceID = e
-      ObjectAddress.value.DistrictID=''
+    ObjectAddress.value.DistrictID=''
     ObjectAddress.value.SubDistrictID=''
     ObjectAddress.value.ZipCode=''
     }
@@ -258,6 +262,7 @@ const handlerChangeProvince = (e: string) => {
   }
 }
 const handlerChangeDistrict = (e: string) => {
+
   if (e) {
     if(ObjectAddress.value){
       ObjectAddress.value.DistrictID = e

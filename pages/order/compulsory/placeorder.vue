@@ -35,6 +35,7 @@
             :addr-district="addrDistrict"
             :addr-sub-district="addrSubDistrict"
             :addr-zip-code="addrZipCodeForInsured"
+            :cache-order-request="OrderInfo"
           ></OrderCompulsoryPlaceorderInsureDetail>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # วิธีการรับกรมธรรม์ # # # # # # # # # # # # # # # # # # # # #-->
@@ -218,6 +219,7 @@ const defaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref();
 
 const carDetailCache: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieveCache: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
+const insureDetailCache:globalThis.Ref<CustomerOrderRequest | undefined> = ref();
 
 const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
@@ -300,6 +302,8 @@ const onLoad = onMounted(async () => {
     console.log("OrderInfo", OrderInfo.value);
     if (OrderInfo.value) {
       carDetailCache.value = OrderInfo.value.CarDetailsExtension;
+      insureDetailCache.value = OrderInfo.value.Customer
+
 
       let insuranceRecieve: InsuranceRecieveObject = {
         ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? "",

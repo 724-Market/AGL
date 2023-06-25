@@ -522,6 +522,7 @@
                       :addr-district="addrDistrict"
                       :addr-sub-district="addrSubDistrict"
                       :addr-zip-code="addrZipCode"
+                      :default-address-cache="defaultAddress"
                       @change-province="handlerChangeProvince"
                       @change-district="handlerChangeDistrict"
                       @change-sub-district="handlerChangeSubDistrict"
@@ -538,7 +539,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { DefaultAddress,CustomerOrderRequest, LegalPersonProfile, PersonProfile } from "~/shared/entities/placeorder-entity";
+import { DefaultAddress,CustomerOrderRequest, LegalPersonProfile, PersonProfile, OrderRequest } from "~/shared/entities/placeorder-entity";
 import { SelectOption } from "~/shared/entities/select-option";
 
 const emit = defineEmits(['changeCustomerType','changeProvince','changeDistrict','changeSubDistrict','changeFullAddress','changeInsureDetail'])
@@ -548,7 +549,10 @@ const props = defineProps({
   addrProvince: Array<SelectOption>,
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
-  addrZipCode:String
+  addrZipCode:String,
+  cacheOrderRequest:{
+    type:Object as ()=> OrderRequest
+  }
 });
 //const emit = defineEmits(['changeCustomerType','changeCompanyType','changeProvince','changeDistrict','changeSubDistrict'])
 const insureDetail:globalThis.Ref<CustomerOrderRequest> = ref({
@@ -595,6 +599,38 @@ const effectiveMinDate: string = dateNow.toLocaleDateString("en-CA") // en-CA or
 
 const values = reactive({})
 const onLoad = onMounted(()=>{
+  console.log(props.cacheOrderRequest)
+  if(props.cacheOrderRequest){
+
+    if(props.cacheOrderRequest.Customer){
+      // ประเภทผู้เอาประกัน
+      InsuredTypeText.value = props.cacheOrderRequest.Customer.IsPerson==true ? 'person' : 'company'
+
+
+      if(props.cacheOrderRequest.Customer.IsPerson==true && props.cacheOrderRequest.Customer.PersonProfile){
+        // ลักษณะบุคคลธรรมดา
+        InsuredClassifierText.value = props.cacheOrderRequest.Customer.PersonProfile.NationalityID=='62ED0829703B4E589A2A63C740B88155' ? 'thai' : 'foreigner'
+      }
+      else{
+        // ลักษณะนิติบุคคล
+        CompanyClassifierText.value= props.cacheOrderRequest.Customer.IsBranch==true ? 'branch' : 'headoffice'
+      }
+
+      insureDetail.value = props.cacheOrderRequest.Customer
+    if(props.cacheOrderRequest.Customer.PersonProfile){
+      personProfile.value =  props.cacheOrderRequest.Customer.PersonProfile
+    }
+    if(props.cacheOrderRequest.Customer.LegalPersonProfile){
+      legalPersonProfile.value =  props.cacheOrderRequest.Customer.LegalPersonProfile
+    }
+
+    if(props.cacheOrderRequest.Customer.DefaultAddress){
+      console.log(props.cacheOrderRequest.Customer.DefaultAddress)
+      defaultAddress.value = props.cacheOrderRequest.Customer.DefaultAddress
+    }
+    }
+
+  }
   if(props.prefix){
     Prefix.value = props.prefix
   }
@@ -673,7 +709,7 @@ const handlerChangeInsureDetail = ()=>{
   data.DefaultAddress = insureDetail.value.DefaultAddress
   data.LegalPersonProfile = insureDetail.value.LegalPersonProfile
   data.PersonProfile = insureDetail.value.PersonProfile
-  
+
   if(data.DefaultAddress){
     if(data.IsPerson && data.PersonProfile)
     {
@@ -793,6 +829,9 @@ watch(CompanyClassifierText, async (newCompanyClassifierText) => {
     clearData()
   }
 });
+watch(()=>props.cacheOrderRequest,(newValue)=>{
+  console.log(newValue)
+})
 </script>
 <style scoped>
 .insured-classifier,

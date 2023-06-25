@@ -299,8 +299,8 @@ const onLoad = onMounted(async () => {
       router.push("/order/compulsory/packages");
     }
 
-    console.log("OrderInfo", OrderInfo.value);
     if (OrderInfo.value) {
+      console.log("OrderInfo", OrderInfo.value);
       carDetailCache.value = OrderInfo.value.CarDetailsExtension;
       insureDetailCache.value = OrderInfo.value.Customer
 

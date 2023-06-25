@@ -245,7 +245,6 @@ const onLoad = onMounted(async () => {
     }
     if(props.insuranceRecieveCache){
       insuranceRecieveCache.value = props.insuranceRecieveCache
-      console.log(insuranceRecieveCache.value)
       if(insuranceRecieveCache.value) {
         //TODO fix shipping type
         if(insuranceRecieveCache.value.ShippingPolicy=='ELECTRONIC'){
@@ -420,7 +419,6 @@ const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddres
     //TODO implement coding new address
     insureFullNewAddress.value = addr
     newAddressObject.value = ObjectAddress
-
 
     await handleCheckInsuranceRecieve()
     //emit('changeFullAddress',addr,ObjectAddress)

@@ -243,7 +243,6 @@ watch(
   ()=>props.defaultAddressCache, 
   async (newValue) => {
     let addressCache = newValue as DefaultAddress
-    console.log('addressCache', addressCache)
 
     ObjectAddress.value.ProvinceID = addressCache.ProvinceID
     await emit('changeProvince', ObjectAddress.value.ProvinceID)

@@ -600,7 +600,24 @@ const effectiveMinDate: string = dateNow.toLocaleDateString("en-CA") // en-CA or
 
 const values = reactive({})
 const onLoad = onMounted(()=>{
-  //console.log(props.cacheOrderRequest)
+  if(props.prefix){
+    Prefix.value = props.prefix
+  }
+  if(props.nationality){
+    Nationality.value = props.nationality
+  }
+  if(props.addrProvince){
+    addrProvince.value = props.addrProvince
+  }
+  if(props.addrDistrict){
+    addrDistrict.value = props.addrDistrict
+  }
+  if(props.addrSubDistrict){
+    addrSubDistrict.value = props.addrSubDistrict
+  }
+  if(props.addrZipCode){
+    addrZipCode.value = props.addrZipCode
+  }
   if(props.cacheOrderRequest){
 
     if(props.cacheOrderRequest.Customer){
@@ -626,30 +643,11 @@ const onLoad = onMounted(()=>{
     }
 
     if(props.cacheOrderRequest.Customer.DefaultAddress){
-      console.log(props.cacheOrderRequest.Customer.DefaultAddress)
       defaultAddress.value = props.cacheOrderRequest.Customer.DefaultAddress
       emit('changeProvince',defaultAddress.value.ProvinceID)
     }
     }
     handlerChangeInsureDetail()
-  }
-  if(props.prefix){
-    Prefix.value = props.prefix
-  }
-  if(props.nationality){
-    Nationality.value = props.nationality
-  }
-  if(props.addrProvince){
-    addrProvince.value = props.addrProvince
-  }
-  if(props.addrDistrict){
-    addrDistrict.value = props.addrDistrict
-  }
-  if(props.addrSubDistrict){
-    addrSubDistrict.value = props.addrSubDistrict
-  }
-  if(props.addrZipCode){
-    addrZipCode.value = props.addrZipCode
   }
 })
 // handler validate function
@@ -850,14 +848,16 @@ watch(()=>props.cacheOrderRequest,(newValue)=>{
       insureDetail.value = props.cacheOrderRequest.Customer
     if(props.cacheOrderRequest.Customer.PersonProfile){
       personProfile.value =  props.cacheOrderRequest.Customer.PersonProfile
-      console.log(personProfile.value)
+      personProfile.value.PrefixID = props.cacheOrderRequest.Customer.PersonProfile.PrefixID
+      console.log('personProfile.value', personProfile.value)
+      console.log('personProfile.value.PrefixID', personProfile.value.PrefixID)
     }
     if(props.cacheOrderRequest.Customer.LegalPersonProfile){
       legalPersonProfile.value =  props.cacheOrderRequest.Customer.LegalPersonProfile
     }
 
     if(props.cacheOrderRequest.Customer.DefaultAddress){
-      console.log(props.cacheOrderRequest.Customer.DefaultAddress)
+      // console.log(props.cacheOrderRequest.Customer.DefaultAddress)
       defaultAddress.value = props.cacheOrderRequest.Customer.DefaultAddress
     }
     }

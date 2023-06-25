@@ -286,7 +286,7 @@ const handleCheckCarDetail = async () => {
     EngineNo: carEngineNumberValue,
     ColorID: carColorText,
     LicenseProvinceID: carProvinceText,
-    LicenseFileID: 'base64FileString',
+    LicenseFileID: base64FileString,
     IsRedLicense: carLicenseClassifierValue
   }
 

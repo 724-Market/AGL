@@ -244,13 +244,13 @@ watch(
   async (newValue) => {
   console.log(newValue)
 
-  // let addressCache = newValue as DefaultAddress
+  let addressCache = newValue as DefaultAddress
+  ObjectAddress.value.ProvinceID = addressCache.ProvinceID
   await emit('changeProvince', ObjectAddress.value.ProvinceID)
-  // ObjectAddress.value.ProvinceID = addressCache.ProvinceID
+  ObjectAddress.value.DistrictID = addressCache.DistrictID
   await emit('changeDistrict', ObjectAddress.value.DistrictID)
-  // ObjectAddress.value.DistrictID = addressCache.DistrictID
+  ObjectAddress.value.SubDistrictID = addressCache.SubDistrictID
   await emit('changeSubDistrict', ObjectAddress.value.SubDistrictID)
-  // ObjectAddress.value.SubDistrictID = addressCache.SubDistrictID
 
   ObjectAddress.value = newValue as DefaultAddress
   // await emit('changeProvince', ObjectAddress.value.ProvinceID)

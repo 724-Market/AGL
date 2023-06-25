@@ -105,6 +105,7 @@ import { useStoreInformation } from "~/stores/order/storeInformation";
 
 // using pinia
 import { storeToRefs } from "pinia";
+import { AgentInfo } from "~/shared/entities/agent-entity";
 
 // Define Variables
 // Loading state after form submiting
@@ -251,6 +252,7 @@ const handlerChangePage = async (page: number, lengthPage: number) => {
 };
 // Submit form event
 const submitOrder = async (formData: any) => {
+  isLoading.value = true
   console.log(
     "%cOrder%cformData",
     "color:#fffbackground:#ee6f57padding:3pxborder-radius:2px",
@@ -260,16 +262,31 @@ const submitOrder = async (formData: any) => {
   );
 
   if (packageSelect.value) {
+    if(AuthenInfo.value){
+      packageSelect.value.AgentCode = AuthenInfo.value.userName
+    }
     //define store
     const storePackage = useStorePackage();
     const data = storePackage.setPackage(packageSelect.value);
 
     submitted.value = false; // Form submitted status
-
+    isLoading.value = false
     router.push("/order/compulsory/placeorder");
   }
 };
-
+const loadAgentInfo = async (): Promise<AgentInfo[]> => {
+  let data: AgentInfo[] = [];
+  const response = await useRepository().agent.GetLicense();
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data) {
+      data = response.apiResponse.Data;
+    } else {
+      // data not found
+    }
+  } else {
+  }
+  return data;
+};
 const layout = "monito";
 
 // Define meta seo

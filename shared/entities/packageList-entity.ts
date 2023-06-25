@@ -30,6 +30,7 @@ export interface IPackageResponse {
     PackageResult: PackageResult[]
     IsTaxInclude?:string
     PaperBalance?:number
+    AgentCode?:string
 }
 
 export interface PackageResult {

@@ -13,6 +13,8 @@
 <script setup lang="ts">
 import { IChecklist } from "~~/shared/entities/checklist-entity";
 
+const emit = defineEmits(['changeCheckSave'])
+
 const props = defineProps({
     list:{
         type:Array<IChecklist>,
@@ -23,7 +25,21 @@ const props = defineProps({
 const checklist:globalThis.Ref<IChecklist[]>   = ref([])
 const onLoad = onMounted( () => {
     
-    console.log(JSON.stringify(props.list))
+    //console.log(JSON.stringify(props.list))
     
 })
+watch(
+    props.list,
+    ()=>{
+        //console.log(JSON.stringify(props.list))
+        if(props.list.length>0)
+        {
+            
+            const filter = props.list.filter(x=>x.className=='current')
+            const check = filter.length == props.list.length
+            console.log(filter,check)
+            emit('changeCheckSave',check)
+        }
+    }
+)
 </script>

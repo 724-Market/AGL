@@ -459,9 +459,10 @@ const handlerSubmitAddressTaxInvoiceDelivery = ()=>{
   handlerChangeTaxInvoice()
 }
 const handlerChangeTaxInvoice = ()=>{
-  //TODO ImplementhandlerChangeTaxInvoice
+  
   insureDetail.value.IsTaxInvoiceAddressSameAsDefault = addressIncludeTaxType.value=='insured'
   insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = addressDeliveryTaxType.value=='insured'
+  //console.log(insureDetail.value,requestIncludeTax.value.length > 0,shippedPolicy.value,ShippingMethodText.value)
   emit('changeTaxInvoice',insureDetail.value,requestIncludeTax.value.length > 0,shippedPolicy.value,ShippingMethodText.value)
 }
 //watching props pass data

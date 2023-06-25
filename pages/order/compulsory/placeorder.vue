@@ -2,7 +2,6 @@
   <NuxtLayout :name="layout">
     <FormKit
       type="form"
-      @submit="submitOrder"
       :actions="false"
       id="form-order"
       form-class="form-order form-theme"
@@ -84,6 +83,11 @@
             :shipping-policy="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
             @change-tax-invoice="handlerChangeTaxInvoice"
           ></OrderCompulsoryPlaceorderTaxInvoice>
+          <ElementsModalAlert
+            v-if="isError"
+            :is-error="isError"
+            :message="messageError"
+          />
         </div>
 
         <!-- # # # # # # # # # # # # # # # # # # # # # Right Slide Bar # # # # # # # # # # # # # # # # # # # # #-->
@@ -119,7 +123,7 @@
               ></OrderCartInsure>
             </div>
 
-            <OrderChecklist :list="checklist" />
+            <OrderChecklist :list="checklist" @change-check-save="handlerCheckSave" />
           </aside>
 
           <FormKit
@@ -128,6 +132,7 @@
             name="order-submit"
             id="order-submit"
             :classes="{ input: 'btn-primary', outer: 'form-actions' }"
+            @click="submitOrder"
             :disabled="!checkSave"
             :loading="isLoading"
           />
@@ -217,11 +222,13 @@ const insuranceRecieveCache: globalThis.Ref<InsuranceRecieveObject | undefined> 
 const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
 const insureDetail: globalThis.Ref<CustomerOrderRequest> = ref({});
-const personProfile:  globalThis.Ref<PersonProfile | undefined> = ref();
-const legalPersonProfile:globalThis.Ref<LegalPersonProfile | undefined> = ref(); 
+const personProfile: globalThis.Ref<PersonProfile | undefined> = ref();
+const legalPersonProfile: globalThis.Ref<LegalPersonProfile | undefined> = ref();
 const RequestIncludeTax = ref(false);
-const TaxInvoiceAddressShipped = ref('')
-const TaxInvoiceAddressShipping = ref('')
+const TaxInvoiceAddressShipped = ref("");
+const TaxInvoiceAddressShipping = ref("");
+const isError = ref(false);
+const messageError = ref("");
 var checkSave: globalThis.Ref<Boolean> = ref(false);
 
 let values = reactive({});
@@ -248,7 +255,7 @@ const checklist: globalThis.Ref<IChecklist[]> = ref([
     desc: "ใบกำกับภาษี",
   },
 ]);
-const changeInsure = ref(false)
+const changeInsure = ref(false);
 //define store
 const storeAuth = useStoreUserAuth();
 // define getter in store
@@ -270,13 +277,6 @@ const storeOrder = useStorePlaceorder();
 const { OrderInfo } = storeToRefs(storeOrder);
 
 const router = useRouter();
-
-watch(checklist, async (newValue) => {
-  newValue.forEach((e: IChecklist) => {
-    if (e.className == "current") checkSave.value = true;
-    else checkSave.value = false;
-  });
-});
 
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
@@ -302,12 +302,12 @@ const onLoad = onMounted(async () => {
       carDetailCache.value = OrderInfo.value.CarDetailsExtension;
 
       let insuranceRecieve: InsuranceRecieveObject = {
-        ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? '',
-        Email: OrderInfo.value.DeliveryMethod1?.DeliveryEmail ?? '',
+        ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? "",
+        Email: OrderInfo.value.DeliveryMethod1?.DeliveryEmail ?? "",
         PostalDelivary: {
           IsDeliveryAddressSameAsDefault: true,
-          ShippingMethod: OrderInfo.value.DeliveryMethod1?.DeliveryChannelType ?? '',
-          ShippingFee: '50 บาท', //TODO: Mock up
+          ShippingMethod: OrderInfo.value.DeliveryMethod1?.DeliveryChannelType ?? "",
+          ShippingFee: "50 บาท", //TODO: Mock up
           DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
         },
       };
@@ -319,10 +319,13 @@ const onLoad = onMounted(async () => {
 });
 // Submit form event
 const submitOrder = async (formData: any) => {
+  isLoading.value = true;
+  console.log(formData);
   storeOrder.clearOrder();
   if (insuranceRecieve.value?.ShippingPolicy == "postal") {
     if (!insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
-      insureDetail.value.DeliveryAddress = insuranceRecieve.value?.PostalDelivary?.DeliveryAddress;
+      insureDetail.value.DeliveryAddress =
+        insuranceRecieve.value?.PostalDelivary?.DeliveryAddress;
       // insureDetail.value.DeliveryAddress = {
       //   AddressID: insureDetail.value.DefaultAddress?.AddressID ?? "",
       //   ReferenceID: insureDetail.value.DefaultAddress?.ReferenceID ?? "",
@@ -351,7 +354,7 @@ const submitOrder = async (formData: any) => {
       //   Road: insureDetail.value.DefaultAddress?.Road ?? "",
       //   ZipCode: insureDetail.value.DefaultAddress?.ZipCode ?? "",
       // }
-    } 
+    }
     // else {
     //   insureDetail.value.DeliveryAddress =
     //     insuranceRecieve.value?.PostalDelivary?.DeliveryAddress;
@@ -360,7 +363,7 @@ const submitOrder = async (formData: any) => {
 
   insureDetail.value.IsDeliveryAddressSameAsDefault =
     insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault;
-  const DeliveryMethod = getDeliveryMethod()
+  const DeliveryMethod = getDeliveryMethod();
   let orderReq: OrderRequest = {
     Package: {
       UseCarCode: infomation.value?.CarUse ?? "",
@@ -371,15 +374,15 @@ const submitOrder = async (formData: any) => {
       CarModelID: infomation.value?.CarModel ?? "",
       SubCarModelID: infomation.value?.SubCarModel ?? "",
       CompanyCode: packageSelect.value?.CompanyCode ?? "",
-      AgentCode: "",
+      AgentCode: packageSelect.value?.AgentCode ?? "",
       EffectiveType: infomation.value?.EffectiveType ?? "",
       EffectiveDate: infomation.value?.EffectiveDate ?? "",
       ExpireDate: infomation.value?.ExpireDate ?? "",
     },
     CarDetailsExtension: carDetail.value,
     Customer: insureDetail.value,
-    DeliveryMethod1:DeliveryMethod[0],
-    DeliveryMethod2:DeliveryMethod[1],
+    DeliveryMethod1: DeliveryMethod[0],
+    DeliveryMethod2: DeliveryMethod[1],
     // DeliveryType: insuranceRecieve.value?.ShippingPolicy,
     // DeliveryChannelType: insuranceRecieve.value?.PostalDelivary?.ShippingMethod,
     // DeliveryEmail: insuranceRecieve.value?.Email,
@@ -388,95 +391,107 @@ const submitOrder = async (formData: any) => {
   storeOrder.setOrder(orderReq);
 
   const response = await useRepository().order.create(orderReq);
+  isError.value = false;
+  messageError.value = "";
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     //TODO: Implement next step
+  } else {
+    isError.value = true;
+    messageError.value = response.apiResponse.ErrorMessage ?? "";
   }
 
+  isLoading.value = false;
   // Add waiting time for debug
   // await new Promise((r) => setTimeout(r, 1000));
 };
-const getDeliveryMethod = ():DeliveryMethod[]=>{
-let data:DeliveryMethod[] = [
-  {
-    DeliveryChannelType:'',
-    DeliveryEmail:'',
-    DeliveryType:'',
-    MethodType:''
-  },
-  {
-    DeliveryChannelType:'',
-    DeliveryEmail:'',
-    DeliveryType:'',
-    MethodType:''
+const getDeliveryMethod = (): DeliveryMethod[] => {
+  let data: DeliveryMethod[] = [
+    {
+      DeliveryChannelType: "",
+      DeliveryEmail: "",
+      DeliveryType: "",
+      MethodType: "",
+    },
+    {
+      DeliveryChannelType: "",
+      DeliveryEmail: "",
+      DeliveryType: "",
+      MethodType: "",
+    },
+  ];
+  if (insuranceRecieve.value) {
+    switch (insuranceRecieve.value.ShippingPolicy) {
+      //รับเป็นไฟล์ PDF
+      case "pdf":
+        data[0] = {
+          DeliveryChannelType:
+            insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
+          DeliveryEmail: insuranceRecieve.value?.Email ?? "",
+          DeliveryType: "ELECTRONIC",
+          MethodType: "EXCLUDE",
+        };
+        data[1] = {
+          DeliveryChannelType: TaxInvoiceAddressShipping.value,
+          DeliveryEmail: "",
+          DeliveryType: "DELIVERY",
+          MethodType: "TAXINVOICE",
+        };
+        break;
+      //พิมพ์ลงกระดาษมัดจำ
+      case "print":
+        data[0] = {
+          DeliveryChannelType:
+            insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
+          DeliveryEmail: "",
+          DeliveryType: "PAPER",
+          MethodType: "EXCLUDE",
+        };
+        data[1] = {
+          DeliveryChannelType: TaxInvoiceAddressShipping.value,
+          DeliveryEmail: "",
+          DeliveryType: "DELIVERY",
+          MethodType: "TAXINVOICE",
+        };
+        break;
+      // จัดส่งตัวจริง
+      case "postal":
+        //จัดส่งพร้อมกรมธรรม์
+        if (TaxInvoiceAddressShipped.value == "together") {
+          data[0] = {
+            DeliveryChannelType:
+              insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
+            DeliveryEmail: "",
+            DeliveryType: "DELIVERY",
+            MethodType: "ALL_AT_ONCE",
+          };
+          data[1] = {
+            DeliveryChannelType: "",
+            DeliveryEmail: "",
+            DeliveryType: "",
+            MethodType: "",
+          };
+        }
+        //จัดส่งแยก
+        else {
+          data[0] = {
+            DeliveryChannelType:
+              insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
+            DeliveryEmail: "",
+            DeliveryType: "DELIVERY",
+            MethodType: "POLICY",
+          };
+          data[1] = {
+            DeliveryChannelType: TaxInvoiceAddressShipping.value,
+            DeliveryEmail: "",
+            DeliveryType: "DELIVERY",
+            MethodType: "TAXINVOICE",
+          };
+        }
+        break;
+    }
   }
-]
-if(insuranceRecieve.value){
-  switch(insuranceRecieve.value.ShippingPolicy){
-    //รับเป็นไฟล์ PDF
-    case "pdf" : data[0] = {
-                      DeliveryChannelType:insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
-                      DeliveryEmail:insuranceRecieve.value?.Email ?? "",
-                      DeliveryType:'ELECTRONIC',
-                      MethodType:'EXCLUDE'
-                    }
-                    data[1] = {
-                      DeliveryChannelType:TaxInvoiceAddressShipping.value,
-                      DeliveryEmail:'',
-                      DeliveryType:'DELIVERY',
-                      MethodType:'TAXINVOICE'
-                    }
-                    break
-    //พิมพ์ลงกระดาษมัดจำ
-    case "print" :data[0] = {
-                      DeliveryChannelType:insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
-                      DeliveryEmail:'',
-                      DeliveryType:'PAPER',
-                      MethodType:'EXCLUDE'
-                    }
-                    data[1] = {
-                      DeliveryChannelType:TaxInvoiceAddressShipping.value,
-                      DeliveryEmail:'',
-                      DeliveryType:'DELIVERY',
-                      MethodType:'TAXINVOICE'
-                    }
-                    break
-    // จัดส่งตัวจริง
-    case "postal" :
-                    //จัดส่งพร้อมกรมธรรม์
-                    if(TaxInvoiceAddressShipped.value=='together'){
-                      data[0] = {
-                        DeliveryChannelType:insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
-                        DeliveryEmail:'',
-                        DeliveryType:'DELIVERY',
-                        MethodType:'ALL_AT_ONCE'
-                      }
-                      data[1] = {
-                        DeliveryChannelType:'',
-                        DeliveryEmail:'',
-                        DeliveryType:'',
-                        MethodType:''
-                      }
-                    }
-                   //จัดส่งแยก
-                   else{
-                    data[0] = {
-                        DeliveryChannelType:insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
-                        DeliveryEmail:'',
-                        DeliveryType:'DELIVERY',
-                        MethodType:'POLICY'
-                      }
-                      data[1] = {
-                        DeliveryChannelType:TaxInvoiceAddressShipping.value,
-                        DeliveryEmail:'',
-                        DeliveryType:'DELIVERY',
-                        MethodType:'TAXINVOICE'
-                      }
-                   }
-                    break
-  }
-}
-return data
-}
+  return data;
+};
 // handle loading api & set refs
 const loadPrefix = async (isPerson: boolean) => {
   const req: PrefixReq = {
@@ -772,12 +787,12 @@ const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject
 };
 const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
   checklist.value[1].className = "";
-  changeInsure.value = true
+  changeInsure.value = true;
   insureDetail.value = InsureDetail;
-  personProfile.value = InsureDetail.PersonProfile
-  legalPersonProfile.value = InsureDetail.LegalPersonProfile
+  personProfile.value = InsureDetail.PersonProfile;
+  legalPersonProfile.value = InsureDetail.LegalPersonProfile;
   //insureDetail.value.DefaultAddress = defaultAddress.value
-  
+
   // set checklist
   if (insureDetail.value) {
     if (
@@ -786,47 +801,48 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
       insureDetail.value.DefaultAddress
     ) {
       //บุคคลธรรมดา คนไทย
-      if(insureDetail.value.PersonProfile.NationalityID=='62ED0829703B4E589A2A63C740B88155'){
-        if (
-        insureDetail.value.PersonProfile.PrefixID.length > 0 &&
-        insureDetail.value.PersonProfile.FirstName.length > 0 &&
-        insureDetail.value.PersonProfile.LastName.length > 0 &&
-        insureDetail.value.PersonProfile.BirthDate.length > 0 &&
-        insureDetail.value.PersonProfile.PersonalID.length > 0 &&
-        insureDetail.value.PersonProfile.PhoneNumber.length > 0 &&
-        insureDetail.value.DefaultAddress.No.length > 0 &&
-        insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
-        insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
-        insureDetail.value.DefaultAddress.SubDistrictID.length > 0 &&
-        insureDetail.value.DefaultAddress.ZipCode.length > 0
+      if (
+        insureDetail.value.PersonProfile.NationalityID ==
+        "62ED0829703B4E589A2A63C740B88155"
       ) {
-        checklist.value[1].className = "current";
-      } else {
-        checklist.value[1].className = "";
-      }
-      }
-      else{
-         //บุคคลธรรมดา คนต่างชาติ
         if (
-        insureDetail.value.PersonProfile.PrefixID.length > 0 &&
-        insureDetail.value.PersonProfile.FirstName.length > 0 &&
-        insureDetail.value.PersonProfile.LastName.length > 0 &&
-        insureDetail.value.PersonProfile.BirthDate.length > 0 &&
-        insureDetail.value.PersonProfile.PersonalID.length > 0 &&
-        insureDetail.value.PersonProfile.NationalityID.length > 0 &&
-        insureDetail.value.PersonProfile.PhoneNumber.length > 0 &&
-        insureDetail.value.DefaultAddress.No.length > 0 &&
-        insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
-        insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
-        insureDetail.value.DefaultAddress.SubDistrictID.length > 0 &&
-        insureDetail.value.DefaultAddress.ZipCode.length > 0
-      ) {
-        checklist.value[1].className = "current";
+          insureDetail.value.PersonProfile.PrefixID.length > 0 &&
+          insureDetail.value.PersonProfile.FirstName.length > 0 &&
+          insureDetail.value.PersonProfile.LastName.length > 0 &&
+          insureDetail.value.PersonProfile.BirthDate.length > 0 &&
+          insureDetail.value.PersonProfile.PersonalID.length > 0 &&
+          insureDetail.value.PersonProfile.PhoneNumber.length > 0 &&
+          insureDetail.value.DefaultAddress.No.length > 0 &&
+          insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
+          insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
+          insureDetail.value.DefaultAddress.SubDistrictID.length > 0 &&
+          insureDetail.value.DefaultAddress.ZipCode.length > 0
+        ) {
+          checklist.value[1].className = "current";
+        } else {
+          checklist.value[1].className = "";
+        }
       } else {
-        checklist.value[1].className = "";
+        //บุคคลธรรมดา คนต่างชาติ
+        if (
+          insureDetail.value.PersonProfile.PrefixID.length > 0 &&
+          insureDetail.value.PersonProfile.FirstName.length > 0 &&
+          insureDetail.value.PersonProfile.LastName.length > 0 &&
+          insureDetail.value.PersonProfile.BirthDate.length > 0 &&
+          insureDetail.value.PersonProfile.PersonalID.length > 0 &&
+          insureDetail.value.PersonProfile.NationalityID.length > 0 &&
+          insureDetail.value.PersonProfile.PhoneNumber.length > 0 &&
+          insureDetail.value.DefaultAddress.No.length > 0 &&
+          insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
+          insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
+          insureDetail.value.DefaultAddress.SubDistrictID.length > 0 &&
+          insureDetail.value.DefaultAddress.ZipCode.length > 0
+        ) {
+          checklist.value[1].className = "current";
+        } else {
+          checklist.value[1].className = "";
+        }
       }
-      }
-      
     } else if (
       insureDetail.value.LegalPersonProfile &&
       insureDetail.value.DefaultAddress
@@ -868,7 +884,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
       }
     }
   }
-  changeInsure.value = false
+  changeInsure.value = false;
 };
 const handlerChangeTaxInvoice = (
   InsureDetail: CustomerOrderRequest,
@@ -879,7 +895,7 @@ const handlerChangeTaxInvoice = (
   let validate = [false, false];
   RequestIncludeTax.value = isIncludeTax;
   TaxInvoiceAddressShipped.value = shippedPolicy;
-  TaxInvoiceAddressShipping.value = ShippingMethod
+  TaxInvoiceAddressShipping.value = ShippingMethod;
   if (!insureDetail.value) {
     insureDetail.value = InsureDetail;
   }
@@ -898,18 +914,21 @@ const handlerChangeTaxInvoice = (
     insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault =
       InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault;
   }
-  
 
-  if (insuranceRecieve.value && insuranceRecieve.value.ShippingPolicy.length>0) {
-    
+  if (insuranceRecieve.value && insuranceRecieve.value.ShippingPolicy.length > 0) {
     if (isIncludeTax) {
       // set ที่อยู่จีดส่งเอกสารใบกำกับภาษี กรณีเลือก วิธีรับกรมธรรม์ จัดส่งตัวจริง และเลือกเป็นจัดส่งพร้อมกรมธรรม์
-      if(insuranceRecieve.value.ShippingPolicy=="postal" && shippedPolicy=='together'){
-        insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = insuranceRecieve.value.PostalDelivary?.IsDeliveryAddressSameAsDefault
-        insureDetail.value.TaxInvoiceDeliveryAddress = insuranceRecieve.value.PostalDelivary?.DeliveryAddress as TaxInvoiceDeliveryAddress
+      if (
+        insuranceRecieve.value.ShippingPolicy == "postal" &&
+        shippedPolicy == "together"
+      ) {
+        insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault =
+          insuranceRecieve.value.PostalDelivary?.IsDeliveryAddressSameAsDefault;
+        insureDetail.value.TaxInvoiceDeliveryAddress = insuranceRecieve.value
+          .PostalDelivary?.DeliveryAddress as TaxInvoiceDeliveryAddress;
       }
 
-      if (insureDetail.value.IsTaxInvoiceAddressSameAsDefault==false) {
+      if (insureDetail.value.IsTaxInvoiceAddressSameAsDefault == false) {
         // ไม่ใช่ default จาก ที่อยู่ผู้เอาประกัน
         if (insureDetail.value.TaxInvoiceAddress) {
           if (
@@ -929,11 +948,8 @@ const handlerChangeTaxInvoice = (
         validate[0] = true;
       }
 
-      if (
-        insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault == false
-      ) {
+      if (insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault == false) {
         if (insureDetail.value.TaxInvoiceDeliveryAddress) {
-
           if (
             insureDetail.value.TaxInvoiceDeliveryAddress.No.length > 0 &&
             insureDetail.value.TaxInvoiceDeliveryAddress.ProvinceID.length > 0 &&
@@ -951,9 +967,8 @@ const handlerChangeTaxInvoice = (
       } else {
         validate[1] = true;
       }
-    }
-    else{
-      validate = [true,true]
+    } else {
+      validate = [true, true];
     }
   }
 
@@ -963,6 +978,11 @@ const handlerChangeTaxInvoice = (
     checklist.value[3].className = "";
   }
 };
+const handlerCheckSave = (check: boolean) => {
+  console.log("handlerCheckSave");
+  checkSave.value = check;
+};
+
 // Define layout
 const layout = "monito";
 

@@ -74,7 +74,7 @@
                           @change="handlerChangePersonalProfile"
                           :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
                         />
-                        PrefixID = {{ personProfile.PrefixID }}
+                        
                       </div>
                       <div class="col-sm-8 col-lg-4">
                         <FormKit
@@ -628,6 +628,7 @@ const onLoad = onMounted(()=>{
     if(props.cacheOrderRequest.Customer.DefaultAddress){
       console.log(props.cacheOrderRequest.Customer.DefaultAddress)
       defaultAddress.value = props.cacheOrderRequest.Customer.DefaultAddress
+      emit('changeProvince',defaultAddress.value.ProvinceID)
     }
     }
     handlerChangeInsureDetail()

@@ -77,11 +77,11 @@
     </div>
     <div class="col-6">
       <FormKit
-        type="autocomplete"
+        type="select"
         label="จังหวัด"
         :name="'AddressProvince' + props.elementKey"
         placeholder="จังหวัด"
-        @input-raw="handlerChangeProvince"
+        @change="handlerChangeProvince"
         :options="addrProvince"
         validation="required"
         v-model="ObjectAddress.ProvinceID"
@@ -90,12 +90,12 @@
     </div>
     <div class="col-6">
       <FormKit
-        type="autocomplete"
+        type="select"
         label="เขต/อำเภอ"
         :name="'AddressDistrict' + props.elementKey"
         placeholder="เขต/อำเภอ"
         :options="addrDistrict"
-        @input-raw="handlerChangeDistrict"
+        @change="handlerChangeDistrict"
         validation="required"
         v-model="ObjectAddress.DistrictID"
         :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
@@ -103,13 +103,13 @@
     </div>
     <div class="col-6">
       <FormKit
-        type="autocomplete"
+        type="select"
         label="แขวง/ตำบล"
         :name="'AddressSubdistrict' + props.elementKey"
         placeholder="แขวง/ตำบล"
         v-model="ObjectAddress.SubDistrictID"
         :options="addrSubDistrict"
-        @input-raw="handlerChangeSubDistrict"
+        @change="handlerChangeSubDistrict"
         validation="required"
         :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
       />
@@ -121,7 +121,7 @@
         :name="'AddressCustom' + props.elementKey"
         autocomplete="false"
         v-model="ObjectAddress.AddressText"
-        @input-raw="handlerChangeFullAddress"
+        @change="handlerChangeFullAddress"
       />
     </div>
   </div>
@@ -261,11 +261,11 @@ const handlerChangeProvince = (e: string) => {
 
   }
 }
-const handlerChangeDistrict = (e: string) => {
+const handlerChangeDistrict = (e: any) => {
 
-  if (e) {
+  if (e && e.target.value) {
     if(ObjectAddress.value){
-      ObjectAddress.value.DistrictID = e
+      ObjectAddress.value.DistrictID = e.target.value
       ObjectAddress.value.SubDistrictID=''
     ObjectAddress.value.ZipCode=''
     }
@@ -273,10 +273,10 @@ const handlerChangeDistrict = (e: string) => {
     emit('changeDistrict', e)
   }
 }
-const handlerChangeSubDistrict = (e: string) => {
-  if (e) {
+const handlerChangeSubDistrict = (e: any) => {
+  if (e && e.target.value) {
     if(ObjectAddress.value){
-      ObjectAddress.value.SubDistrictID = e
+      ObjectAddress.value.SubDistrictID = e.target.value
       ObjectAddress.value.ZipCode=''
     }
     handlerChangeFullAddress()

@@ -527,61 +527,62 @@ watch(
   ()=>{
     if(props.insuranceRecieveCache && props.insuranceRecieveCache != undefined){
       insuranceRecieveCache.value = props.insuranceRecieveCache
+      // console.log('insuranceRecieveCache.value', insuranceRecieveCache.value)
       if(insuranceRecieveCache.value) {
-     //TODO fix shipping type
-     if(insuranceRecieveCache.value.ShippingPolicy=='ELECTRONIC'){
+        //TODO fix shipping type
+        if(insuranceRecieveCache.value.ShippingPolicy=='ELECTRONIC'){
           shippingPolicyText.value = 'pdf'
-        }
-        else if (insuranceRecieveCache.value.ShippingPolicy=='PAPER'){
-          shippingPolicyText.value = 'print'
-        }
-        else{
-          shippingPolicyText.value = 'postal'
-        }
-      emailText = insuranceRecieveCache.value.Email
-      // await handleRadioShippingPolicyChange(insuranceRecieveCache.value.ShippingPolicy)
-
-      if(shippingPolicyText.value == 'postal') {
-        ShippingMethodText = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
-        ShippingFeeText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
-        postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
-        // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')
-
-        if(postalAddressPolicyText.value == 'addnew') {
-          let newAddress: DeliveryAddress = insuranceRecieveCache.value.PostalDelivary?.DeliveryAddress as DeliveryAddress
-          newAddressCache.value = {
-            AddressID: newAddress.AddressID,
-            ReferenceID: newAddress.ReferenceID,
-            ReferenceType: newAddress.ReferenceType,
-            ProvinceID: newAddress.ProvinceID,
-            DistrictID: newAddress.DistrictID,
-            SubDistrictID: newAddress.SubDistrictID,
-            TaxID: newAddress.TaxID,
-            FirstName: newAddress.FirstName,
-            LastName: newAddress.LastName,
-            PhoneNumber: newAddress.PhoneNumber,
-            Email: newAddress.Email,
-            Name: newAddress.Name,
-            Type: newAddress.Type,
-            AddressLine1: newAddress.AddressLine1,
-            AddressLine2: newAddress.AddressLine2,
-            AddressText: newAddress.AddressText,
-            No: newAddress.No,
-            Moo: newAddress.Moo,
-            Place: newAddress.Place,
-            Building: newAddress.Building,
-            Floor: newAddress.Floor,
-            Room: newAddress.Room,
-            Branch: newAddress.Branch,
-            Alley: newAddress.Alley,
-            Road: newAddress.Road,
-            ZipCode: newAddress.ZipCode,
           }
-        }
-      }
+          else if (insuranceRecieveCache.value.ShippingPolicy=='PAPER'){
+            shippingPolicyText.value = 'print'
+          }
+          else{
+            shippingPolicyText.value = 'postal'
+          }
+          emailText = insuranceRecieveCache.value.Email
+          // await handleRadioShippingPolicyChange(insuranceRecieveCache.value.ShippingPolicy)
 
-      handleCheckInsuranceRecieve()
-    }
+          if(shippingPolicyText.value == 'postal') {
+            ShippingMethodText = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
+            ShippingFeeText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
+            postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
+            // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')
+
+            if(postalAddressPolicyText.value == 'addnew') {
+              let newAddress: DeliveryAddress = insuranceRecieveCache.value.PostalDelivary?.DeliveryAddress as DeliveryAddress
+              newAddressCache.value = {
+                AddressID: newAddress.AddressID,
+                ReferenceID: newAddress.ReferenceID,
+                ReferenceType: newAddress.ReferenceType,
+                ProvinceID: newAddress.ProvinceID,
+                DistrictID: newAddress.DistrictID,
+                SubDistrictID: newAddress.SubDistrictID,
+                TaxID: newAddress.TaxID,
+                FirstName: newAddress.FirstName,
+                LastName: newAddress.LastName,
+                PhoneNumber: newAddress.PhoneNumber,
+                Email: newAddress.Email,
+                Name: newAddress.Name,
+                Type: newAddress.Type,
+                AddressLine1: newAddress.AddressLine1,
+                AddressLine2: newAddress.AddressLine2,
+                AddressText: newAddress.AddressText,
+                No: newAddress.No,
+                Moo: newAddress.Moo,
+                Place: newAddress.Place,
+                Building: newAddress.Building,
+                Floor: newAddress.Floor,
+                Room: newAddress.Room,
+                Branch: newAddress.Branch,
+                Alley: newAddress.Alley,
+                Road: newAddress.Road,
+                ZipCode: newAddress.ZipCode,
+              }
+            }
+          }
+
+        handleCheckInsuranceRecieve()
+      }
     }
   }
 )

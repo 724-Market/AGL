@@ -309,7 +309,7 @@ const onLoad = onMounted(async () => {
         ShippingPolicy: orderInfo.DeliveryMethod1?.DeliveryType ?? "",
         Email: orderInfo.DeliveryMethod1?.DeliveryEmail ?? "",
         PostalDelivary: {
-          IsDeliveryAddressSameAsDefault: true,
+          IsDeliveryAddressSameAsDefault: orderInfo.Customer?.IsDeliveryAddressSameAsDefault ?? true,
           ShippingMethod: orderInfo.DeliveryMethod1?.DeliveryChannelType ?? "",
           ShippingFee: "50 บาท", //TODO: MockUp
           DeliveryAddress: orderInfo.Customer?.DeliveryAddress,
@@ -679,6 +679,7 @@ const handlerChangeSubDistrictForInsured = async (e: string) => {
 };
 const handlerChangeSubDistrictForRecieve = async (e: string) => {
   if (e) {
+    // console.log('handlerChangeSubDistrictForRecieve',e)
     isLoading.value = true;
     addrZipCodeForRecieve.value = await loadZipCode(e);
     isLoading.value = false;

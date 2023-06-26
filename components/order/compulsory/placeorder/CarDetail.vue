@@ -59,7 +59,7 @@
                 <div class="row">
                   <div class="col">
                     <div class="form-hide-label">
-                      <FormKit
+                      <!-- <FormKit
                         type="checkbox"
                         label="ป้ายแดง"
                         name="CarLicenseClassifier"
@@ -68,6 +68,13 @@
                         :options="{
                           temporary: 'ป้ายแดง',
                         }"
+                      /> -->
+                      <FormKit
+                        type="checkbox"
+                        label="ป้ายแดง"
+                        name="CarLicenseClassifier"
+                        v-model="carLicenseClassifierText"
+                        @change="handleCarLicenseClassifierChange"
                       />
                     </div>
                   </div>
@@ -180,7 +187,7 @@ var carLicenseValue: string = ""
 const carProvince: globalThis.Ref<SelectOption[]> = ref([])
 var carProvinceText: string = ""
 
-var carLicenseClassifierText: globalThis.Ref<string> = ref("")
+var carLicenseClassifierText: globalThis.Ref<boolean> = ref(false)
 var carLicenseClassifierValue: boolean = false
 
 const carColor: globalThis.Ref<SelectOption[]> = ref([])
@@ -213,14 +220,13 @@ const onLoad = onMounted(async () => {
   if(carDetailCache.value){
     carLicenseText = carDetailCache.value.License
     carProvinceText = carDetailCache.value.LicenseProvinceID
-    carLicenseClassifierText.value = carDetailCache.value.IsRedLicense ? 'temporary' : ''
+    carLicenseClassifierText.value = carDetailCache.value.IsRedLicense 
     carColorText = carDetailCache.value.ColorID
     carBodyNumberText = carDetailCache.value.BodyNo
     carEngineNumberText = carDetailCache.value.EngineNo
     CarLicenseFileText = ''
     base64FileString = carDetailCache.value.LicenseFileID
   }
-  // console.log('SubCarModel', SubCarModel)
 });
 
 watch(carLicenseClassifierText, async (newValue) => {
@@ -236,8 +242,9 @@ const handleCarProvinceChange = async (event: any) => {
   await handleCheckCarDetail()
 }
 
-const handleCarLicenseClassifierChange = async (event: string) => {
-  carLicenseClassifierValue = event[0] === undefined ? false : true;
+const handleCarLicenseClassifierChange = async (event: boolean) => {
+  // carLicenseClassifierValue = event[0] === undefined ? false : true;
+  carLicenseClassifierValue = event
   await handleCheckCarDetail()
 }
 
@@ -319,7 +326,7 @@ watch(
 
       carProvinceText = carDetailCache.value.LicenseProvinceID
 
-      carLicenseClassifierText.value = carDetailCache.value.IsRedLicense ? 'temporary' : ''
+      carLicenseClassifierText.value = carDetailCache.value.IsRedLicense 
       carLicenseClassifierValue = carDetailCache.value.IsRedLicense
 
       carColorText = carDetailCache.value.ColorID

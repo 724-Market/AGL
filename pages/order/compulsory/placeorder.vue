@@ -730,7 +730,7 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
   }
 };
 const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
-  
+  // console.log('handleCheckCarDetail', objectCarDetail)
   if (
     objectCarDetail.License.length > 0 &&
     objectCarDetail.LicenseProvinceID.length > 0 &&

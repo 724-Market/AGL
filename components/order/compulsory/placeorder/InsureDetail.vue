@@ -854,9 +854,6 @@ watch(()=>props.cacheOrderRequest,(newValue)=>{
       console.log(JSON.stringify(person))
       personProfile.value =  person
       //personProfile.value.PrefixID = props.cacheOrderRequest.Customer.PersonProfile.PrefixID
-      console.log('props.cacheOrderRequest.Customer.PersonProfile.PrefixID',newValue.Customer.PersonProfile.PrefixID)
-      console.log('personProfile.value', personProfile.value)
-      console.log('personProfile.value.PrefixID', personProfile.value.PrefixID)
       prefixID.value =newValue.Customer.PersonProfile.PrefixID
     }
     if(newValue.Customer.LegalPersonProfile){

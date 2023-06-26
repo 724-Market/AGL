@@ -309,12 +309,12 @@ const onLoad = onMounted(async () => {
 });
 
 watch(shippingPolicyText, async (newShippingPolicy) => {
-  await handleRadioShippingPolicyChange(newShippingPolicy);
-});
+  await handleRadioShippingPolicyChange(newShippingPolicy)
+})
 
 watch(postalAddressPolicyText, async (newAddressPolicy) => {
-  await handleRadioPostalAddressPolicyChange(newAddressPolicy);
-});
+  await handleRadioPostalAddressPolicyChange(newAddressPolicy)
+})
 
 // watch(insureFullNewAddress, async (newinsureFullNewAddress) => {
 //   await setPostalAddressPolicy(insureFullAddress.value.toString(), newinsureFullNewAddress.toString())
@@ -344,20 +344,20 @@ const handleRadioShippingPolicyChange = async (event: String) => {
       isPostalShipping.value = false
       isInsured.value = true
       await handleCheckInsuranceRecieve()
-      break;
+      break
     case "print":
       isPdfShipping.value = false
       isPrintShipping.value = true
       isPostalShipping.value = false
       isInsured.value = true
       await handleCheckInsuranceRecieve()
-      break;
+      break
     case "postal":
       isPdfShipping.value = false
       isPrintShipping.value = false
       isPostalShipping.value = true
       await handleCheckInsuranceRecieve()
-      break;
+      break
   }
 }
 
@@ -379,12 +379,12 @@ const handleRadioPostalAddressPolicyChange = async (event: String) => {
       isInsured.value = true
       isAddnew.value = false
       await handleCheckInsuranceRecieve()
-      break;
+      break
     case "addnew":
       isInsured.value = false
       isAddnew.value = true
       await handleCheckInsuranceRecieve()
-      break;
+      break
   }
 }
 

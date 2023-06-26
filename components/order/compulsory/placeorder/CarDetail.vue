@@ -227,11 +227,11 @@ const onLoad = onMounted(async () => {
     CarLicenseFileText = ''
     base64FileString = carDetailCache.value.LicenseFileID
   }
-});
+})
 
 watch(carLicenseClassifierText, async (newValue) => {
   await handleCarLicenseClassifierChange(newValue);
-});
+})
 
 const handleCarLicenseChange = async (event: any) => {
   carLicenseValue = event.target.value
@@ -270,20 +270,20 @@ const handleFileChange = async (event: any) => {
 
 const convertFileToBase64 = async (file: File): Promise<string> => {
   return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
+    const reader = new FileReader()
 
     reader.onload = () => {
-      const base64Data = reader.result as string;
-      const base64String = base64Data.split(',')[1];
+      const base64Data = reader.result as string
+      const base64String = base64Data.split(',')[1]
       resolve(base64String);
-    };
+    }
 
     reader.onerror = (error) => {
       reject(error);
-    };
+    }
 
-    reader.readAsDataURL(file);
-  });
+    reader.readAsDataURL(file)
+  })
 }
 
 const handleCheckCarDetail = async () => {
@@ -293,7 +293,7 @@ const handleCheckCarDetail = async () => {
     EngineNo: carEngineNumberValue,
     ColorID: carColorText,
     LicenseProvinceID: carProvinceText,
-    LicenseFileID: 'base64FileString',
+    LicenseFileID: base64FileString,
     IsRedLicense: carLicenseClassifierValue
   }
 

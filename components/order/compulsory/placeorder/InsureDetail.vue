@@ -63,18 +63,18 @@
 
                     <div class="row">
                       <div class="col-sm-4 col-lg-3">
+                        
                         <FormKit
                           type="select"
                           label="คำนำหน้า"
-                          name="Title"
+                          name="TitleThaiPerson"
                           placeholder="คำนำหน้า"
                           :options="Prefix"
                           validation="required"
-                          v-model="personProfile.PrefixID"
-                          @change="handlerChangePersonalProfile"
                           :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                          @change="handlerChangePersonalProfile"
+                          v-model="personProfile.PrefixID"
                         />
-                        
                       </div>
                       <div class="col-sm-8 col-lg-4">
                         <FormKit
@@ -174,17 +174,17 @@
 
                     <div class="row">
                       <div class="col-sm-4 col-lg-3">
-                        <FormKit
+                        <!-- <FormKit
                           type="select"
                           label="Title"
                           name="Title"
                           placeholder="Title"
-                          v-model="personProfile.PrefixID"
                           @change="handlerChangePersonalProfile"
                           :options="Prefix"
                           validation="required"
                           :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                        />
+                          
+                        /> -->
                       </div>
                       <div class="col-sm-8 col-lg-4">
                         <FormKit
@@ -562,7 +562,7 @@ const insureDetail:globalThis.Ref<CustomerOrderRequest> = ref({
 })
 const personProfile:globalThis.Ref<PersonProfile> = ref({
   CustomerID:'',
-  PrefixID:'',
+  PrefixID:'00000',
   FirstName:'',
   LastName:'',
   BirthDate:'',
@@ -594,6 +594,7 @@ const addrProvince:globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict:globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict:globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode=ref('')
+const prefixID = ref('')
 
 const dateNow: Date = new Date()
 const effectiveMinDate: string = dateNow.toLocaleDateString("en-CA") // en-CA or sv => yyyy-MM-dd
@@ -635,6 +636,7 @@ const onLoad = onMounted(()=>{
       }
 
       insureDetail.value = props.cacheOrderRequest.Customer
+      console.log('Mounted',props.cacheOrderRequest.Customer)
     if(props.cacheOrderRequest.Customer.PersonProfile){
       personProfile.value =  props.cacheOrderRequest.Customer.PersonProfile
     }
@@ -691,6 +693,7 @@ const handlerChangeFullAddress = (addr:string,ObjectAddress:DefaultAddress)=>{
   }
 }
 const handlerChangePersonalProfile = ()=>{
+  console.log('handlerChangePersonalProfile',personProfile.value)
   insureDetail.value.PersonProfile = personProfile.value
   if(InsuredClassifierText.value=='thai'){
     insureDetail.value.PersonProfile.NationalityID='62ED0829703B4E589A2A63C740B88155'
@@ -830,37 +833,42 @@ watch(CompanyClassifierText, async (newCompanyClassifierText) => {
   }
 });
 watch(()=>props.cacheOrderRequest,(newValue)=>{
-  if(props.cacheOrderRequest){
-    if(props.cacheOrderRequest.Customer){
+  if(newValue){
+    if(newValue.Customer){
       // ประเภทผู้เอาประกัน
-      InsuredTypeText.value = props.cacheOrderRequest.Customer.IsPerson==true ? 'person' : 'company'
+      InsuredTypeText.value = newValue.Customer.IsPerson==true ? 'person' : 'company'
 
 
-      if(props.cacheOrderRequest.Customer.IsPerson==true && props.cacheOrderRequest.Customer.PersonProfile){
+      if(newValue.Customer.IsPerson==true && newValue.Customer.PersonProfile){
         // ลักษณะบุคคลธรรมดา
-        InsuredClassifierText.value = props.cacheOrderRequest.Customer.PersonProfile.NationalityID=='62ED0829703B4E589A2A63C740B88155' ? 'thai' : 'foreigner'
+        InsuredClassifierText.value = newValue.Customer.PersonProfile.NationalityID=='62ED0829703B4E589A2A63C740B88155' ? 'thai' : 'foreigner'
       }
       else{
         // ลักษณะนิติบุคคล
-        CompanyClassifierText.value= props.cacheOrderRequest.Customer.IsBranch==true ? 'branch' : 'headoffice'
+        CompanyClassifierText.value= newValue.Customer.IsBranch==true ? 'branch' : 'headoffice'
       }
 
-      insureDetail.value = props.cacheOrderRequest.Customer
-    if(props.cacheOrderRequest.Customer.PersonProfile){
-      personProfile.value =  props.cacheOrderRequest.Customer.PersonProfile
-      personProfile.value.PrefixID = props.cacheOrderRequest.Customer.PersonProfile.PrefixID
+      insureDetail.value = newValue.Customer
+    if(newValue.Customer.PersonProfile){
+      const person = newValue.Customer.PersonProfile
+      console.log(JSON.stringify(person))
+      personProfile.value =  person
+      //personProfile.value.PrefixID = props.cacheOrderRequest.Customer.PersonProfile.PrefixID
+      console.log('props.cacheOrderRequest.Customer.PersonProfile.PrefixID',newValue.Customer.PersonProfile.PrefixID)
       console.log('personProfile.value', personProfile.value)
       console.log('personProfile.value.PrefixID', personProfile.value.PrefixID)
+      prefixID.value =newValue.Customer.PersonProfile.PrefixID
     }
-    if(props.cacheOrderRequest.Customer.LegalPersonProfile){
-      legalPersonProfile.value =  props.cacheOrderRequest.Customer.LegalPersonProfile
+    if(newValue.Customer.LegalPersonProfile){
+      legalPersonProfile.value =  newValue.Customer.LegalPersonProfile
     }
 
-    if(props.cacheOrderRequest.Customer.DefaultAddress){
+    if(newValue.Customer.DefaultAddress){
       // console.log(props.cacheOrderRequest.Customer.DefaultAddress)
-      defaultAddress.value = props.cacheOrderRequest.Customer.DefaultAddress
+      defaultAddress.value = newValue.Customer.DefaultAddress
     }
     }
+    console.log(values)
     handlerChangeInsureDetail()
   }
 

@@ -250,9 +250,9 @@ watch(
     await emit('changeDistrict', ObjectAddress.value.DistrictID)
     ObjectAddress.value.SubDistrictID = addressCache.SubDistrictID
     await emit('changeSubDistrict', ObjectAddress.value.SubDistrictID)
-    ObjectAddress.value.ZipCode = addressCache.ZipCode
-
+    
     ObjectAddress.value = addressCache
+    addrZipCode.value = addressCache.ZipCode
 })
 
 

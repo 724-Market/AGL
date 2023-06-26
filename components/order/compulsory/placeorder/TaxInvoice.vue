@@ -493,7 +493,7 @@ const handlerChangeTaxInvoice = ()=>{
 const setCacheData = ()=>{
   //console.log(props.cacheOrderRequest)
   if(props.cacheOrderRequest){
-    requestIncludeTax.value =props.cacheOrderRequest.IsTaxInvoice==true? ['1'] : []
+    requestIncludeTax.value =props.cacheOrderRequest.IsTaxInvoice==true? ['request'] : []
     if(props.cacheOrderRequest.Customer){
       addressIncludeTaxType.value=props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault==true ? 'insured' : 'addnew'
       addressDeliveryTaxType.value=props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault==true ? 'insured' : 'addnew'
@@ -596,7 +596,7 @@ watch(
   () => props.isIncludeTax,
   () => {
     if (props.isIncludeTax == '1') {
-      const array = ['1']
+      const array = ['request']
       requestIncludeTax.value = array
     }
   }

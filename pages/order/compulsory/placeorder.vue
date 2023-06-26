@@ -355,7 +355,7 @@ const onLoad = onMounted(async () => {
 // Submit form event
 const submitOrder = async (formData: any) => {
   isLoading.value = true;
-  // console.log(formData);
+  console.log(formData,values);
   storeOrder.clearOrder();
   if (insuranceRecieve.value?.ShippingPolicy == "postal") {
     if (!insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
@@ -730,7 +730,7 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
   }
 };
 const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
-  console.log('handleCheckCarDetail',objectCarDetail)
+  
   if (
     objectCarDetail.License.length > 0 &&
     objectCarDetail.LicenseProvinceID.length > 0 &&
@@ -890,7 +890,7 @@ const handlerChangeTaxInvoice = (
   shippedPolicy: string,
   ShippingMethod: string
 ) => {
-  console.log(InsureDetail,isIncludeTax,shippedPolicy,ShippingMethod)
+  
   let validate = [false, false];
   RequestIncludeTax.value = isIncludeTax;
   TaxInvoiceAddressShipped.value = shippedPolicy;
@@ -913,7 +913,7 @@ const handlerChangeTaxInvoice = (
     insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault =
       InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault;
   }
-  // console.log(insuranceRecieve.value)
+  
   if (insuranceRecieve.value) {
     if (isIncludeTax) {
       // set ที่อยู่จีดส่งเอกสารใบกำกับภาษี กรณีเลือก วิธีรับกรมธรรม์ จัดส่งตัวจริง และเลือกเป็นจัดส่งพร้อมกรมธรรม์
@@ -978,7 +978,7 @@ const handlerChangeTaxInvoice = (
   }
 };
 const handlerCheckSave = (check: boolean) => {
-  // console.log("handlerCheckSave");
+  
   checkSave.value = check;
 };
 

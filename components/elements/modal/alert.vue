@@ -1,6 +1,6 @@
 <template>
-   <div id="dialogModal" class="dialog-modal" v-show="isError">
-        <div class="dialog-content modal-content">
+   <div id="dialogModalAlert" class="dialog-modal-alert" v-show="_loading">
+        <div class="dialog-content-alert modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalToggleLabel">แจ้งเตือน</h1>
                 <button type="button" class="btn-close" @click="closeModal"></button>
@@ -21,7 +21,7 @@ const _loading = ref(false)
 watch(
     () => props.isError,
     () => {
-        //console.log('prop value changed', props.loading)
+        console.log('prop value changed', props.isError)
         if (props.isError) {
             openModal()
         }
@@ -42,7 +42,7 @@ const onLoad = onMounted((
 })
 function openModal() {
     //modal.show()
-    _loading.value = props.isError
+    _loading.value =true
 }
 
 function closeModal() {
@@ -51,3 +51,45 @@ function closeModal() {
 }
 
 </script>
+<style scoped>
+.dialog-modal-alert {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.dialog-content-alert {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    max-width: 400px;
+    text-align: center;
+}
+
+.dialog-actions-alert {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.dialog-button-alert {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+.dialog-button-alert:hover {
+    background-color: #0056b3;
+}
+</style>

@@ -375,7 +375,7 @@ const submitOrder = async (formData: any) => {
       CarSalesYear: infomation.value?.CarYear ?? "",
       CarBrandID: infomation.value?.CarBrand ?? "",
       CarModelID: infomation.value?.CarModel ?? "",
-      SubCarModelID: infomation.value?.SubCarModel ?? "",
+      SubCarModelID: infomation.value?.SubCarModel.split('|')[0] ?? "",
       CompanyCode: packageSelect.value?.CompanyCode ?? "",
       AgentCode: packageSelect.value?.AgentCode ?? "",
       EffectiveType: infomation.value?.EffectiveType ?? "",

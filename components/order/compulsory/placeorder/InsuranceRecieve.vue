@@ -1,28 +1,36 @@
 <template>
   <div class="card">
     <div class="card-body">
-
       <div class="accordion" id="accordion-shipping">
         <div class="accordion-item">
-
           <h2 class="accordion-header">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-              data-bs-target="#collapse-shipping" aria-expanded="true"
-              aria-controls="collapse-shipping">วิธีการรับกรมธรรม์
+            <button
+              class="accordion-button"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapse-shipping"
+              aria-expanded="true"
+              aria-controls="collapse-shipping"
+            >
+              วิธีการรับกรมธรรม์
             </button>
           </h2>
 
-          <div id="collapse-shipping" class="accordion-collapse collapse show" data-bs-parent="#accordion-shipping">
+          <div
+            id="collapse-shipping"
+            class="accordion-collapse collapse show"
+            data-bs-parent="#accordion-shipping"
+          >
             <div class="accordion-body">
-
-              <div class="notice-info">
+              <div v-if="isPdfShipping" class="notice-info">
                 <i class="fa-regular fa-circle-info"></i>
                 ส่งกรมธรรม์ทางอีเมลหรือสามารถดาวน์โหลดได้จากระบบ
               </div>
 
-              <div class="notice-warning">
+              <div v-if="isPrintShipping" class="notice-warning">
                 <i class="fa-regular fa-circle-info"></i>
-                ควรเลือกกระดาษให้ตรงกับบริษัทประกันที่ซื้อและรายการกระดาษจะถูกหักออกจากคลัง หลังจากกดพิมพ์กรมธรรม์
+                ควรเลือกกระดาษให้ตรงกับบริษัทประกันที่ซื้อและรายการกระดาษจะถูกหักออกจากคลัง
+                หลังจากกดพิมพ์กรมธรรม์
               </div>
 
               <div class="form-placeorder">
@@ -33,29 +41,55 @@
                 </section>
 
                 <aside v-if="isPdfShipping" class="shipping-email-pdf col-md-12 col-lg-4">
-                  <FormKit type="email" label="อีเมลสำหรับรับไฟล์กรมธรรม์" name="Email"
-                    placeholder="xxxxxx@email.com" validation="required"
-                    :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="false" />
+                  <FormKit
+                    type="email"
+                    label="อีเมลสำหรับรับไฟล์กรมธรรม์"
+                    name="Email"
+                    v-model="emailText"
+                    @change="handleEmailChange"
+                    placeholder="xxxxxx@email.com"
+                    validation="required"
+                    :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
+                    autocomplete="false"
+                  />
                 </aside>
 
-                <aside v-if="isPrintShipping" class="shipping-print">
-                  <p>จำนวนกระดาษ <span>{{companyName}}</span> คงเหลือ <span>{{paperBalance}}</span> ใบ</p>
+                <aside
+                  v-if="isPrintShipping && props.packageSelect"
+                  class="shipping-print"
+                >
+                  <p>
+                    จำนวนกระดาษ <span>{{ props.packageSelect.CompanyName }}</span> คงเหลือ
+                    <span>{{ props.packageSelect.PaperBalance }}</span> ใบ
+                  </p>
                 </aside>
 
                 <section v-if="isPostalShipping" class="shipping-method">
                   <h3>วิธีการจัดส่ง</h3>
                   <div class="row">
                     <div class="col-6">
-                      <FormKit type="select" label="ช่องทางการจัดส่ง" name="ShippingMethod"
-                        placeholder="ช่องทางการจัดส่ง" :options="{
-                          dhl: 'DHL Express',
-                          kerry: 'Kerry'
-                        }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                      <FormKit
+                        type="select"
+                        label="ช่องทางการจัดส่ง"
+                        name="ShippingMethod"
+                        placeholder="ช่องทางการจัดส่ง"
+                        v-model="ShippingMethodText"
+                        @change="handleShippingMethodChange"
+                        :options="delivery"
+                        validation="required"
+                        :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                      />
                     </div>
 
                     <div class="col-6">
-                      <FormKit type="text" label="ค่าจัดส่ง" name="ShippingFee" placeholder="ค่าจัดส่ง"
-                        value="50 บาท" readonly />
+                      <FormKit
+                        type="text"
+                        label="ค่าจัดส่ง"
+                        name="ShippingFee"
+                        placeholder="ค่าจัดส่ง"
+                        v-model="ShippingFeeText"
+                        readonly
+                      />
                     </div>
                   </div>
                 </section>
@@ -63,37 +97,51 @@
                 <section v-if="isPostalShipping" class="shipping-address">
                   <h3>ที่อยู่สำหรับจัดส่ง</h3>
                   <div class="form-hide-label">
-                    <FormKit type="radio" label="รายชื่อที่อยู่" name="PostalAddressPolicy" v-model="postalAddressPolicyText" 
-                      :options="[
-                        { label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน', value: 'insured', help: '724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160' },
-                        { label: 'เปลี่ยนที่อยู่ใหม่', value: 'addnew', attrs: { addnewaddress: true } },
-                      ]" options-class="option-block-stack" />
+                    <FormKit
+                      type="radio"
+                      label="รายชื่อที่อยู่"
+                      name="PostalAddressPolicy"
+                      v-model="postalAddressPolicyText"
+                      :options="postalAddressPolicy"
+                      options-class="option-block-stack"
+                    />
                   </div>
 
                   <aside v-if="isAddnew" class="new-shipping-address inner-section">
                     <h4>ที่อยู่จัดส่งใหม่</h4>
 
                     <div class="row">
-                      <ElementsFormNewAddress 
-                      :addr-province="addrProvince"
+                      <ElementsFormNewAddress
+                        element-key="delivery"
+                        :prefix="prefix"
+                        :addr-province="addrProvince"
                         :addr-district="addrDistrict"
                         :addr-sub-district="addrSubDistrict"
                         :addr-zip-code="addrZipCode"
+                        :default-address-cache="newAddressCache"
                         @change-province="handlerChangeProvince"
                         @change-district="handlerChangeDistrict"
-                        @change-sub-district="handlerChangeSubDistrict"/>
+                        @change-sub-district="handlerChangeSubDistrict"
+                        @change-full-address="handlerChangeFullAddress"
+                      />
                     </div>
 
-                    <button class="btn-primary btn-save">บันทึกข้อมูล</button>
+                    <!-- <button class="btn-primary btn-save" @click.prevent="handleButtonSaveClick" :disabled="insureFullNewAddress == ''">บันทึกข้อมูล</button> -->
+                    <FormKit
+                      type="submit"
+                      label="บันทึกข้อมูล"
+                      @click.prevent="handleButtonSaveClick"
+                      :classes="{ input: 'btn-primary', outer: 'form-actions' }"
+                      :disabled="insureFullNewAddress == ''"
+                      :loading="isLoading"
+                    />
                   </aside>
                 </section>
               </div>
             </div>
           </div>
-
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -111,24 +159,34 @@
 <script setup lang="ts">
 import { IInformation } from "~~/shared/entities/information-entity";
 import { IPackageResponse } from "~/shared/entities/packageList-entity";
-import { SelectOption } from "~/shared/entities/select-option";
+import { SelectOption, RadioOption } from "~/shared/entities/select-option";
+import { DefaultAddress, DeliveryAddress, InsuranceRecieveObject } from "~/shared/entities/placeorder-entity";
 
-const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict'])
+const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict','checkInsuranceRecieve'])
 
 const props = defineProps({
   prefix:Array<SelectOption>,
+  delivery:Array<SelectOption>,
   addrProvince: Array<SelectOption>,
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
   addrZipCode:String,
   insureFullAddress:String,
+  packageSelect: {
+    type: Object as () => IPackageResponse,
+  },
+  insuranceRecieveCache: {
+    type: Object as () => InsuranceRecieveObject,
+  },
 })
 
 const isLoading = ref(false);
 
-var info: IInformation;
-var packages: IPackageResponse;
-var companyName: globalThis.Ref<String> = ref("")
+const insuranceRecieveCache: globalThis.Ref<InsuranceRecieveObject | undefined> = ref()
+const newAddressCache: globalThis.Ref<DefaultAddress | undefined> = ref()
+
+var packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
+var companyName: globalThis.Ref<string> = ref("")
 var paperBalance: globalThis.Ref<Number> = ref(0)
 
 var shippingPolicyText: globalThis.Ref<String> = ref("")
@@ -136,28 +194,33 @@ var isPdfShipping: globalThis.Ref<boolean> = ref(false)
 var isPrintShipping: globalThis.Ref<boolean> = ref(false)
 var isPostalShipping: globalThis.Ref<boolean> = ref(false)
 
-var postalAddressPolicyText: globalThis.Ref<String> = ref("")
+const postalAddressPolicy: globalThis.Ref<RadioOption[]> = ref([])
+var postalAddressPolicyText: globalThis.Ref<String> = ref("insured")
 var isInsured: globalThis.Ref<boolean> = ref(false)
 var isAddnew: globalThis.Ref<boolean> = ref(false)
 
+var emailText: string = ""
+var emailValue: string = ""
+var ShippingMethodText: string = ""
+var ShippingFeeText = ref('')
+
 const prefix: globalThis.Ref<SelectOption[]> = ref([])
+const delivery: globalThis.Ref<SelectOption[]> = ref([])
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
-const insureFullAddress: globalThis.Ref<String> = ref('')
 
+const newAddressObject: globalThis.Ref<DefaultAddress | undefined> = ref()
+const insureFullAddress: globalThis.Ref<String> = ref('')
+const insureFullNewAddress: globalThis.Ref<String> = ref('')
 
 const onLoad = onMounted(async () => {
-  // isLoading.value = true
-  const jsonPackage = sessionStorage.getItem("useStorePackage") || "";
-  packages = JSON.parse(jsonPackage) as IPackageResponse;
-  companyName.value = packages?.CompanyName
-  paperBalance.value = packages?.PaperBalance ?? 0
-  // isLoading.value = false
-
     if(props.prefix){
         prefix.value = props.prefix
+    }
+    if(props.delivery){
+      delivery.value = props.delivery
     }
     if (props.addrProvince) {
         addrProvince.value = props.addrProvince
@@ -175,9 +238,103 @@ const onLoad = onMounted(async () => {
     {
       insureFullAddress.value = props.insureFullAddress
     }
+    if(props.packageSelect){
+      packageSelect.value = props.packageSelect
+      companyName.value = props.packageSelect.CompanyName ?? ""
+      paperBalance.value = props.packageSelect.PaperBalance ?? 0
+    }
+    if(props.insuranceRecieveCache){
+      insuranceRecieveCache.value = props.insuranceRecieveCache
+      if(insuranceRecieveCache.value) {
+        //TODO fix shipping type
+        if(insuranceRecieveCache.value.ShippingPolicy=='ELECTRONIC'){
+          shippingPolicyText.value = 'pdf'
+        }
+        else if (insuranceRecieveCache.value.ShippingPolicy=='PAPER'){
+          shippingPolicyText.value = 'print'
+        }
+        else{
+          shippingPolicyText.value = 'postal'
+        }
+      
+      emailText = insuranceRecieveCache.value.Email
+      // await handleRadioShippingPolicyChange(insuranceRecieveCache.value.ShippingPolicy)
 
+      if(shippingPolicyText.value == 'postal') {
+        ShippingMethodText = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
+        ShippingFeeText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
+        postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
+        // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')
+
+        if(postalAddressPolicyText.value == 'addnew') {
+          let newAddress: DeliveryAddress = insuranceRecieveCache.value.PostalDelivary?.DeliveryAddress as DeliveryAddress
+          newAddressCache.value = {
+            AddressID: newAddress.AddressID,
+            ReferenceID: newAddress.ReferenceID,
+            ReferenceType: newAddress.ReferenceType,
+            ProvinceID: newAddress.ProvinceID,
+            DistrictID: newAddress.DistrictID,
+            SubDistrictID: newAddress.SubDistrictID,
+            TaxID: newAddress.TaxID,
+            FirstName: newAddress.FirstName,
+            LastName: newAddress.LastName,
+            PhoneNumber: newAddress.PhoneNumber,
+            Email: newAddress.Email,
+            Name: newAddress.Name,
+            Type: newAddress.Type,
+            AddressLine1: newAddress.AddressLine1,
+            AddressLine2: newAddress.AddressLine2,
+            AddressText: newAddress.AddressText,
+            No: newAddress.No,
+            Moo: newAddress.Moo,
+            Place: newAddress.Place,
+            Building: newAddress.Building,
+            Floor: newAddress.Floor,
+            Room: newAddress.Room,
+            Branch: newAddress.Branch,
+            Alley: newAddress.Alley,
+            Road: newAddress.Road,
+            ZipCode: newAddress.ZipCode,
+          }
+        }
+      }
+      handleCheckInsuranceRecieve()
+    }
+    
+    }
+
+    
+
+    await setPostalAddressPolicy(insureFullAddress.value.toString(), '')
 });
 
+watch(shippingPolicyText, async (newShippingPolicy) => {
+  await handleRadioShippingPolicyChange(newShippingPolicy)
+})
+
+watch(postalAddressPolicyText, async (newAddressPolicy) => {
+  await handleRadioPostalAddressPolicyChange(newAddressPolicy)
+})
+
+// watch(insureFullNewAddress, async (newinsureFullNewAddress) => {
+//   await setPostalAddressPolicy(insureFullAddress.value.toString(), newinsureFullNewAddress.toString())
+// });
+
+const setPostalAddressPolicy = async (labelInsured: string, labelAddnew: string) => {
+  postalAddressPolicy.value = [
+    {
+      label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
+      value: 'insured',
+      help: labelInsured
+    },
+    {
+      label: 'เปลี่ยนที่อยู่ใหม่',
+      value: 'addnew',
+      help: labelAddnew,
+      attrs: { addnewaddress: true }
+    }
+  ]
+}
 
 const handleRadioShippingPolicyChange = async (event: String) => {
   switch (event) {
@@ -186,39 +343,64 @@ const handleRadioShippingPolicyChange = async (event: String) => {
       isPrintShipping.value = false
       isPostalShipping.value = false
       isInsured.value = true
-      break;
-    case "print": 
+      await handleCheckInsuranceRecieve()
+      break
+    case "print":
       isPdfShipping.value = false
       isPrintShipping.value = true
       isPostalShipping.value = false
       isInsured.value = true
-      break;
-    case "postal": 
+      await handleCheckInsuranceRecieve()
+      break
+    case "postal":
       isPdfShipping.value = false
       isPrintShipping.value = false
       isPostalShipping.value = true
-      break;
+      await handleCheckInsuranceRecieve()
+      break
   }
 }
 
+const handleShippingMethodChange = async (event: any) => {
+  const value = event.target.value
+  if(value){
+    const filter = delivery.value.filter(x=>x.value==value)
+
+    if(filter.length>0){
+      ShippingFeeText.value = filter[0].option ?? ""
+    }
+  }
+  await handleCheckInsuranceRecieve()
+}
 
 const handleRadioPostalAddressPolicyChange = async (event: String) => {
   switch (event) {
     case "insured":
       isInsured.value = true
       isAddnew.value = false
-      break;
-    case "addnew": 
+      await handleCheckInsuranceRecieve()
+      break
+    case "addnew":
       isInsured.value = false
       isAddnew.value = true
-      break;
+      await handleCheckInsuranceRecieve()
+      break
   }
+}
+
+const handleEmailChange = async (event: any) => {
+  emailValue = event.target.value
+  await handleCheckInsuranceRecieve()
+}
+
+const handleButtonSaveClick = async (event: any) => {
+  await setPostalAddressPolicy(insureFullAddress.value.toString(), insureFullNewAddress.value.toString())
 }
 
 // handler function for emit
 const handlerChangeProvince = (e: string)=>{
   if(e){
-    console.log(e)
+
     emit('changeProvince',e)
   }
 }
@@ -232,7 +414,56 @@ const handlerChangeSubDistrict = (e: string)=>{
     emit('changeSubDistrict',e)
   }
 }
+const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddress)=>{
+  if(addr && ObjectAddress){
+    //TODO implement coding new address
+    insureFullNewAddress.value = addr
+    newAddressObject.value = ObjectAddress
 
+    await handleCheckInsuranceRecieve()
+    //emit('changeFullAddress',addr,ObjectAddress)
+  }
+}
+const handleCheckInsuranceRecieve = async () => {
+  let RecieveObject: InsuranceRecieveObject = {
+    ShippingPolicy: shippingPolicyText.value.toString(),
+    Email: emailValue,
+    PostalDelivary: {
+      IsDeliveryAddressSameAsDefault: postalAddressPolicyText.value == 'insured' ? true : false,
+      ShippingMethod: ShippingMethodText,
+      ShippingFee: ShippingFeeText.value,
+      DeliveryAddress: {
+        AddressID: newAddressObject.value?.AddressID ?? '',
+        ReferenceID: newAddressObject.value?.ReferenceID ?? '',
+        ReferenceType: newAddressObject.value?.ReferenceType ?? '',
+        ProvinceID: newAddressObject.value?.ProvinceID ?? '',
+        DistrictID: newAddressObject.value?.DistrictID ?? '',
+        SubDistrictID: newAddressObject.value?.SubDistrictID ?? '',
+        TaxID: newAddressObject.value?.TaxID ?? '',
+        FirstName: newAddressObject.value?.FirstName ?? '',
+        LastName: newAddressObject.value?.LastName ?? '',
+        PhoneNumber: newAddressObject.value?.PhoneNumber ?? '',
+        Email: newAddressObject.value?.Email ?? '',
+        Name: newAddressObject.value?.Name ?? '',
+        Type: newAddressObject.value?.Type ?? '',
+        AddressLine1: newAddressObject.value?.AddressLine1 ?? '',
+        AddressLine2: newAddressObject.value?.AddressLine2 ?? '',
+        AddressText: newAddressObject.value?.AddressText ?? '',
+        No: newAddressObject.value?.No ?? '',
+        Moo: newAddressObject.value?.Moo ?? '',
+        Place: newAddressObject.value?.Place ?? '',
+        Building: newAddressObject.value?.Building ?? '',
+        Floor: newAddressObject.value?.Floor ?? '',
+        Room: newAddressObject.value?.Room ?? '',
+        Branch: newAddressObject.value?.Branch ?? '',
+        Alley: newAddressObject.value?.Alley ?? '',
+        Road: newAddressObject.value?.Road ?? '',
+        ZipCode: newAddressObject.value?.ZipCode ?? '',
+      }
+    }
+  }
+  emit('checkInsuranceRecieve', RecieveObject)
+}
 //watching props pass data
 watch(
     () => props.addrProvince,
@@ -274,11 +505,85 @@ watch(
         }
     }
 )
-watch(postalAddressPolicyText, async (newAddressPolicy) => {
-  await handleRadioPostalAddressPolicyChange(newAddressPolicy);
-});
+watch(
+    () => props.delivery,
+    () => {
+        if (props.delivery && props.delivery.length > 0) {
+          delivery.value = props.delivery
+        }
+    }
+)
+watch(
+    () => props.insureFullAddress,
+    () => {
+        if (props.insureFullAddress && props.insureFullAddress.length > 0) {
+            insureFullAddress.value = props.insureFullAddress
+            setPostalAddressPolicy(insureFullAddress.value.toString(), insureFullNewAddress.value.toString() ?? '')
+        }
+    }
+)
+watch(
+  ()=>props.insuranceRecieveCache,
+  ()=>{
+    if(props.insuranceRecieveCache && props.insuranceRecieveCache != undefined){
+      insuranceRecieveCache.value = props.insuranceRecieveCache
+      // console.log('insuranceRecieveCache.value', insuranceRecieveCache.value)
+      if(insuranceRecieveCache.value) {
+        //TODO fix shipping type
+        if(insuranceRecieveCache.value.ShippingPolicy=='ELECTRONIC'){
+          shippingPolicyText.value = 'pdf'
+          }
+          else if (insuranceRecieveCache.value.ShippingPolicy=='PAPER'){
+            shippingPolicyText.value = 'print'
+          }
+          else{
+            shippingPolicyText.value = 'postal'
+          }
+          emailText = insuranceRecieveCache.value.Email
+          // await handleRadioShippingPolicyChange(insuranceRecieveCache.value.ShippingPolicy)
 
-watch(shippingPolicyText, async (newShippingPolicy) => {
-  await handleRadioShippingPolicyChange(newShippingPolicy);
-});
+          if(shippingPolicyText.value == 'postal') {
+            ShippingMethodText = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
+            ShippingFeeText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
+            postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
+            // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')
+
+            if(postalAddressPolicyText.value == 'addnew') {
+              let newAddress: DeliveryAddress = insuranceRecieveCache.value.PostalDelivary?.DeliveryAddress as DeliveryAddress
+              newAddressCache.value = {
+                AddressID: newAddress.AddressID,
+                ReferenceID: newAddress.ReferenceID,
+                ReferenceType: newAddress.ReferenceType,
+                ProvinceID: newAddress.ProvinceID,
+                DistrictID: newAddress.DistrictID,
+                SubDistrictID: newAddress.SubDistrictID,
+                TaxID: newAddress.TaxID,
+                FirstName: newAddress.FirstName,
+                LastName: newAddress.LastName,
+                PhoneNumber: newAddress.PhoneNumber,
+                Email: newAddress.Email,
+                Name: newAddress.Name,
+                Type: newAddress.Type,
+                AddressLine1: newAddress.AddressLine1,
+                AddressLine2: newAddress.AddressLine2,
+                AddressText: newAddress.AddressText,
+                No: newAddress.No,
+                Moo: newAddress.Moo,
+                Place: newAddress.Place,
+                Building: newAddress.Building,
+                Floor: newAddress.Floor,
+                Room: newAddress.Room,
+                Branch: newAddress.Branch,
+                Alley: newAddress.Alley,
+                Road: newAddress.Road,
+                ZipCode: newAddress.ZipCode,
+              }
+            }
+          }
+
+        handleCheckInsuranceRecieve()
+      }
+    }
+  }
+)
 </script>

@@ -64,7 +64,6 @@ const getCurrency = (currency: number): string => {
 watch(
   ()=>props.packageSelect,
   ()=>{
-    console.log(props.packageSelect)
     if(props.packageSelect){
       const _packageSelect = props.packageSelect as IPackageResponse
     packageSelect.value = _packageSelect

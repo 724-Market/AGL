@@ -3,3 +3,10 @@ export interface SelectOption {
     value: string
     option?:string
 }
+
+export interface RadioOption {
+    label: string
+    value: string
+    help?:string
+    attrs?: any
+}

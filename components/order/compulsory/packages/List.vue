@@ -1,5 +1,5 @@
 <template>
-  <ElementsModalAlert v-if="isError" :message="messageError" />
+  <ElementsModalAlert v-if="isError" :is-error="isError" :message="messageError" />
   <div class="card" v-for="item in packageList" v-bind:key="item.RefCompanyID" v-else>
     <div class="card-body">
       <div class="package-item">

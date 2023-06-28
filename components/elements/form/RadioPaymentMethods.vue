@@ -2,7 +2,6 @@
     <FormKit type="radio" label="ช่องทางการชำระเงิน" name="PaymentMethods" :options="[
         { label: 'สแกน QR', value: 'qr', help: 'สะดวก เร็ว ค่าธรรมเนียม 5 บาท' },
         { label: 'บัตรเครดิต/บัตรเดบิต', value: 'card', help: 'ขั้นต่ำ 500 บาท ค่าธรรมเนียม 12%' },
-        { label: 'โอนเงิน', value: 'transfer', help: 'ต้องรอการยืนยัน' },
         { label: 'วงเงินมัดจำ', value: 'pledge', help: 'คงเหลือ 654.00 บาท' }]" validation="required"
         :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block" />
 </template>

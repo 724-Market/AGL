@@ -5,12 +5,14 @@
       #default="{ value }" v-model="values" :incomplete-message="false">
 
       <div class="row">
-        <div class="col-lg-8 col-xl-9">
+        <div class="col-lg-7">
 
           <div class="card">
+
             <div class="card-header">
               <h3 class="card-title">วิธีการชำระเงิน</h3>
             </div>
+
             <div class="card-body">
 
               <section class="payment-methods">
@@ -26,18 +28,18 @@
               </section>
 
               <section class="custom-discount inner-section">
-                <h5 class="discount-text">ส่วนลดที่สามารถใช้ได้ 160 บาท</h5>
+                <h5 class="discount-text">ส่วนลดที่สามารถใช้ได้สูงสุด 160 บาท</h5>
 
                 <div class="discount-range">
 
                   <div class="prefix">0 บาท</div>
 
-                  <FormKit type="range" label="ใช้ส่วนลด" min="0" max="160" step="0.01" value="0" tooltip="true" />
+                  <FormKit type="slider" label="ใช้ส่วนลด" value="0" min="0" max="160" step="0.01" show-input
+                    tooltip="true" />
 
                   <div class="suffix">160 บาท</div>
 
                 </div>
-
               </section>
 
             </div>
@@ -45,7 +47,7 @@
 
         </div>
 
-        <div class="col-lg-4 col-xl-3">
+        <div class="col-lg-5">
 
           <aside class="card">
             <div class="card-body">
@@ -135,9 +137,9 @@
 
             </div>
 
-            <div class="card-body">
+            <div class="card-body card-table">
 
-              <div class="card-table summary-table">
+              <div class="summary-table">
                 <table class="table no-striped">
                   <thead>
                     <tr>
@@ -199,7 +201,7 @@
 
           </aside>
 
-          <FormKit type="submit" label="ไปดูสรุปรายการ" name="order-submit" id="order-submit"
+          <FormKit type="submit" label="ไปต่อ" name="order-submit" id="order-submit"
             :classes="{ input: 'btn-primary', outer: 'form-actions' }" :disabled="submitted" :loading="isLoading" />
 
           <NuxtLink to="packages" class="btn btn-back">ย้อนกลับ</NuxtLink>
@@ -274,3 +276,13 @@ useHead({
   },
 })
 </script>
+
+<style scoped>
+.custom-discount {
+  display: none;
+}
+
+.discount-methods:has(.formkit-input[value="partialdiscount" i]:checked)~.custom-discount {
+  display: block;
+}
+</style>

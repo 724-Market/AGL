@@ -70,7 +70,7 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/datatables" title="ประวัติการทำรายการ">
+                    <a class="nav-link" href="/history" title="ประวัติการทำรายการ">
                         <i class="fa-duotone fa-clock-rotate-left"></i><span class="nav-link-text">ประวัติการทำรายการ</span>
                     </a>
                 </li>

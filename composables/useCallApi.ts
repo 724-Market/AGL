@@ -109,9 +109,11 @@ export default () => {
             apiResponse: wrapper
         }
 
+        if (!params.RefreshToken) { // get token is not refresh token
         // check token expire
         params.Token = await useUtility().getToken()
-
+        }
+        
         const { data, pending, error, refresh } = await useFetch('/api/aglove', {
             method: "POST",
             body: params,
@@ -129,7 +131,7 @@ export default () => {
 
     }
 
-    const apiRepository = async<T>(url:string,params: any): Promise<IAPIResponse<T>> => {
+    const apiRepository = async<T>(url: string, params: any): Promise<IAPIResponse<T>> => {
         const wrapper: WrapperResponse<T> = {
             Status: "",
         }
@@ -142,9 +144,11 @@ export default () => {
             statusMessageType: "",
             apiResponse: wrapper
         }
+        if (!params.RefreshToken) { // get token is not refresh token
+            // check token expire
+            params.Token = await useUtility().getToken()
+        }
 
-        // check token expire
-        params.Token = await useUtility().getToken()
         params.URL = url
         const { data, pending, error, refresh } = await useFetch('/api/aglove', {
             method: "POST",

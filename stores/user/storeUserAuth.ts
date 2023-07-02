@@ -18,11 +18,8 @@ export const useStoreUserAuth = defineStore('useStoreUserAuth', {
     actions: {
         async authLogin(request: any): Promise<WrapperResponse<IUserAuthResponse>> {
             const req = request as IUserAuthRequest
-            const response = await useCallApi().get<IUserAuthResponse>({
-                URL: '/Session/token/get',
-                Username: req.username,
-                Password: req.password
-            })
+            const response = await useRepository().session.getToken(req)
+            
             const result = response.apiResponse
             // set init store authen
             if (result.Data) {
@@ -42,11 +39,8 @@ export const useStoreUserAuth = defineStore('useStoreUserAuth', {
         },
         async refreshToken(refreshTokenId: string): Promise<IUserAuth> {
 
-            const response = await useCallApi().get<IUserAuthResponse>({
-                URL: '/Session/refresh-token/get',
-                RefreshToken: refreshTokenId,
-
-            })
+            const response = await useRepository().session.refreshToken(refreshTokenId)
+            
             const result = response.apiResponse
 
             if (result.Data) {

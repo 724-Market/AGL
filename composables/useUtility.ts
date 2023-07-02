@@ -14,7 +14,6 @@ export default () => {
         const { AuthenInfo } = storeToRefs(store)
         const checkToken = store.checkTokenExpire()
         if (checkToken) {
-            const { AuthenInfo } = storeToRefs(store)
             if (AuthenInfo.value) {
                 token = AuthenInfo.value.accessToken
             }
@@ -23,6 +22,7 @@ export default () => {
             // refresh token in store
             const refresToken = AuthenInfo.value ? AuthenInfo.value.refreshToken : ""
             if (refresToken && refresToken != "") {
+                
                 const data = await store.refreshToken(refresToken)
                 if (data) {
                     token = data.accessToken

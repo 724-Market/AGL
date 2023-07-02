@@ -1,4 +1,3 @@
-import { IDeliveryResponse } from "../entities/delivery-entity";
 import { OrderRequest, OrderResponse } from "../entities/placeorder-entity";
 import { IAPIResponse } from "../entities/useApi-response";
 

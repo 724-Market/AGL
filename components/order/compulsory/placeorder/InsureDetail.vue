@@ -174,7 +174,7 @@
 
                     <div class="row">
                       <div class="col-sm-4 col-lg-3">
-                        <!-- <FormKit
+                        <FormKit
                           type="select"
                           label="Title"
                           name="Title"
@@ -184,7 +184,7 @@
                           validation="required"
                           :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
                           
-                        /> -->
+                        />
                       </div>
                       <div class="col-sm-8 col-lg-4">
                         <FormKit

@@ -87,7 +87,7 @@ useHead({
         { src: "https://kit.fontawesome.com/285262ebb5.js", crossorigin: "anonymous", "data-search-pseudo-elements": true, defer: true },
     ],
     bodyAttrs: {
-        class: "page-monito sidenav-show",
+        class: "page-monito",
     },
-});
+})
 </script>

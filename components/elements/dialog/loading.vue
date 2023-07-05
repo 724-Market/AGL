@@ -14,10 +14,8 @@
     </dialog>
 </template>
 
-<script lang="ts" setup>
-import { tryOnMounted } from '@vueuse/core'
-
-tryOnMounted(() => {
+<script setup>
+const onLoad = onMounted(() => {
     const dialogLoading = document.getElementById('loading-dialog')
     const openDialogLoading = document.querySelector('.btn-open-loading')
 

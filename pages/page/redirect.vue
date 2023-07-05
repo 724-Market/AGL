@@ -12,18 +12,20 @@
                     <div class="loading-text">กรุณารอสักครู่</div>
                 </div>
                 <div class="text-center">
-                    <button class="btn btn-open-loading d-inline-block">Open Loading</button>
-                    <button class="btn btn-open-notice d-inline-block">Open Notice</button>
+                    <button class="btn btn-open-loading d-inline-block" type="button">Open Loading</button>
+                    <button class="btn btn-open-modal d-inline-block" type="button">Open Modal</button>
                 </div>
             </div>
         </div>
 
         <ElementsDialogLoading />
 
+        <ElementsDialogModal />
+
     </NuxtLayout>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 // Define layout
 const layout = "monito"
 
@@ -32,7 +34,7 @@ useHead({
     title: "Redirect",
     meta: [{ name: "description", content: "Redirect" }],
     bodyAttrs: {
-        class: "page-monito single-redirect",
+        class: "single-redirect sidenav-hide",
     },
 })
 </script>

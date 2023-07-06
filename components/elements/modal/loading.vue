@@ -1,5 +1,18 @@
 <template>
-    <div id="dialogModal" class="dialog-modal" v-show="_loading">
+    <dialog id="loading-dialog"  v-show="_loading">
+        <div class="dialog-card loading-card no-icon no-text">
+            <div class="loading-icon">
+                <div class="logo"></div>
+            </div>
+            <div class="loading-loader">
+                <span class="loading-bar">
+                    <span class="loading-progress"></span>
+                </span>
+            </div>
+            <div class="loading-text">กรุณารอสักครู่</div>
+        </div>
+    </dialog>
+    <!-- <div id="dialogModal" class="dialog-modal" v-show="_loading">
         <div class="dialog-content modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalToggleLabel">แจ้งเตือน</h1>
@@ -14,7 +27,7 @@
                 <h3 class="text-center">Loading...</h3>
             </div>
         </div>
-    </div>
+    </div> -->
 </template>
 
 <script setup lang="ts">
@@ -26,6 +39,7 @@ const props = defineProps({
 });
 
 const _loading = ref(false)
+
 watch(
     () => props.loading,
     () => {
@@ -51,18 +65,22 @@ const onLoad = onMounted((
 function openModal() {
     //modal.show()
     _loading.value = props.loading
+    const dialogLoading = document.getElementById('loading-dialog')
+    if(dialogLoading) dialogLoading.showModal()
 }
 
 function closeModal() {
     //modal.hide()
     _loading.value = false
+    const dialogLoading = document.getElementById('loading-dialog')
+    if(dialogLoading) dialogLoading.close()
 }
 
 
 </script>
 
 <style scoped>
-.dialog-modal {
+/* .dialog-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -101,5 +119,5 @@ function closeModal() {
 
 .dialog-button:hover {
     background-color: #0056b3;
-}
+} */
 </style>

@@ -143,8 +143,10 @@ const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
 const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
 //define store
 const storeAuth = useStoreUserAuth();
+const storePackage = useStorePackage();
 // define getter in store
 const { AuthenInfo } = storeToRefs(storeAuth);
+const { PackageInfo } = storeToRefs(storePackage);
 
 //define store
 const storeInfo = useStoreInformation();
@@ -161,6 +163,12 @@ const onInit = async () => {
   // check login
   if (AuthenInfo.value) {
     await showPackageList();
+
+    if(PackageInfo && PackageInfo.value){
+      handlerSelect(true,PackageInfo.value)
+    }
+    
+
   } else {
     isLoading.value = false;
 

@@ -63,20 +63,6 @@
     </div>
     <div class="col-6">
       <FormKit
-        type="text"
-        label="รหัสไปรษณีย์"
-        readonly
-        :name="'AddressPostalCode' + props.elementKey"
-        v-model="addrZipCode"
-        @input-raw="handlerChangeFullAddress"
-        placeholder="รหัสไปรษณีย์"
-        validation="required"
-        :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-        autocomplete="false"
-      />
-    </div>
-    <div class="col-6">
-      <FormKit
         type="select"
         label="จังหวัด"
         :name="'AddressProvince' + props.elementKey"
@@ -112,6 +98,20 @@
         @change="handlerChangeSubDistrict"
         validation="required"
         :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+      />
+    </div>
+    <div class="col-6">
+      <FormKit
+        type="text"
+        label="รหัสไปรษณีย์"
+        readonly
+        :name="'AddressPostalCode' + props.elementKey"
+        v-model="addrZipCode"
+        @input-raw="handlerChangeFullAddress"
+        placeholder="รหัสไปรษณีย์"
+        validation="required"
+        :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
+        autocomplete="false"
       />
     </div>
     <div class="col-xs-12 col-md-6">

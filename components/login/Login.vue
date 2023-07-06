@@ -79,7 +79,6 @@ const submitLogin = async (formData) => {
 
   const { data } = await useAsyncData("userAuth", () => store.authLogin(formData));
   const auth = data.value.Data;
-  console.log(store.access_token);
   if (data.value.Status == "200") {
     const router = useRouter();
     router.push({ path: "/order/compulsory/information" });

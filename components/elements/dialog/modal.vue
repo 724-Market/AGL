@@ -1,23 +1,25 @@
 <template>
     <dialog id="modal-dialog">
-        <div class="dialog-card">
+        <div class="dialog-card"><!-- Add class 'is-info', 'is-success', 'is-warning', 'is-danger' for color styling -->
             <div class="card-header">
                 <button class="btn btn-close btn-close-modal">ปิด</button>
             </div>
             <div class="card-body">
-                <figure class="dialog-icon">
+                <figure v-if="success" class="dialog-icon">
                     <div class="icon check"></div>
                 </figure>
-                <figure class="dialog-icon">
+                <figure v-if="danger" class="dialog-icon">
                     <div class="icon cross"></div>
                 </figure>
-                <figure class="dialog-icon">
+                <figure v-if="warning" class="dialog-icon">
                     <div class="icon exclamation"></div>
                 </figure>
-                <figure class="dialog-icon">
+                <figure v-if="info" class="dialog-icon">
                     <div class="icon question"></div>
                 </figure>
-                <figure class="dialog-icon"><i class="fa-regular fa-robot fa-bounce"></i></figure>
+                <figure v-else="default" class="dialog-icon">
+                    <i class="fa-regular fa-thumbs-up"></i>
+                </figure>
                 <h5>หัวข้อใน dialog</h5>
                 <p>กรุณารอสักครู่ กรุณารอสักครู่ กรุณารอสักครู่ กรุณารอสักครู่ กรุณารอสักครู่</p>
             </div>
@@ -33,7 +35,11 @@
 </template>
 
 <script setup>
-const onLoad = onMounted(() => {
+defineProps({
+    modalType: String
+})
+
+onMounted(() => {
     const dialogModal = document.getElementById('modal-dialog')
     const openDialogModal = document.querySelector('.btn-open-modal')
     const closeDialogModal = document.querySelector('.btn-close-modal')

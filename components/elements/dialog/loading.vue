@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-const onLoad = onMounted(() => {
+onMounted(() => {
     const dialogLoading = document.getElementById('loading-dialog')
     const openDialogLoading = document.querySelector('.btn-open-loading')
 

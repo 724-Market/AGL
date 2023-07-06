@@ -22,7 +22,7 @@ export default () => {
             // refresh token in store
             const refresToken = AuthenInfo.value ? AuthenInfo.value.refreshToken : ""
             if (refresToken && refresToken != "") {
-                
+
                 const data = await store.refreshToken(refresToken)
                 if (data) {
                     token = data.accessToken
@@ -65,6 +65,8 @@ export default () => {
                 case '/order/compulsory/information': step = 1; break
                 case '/order/compulsory/packages': step = 2; break
                 case '/order/compulsory/placeorder': step = 3; break
+                case '/order/compulsory/payment': step = 4; break
+                case '/order/compulsory/summary': step = 5; break
             }
 
         }

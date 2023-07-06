@@ -32,11 +32,11 @@
               </div>
 
               <div class="form-placeorder">
-                <div class="placeorder-action">
+                <!-- <div class="placeorder-action">
                   <a href="#" class="btn btn-preview-tax"
                     ><i class="fa-solid fa-file-pdf"></i>ดูตัวอย่างใบกำกับภาษีที่แนบ</a
                   >
-                </div>
+                </div> -->
                 <div class="placeorder-action">
                   <div class="form-hide-label">
                     <FormKit
@@ -170,8 +170,9 @@
                 <section
                   class="shipped-tax-address"
                   v-if="
-                    (shippingPolicy == 'postal' && shippedPolicy == 'separately') ||
-                    shippingPolicy != 'postal'
+                    requestIncludeTax.length > 0 &&
+                    ((shippingPolicy == 'postal' && shippedPolicy == 'separately') ||
+                      shippingPolicy != 'postal')
                   "
                 >
                   <h3>วิธีการจัดส่ง</h3>
@@ -504,7 +505,7 @@ const setCacheData = ()=>{
       if(props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault==false && props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress){
         cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress
         //const deliveryMethod1 = props.cacheOrderRequest.DeliveryMethod1
-          
+
 
       }
       const deliveryMethod2 = props.cacheOrderRequest.DeliveryMethod2

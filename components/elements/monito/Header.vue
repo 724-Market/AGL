@@ -3,7 +3,7 @@
         <div class="header">
 
             <header class="head-group">
-                <h1 class="page-title">Page Name</h1>
+                <h1 class="page-title" v-if="step">{{ menus[step-1].name }}</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb fa-divider">
                         <li class="visited">
@@ -18,7 +18,7 @@
                 <ol class="breadcrumb dot counter">
                     <li v-for="item in menus" :key="item.step" :class="getClassName(step, item)"
                         :aria-current="step == item.step ? 'page' : undefined">
-                        <NuxtLink :to="item.url" v-if="step != item.step">{{ item.name }}</NuxtLink><em v-else>{{ item.name
+                        <NuxtLink :to="item.url" v-if="item.step<=step">{{ item.name }}</NuxtLink><em v-else>{{ item.name
                         }}</em>
                     </li>
                 </ol>
@@ -34,8 +34,8 @@ const menus = ref([
     { step: 1, url: '/order/compulsory/information', name: 'กรอกข้อมูล' },
     { step: 2, url: '/order/compulsory/packages', name: 'เลือกแพคเกจ' },
     { step: 3, url: '/order/compulsory/placeorder', name: 'ข้อมูลสั่งซื้อ' },
-    { step: 4, url: '#', name: 'วิธีชำระเงิน' },
-    { step: 5, url: '#', name: 'สรุปรายการ' }
+    { step: 4, url: '/order/compulsory/payment', name: 'วิธีชำระเงิน' },
+    { step: 5, url: '/order/compulsory/summary', name: 'สรุปรายการ' }
 ])
 const onLoad = onMounted(() => {
     const menu_step = useUtility().getStepMenuFromUri()

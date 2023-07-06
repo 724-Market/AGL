@@ -220,8 +220,8 @@ const defaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref();
 
 const carDetailCache: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieveCache: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
-const insureDetailCache:globalThis.Ref<OrderRequest | undefined> = ref();
-const taxInvoiceCache:globalThis.Ref<OrderRequest | undefined> = ref();
+const insureDetailCache: globalThis.Ref<OrderRequest | undefined> = ref();
+const taxInvoiceCache: globalThis.Ref<OrderRequest | undefined> = ref();
 
 const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
@@ -338,13 +338,13 @@ const onLoad = onMounted(async () => {
         },
       };
       // set cache Data Step1
-      carDetailCache.value = OrderInfo.value.CarDetailsExtension
+      carDetailCache.value = OrderInfo.value.CarDetailsExtension;
       // set cache Data Step2
-      insureDetailCache.value = OrderInfo.value
+      insureDetailCache.value = OrderInfo.value;
       // set cache Data Step3
-      insuranceRecieveCache.value = insuranceRecieve
+      insuranceRecieveCache.value = insuranceRecieve;
       // set cache Data Step4
-      taxInvoiceCache.value = OrderInfo.value
+      taxInvoiceCache.value = OrderInfo.value;
     }
   } else {
     router.push("/login");
@@ -352,9 +352,9 @@ const onLoad = onMounted(async () => {
 });
 // Submit form event
 const submitOrder = async (formData: any) => {
-  isLoading.value = true
-  console.log(formData,values)
-  storeOrder.clearOrder()
+  isLoading.value = true;
+  console.log(formData, values);
+  storeOrder.clearOrder();
   if (insuranceRecieve.value?.ShippingPolicy == "postal") {
     if (!insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
       insureDetail.value.DeliveryAddress =
@@ -373,7 +373,7 @@ const submitOrder = async (formData: any) => {
       CarSalesYear: infomation.value?.CarYear ?? "",
       CarBrandID: infomation.value?.CarBrand ?? "",
       CarModelID: infomation.value?.CarModel ?? "",
-      SubCarModelID: infomation.value?.SubCarModel.split('|')[0] ?? "",
+      SubCarModelID: infomation.value?.SubCarModel.split("|")[0] ?? "",
       CompanyCode: packageSelect.value?.CompanyCode ?? "",
       AgentCode: packageSelect.value?.AgentCode ?? "",
       EffectiveType: infomation.value?.EffectiveType ?? "",
@@ -389,20 +389,20 @@ const submitOrder = async (formData: any) => {
     // DeliveryEmail: insuranceRecieve.value?.Email,
     IsTaxInvoice: RequestIncludeTax.value,
   };
-  storeOrder.setOrder(orderReq)
+  storeOrder.setOrder(orderReq);
 
-  const response = await useRepository().order.create(orderReq)
+  const response = await useRepository().order.create(orderReq);
   isError.value = false;
-  messageError.value = ""
+  messageError.value = "";
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     //TODO: Implement next step
   } else {
-    isError.value = true
-    messageError.value = response.apiResponse.ErrorMessage ?? ""
+    isError.value = true;
+    messageError.value = response.apiResponse.ErrorMessage ?? "";
   }
 
-  isLoading.value = false
-}
+  isLoading.value = false;
+};
 
 const getDeliveryMethod = (): DeliveryMethod[] => {
   let data: DeliveryMethod[] = [
@@ -627,7 +627,7 @@ const loadCarColor = async () => {
     let carColorList: SelectOption[] = [];
     const req: ICarColorReq = {
       // CompanyCode: PackageInfo.value.CompanyCode,
-      CompanyCode: 'TMW', //TODO: MockUo 
+      CompanyCode: "TMW", //TODO: MockUo
     };
     const responseColor = await useRepository().master.carColor(req);
 
@@ -888,7 +888,6 @@ const handlerChangeTaxInvoice = (
   shippedPolicy: string,
   ShippingMethod: string
 ) => {
-  
   let validate = [false, false];
   RequestIncludeTax.value = isIncludeTax;
   TaxInvoiceAddressShipped.value = shippedPolicy;
@@ -911,9 +910,9 @@ const handlerChangeTaxInvoice = (
     insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault =
       InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault;
   }
-  
-  if (insuranceRecieve.value) {
-    if (isIncludeTax) {
+
+  if (isIncludeTax) {
+    if (insuranceRecieve.value) {
       // set ที่อยู่จีดส่งเอกสารใบกำกับภาษี กรณีเลือก วิธีรับกรมธรรม์ จัดส่งตัวจริง และเลือกเป็นจัดส่งพร้อมกรมธรรม์
       if (
         insuranceRecieve.value.ShippingPolicy == "postal" &&
@@ -964,9 +963,9 @@ const handlerChangeTaxInvoice = (
       } else {
         validate[1] = true;
       }
-    } else {
-      validate = [true, true];
     }
+  } else {
+    validate = [true, true];
   }
 
   if (validate.filter((x) => x).length == 2) {
@@ -976,7 +975,6 @@ const handlerChangeTaxInvoice = (
   }
 };
 const handlerCheckSave = (check: boolean) => {
-  
   checkSave.value = check;
 };
 

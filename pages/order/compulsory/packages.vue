@@ -158,13 +158,12 @@ const onInit = async () => {
   // define parameter page
   const page = useUtility().getPaging(paging.value);
   paging.value = page;
-  console.log(page);
   //console.log(InformationInfo.value)
   // check login
   if (AuthenInfo.value) {
     await showPackageList();
-
-    if(PackageInfo && PackageInfo.value){
+    console.log(PackageInfo.value)
+    if(PackageInfo && PackageInfo.value!=""){
       handlerSelect(true,PackageInfo.value)
     }
     
@@ -247,6 +246,7 @@ const handlerSelect = (select: Boolean, item: IPackageResponse) => {
   console.log(select, item);
   isSelect.value = select;
   packageSelect.value = item;
+  checklist.value[0].className='current'
 };
 const handlerChangePage = async (page: number, lengthPage: number) => {
   console.log(page, lengthPage);
@@ -275,6 +275,7 @@ const submitOrder = async (formData: any) => {
     }
     //define store
     const storePackage = useStorePackage();
+    console.log(packageSelect.value)
     const data = storePackage.setPackage(packageSelect.value);
 
     submitted.value = false; // Form submitted status

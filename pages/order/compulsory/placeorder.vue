@@ -228,6 +228,7 @@ const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref
 const insureDetail: globalThis.Ref<CustomerOrderRequest> = ref({});
 const personProfile: globalThis.Ref<PersonProfile | undefined> = ref();
 const legalPersonProfile: globalThis.Ref<LegalPersonProfile | undefined> = ref();
+const PackageInfo:globalThis.Ref<IPackageResponse | ""> = ref("");
 const RequestIncludeTax = ref(false);
 const TaxInvoiceAddressShipped = ref("");
 const TaxInvoiceAddressShipping = ref("");
@@ -272,8 +273,6 @@ const { CarInfo } = storeToRefs(storeInfo);
 
 //define store
 const storePackage = useStorePackage();
-// define getter in store
-const { PackageInfo } = storeToRefs(storePackage);
 
 //define store
 const storeOrder = useStorePlaceorder();
@@ -284,6 +283,8 @@ const router = useRouter();
 
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
+    PackageInfo.value = storePackage.PackageInfo
+    console.log(PackageInfo.value,CarInfo.value)
     if (PackageInfo.value && CarInfo.value) {
       infomation.value = CarInfo.value;
       SubCarModel.value = infomation.value.SubCarModel;

@@ -158,13 +158,12 @@ const onInit = async () => {
   // define parameter page
   const page = useUtility().getPaging(paging.value);
   paging.value = page;
-  console.log(page);
   //console.log(InformationInfo.value)
   // check login
   if (AuthenInfo.value) {
     await showPackageList();
-
-    if(PackageInfo && PackageInfo.value){
+    //console.log(PackageInfo.value)
+    if(PackageInfo && PackageInfo.value!=""){
       handlerSelect(true,PackageInfo.value)
     }
     
@@ -205,7 +204,7 @@ const showPackageList = async () => {
           UseCarCode: info.CarUse,
           Paging: paging.value,
         };
-        console.log(request);
+        
         const data = await store.getPackageList(request);
 
         if (data && data.Data) {
@@ -220,7 +219,6 @@ const showPackageList = async () => {
           }
         } else if (data.ErrorMessage && data.ErrorMessage != "") {
           isLoading.value = false;
-          console.log(data.ErrorMessage);
           isError.value = true;
           messageError.value = data.ErrorMessage ? data.ErrorMessage : "";
         }
@@ -244,12 +242,11 @@ const handlerCheckList = (_checklist: IChecklist[]) => {
   checklist.value = _checklist;
 };
 const handlerSelect = (select: Boolean, item: IPackageResponse) => {
-  console.log(select, item);
   isSelect.value = select;
   packageSelect.value = item;
+  checklist.value[0].className='current'
 };
 const handlerChangePage = async (page: number, lengthPage: number) => {
-  console.log(page, lengthPage);
   if (page != -1) {
     const _page = useUtility().getPaging(paging.value);
     _page.Length = lengthPage;

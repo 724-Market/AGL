@@ -94,7 +94,7 @@ const onLoad = onMounted(() => {
   }
   lengthPage.value = props.lengthPage
 
-  console.log(props.currentPage)
+  //console.log(props.currentPage)
   CalculateTotalPage()
 });
 
@@ -115,7 +115,7 @@ const CalculateTotalPageMore = () => {
   // const pageMore = 7
   // const totalRecord = 100
   if (currentPage.value) {
-    console.log(currentPage.value, props.totalRecord, props.lengthPage)
+    //console.log(currentPage.value, props.totalRecord, props.lengthPage)
     const total_pages = Math.ceil(props.totalRecord / lengthPage.value);
     const array: Pages[] = []
     array.push({
@@ -125,7 +125,7 @@ const CalculateTotalPageMore = () => {
       value: 1
     })
 
-    console.log(currentPage.value.start)
+    //console.log(currentPage.value.start)
     for (let i = currentPage.value.start; i <= currentPage.value.start + maxPageCount; i++) {
       if (i <= total_pages) {
         // กรณียังมีหน้าถัดไปเหลืออยู่
@@ -160,14 +160,14 @@ const CalculateTotalPageMore = () => {
 
     totalPages.value = array
   }
-  console.log(totalPages.value)
+  //console.log(totalPages.value)
 }
 const CalculateTotalPage = () => {
   const maxPageCount = 8
   const pageMore = 7
   //const totalRecord = 100
   if (currentPage.value) {
-    console.log(currentPage.value, props.totalRecord, props.lengthPage)
+    //console.log(currentPage.value, props.totalRecord, props.lengthPage)
     const total_pages = Math.ceil(props.totalRecord / lengthPage.value);
     const array: Pages[] = []
     for (let i = 1; i <= maxPageCount; i++) {
@@ -215,7 +215,7 @@ const CalculateTotalPage = () => {
     }
     totalPages.value = array
   }
-  console.log(totalPages.value)
+  //console.log(totalPages.value)
 }
 const previousPage = () => {
   if (currentPage.value) {

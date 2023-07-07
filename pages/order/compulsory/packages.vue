@@ -162,7 +162,7 @@ const onInit = async () => {
   // check login
   if (AuthenInfo.value) {
     await showPackageList();
-    console.log(PackageInfo.value)
+    //console.log(PackageInfo.value)
     if(PackageInfo && PackageInfo.value!=""){
       handlerSelect(true,PackageInfo.value)
     }
@@ -204,7 +204,7 @@ const showPackageList = async () => {
           UseCarCode: info.CarUse,
           Paging: paging.value,
         };
-        console.log(request);
+        
         const data = await store.getPackageList(request);
 
         if (data && data.Data) {
@@ -219,7 +219,6 @@ const showPackageList = async () => {
           }
         } else if (data.ErrorMessage && data.ErrorMessage != "") {
           isLoading.value = false;
-          console.log(data.ErrorMessage);
           isError.value = true;
           messageError.value = data.ErrorMessage ? data.ErrorMessage : "";
         }
@@ -243,13 +242,11 @@ const handlerCheckList = (_checklist: IChecklist[]) => {
   checklist.value = _checklist;
 };
 const handlerSelect = (select: Boolean, item: IPackageResponse) => {
-  console.log(select, item);
   isSelect.value = select;
   packageSelect.value = item;
   checklist.value[0].className='current'
 };
 const handlerChangePage = async (page: number, lengthPage: number) => {
-  console.log(page, lengthPage);
   if (page != -1) {
     const _page = useUtility().getPaging(paging.value);
     _page.Length = lengthPage;
@@ -275,7 +272,6 @@ const submitOrder = async (formData: any) => {
     }
     //define store
     const storePackage = useStorePackage();
-    console.log(packageSelect.value)
     const data = storePackage.setPackage(packageSelect.value);
 
     submitted.value = false; // Form submitted status

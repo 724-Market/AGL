@@ -636,7 +636,7 @@ const onLoad = onMounted(()=>{
       }
 
       insureDetail.value = props.cacheOrderRequest.Customer
-      console.log('Mounted',props.cacheOrderRequest.Customer)
+      //console.log('Mounted',props.cacheOrderRequest.Customer)
     if(props.cacheOrderRequest.Customer.PersonProfile){
       personProfile.value =  props.cacheOrderRequest.Customer.PersonProfile
     }
@@ -693,7 +693,7 @@ const handlerChangeFullAddress = (addr:string,ObjectAddress:DefaultAddress)=>{
   }
 }
 const handlerChangePersonalProfile = ()=>{
-  console.log('handlerChangePersonalProfile',personProfile.value)
+  //console.log('handlerChangePersonalProfile',personProfile.value)
   insureDetail.value.PersonProfile = personProfile.value
   if(InsuredClassifierText.value=='thai'){
     insureDetail.value.PersonProfile.NationalityID='62ED0829703B4E589A2A63C740B88155'
@@ -851,7 +851,7 @@ watch(()=>props.cacheOrderRequest,(newValue)=>{
       insureDetail.value = newValue.Customer
     if(newValue.Customer.PersonProfile){
       const person = newValue.Customer.PersonProfile
-      console.log(JSON.stringify(person))
+      //console.log(JSON.stringify(person))
       personProfile.value =  person
       //personProfile.value.PrefixID = props.cacheOrderRequest.Customer.PersonProfile.PrefixID
       prefixID.value =newValue.Customer.PersonProfile.PrefixID

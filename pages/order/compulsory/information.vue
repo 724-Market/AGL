@@ -248,7 +248,7 @@ const onLoad = onMounted(async () => {
 
   const info = sessionStorage.getItem("useStoreInformation") ?
     JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as IInformation : undefined
-  console.log('information', info)
+  //console.log('information', info)
   if (info) {
     carUseText.value = info.CarUse
     await handleRadioCarUseChange(info.CarUse, info.CarType)
@@ -316,7 +316,7 @@ const handleRadioCarUseChange = async (event: String, optionText: String) => {
     if (optionText != "") carTypeText = optionText;
     // console.log("carType", carType.value)
     isLoading.value = false
-    console.log("Loading = ",isLoading.value)
+    //console.log("Loading = ",isLoading.value)
   }
 };
 

@@ -373,7 +373,7 @@ const ShippingMethodFee = ref('')
 const insureDetail:globalThis.Ref<CustomerOrderRequest> = ref({})
 const cacheDefaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref()
   const onLoad = onMounted(async () => {
-    console.log(props.cacheOrderRequest)
+    //console.log(props.cacheOrderRequest)
     if(props.cacheOrderRequest){
       setCacheData()
     }

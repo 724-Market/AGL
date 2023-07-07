@@ -21,7 +21,7 @@ const _loading = ref(false)
 watch(
     () => props.isError,
     () => {
-        console.log('prop value changed', props.isError)
+        //console.log('prop value changed', props.isError)
         if (props.isError) {
             openModal()
         }

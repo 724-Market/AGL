@@ -305,24 +305,46 @@ const onLoad = onMounted(async () => {
     if (OrderInfo.value) {
       console.log("OrderInfo", OrderInfo.value);
       let insuranceRecieve: InsuranceRecieveObject = {
-        ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? "",
-        Email: OrderInfo.value.DeliveryMethod1?.DeliveryEmail ?? "",
+        ShippingPolicy: orderInfo.DeliveryMethod1?.DeliveryType ?? "",
+        Email: orderInfo.DeliveryMethod1?.DeliveryEmail ?? "",
         PostalDelivary: {
-          IsDeliveryAddressSameAsDefault: true,
-          ShippingMethod: OrderInfo.value.DeliveryMethod1?.DeliveryChannelType ?? "",
+          IsDeliveryAddressSameAsDefault: orderInfo.Customer?.IsDeliveryAddressSameAsDefault ?? true,
+          ShippingMethod: orderInfo.DeliveryMethod1?.DeliveryChannelType ?? "",
           ShippingFee: "50 บาท", //TODO: MockUp
-          DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
+          DeliveryAddress: orderInfo.Customer?.DeliveryAddress,
         },
       };
       // set cache Data Step1
-      carDetailCache.value = OrderInfo.value.CarDetailsExtension;
+      carDetailCache.value = orderInfo.CarDetailsExtension;
       // set cache Data Step2
-      insureDetailCache.value = OrderInfo.value;
+      insureDetailCache.value = orderInfo
       // set cache Data Step3
       insuranceRecieveCache.value = insuranceRecieve;
       // set cache Data Step4
-      taxInvoiceCache.value = OrderInfo.value;
+      taxInvoiceCache.value = orderInfo
     }
+
+    // if (OrderInfo.value) {
+    //   console.log("OrderInfo", OrderInfo.value);
+    //   let insuranceRecieve: InsuranceRecieveObject = {
+    //     ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? "",
+    //     Email: OrderInfo.value.DeliveryMethod1?.DeliveryEmail ?? "",
+    //     PostalDelivary: {
+    //       IsDeliveryAddressSameAsDefault: true,
+    //       ShippingMethod: OrderInfo.value.DeliveryMethod1?.DeliveryChannelType ?? "",
+    //       ShippingFee: "50 บาท", //TODO: MockUp
+    //       DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
+    //     },
+    //   };
+    //   // set cache Data Step1
+    //   carDetailCache.value = OrderInfo.value.CarDetailsExtension;
+    //   // set cache Data Step2
+    //   insureDetailCache.value = OrderInfo.value;
+    //   // set cache Data Step3
+    //   insuranceRecieveCache.value = insuranceRecieve;
+    //   // set cache Data Step4
+    //   taxInvoiceCache.value = OrderInfo.value;
+    // }
   } else {
     router.push("/login");
   }
@@ -363,6 +385,7 @@ const submitOrder = async (formData: any) => {
     DeliveryMethod2:  RequestIncludeTax.value ? DeliveryMethod[1] : undefined,
     IsTaxInvoice: RequestIncludeTax.value,
   };
+  console.log('orderReq', orderReq)
   storeOrder.setOrder(orderReq);
 
   isError.value = false;

@@ -157,12 +157,14 @@
       </div>
     </div>
   </div>
+  <!-- <ElementsDialogModal /> -->
 </template>
 
 <script setup lang="ts">
 import { SelectOption } from "~/shared/entities/select-option";
 import { IInformation } from "~~/shared/entities/information-entity";
 import { CarDetailsExtension } from "~~/shared/entities/placeorder-entity";
+import { UploadFileRequest, UploadFileResponse } from "~~/shared/entities/file-entity";
 
 const emit = defineEmits(['checkCarDetail'])
 
@@ -200,7 +202,7 @@ var carEngineNumberText: string = ""
 var carEngineNumberValue: string = ""
 
 var CarLicenseFileText: string = ""
-var base64FileString: string = ""
+var LicenseFileID: string = ""
 
 const onLoad = onMounted(async () => {
   if(props.carProvince)
@@ -225,7 +227,7 @@ const onLoad = onMounted(async () => {
     carBodyNumberText = carDetailCache.value.BodyNo
     carEngineNumberText = carDetailCache.value.EngineNo
     CarLicenseFileText = ''
-    base64FileString = carDetailCache.value.LicenseFileID
+    LicenseFileID = carDetailCache.value.LicenseFileID
   }
 })
 
@@ -264,7 +266,19 @@ const handleCarEngineNumberChange = async (event: any) => {
 
 const handleFileChange = async (event: any) => {
   let file = event.target.files[0]
-  base64FileString = await convertFileToBase64(file)
+  let base64FileString = await convertFileToBase64(file)
+  let uploadFileReq: UploadFileRequest = {
+    Base64: base64FileString,
+    FileNameWithExtension: file.name.toString()
+  }
+  console.log('uploadFileReq', uploadFileReq)
+  //TODO: Change Base64String For LicenseFileID To LicenseFileID
+  const response = await useRepository().file.upload(uploadFileReq)
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    LicenseFileID = response.apiResponse.Data?.ID ?? ''
+  } else {
+    // messageError.value = response.apiResponse.ErrorMessage ?? "";
+  }
   await handleCheckCarDetail()
 }
 
@@ -293,7 +307,7 @@ const handleCheckCarDetail = async () => {
     EngineNo: carEngineNumberValue,
     ColorID: carColorText,
     LicenseProvinceID: carProvinceText,
-    LicenseFileID: base64FileString,
+    LicenseFileID: LicenseFileID,
     IsRedLicense: carLicenseClassifierValue
   }
 
@@ -338,7 +352,7 @@ watch(
       carEngineNumberValue = carDetailCache.value.EngineNo
 
       CarLicenseFileText = ''
-      base64FileString = carDetailCache.value.LicenseFileID
+      LicenseFileID = carDetailCache.value.LicenseFileID
 
       handleCheckCarDetail()
     }

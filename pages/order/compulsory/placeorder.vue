@@ -302,51 +302,51 @@ const onLoad = onMounted(async () => {
       router.push("/order/compulsory/packages");
     }
 
-    // const orderInfo = sessionStorage.getItem("useStorePlaceorder") ?
-    //   JSON.parse(sessionStorage.getItem("useStorePlaceorder") || "") as OrderRequest : undefined
-    // if (orderInfo) {
-    //   console.log("OrderInfo", OrderInfo.value);
-    //   let insuranceRecieve: InsuranceRecieveObject = {
-    //     ShippingPolicy: orderInfo.DeliveryMethod1?.DeliveryType ?? "",
-    //     Email: orderInfo.DeliveryMethod1?.DeliveryEmail ?? "",
-    //     PostalDelivary: {
-    //       IsDeliveryAddressSameAsDefault: orderInfo.Customer?.IsDeliveryAddressSameAsDefault ?? true,
-    //       ShippingMethod: orderInfo.DeliveryMethod1?.DeliveryChannelType ?? "",
-    //       ShippingFee: "50 บาท", //TODO: MockUp
-    //       DeliveryAddress: orderInfo.Customer?.DeliveryAddress,
-    //     },
-    //   };
-    //   // set cache Data Step1
-    //   carDetailCache.value = orderInfo.CarDetailsExtension;
-    //   // set cache Data Step2
-    //   insureDetailCache.value = orderInfo
-    //   // set cache Data Step3
-    //   insuranceRecieveCache.value = insuranceRecieve;
-    //   // set cache Data Step4
-    //   taxInvoiceCache.value = orderInfo
-    // }
-
-    if (OrderInfo.value) {
+    const orderInfo = sessionStorage.getItem("useStorePlaceorder") ?
+      JSON.parse(sessionStorage.getItem("useStorePlaceorder") || "") as OrderRequest : undefined
+    if (orderInfo) {
       console.log("OrderInfo", OrderInfo.value);
       let insuranceRecieve: InsuranceRecieveObject = {
-        ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? "",
-        Email: OrderInfo.value.DeliveryMethod1?.DeliveryEmail ?? "",
+        ShippingPolicy: orderInfo.DeliveryMethod1?.DeliveryType ?? "",
+        Email: orderInfo.DeliveryMethod1?.DeliveryEmail ?? "",
         PostalDelivary: {
-          IsDeliveryAddressSameAsDefault: true,
-          ShippingMethod: OrderInfo.value.DeliveryMethod1?.DeliveryChannelType ?? "",
+          IsDeliveryAddressSameAsDefault: orderInfo.Customer?.IsDeliveryAddressSameAsDefault ?? true,
+          ShippingMethod: orderInfo.DeliveryMethod1?.DeliveryChannelType ?? "",
           ShippingFee: "50 บาท", //TODO: MockUp
-          DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
+          DeliveryAddress: orderInfo.Customer?.DeliveryAddress,
         },
       };
       // set cache Data Step1
-      carDetailCache.value = OrderInfo.value.CarDetailsExtension;
+      carDetailCache.value = orderInfo.CarDetailsExtension;
       // set cache Data Step2
-      insureDetailCache.value = OrderInfo.value;
+      insureDetailCache.value = orderInfo
       // set cache Data Step3
       insuranceRecieveCache.value = insuranceRecieve;
       // set cache Data Step4
-      taxInvoiceCache.value = OrderInfo.value;
+      taxInvoiceCache.value = orderInfo
     }
+
+    // if (OrderInfo.value) {
+    //   console.log("OrderInfo", OrderInfo.value);
+    //   let insuranceRecieve: InsuranceRecieveObject = {
+    //     ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? "",
+    //     Email: OrderInfo.value.DeliveryMethod1?.DeliveryEmail ?? "",
+    //     PostalDelivary: {
+    //       IsDeliveryAddressSameAsDefault: true,
+    //       ShippingMethod: OrderInfo.value.DeliveryMethod1?.DeliveryChannelType ?? "",
+    //       ShippingFee: "50 บาท", //TODO: MockUp
+    //       DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
+    //     },
+    //   };
+    //   // set cache Data Step1
+    //   carDetailCache.value = OrderInfo.value.CarDetailsExtension;
+    //   // set cache Data Step2
+    //   insureDetailCache.value = OrderInfo.value;
+    //   // set cache Data Step3
+    //   insuranceRecieveCache.value = insuranceRecieve;
+    //   // set cache Data Step4
+    //   taxInvoiceCache.value = OrderInfo.value;
+    // }
   } else {
     router.push("/login");
   }
@@ -390,13 +390,14 @@ const submitOrder = async (formData: any) => {
     // DeliveryEmail: insuranceRecieve.value?.Email,
     IsTaxInvoice: RequestIncludeTax.value,
   };
+  console.log('orderReq', orderReq)
   storeOrder.setOrder(orderReq);
 
   const response = await useRepository().order.create(orderReq);
   isError.value = false;
   messageError.value = "";
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    //TODO: Implement next step
+    router.push("/order/compulsory/payment");
   } else {
     isError.value = true;
     messageError.value = response.apiResponse.ErrorMessage ?? "";

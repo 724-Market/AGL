@@ -374,6 +374,7 @@ const insureDetail:globalThis.Ref<CustomerOrderRequest> = ref({})
 const cacheDefaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref()
   const onLoad = onMounted(async () => {
     //console.log(props.cacheOrderRequest)
+    insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
     if(props.cacheOrderRequest){
       setCacheData()
     }
@@ -484,7 +485,6 @@ const handlerSubmitAddressTaxInvoiceDelivery = ()=>{
   handlerChangeTaxInvoice()
 }
 const handlerChangeTaxInvoice = ()=>{
-
   insureDetail.value.IsTaxInvoiceAddressSameAsDefault = addressIncludeTaxType.value=='insured'
   insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = addressDeliveryTaxType.value=='insured'
   //console.log(insureDetail.value,requestIncludeTax.value.length > 0,shippedPolicy.value,ShippingMethodText.value)

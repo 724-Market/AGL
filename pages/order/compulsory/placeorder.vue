@@ -175,7 +175,7 @@ import {
   CarDetailsExtension,
   DeliveryAddress,
   InsuranceRecieveObject,
-  OrderRequest,
+  PlaceOrderRequest,
   CustomerOrderRequest,
   PersonProfile,
   LegalPersonProfile,
@@ -220,15 +220,15 @@ const defaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref();
 
 const carDetailCache: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieveCache: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
-const insureDetailCache: globalThis.Ref<OrderRequest | undefined> = ref();
-const taxInvoiceCache: globalThis.Ref<OrderRequest | undefined> = ref();
+const insureDetailCache: globalThis.Ref<PlaceOrderRequest | undefined> = ref();
+const taxInvoiceCache: globalThis.Ref<PlaceOrderRequest | undefined> = ref();
 
 const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref();
 const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref();
 const insureDetail: globalThis.Ref<CustomerOrderRequest> = ref({});
 const personProfile: globalThis.Ref<PersonProfile | undefined> = ref();
 const legalPersonProfile: globalThis.Ref<LegalPersonProfile | undefined> = ref();
-const PackageInfo:globalThis.Ref<IPackageResponse | ""> = ref("");
+const PackageInfo: globalThis.Ref<IPackageResponse | ""> = ref("");
 const RequestIncludeTax = ref(false);
 const TaxInvoiceAddressShipped = ref("");
 const TaxInvoiceAddressShipping = ref("");
@@ -283,8 +283,8 @@ const router = useRouter();
 
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
-    PackageInfo.value = storePackage.PackageInfo
-    console.log(PackageInfo.value,CarInfo.value)
+    PackageInfo.value = storePackage.PackageInfo;
+    console.log("PackageInfo", PackageInfo.value);
     if (PackageInfo.value && CarInfo.value) {
       infomation.value = CarInfo.value;
       SubCarModel.value = infomation.value.SubCarModel;
@@ -301,30 +301,6 @@ const onLoad = onMounted(async () => {
     } else {
       router.push("/order/compulsory/packages");
     }
-
-    // const orderInfo = sessionStorage.getItem("useStorePlaceorder") ?
-    //   JSON.parse(sessionStorage.getItem("useStorePlaceorder") || "") as OrderRequest : undefined
-    // if (orderInfo) {
-    //   console.log("OrderInfo", OrderInfo.value);
-    //   let insuranceRecieve: InsuranceRecieveObject = {
-    //     ShippingPolicy: orderInfo.DeliveryMethod1?.DeliveryType ?? "",
-    //     Email: orderInfo.DeliveryMethod1?.DeliveryEmail ?? "",
-    //     PostalDelivary: {
-    //       IsDeliveryAddressSameAsDefault: orderInfo.Customer?.IsDeliveryAddressSameAsDefault ?? true,
-    //       ShippingMethod: orderInfo.DeliveryMethod1?.DeliveryChannelType ?? "",
-    //       ShippingFee: "50 บาท", //TODO: MockUp
-    //       DeliveryAddress: orderInfo.Customer?.DeliveryAddress,
-    //     },
-    //   };
-    //   // set cache Data Step1
-    //   carDetailCache.value = orderInfo.CarDetailsExtension;
-    //   // set cache Data Step2
-    //   insureDetailCache.value = orderInfo
-    //   // set cache Data Step3
-    //   insuranceRecieveCache.value = insuranceRecieve;
-    //   // set cache Data Step4
-    //   taxInvoiceCache.value = orderInfo
-    // }
 
     if (OrderInfo.value) {
       console.log("OrderInfo", OrderInfo.value);
@@ -354,8 +330,7 @@ const onLoad = onMounted(async () => {
 // Submit form event
 const submitOrder = async (formData: any) => {
   isLoading.value = true;
-  console.log(formData, values);
-  storeOrder.clearOrder();
+
   if (insuranceRecieve.value?.ShippingPolicy == "postal") {
     if (!insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
       insureDetail.value.DeliveryAddress =
@@ -366,7 +341,8 @@ const submitOrder = async (formData: any) => {
   insureDetail.value.IsDeliveryAddressSameAsDefault =
     insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault;
   const DeliveryMethod = getDeliveryMethod();
-  let orderReq: OrderRequest = {
+  let orderReq: PlaceOrderRequest = {
+    OrderNo: OrderInfo.value?.OrderNo ?? "",
     Package: {
       UseCarCode: infomation.value?.CarUse ?? "",
       CarTypeCode: infomation.value?.CarType ?? "",
@@ -384,22 +360,46 @@ const submitOrder = async (formData: any) => {
     CarDetailsExtension: carDetail.value,
     Customer: insureDetail.value,
     DeliveryMethod1: DeliveryMethod[0],
-    DeliveryMethod2: DeliveryMethod[1],
-    // DeliveryType: insuranceRecieve.value?.ShippingPolicy,
-    // DeliveryChannelType: insuranceRecieve.value?.PostalDelivary?.ShippingMethod,
-    // DeliveryEmail: insuranceRecieve.value?.Email,
+    DeliveryMethod2:  RequestIncludeTax.value ? DeliveryMethod[1] : undefined,
     IsTaxInvoice: RequestIncludeTax.value,
   };
   storeOrder.setOrder(orderReq);
 
-  const response = await useRepository().order.create(orderReq);
   isError.value = false;
   messageError.value = "";
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    //TODO: Implement next step
+
+  // create order
+  if (orderReq.OrderNo && orderReq.OrderNo == "") {
+    const response = await useRepository().order.create(orderReq);
+
+    if (
+      response.apiResponse.Status &&
+      response.apiResponse.Status == "200" &&
+      response.apiResponse.Data
+    ) {
+      orderReq.OrderNo = response.apiResponse.Data.OrderNo;
+      storeOrder.setOrder(orderReq);
+      //TODO: Implement next step
+    } else {
+      isError.value = true;
+      messageError.value = response.apiResponse.ErrorMessage ?? "";
+    }
   } else {
-    isError.value = true;
-    messageError.value = response.apiResponse.ErrorMessage ?? "";
+    // edit order
+    const response = await useRepository().order.save(orderReq);
+
+    if (
+      response.apiResponse.Status &&
+      response.apiResponse.Status == "200" &&
+      response.apiResponse.Data
+    ) {
+      orderReq.OrderNo = response.apiResponse.Data.OrderNo;
+      storeOrder.setOrder(orderReq);
+      //TODO: Implement next step
+    } else {
+      isError.value = true;
+      messageError.value = response.apiResponse.ErrorMessage ?? "";
+    }
   }
 
   isLoading.value = false;

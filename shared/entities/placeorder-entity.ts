@@ -1,5 +1,6 @@
 
-export interface OrderRequest {
+export interface PlaceOrderRequest {
+  OrderNo?:string
   Package?: PackageOrderRequest
   CarDetailsExtension?: CarDetailsExtension
   Customer?: CustomerOrderRequest
@@ -195,7 +196,7 @@ export interface DeliveryMethod {
   DeliveryEmail: string
 }
 
-export interface OrderResponse {
+export interface PlaceOrderResponse {
   OrderNo: string
 }
 

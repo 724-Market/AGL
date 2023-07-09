@@ -60,7 +60,7 @@
                 >
                   <p>
                     จำนวนกระดาษ <span>{{ props.packageSelect.CompanyName }}</span> คงเหลือ
-                    <span>{{ props.packageSelect.PaperBalance }}</span> ใบ
+                    <span>{{ props.packageSelect.Paper ? props.packageSelect.Paper.Quantity : 0 }}</span> ใบ
                   </p>
                 </aside>
 

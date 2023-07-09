@@ -1,7 +1,7 @@
-import { OrderRequest } from "~/shared/entities/placeorder-entity";
+import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
 
 export const useStorePlaceorder = defineStore('useStorePlaceorder', {
-    state: (): OrderRequest => {
+    state: (): PlaceOrderRequest => {
         return {
             Package: {
                 UseCarCode: "",
@@ -46,10 +46,10 @@ export const useStorePlaceorder = defineStore('useStorePlaceorder', {
         }
     },
     getters: {
-        OrderInfo: state => sessionStorage.getItem("useStorePlaceorder") ? JSON.parse(sessionStorage.getItem("useStorePlaceorder") || "") as OrderRequest : undefined,
+        OrderInfo: state => sessionStorage.getItem("useStorePlaceorder") ? JSON.parse(sessionStorage.getItem("useStorePlaceorder") || "") as PlaceOrderRequest : undefined,
     },
     actions: {
-        setOrder(request: OrderRequest): OrderRequest {
+        setOrder(request: PlaceOrderRequest): PlaceOrderRequest {
             this.$state = request
 
             return this.$state
@@ -57,6 +57,7 @@ export const useStorePlaceorder = defineStore('useStorePlaceorder', {
 
         clearOrder() {
             this.$state = {
+                OrderNo:"",
                 Package: {
                     UseCarCode: "",
                     CarTypeCode: "",

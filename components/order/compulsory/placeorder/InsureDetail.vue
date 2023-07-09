@@ -127,10 +127,10 @@
                       <div class="col-6">
                         <ElementsFormIdCard
                           v-model="personProfile.PersonalID"
-                          validation="required|length:13|number"
+                          validation="required|length:13,13|number"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
-                            length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 13 ตัว',
+                            length: 'กรุณาใส่ตัวเลข 13 ตัวเท่านั้น',
                             number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
                           }"
                         />

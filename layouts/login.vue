@@ -23,9 +23,8 @@
 </template>
 
 <script setup>
-
 // Define style
 useHead({
-  link: [{ rel: "stylesheet", href: "/assets/css/login.css" }],
-});
+  link: [{ rel: 'stylesheet', href: '/assets/css/login.css' }],
+})
 </script>

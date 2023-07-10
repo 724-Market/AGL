@@ -1,5 +1,6 @@
 <template>
-    <NuxtLayout :name="layout">
+    <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+        :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
 
         <div class="row">
             <div class="col">
@@ -27,14 +28,22 @@
 
 <script setup>
 // Define layout
-const layout = "monito"
+const layout = 'monito'
+const layoutClass = 'page-monito-minimal'
+const showPageSteps = false
+const showPageHeader = false
+
+// Define page meta
+const pageTitle = 'กรุณารอสักครู่'
+const pageCategory = 'แจ้งงาน พ.ร.บ.'
+const pageDescription = ''
 
 // Define meta seo
 useHead({
-    title: "Redirect",
-    meta: [{ name: "description", content: "Redirect" }],
+    title: pageTitle,
+    meta: [{ name: 'description', content: pageDescription }],
     bodyAttrs: {
-        class: "single-redirect sidenav-hide",
+        class: 'single-redirect',
     },
 })
 </script>

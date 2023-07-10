@@ -2,7 +2,7 @@
     <div class="layout-monito">
 
         <!--  Sidenav -->
-        <nav class="sidenav navbar fixed-left navbar-expand" id="sidenav-main">
+        <nav class="sidenav navbar fixed-left navbar-expand" id="sidenav-main" v-if="showComponent">
             <div class="scrollbar-inner">
                 <header class="sidenav-header">
 
@@ -32,7 +32,7 @@
         <main class="main-content" id="panel">
 
             <!--  Topbar -->
-            <div class="navbar-top">
+            <div class="navbar-top" v-if="showComponent">
                 <div class="container-fluid">
                     <div class="row">
 
@@ -47,7 +47,8 @@
                 <div class="container-fluid">
                     <div class="row">
 
-                        <ElementsMonitoHeader />
+                        <ElementsMonitoHeader :page-title="pageTitle" :page-category="pageCategory"
+                            :show-page-steps="showPageSteps" :show-page-header="showPageHeader" />
 
                     </div>
                 </div>
@@ -60,8 +61,8 @@
                 </div>
             </article>
 
-            <!--  Footer -->
-            <footer class="site-footer">
+            <!-- Footer -->
+            <footer class="site-footer" v-if="showComponent">
                 <div class="container-fluid">
                     <div class="row">
 
@@ -77,17 +78,33 @@
 </template>
 
 <script setup>
+// Props from page setup
+const props = defineProps({
+    pageTitle: String,
+    pageCategory: String,
+    layoutClass: String,
+    showPageSteps: Boolean,
+    showPageHeader: Boolean
+})
+
+const showComponent = ref(true)
+
+if (props.layoutClass === 'page-monito-minimal') {
+    showComponent.value = false
+} else {
+    showComponent.value = true
+}
 
 // Define style
 useHead({
-    link: [{ rel: "stylesheet", href: "/assets/css/monito.css" }],
+    link: [{ rel: 'stylesheet', href: '/assets/css/monito.css' }],
     script: [
-        { src: "/assets/js/popper.min.js" },
-        { src: "/assets/js/bootstrap.min.js" },
-        { src: "https://kit.fontawesome.com/285262ebb5.js", crossorigin: "anonymous", "data-search-pseudo-elements": true, defer: true },
+        { src: '/assets/js/popper.min.js' },
+        { src: '/assets/js/bootstrap.min.js' },
+        { src: 'https://kit.fontawesome.com/285262ebb5.js', crossorigin: 'anonymous', 'data-search-pseudo-elements': true, defer: true },
     ],
     bodyAttrs: {
-        class: "page-monito",
+        class: props.layoutClass,
     },
 })
 </script>

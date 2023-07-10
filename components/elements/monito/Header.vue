@@ -2,23 +2,23 @@
     <div class="col">
         <div class="header">
 
-            <header class="head-group">
-                <h1 class="page-title" v-if="step">{{ menus[step-1].name }}</h1>
+            <header class="head-group" v-if="showPageHeader">
+                <h1 class="page-title" v-if="step">{{ menus[step - 1].name }}{{ props.pageTitle }}</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb fa-divider">
                         <li class="visited">
                             <NuxtLink to="/">หน้าหลัก</NuxtLink>
                         </li>
-                        <li><em>แจ้งงาน พ.ร.บ.</em></li>
+                        <li><em>{{ props.pageCategory }}</em></li>
                     </ol>
                 </nav>
             </header>
 
-            <nav aria-label="breadcrumb">
+            <nav aria-label="breadcrumb" v-if="showPageSteps">
                 <ol class="breadcrumb dot counter">
                     <li v-for="item in menus" :key="item.step" :class="getClassName(step, item)"
                         :aria-current="step == item.step ? 'page' : undefined">
-                        <NuxtLink :to="item.url" v-if="item.step<=step">{{ item.name }}</NuxtLink><em v-else>{{ item.name
+                        <NuxtLink :to="item.url" v-if="item.step <= step">{{ item.name }}</NuxtLink><em v-else>{{ item.name
                         }}</em>
                     </li>
                 </ol>
@@ -29,6 +29,14 @@
 </template>
 
 <script lang="ts" setup>
+// Props from page setup
+const props = defineProps({
+    pageTitle: String,
+    pageCategory: String,
+    showPageSteps: Boolean,
+    showPageHeader: Boolean
+})
+
 const step = ref(0)
 const menus = ref([
     { step: 1, url: '/order/compulsory/information', name: 'กรอกข้อมูล' },

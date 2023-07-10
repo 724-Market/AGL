@@ -1,5 +1,12 @@
 <template>
-  <NuxtLayout :name="layout">
+  <NuxtLayout
+    :name="layout"
+    :layout-class="layoutClass"
+    :page-title="pageTitle"
+    :page-category="pageCategory"
+    :show-page-steps="showPageSteps"
+    :show-page-header="showPageHeader"
+  >
     <FormKit
       type="form"
       :actions="false"
@@ -150,7 +157,11 @@
 <script lang="ts" setup>
 // Define import
 import { IInformation } from "~~/shared/entities/information-entity";
-import { IPackageRequest, IPackageResponse } from "~~/shared/entities/packageList-entity";
+import {
+  IPackageRequest,
+  IPackageResponse,
+  PaperRequest,
+} from "~~/shared/entities/packageList-entity";
 // Import store
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStorePackageList } from "~/stores/order/storePackageList";
@@ -182,6 +193,7 @@ import {
   TaxInvoiceDeliveryAddress,
   DeliveryMethod,
 } from "~/shared/entities/placeorder-entity";
+import { OrderDetailRequest } from "~/shared/entities/order-entity";
 
 // Define Variables
 // Loading state after form submiting
@@ -232,6 +244,7 @@ const PackageInfo: globalThis.Ref<IPackageResponse | ""> = ref("");
 const RequestIncludeTax = ref(false);
 const TaxInvoiceAddressShipped = ref("");
 const TaxInvoiceAddressShipping = ref("");
+const PaperCount = ref(0);
 const isError = ref(false);
 const messageError = ref("");
 var checkSave: globalThis.Ref<Boolean> = ref(false);
@@ -292,6 +305,7 @@ const onLoad = onMounted(async () => {
       packageSelect.value = PackageInfo.value;
 
       isLoading.value = true;
+      await loadPapeRonHand();
       await loadProvince();
       await loadCarColor();
       await loadPrefix(true);
@@ -308,7 +322,8 @@ const onLoad = onMounted(async () => {
         ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? "",
         Email: OrderInfo.value.DeliveryMethod1?.DeliveryEmail ?? "",
         PostalDelivary: {
-          IsDeliveryAddressSameAsDefault: OrderInfo.value.Customer?.IsDeliveryAddressSameAsDefault ?? true,
+          IsDeliveryAddressSameAsDefault:
+            OrderInfo.value.Customer?.IsDeliveryAddressSameAsDefault ?? true,
           ShippingMethod: OrderInfo.value.DeliveryMethod1?.DeliveryChannelType ?? "",
           ShippingFee: "50 บาท", //TODO: MockUp
           DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
@@ -317,11 +332,11 @@ const onLoad = onMounted(async () => {
       // set cache Data Step1
       carDetailCache.value = OrderInfo.value.CarDetailsExtension;
       // set cache Data Step2
-      insureDetailCache.value = OrderInfo.value
+      insureDetailCache.value = OrderInfo.value;
       // set cache Data Step3
       insuranceRecieveCache.value = insuranceRecieve;
       // set cache Data Step4
-      taxInvoiceCache.value = OrderInfo.value
+      taxInvoiceCache.value = OrderInfo.value;
     }
 
     // if (OrderInfo.value) {
@@ -382,10 +397,10 @@ const submitOrder = async (formData: any) => {
     CarDetailsExtension: carDetail.value,
     Customer: insureDetail.value,
     DeliveryMethod1: DeliveryMethod[0],
-    DeliveryMethod2:  RequestIncludeTax.value ? DeliveryMethod[1] : undefined,
+    DeliveryMethod2: RequestIncludeTax.value ? DeliveryMethod[1] : undefined,
     IsTaxInvoice: RequestIncludeTax.value,
   };
-  console.log('orderReq', orderReq)
+  console.log("orderReq", orderReq);
   storeOrder.setOrder(orderReq);
 
   isError.value = false;
@@ -417,6 +432,7 @@ const submitOrder = async (formData: any) => {
       response.apiResponse.Data
     ) {
       orderReq.OrderNo = response.apiResponse.Data.OrderNo;
+
       storeOrder.setOrder(orderReq);
       //TODO: Implement next step
     } else {
@@ -424,8 +440,23 @@ const submitOrder = async (formData: any) => {
       messageError.value = response.apiResponse.ErrorMessage ?? "";
     }
   }
-
-  isLoading.value = false;
+  if (!isError.value) {
+    // get order after save or create
+    const req: OrderDetailRequest = {
+      OrderNo: orderReq.OrderNo ?? "",
+    };
+    const getData = await useRepository().order.get(req);
+    if (
+      getData.apiResponse.Status &&
+      getData.apiResponse.Status == "200" &&
+      getData.apiResponse.Data
+    ) {
+      orderReq = getData.apiResponse.Data as PlaceOrderRequest;
+      storeOrder.setOrder(orderReq);
+    }
+    isLoading.value = false;
+    router.push("/order/compulsory/payment");
+  }
 };
 
 const getDeliveryMethod = (): DeliveryMethod[] => {
@@ -535,6 +566,26 @@ const loadPrefix = async (isPerson: boolean) => {
       // data not found
     }
   } else {
+  }
+};
+const loadPapeRonHand = async () => {
+  if (PackageInfo.value != "") {
+    if (PackageInfo.value.Paper) {
+      const req: PaperRequest = {
+        ProductID: PackageInfo.value.Paper.ProductID,
+      };
+      const response = await useRepository().pledge.paperonhand(req);
+      if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+        if (response.apiResponse.Data) {
+          if (packageSelect.value && packageSelect.value?.Paper) {
+            packageSelect.value.Paper.Quantity = response.apiResponse.Data[0].Quantity;
+          }
+        } else {
+          // data not found
+        }
+      } else {
+      }
+    }
   }
 };
 const loadProvince = async () => {
@@ -1004,11 +1055,19 @@ const handlerCheckSave = (check: boolean) => {
 
 // Define layout
 const layout = "monito";
+const layoutClass = "page-monito";
+const showPageSteps = true;
+const showPageHeader = true;
+
+// Define page meta
+const pageTitle = "ข้อมูลสั่งซื้อ";
+const pageCategory = "แจ้งงาน พ.ร.บ.";
+const pageDescription = "Compulsory ข้อมูลสั่งซื้อ";
 
 // Define meta seo
 useHead({
-  title: "Compulsory ข้อมูลสั่งซื้อ",
-  meta: [{ name: "description", content: "Compulsory ข้อมูลสั่งซื้อ" }],
+  title: pageTitle,
+  meta: [{ name: "description", content: pageDescription }],
   bodyAttrs: {
     class: "page-order category-compulsory single-placeholder",
   },

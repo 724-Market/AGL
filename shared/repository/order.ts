@@ -5,6 +5,9 @@ import { IAPIResponse } from "../entities/useApi-response";
 class OrderModule {
   private RESOURCE = '/OrderCMI';
 
+  async get(req:OrderDetailRequest): Promise<IAPIResponse<OrderResponse>> {
+    return await useCallApi().apiRepository<OrderResponse>(`${this.RESOURCE}/get`, req)
+  }
   async summary(req:OrderDetailRequest): Promise<IAPIResponse<OrderResponse>> {
     return await useCallApi().apiRepository<OrderResponse>(`${this.RESOURCE}/summary/get`, req)
   }

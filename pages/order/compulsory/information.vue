@@ -1,5 +1,6 @@
 <template>
-  <NuxtLayout :name="layout">
+  <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
     <!-- Content -->
     <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
       #default="{ value }" v-model="values" :incomplete-message="false">
@@ -119,15 +120,9 @@
                 :carLabel="carLabelForCart">
               </OrderCartCar>
             </div> -->
-            <OrderCartCar
-                v-if="InformationInfo"
-                :car-detail="InformationInfo.CarDetail"
-                :car-use="InformationInfo.CarUse"
-                :is-car-red="false"
-                :effective-date="InformationInfo.EffectiveDate"
-                :expire-date="InformationInfo.ExpireDate"
-                :insurance-day="InformationInfo.InsuranceDay"
-              ></OrderCartCar>
+            <OrderCartCar v-if="InformationInfo" :car-detail="InformationInfo.CarDetail" :car-use="InformationInfo.CarUse"
+              :is-car-red="false" :effective-date="InformationInfo.EffectiveDate"
+              :expire-date="InformationInfo.ExpireDate" :insurance-day="InformationInfo.InsuranceDay"></OrderCartCar>
 
             <OrderChecklist :list="checklist" v-if="checklist && checklist.length > 0" />
 
@@ -268,7 +263,7 @@ const onLoad = onMounted(async () => {
 
     checklist.value[0].className = 'current'
     checklist.value[1].className = 'current'
-   
+
   }
   // isLoading.value = false
   // console.log("Loading = ",isLoading.value)
@@ -385,7 +380,7 @@ const handleEffectiveTypeChange = async (event: any) => {
       // insuranceDay.value = CoverageExpireDateFullYearMaxDay;
       setInsuranceDay(CoverageExpireDateFullYearMaxDay)
       break;
-    case "NOTFULLYEAR": 
+    case "NOTFULLYEAR":
       if (selectDate != undefined) {
         // await setExpireDate(coverageExpireDateNotFullYearMinDay); // TODO Bug ExpireDate Here
         let expireMinDateText = new Date(selectDate);
@@ -435,7 +430,7 @@ const handleEffectiveDateChange = async (event: any) => {
 // Event Handle ExpireDate Change Set Value To ExpireDate And Call Function checkFromDate
 const handleExpireDateChange = async (event: any) => {
   expireDateText.value = new Date(event.target.value).toLocaleDateString("en-CA")
-  
+
   let efDate = new Date(effectiveDateText.value.toString())
   let exDate = new Date(event.target.value)
   let differenceMs = exDate.getTime() - efDate.getTime()
@@ -674,14 +669,22 @@ const submitOrder = async (formData: any) => {
 };
 
 // Define layout
-const layout = "monito";
+const layout = 'monito'
+const layoutClass = 'page-monito'
+const showPageSteps = true
+const showPageHeader = true
+
+// Define page meta
+const pageTitle = 'กรอกข้อมูล'
+const pageCategory = 'แจ้งงาน พ.ร.บ.'
+const pageDescription = 'กรอกข้อมูลและรายละเอียดของรถยนต์ที่ต้องการซื้อ พ.ร.บ.'
 
 // Define meta seo
 useHead({
-  title: "Compulsory กรอกข้อมูล",
-  meta: [{ name: "description", content: "Compulsory กรอกข้อมูล" }],
+  title: pageTitle,
+  meta: [{ name: 'description', content: pageDescription }],
   bodyAttrs: {
-    class: "page-order category-compulsory single-information",
+    class: 'page-order category-compulsory single-information',
   },
-});
+})
 </script>

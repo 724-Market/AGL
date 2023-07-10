@@ -29,9 +29,22 @@ export interface IPackageResponse {
     Price: number
     PackageResult: PackageResult[]
     IsTaxInclude?:string
+    Paper?:Paper
     PaperBalance?:number
     AgentCode?:string
 }
+export interface Paper {
+    Quantity: number
+    ProductID: string
+    Brand: string
+    Category: string
+    SubCategory: string
+    Company: string
+    Type: string
+    Model: string
+    Name: string
+    Price: number
+  }
 
 export interface PackageResult {
     EffectiveDate: string

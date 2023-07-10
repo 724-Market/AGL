@@ -60,7 +60,7 @@
                 >
                   <p>
                     จำนวนกระดาษ <span>{{ props.packageSelect.CompanyName }}</span> คงเหลือ
-                    <span>{{ props.packageSelect.PaperBalance }}</span> ใบ
+                    <span>{{ props.packageSelect.Paper ? props.packageSelect.Paper.Quantity : 0 }}</span> ใบ
                   </p>
                 </aside>
 
@@ -257,54 +257,52 @@ const onLoad = onMounted(async () => {
           shippingPolicyText.value = 'postal'
         }
       
-      emailText = insuranceRecieveCache.value.Email
-      // await handleRadioShippingPolicyChange(insuranceRecieveCache.value.ShippingPolicy)
+        emailText = insuranceRecieveCache.value.Email
+        // await handleRadioShippingPolicyChange(insuranceRecieveCache.value.ShippingPolicy)
 
-      if(shippingPolicyText.value == 'postal') {
-        ShippingMethodText = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
-        ShippingFeeText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
-        postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
-        // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')
+        if(shippingPolicyText.value == 'postal') {
+          ShippingMethodText = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
+          ShippingFeeText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
+          postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
+          // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')
 
-        if(postalAddressPolicyText.value == 'addnew') {
-          let newAddress: DeliveryAddress = insuranceRecieveCache.value.PostalDelivary?.DeliveryAddress as DeliveryAddress
-          newAddressCache.value = {
-            AddressID: newAddress.AddressID,
-            ReferenceID: newAddress.ReferenceID,
-            ReferenceType: newAddress.ReferenceType,
-            ProvinceID: newAddress.ProvinceID,
-            DistrictID: newAddress.DistrictID,
-            SubDistrictID: newAddress.SubDistrictID,
-            TaxID: newAddress.TaxID,
-            FirstName: newAddress.FirstName,
-            LastName: newAddress.LastName,
-            PhoneNumber: newAddress.PhoneNumber,
-            Email: newAddress.Email,
-            Name: newAddress.Name,
-            Type: newAddress.Type,
-            AddressLine1: newAddress.AddressLine1,
-            AddressLine2: newAddress.AddressLine2,
-            AddressText: newAddress.AddressText,
-            No: newAddress.No,
-            Moo: newAddress.Moo,
-            Place: newAddress.Place,
-            Building: newAddress.Building,
-            Floor: newAddress.Floor,
-            Room: newAddress.Room,
-            Branch: newAddress.Branch,
-            Alley: newAddress.Alley,
-            Road: newAddress.Road,
-            ZipCode: newAddress.ZipCode,
+          if(postalAddressPolicyText.value == 'addnew') {
+            let newAddress: DeliveryAddress = insuranceRecieveCache.value.PostalDelivary?.DeliveryAddress as DeliveryAddress
+            newAddressCache.value = {
+              AddressID: newAddress.AddressID,
+              ReferenceID: newAddress.ReferenceID,
+              ReferenceType: newAddress.ReferenceType,
+              ProvinceID: newAddress.ProvinceID,
+              DistrictID: newAddress.DistrictID,
+              SubDistrictID: newAddress.SubDistrictID,
+              TaxID: newAddress.TaxID,
+              FirstName: newAddress.FirstName,
+              LastName: newAddress.LastName,
+              PhoneNumber: newAddress.PhoneNumber,
+              Email: newAddress.Email,
+              Name: newAddress.Name,
+              Type: newAddress.Type,
+              AddressLine1: newAddress.AddressLine1,
+              AddressLine2: newAddress.AddressLine2,
+              AddressText: newAddress.AddressText,
+              No: newAddress.No,
+              Moo: newAddress.Moo,
+              Place: newAddress.Place,
+              Building: newAddress.Building,
+              Floor: newAddress.Floor,
+              Room: newAddress.Room,
+              Branch: newAddress.Branch,
+              Alley: newAddress.Alley,
+              Road: newAddress.Road,
+              ZipCode: newAddress.ZipCode,
+            }
           }
         }
+        handleCheckInsuranceRecieve()
       }
-      handleCheckInsuranceRecieve()
-    }
     
     }
-
     
-
     await setPostalAddressPolicy(insureFullAddress.value.toString(), '')
 });
 

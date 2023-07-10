@@ -139,6 +139,7 @@ const checklist: globalThis.Ref<IChecklist[]> = ref([
     desc: "เลือกแพ็กเกจ",
   },
 ]);
+const PackageInfo: globalThis.Ref<IPackageResponse | ""> = ref("");
 const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
 const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
 //define store
@@ -146,7 +147,9 @@ const storeAuth = useStoreUserAuth();
 const storePackage = useStorePackage();
 // define getter in store
 const { AuthenInfo } = storeToRefs(storeAuth);
-const { PackageInfo } = storeToRefs(storePackage);
+
+
+
 
 //define store
 const storeInfo = useStoreInformation();
@@ -162,7 +165,9 @@ const onInit = async () => {
   // check login
   if (AuthenInfo.value) {
     await showPackageList();
+    PackageInfo.value = storePackage.PackageInfo
     //console.log(PackageInfo.value)
+   
     if(PackageInfo && PackageInfo.value!=""){
       handlerSelect(true,PackageInfo.value)
     }

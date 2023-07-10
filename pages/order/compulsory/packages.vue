@@ -1,5 +1,6 @@
 <template>
-  <NuxtLayout :name="layout">
+    <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
     <!-- Content -->
     <FormKit
       type="form"
@@ -297,12 +298,20 @@ const loadAgentInfo = async (): Promise<AgentInfo[]> => {
   }
   return data;
 };
-const layout = "monito";
+// Define layout
+const layout = 'monito'
+const layoutClass = 'page-monito'
+const showPageSteps = true
+const showPageHeader = true
 
+// Define page meta
+const pageTitle = 'เลือกแพ็คเกจ'
+const pageCategory = 'แจ้งงาน พ.ร.บ.'
+const pageDescription = 'Compulsory เลือกแพ็คเกจ'
 // Define meta seo
 useHead({
-  title: "Compulsory เลือกแพ็คเกจ",
-  meta: [{ name: "description", content: "Compulsory เลือกแพ็คเกจ" }],
+  title: pageTitle,
+  meta: [{ name: "description", content:pageDescription  }],
   bodyAttrs: {
     class: "page-order category-compulsory single-packages",
   },

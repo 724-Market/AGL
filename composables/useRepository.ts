@@ -4,6 +4,7 @@ import MasterModule from "~/shared/repository/master"
 import OrderModule from "~/shared/repository/order";
 import SessionModule from "~/shared/repository/session";
 import FileModule from "~/shared/repository/file";
+import PledgeModule from "~/shared/repository/pledge";
 import PaymentModule from "~/shared/repository/payment";
 
 /** ApiInstance interface provides us with good typing */
@@ -15,6 +16,7 @@ interface IApiInstance {
     session: SessionModule,
     file: FileModule,
     payment: PaymentModule
+    pledge:PledgeModule
 }
 
 
@@ -27,6 +29,7 @@ export default  () => {
         agent: new AgentModule(),
         session: new SessionModule(),
         file: new FileModule(),
+        pledge:new PledgeModule(),
         payment: new PaymentModule()
     };
 

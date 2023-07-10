@@ -1,5 +1,6 @@
 <template>
-  <NuxtLayout :name="layout">
+    <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
 
     <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
       #default="{ value }" v-model="values" :incomplete-message="false">
@@ -112,13 +113,22 @@ const submitOrder = async (formData: any) => {
 
 }
 
+
 // Define layout
-const layout = "monito"
+const layout = 'monito'
+const layoutClass = 'page-monito'
+const showPageSteps = true
+const showPageHeader = true
+
+// Define page meta
+const pageTitle = 'สรุปรายการ'
+const pageCategory = 'แจ้งงาน พ.ร.บ.'
+const pageDescription = 'Compulsory สรุปข้อมูล'
 
 // Define meta seo
 useHead({
-  title: "Compulsory สรุปข้อมูล",
-  meta: [{ name: "description", content: "Compulsory สรุปข้อมูล" }],
+  title: pageTitle,
+  meta: [{ name: "description", content: pageDescription }],
   bodyAttrs: {
     class: "page-order category-compulsory single-summary",
   },

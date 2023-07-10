@@ -45,7 +45,9 @@ export interface Paper {
     Name: string
     Price: number
   }
-
+export interface PaperRequest{
+    ProductID: string
+}
 export interface PackageResult {
     EffectiveDate: string
     ExpireDate: string

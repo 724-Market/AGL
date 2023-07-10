@@ -3,7 +3,7 @@
         <div class="header">
 
             <header class="head-group" v-if="showPageHeader">
-                <h1 class="page-title" v-if="step">{{ menus[step - 1].name }}{{ props.pageTitle }}</h1>
+                <h1 class="page-title">{{ props.pageTitle }}</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb fa-divider">
                         <li class="visited">
@@ -40,7 +40,7 @@ const props = defineProps({
 const step = ref(0)
 const menus = ref([
     { step: 1, url: '/order/compulsory/information', name: 'กรอกข้อมูล' },
-    { step: 2, url: '/order/compulsory/packages', name: 'เลือกแพคเกจ' },
+    { step: 2, url: '/order/compulsory/packages', name: 'เลือกแพ็คเกจ' },
     { step: 3, url: '/order/compulsory/placeorder', name: 'ข้อมูลสั่งซื้อ' },
     { step: 4, url: '/order/compulsory/payment', name: 'วิธีชำระเงิน' },
     { step: 5, url: '/order/compulsory/summary', name: 'สรุปรายการ' }

@@ -7,7 +7,7 @@
         :name="'AddressHouseNumber' + props.elementKey"
         placeholder="บ้านเลขที่"
         v-model="ObjectAddress.No"
-        @input-raw="handlerChangeFullAddress"
+        @keyup="handlerChangeFullAddress"
         :validation-rules="{ address_characters }"
         validation="required|address_characters"
         :validation-messages="{
@@ -25,7 +25,7 @@
         placeholder="หมู่ที่"
         autocomplete="false"
         v-model="ObjectAddress.Moo"
-        @input-raw="handlerChangeFullAddress"
+        @keyup="handlerChangeFullAddress"
       />
     </div>
     <div class="col-xs-12 col-md-6">
@@ -35,7 +35,7 @@
         :name="'AddressVillage' + props.elementKey"
         placeholder="หมู่บ้าน/อาคาร"
         v-model="ObjectAddress.Building"
-        @input-raw="handlerChangeFullAddress"
+        @keyup="handlerChangeFullAddress"
         autocomplete="false"
       />
     </div>
@@ -47,7 +47,7 @@
         placeholder="ซอย/ตรอก/แยก"
         autocomplete="false"
         v-model="ObjectAddress.Alley"
-        @input-raw="handlerChangeFullAddress"
+        @keyup="handlerChangeFullAddress"
       />
     </div>
     <div class="col-6">
@@ -121,7 +121,7 @@
         :name="'AddressCustom' + props.elementKey"
         autocomplete="false"
         v-model="ObjectAddress.AddressText"
-        @change="handlerChangeFullAddress"
+        @keyup="handlerChangeFullAddress"
       />
     </div>
   </div>

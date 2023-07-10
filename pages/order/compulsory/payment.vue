@@ -7,7 +7,9 @@
       <div class="row">
         <div class="col-lg-7">
 
-          <OrderCompulsoryPaymentMethod></OrderCompulsoryPaymentMethod>
+          <OrderCompulsoryPaymentMethod
+            :order="orderInfo">
+          </OrderCompulsoryPaymentMethod>
 
         </div>
 
@@ -26,78 +28,39 @@
                   <div id="summary-cart" class="accordion-collapse collapse" data-bs-parent="#accordion-summary-cart">
                     <div class="accordion-body">
 
-                      <div class="selected-item">
-                        <figure class="brand">
-                          <i class="fa-duotone fa-car"></i>
-                        </figure>
+                      <OrderCartCar
+                        v-if="carInfo && carDetail"
+                        :car-detail="carInfo.CarDetail"
+                        :car-use="carInfo.CarUse"
+                        :is-car-red="carDetail.IsRedLicense"
+                        :effective-date="carInfo.EffectiveDate"
+                        :expire-date="carInfo.ExpireDate"
+                        :insurance-day="carInfo.InsuranceDay"
+                      ></OrderCartCar>
 
-                        <div class="detail">
-                          <h4 class="topic">TOYOTA Yaris 1.2 Smart Auto 2019</h4>
-                          <div class="info">
-                            <p class="description">คุ้มครอง 345 วัน<span>04/05/2566–05/08/2567</span></p>
-                          </div>
-                        </div>
+                      <OrderCartPackage
+                        v-if="packageSelect && packageSelect.CompanyName != ''"
+                        :package-select="packageSelect"
+                      />
 
-                        <div class="meta">
-                          <div class="tags">
-                            <span class="badge"><i class="fa-solid fa-car-circle-bolt"></i>รถให้เช่า</span>
-                            <span class="badge-bg-danger"><i class="fa-solid fa-sparkles"></i>ป้ายแดง</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="selected-item">
-                        <figure class="brand">
-                          <img src="https://724.co.th/image/logo_insurance_company/logo_TIP.png" alt="">
-                        </figure>
-
-                        <div class="detail">
-                          <h4 class="topic">พ.ร.บ. สำหรับรถยนต์นั่งส่วนบุคคล</h4>
-                          <div class="info">
-                            <span class="price">645.21</span>
-                            <p class="description">ค่าส่งเสริมการขาย 1,135.49 บาท</p>
-                          </div>
-                        </div>
-
-                        <div class="meta">
-                          <div class="tags">
-                            <span class="badge-bg-success"><i class="fa-solid fa-bolt"></i>ได้กรมธรรม์ทันที</span>
-                            <span class="badge-secondary"><i
-                                class="fa-regular fa-memo-circle-check"></i>พร้อมใบกำกับภาษี</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="selected-item">
-                        <figure class="brand">
-                          <i class="fa-duotone fa-file-shield"></i>
-                        </figure>
-
-                        <div class="detail">
-                          <h4 class="topic">ผู้เอาประกันภัยและกรมธรรม์</h4>
-                          <div class="info">
-                            <p class="description">นายปฐมพงศ์ สังคจิตต์</p>
-                          </div>
-                        </div>
-
-                        <div class="meta">
-                          <div class="tags">
-                            <span class="badge"><i class="fa-solid fa-people-simple"></i>บุคคลธรรมดา</span>
-                            <span class="badge-info"><i class="fa-solid fa-truck-fast"></i>จัดส่งตัวจริง</span>
-                          </div>
-                        </div>
-                      </div>
+                      <OrderCartInsure
+                        v-if="insureDetail && insuranceRecieve"
+                        :delivery-type="insuranceRecieve ? deleveryTypes[insuranceRecieve.ShippingPolicy] : ''"
+                        :is-person="insureDetail.IsPerson"
+                        v-model:person-profile.sync="personProfile"
+                        v-model:legal-person-profile="legalPersonProfile"
+                      ></OrderCartInsure>
 
                     </div>
                   </div>
                 </div>
               </div>
 
-              <OrderCart v-if="packageSelect && packageSelect.CompanyName != ''" :is-online="packageSelect.IsOnlineActive"
+              <!-- <OrderCart v-if="packageSelect && packageSelect.CompanyName != ''" :is-online="packageSelect.IsOnlineActive"
                 :company-name="packageSelect.CompanyName"
                 :company-image="getCompanyPath(packageSelect.PackageResult[0].CompanyImage)"
                 :price="getCurrency(packageSelect.PackageResult[0].PriceACT)" :price-discount="getCurrency(packageSelect.PackageResult[0].PriceACTDiscount)
-                  " :car-name="packageSelect.PackageResult[0].UseCarName" />
+                  " :car-name="packageSelect.PackageResult[0].UseCarName" /> -->
 
             </div>
 
@@ -127,10 +90,21 @@
 <script lang="ts" setup>
 // Define import
 import { IInformation } from "~~/shared/entities/information-entity";
-import { IPackageRequest, IPackageResponse } from "~~/shared/entities/packageList-entity";
+import { IPackageResponse } from "~~/shared/entities/packageList-entity";
+import { 
+  CarDetailsExtension, 
+  PlaceOrderRequest,
+  InsuranceRecieveObject,
+  CustomerOrderRequest,
+  PersonProfile,
+  LegalPersonProfile,
+} from "~/shared/entities/placeorder-entity";
+
 // Import store
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
-import { useStorePackageList } from "~/stores/order/storePackageList";
+import { useStoreInformation } from "~/stores/order/storeInformation";
+import { useStorePackage } from "~/stores/order/storePackage";
+import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 
 // using pinia
 import { storeToRefs } from "pinia";
@@ -147,9 +121,19 @@ const submitted = ref(false)
 const statusMessage = ref()
 const statusMessageType = ref()
 
-const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
-const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
-const isSelect: globalThis.Ref<Boolean> = ref(false);
+const carInfo: globalThis.Ref<IInformation | undefined> = ref()
+const packageSelect: globalThis.Ref<IPackageResponse | ""> = ref("")
+const orderInfo: globalThis.Ref<PlaceOrderRequest | undefined> = ref()
+const carDetail: globalThis.Ref<CarDetailsExtension | undefined> = ref()
+const insureDetail: globalThis.Ref<CustomerOrderRequest | undefined> = ref({})
+const personProfile: globalThis.Ref<PersonProfile | undefined> = ref();
+const legalPersonProfile: globalThis.Ref<LegalPersonProfile | undefined> = ref();
+const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref()
+const deleveryTypes: globalThis.Ref<{ ELECTRONIC: string; PAPER: string; DELIVERY: string; }>= ref({
+  ELECTRONIC: 'pdf',
+  PAPER: 'print',
+  DELIVERY: 'postal'
+})
 
 let values = reactive({})
 
@@ -166,12 +150,54 @@ const checklist: globalThis.Ref<IChecklist[]> = ref([
   }
 ])
 
+//define store
+const storeAuth = useStoreUserAuth()
+const { AuthenInfo } = storeToRefs(storeAuth)
+
+const storeCarInfo = useStoreInformation();
+const { CarInfo } = storeToRefs(storeCarInfo);
+
+const storePackage = useStorePackage(); 
+const { PackageInfo } = storeToRefs(storePackage)
+
+const storeOrder = useStorePlaceorder()
+const { OrderInfo } = storeToRefs(storeOrder)
+
+const router = useRouter();
+
+const onLoad = onMounted(async () => {
+  if (AuthenInfo.value) {
+    if(OrderInfo.value) {
+      orderInfo.value = OrderInfo.value
+      carInfo.value = CarInfo.value
+      packageSelect.value = PackageInfo.value
+
+      carDetail.value = OrderInfo.value.CarDetailsExtension
+      insureDetail.value = OrderInfo.value.Customer
+      personProfile.value = OrderInfo.value.Customer?.PersonProfile
+      legalPersonProfile.value = OrderInfo.value.Customer?.LegalPersonProfile
+      insuranceRecieve.value = {
+        ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? "",
+        Email: OrderInfo.value.DeliveryMethod1?.DeliveryEmail ?? "",
+        PostalDelivary: {
+          IsDeliveryAddressSameAsDefault: OrderInfo.value.Customer?.IsDeliveryAddressSameAsDefault ?? true,
+          ShippingMethod: OrderInfo.value.DeliveryMethod1?.DeliveryChannelType ?? "",
+          ShippingFee: "50 บาท", //TODO: MockUp
+          DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
+        }
+      }
+    } else {
+      router.push("/order/compulsory/placeorder");
+    }
+  } else {
+    router.push("/login");
+  }
+})
+
 // Submit form event
 const submitOrder = async (formData: any) => {
-
   // Add waiting time for debug
   await new Promise((r) => setTimeout(r, 1000))
-
 }
 
 // Define layout

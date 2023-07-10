@@ -161,6 +161,7 @@
 </template>
 
 <script setup lang="ts">
+import { defineEventHandler } from "~/server/api/setting.post";
 import { SelectOption } from "~/shared/entities/select-option";
 import { IInformation } from "~~/shared/entities/information-entity";
 import { CarDetailsExtension } from "~~/shared/entities/placeorder-entity";
@@ -271,8 +272,6 @@ const handleFileChange = async (event: any) => {
     Base64: base64FileString,
     FileNameWithExtension: file.name.toString()
   }
-  console.log('uploadFileReq', uploadFileReq)
-  //TODO: Change Base64String For LicenseFileID To LicenseFileID
   const response = await useRepository().file.upload(uploadFileReq)
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     LicenseFileID = response.apiResponse.Data?.ID ?? ''

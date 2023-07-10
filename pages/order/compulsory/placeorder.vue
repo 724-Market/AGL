@@ -386,13 +386,14 @@ const submitOrder = async (formData: any) => {
     IsTaxInvoice: RequestIncludeTax.value,
   };
   console.log('orderReq', orderReq)
-  storeOrder.setOrder(orderReq);
+  // storeOrder.setOrder(orderReq);
+  // router.push("/order/compulsory/payment");
 
   isError.value = false;
   messageError.value = "";
 
-  // create order
-  if (orderReq.OrderNo && orderReq.OrderNo == "") {
+  //create order
+  if (!orderReq.OrderNo && orderReq.OrderNo == "") {
     const response = await useRepository().order.create(orderReq);
 
     if (
@@ -402,7 +403,7 @@ const submitOrder = async (formData: any) => {
     ) {
       orderReq.OrderNo = response.apiResponse.Data.OrderNo;
       storeOrder.setOrder(orderReq);
-      //TODO: Implement next step
+      router.push("/order/compulsory/payment");
     } else {
       isError.value = true;
       messageError.value = response.apiResponse.ErrorMessage ?? "";
@@ -418,7 +419,7 @@ const submitOrder = async (formData: any) => {
     ) {
       orderReq.OrderNo = response.apiResponse.Data.OrderNo;
       storeOrder.setOrder(orderReq);
-      //TODO: Implement next step
+      router.push("/order/compulsory/payment");
     } else {
       isError.value = true;
       messageError.value = response.apiResponse.ErrorMessage ?? "";

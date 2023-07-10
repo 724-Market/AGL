@@ -17,5 +17,6 @@ export const defineEventHandler = {
     CoverageExpireDateNotFullYearMinDay : 180, 
     CoverageExpireDateNotFullYearMaxDay : 545, 
     CoverageFuture: 90
-  }
+  },
+  defaultMessageError: 'เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ'
 }

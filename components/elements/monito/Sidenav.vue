@@ -36,13 +36,13 @@
                                 <a class="nav-link" href="/order/compulsory/summary" title="สรุปรายการ">สรุปรายการ</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/order/redirect" title="Redirect">Redirect</a>
+                                <a class="nav-link" href="/page/redirect" title="Redirect">Redirect</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/order/qr" title="QR Payment">QR Payment</a>
+                                <a class="nav-link" href="/page/qr" title="QR Payment">QR Payment</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/order/thanks" title="Thanks">Thanks</a>
+                                <a class="nav-link" href="/page/thanks" title="Thanks">Thanks</a>
                             </li>
                         </ul>
                     </div>

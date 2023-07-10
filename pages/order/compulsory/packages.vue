@@ -140,7 +140,6 @@ const checklist: globalThis.Ref<IChecklist[]> = ref([
     desc: "เลือกแพ็กเกจ",
   },
 ]);
-const PackageInfo: globalThis.Ref<IPackageResponse | ""> = ref("");
 const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
 const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
 //define store
@@ -148,6 +147,7 @@ const storeAuth = useStoreUserAuth();
 const storePackage = useStorePackage();
 // define getter in store
 const { AuthenInfo } = storeToRefs(storeAuth);
+const {PackageInfo} = storeToRefs(storePackage);
 
 
 
@@ -166,10 +166,9 @@ const onInit = async () => {
   // check login
   if (AuthenInfo.value) {
     await showPackageList();
-    PackageInfo.value = storePackage.PackageInfo
-    //console.log(PackageInfo.value)
    
-    if(PackageInfo && PackageInfo.value!=""){
+   
+    if(PackageInfo && PackageInfo.value){
       handlerSelect(true,PackageInfo.value)
     }
     
@@ -263,6 +262,8 @@ const handlerChangePage = async (page: number, lengthPage: number) => {
 };
 // Submit form event
 const submitOrder = async (formData: any) => {
+  //define store
+  const storePackage = useStorePackage();
   isLoading.value = true
   console.log(
     "%cOrder%cformData",
@@ -276,8 +277,8 @@ const submitOrder = async (formData: any) => {
     if(AuthenInfo.value){
       packageSelect.value.AgentCode = AuthenInfo.value.userName
     }
-    //define store
-    const storePackage = useStorePackage();
+    
+    storePackage.clearPackage();
     const data = storePackage.setPackage(packageSelect.value);
 
     submitted.value = false; // Form submitted status

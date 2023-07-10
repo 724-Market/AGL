@@ -19,7 +19,8 @@ export const useStorePackage = defineStore('useStorePackage', {
             RefCompanyID: '',
             Vat: 0,
             IsTaxInclude: '',
-            PaperBalance: 0
+            PaperBalance: 0,
+            AgentCode: ""
         }
     },
     getters: {
@@ -27,13 +28,13 @@ export const useStorePackage = defineStore('useStorePackage', {
     },
     actions: {
         setPackage(request: IPackageResponse): IPackageResponse {
-            
-            
+
+
             this.$state = request
-            
+
             return this.$state
         },
-        
+
         clearPackage() {
             this.$state = {
                 CarTypeName: '',
@@ -51,7 +52,8 @@ export const useStorePackage = defineStore('useStorePackage', {
                 RefCompanyID: '',
                 Vat: 0,
                 IsTaxInclude: '',
-                PaperBalance: 0
+                PaperBalance: 0,
+                AgentCode: ""
             }
         }
     },

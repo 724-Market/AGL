@@ -31,7 +31,7 @@ export interface IPackageResponse {
     IsTaxInclude?:string
     Paper?:Paper
     PaperBalance?:number
-    AgentCode?:string
+    AgentCode:string
 }
 export interface Paper {
     Quantity: number

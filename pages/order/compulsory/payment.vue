@@ -1,6 +1,6 @@
 <template>
-  <NuxtLayout :name="layout">
-
+    <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
     <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
       #default="{ value }" v-model="values" :incomplete-message="false">
 
@@ -201,12 +201,20 @@ const submitOrder = async (formData: any) => {
 }
 
 // Define layout
-const layout = "monito"
+const layout = 'monito'
+const layoutClass = 'page-monito'
+const showPageSteps = true
+const showPageHeader = true
+
+// Define page meta
+const pageTitle = 'วิธีการชำระเงิน'
+const pageCategory = 'แจ้งงาน พ.ร.บ.'
+const pageDescription = 'Compulsory วิธีการชำระเงิน'
 
 // Define meta seo
 useHead({
-  title: "Compulsory วิธีชำระเงิน",
-  meta: [{ name: "description", content: "Compulsory วิธีชำระเงิน" }],
+  title:pageTitle,
+  meta: [{ name: "description", content: pageDescription }],
   bodyAttrs: {
     class: "page-order category-compulsory single-payment",
   },

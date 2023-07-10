@@ -9,7 +9,6 @@
   >
     <FormKit
       type="form"
-      :actions="false"
       id="form-order"
       form-class="form-order form-theme"
       #default="{ value }"
@@ -240,7 +239,6 @@ const insuranceRecieve: globalThis.Ref<InsuranceRecieveObject | undefined> = ref
 const insureDetail: globalThis.Ref<CustomerOrderRequest> = ref({});
 const personProfile: globalThis.Ref<PersonProfile | undefined> = ref();
 const legalPersonProfile: globalThis.Ref<LegalPersonProfile | undefined> = ref();
-const PackageInfo: globalThis.Ref<IPackageResponse | ""> = ref("");
 const RequestIncludeTax = ref(false);
 const TaxInvoiceAddressShipped = ref("");
 const TaxInvoiceAddressShipping = ref("");
@@ -284,7 +282,9 @@ const storeInfo = useStoreInformation();
 // define getter in store
 const { CarInfo } = storeToRefs(storeInfo);
 
+const storePackage = useStorePackage();
 
+const {PackageInfo} = storeToRefs(storePackage);
 //define store
 const storeOrder = useStorePlaceorder();
 // define getter in store
@@ -294,9 +294,6 @@ const router = useRouter();
 
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
-    const storePackage = useStorePackage();
-    PackageInfo.value = storePackage.PackageInfo;
-    console.log("PackageInfo", PackageInfo.value);
     if (PackageInfo.value && CarInfo.value) {
       infomation.value = CarInfo.value;
       SubCarModel.value = infomation.value.SubCarModel;
@@ -400,7 +397,6 @@ const submitOrder = async (formData: any) => {
     IsTaxInvoice: RequestIncludeTax.value,
   };
   console.log("orderReq", orderReq);
-  storeOrder.setOrder(orderReq);
 
   isError.value = false;
   messageError.value = "";
@@ -415,7 +411,6 @@ const submitOrder = async (formData: any) => {
       response.apiResponse.Data
     ) {
       orderReq.OrderNo = response.apiResponse.Data.OrderNo;
-      storeOrder.setOrder(orderReq);
     } else {
       isError.value = true;
       messageError.value = response.apiResponse.ErrorMessage ?? "";
@@ -431,7 +426,6 @@ const submitOrder = async (formData: any) => {
     ) {
       orderReq.OrderNo = response.apiResponse.Data.OrderNo;
 
-      storeOrder.setOrder(orderReq);
       
     } else {
       isError.value = true;
@@ -449,12 +443,26 @@ const submitOrder = async (formData: any) => {
       getData.apiResponse.Status == "200" &&
       getData.apiResponse.Data
     ) {
-      orderReq = getData.apiResponse.Data as PlaceOrderRequest;
+
+      if(orderReq.Customer && orderReq.Customer.DefaultAddress){
+        orderReq.Customer.DefaultAddress.AddressID  = getData.apiResponse.Data.Order.Customer.DefaultAddress.AddressID
+      }
+      if(orderReq.Customer && orderReq.Customer.DeliveryAddress){
+        orderReq.Customer.DeliveryAddress.AddressID  = getData.apiResponse.Data.Order.Customer.DeliveryAddress.AddressID
+      }
+      if(orderReq.Customer && orderReq.Customer.TaxInvoiceAddress){
+        orderReq.Customer.TaxInvoiceAddress.AddressID  = getData.apiResponse.Data.Order.Customer.TaxInvoiceAddress.AddressID
+      }
+      if(orderReq.Customer && orderReq.Customer.TaxInvoiceDeliveryAddress){
+        orderReq.Customer.TaxInvoiceDeliveryAddress.AddressID  = getData.apiResponse.Data.Order.Customer.TaxInvoiceDeliveryAddress.AddressID
+      }
+
       storeOrder.setOrder(orderReq);
     }
-    isLoading.value = false;
+    
     router.push("/order/compulsory/payment");
   }
+  isLoading.value = false;
 };
 
 const getDeliveryMethod = (): DeliveryMethod[] => {
@@ -567,8 +575,7 @@ const loadPrefix = async (isPerson: boolean) => {
   }
 };
 const loadPapeRonHand = async () => {
-  if (PackageInfo.value != "") {
-    if (PackageInfo.value.Paper) {
+  if (PackageInfo.value && PackageInfo.value.Paper) {
       const req: PaperRequest = {
         ProductID: PackageInfo.value.Paper.ProductID,
       };
@@ -583,7 +590,6 @@ const loadPapeRonHand = async () => {
         }
       } else {
       }
-    }
   }
 };
 const loadProvince = async () => {

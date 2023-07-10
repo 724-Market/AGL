@@ -23,7 +23,7 @@ export const useStorePackage = defineStore('useStorePackage', {
         }
     },
     getters: {
-        PackageInfo: state => sessionStorage.getItem("useStorePackage") ? JSON.parse(sessionStorage.getItem("useStorePackage") || "") as IPackageResponse : "",
+        PackageInfo: state => state,
     },
     actions: {
         setPackage(request: IPackageResponse): IPackageResponse {

@@ -46,7 +46,7 @@ export const useStorePlaceorder = defineStore('useStorePlaceorder', {
         }
     },
     getters: {
-        OrderInfo: state => sessionStorage.getItem("useStorePlaceorder") ? JSON.parse(sessionStorage.getItem("useStorePlaceorder") || "") as PlaceOrderRequest : undefined,
+        OrderInfo: state => state,
     },
     actions: {
         setOrder(request: PlaceOrderRequest): PlaceOrderRequest {

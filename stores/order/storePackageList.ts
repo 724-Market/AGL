@@ -9,7 +9,7 @@ export const useStorePackageList = defineStore('useStorePackageList', {
         }
     },
     getters: {
-        PackageList: state => sessionStorage.getItem("useStorePackageList") ? JSON.parse(sessionStorage.getItem("useStorePackageList") || "") as WrapperResponse<IPackageResponse[]> : "",
+        PackageList: state => state,
     },
     actions: {
         async getPackageList(request: any): Promise<WrapperResponse<IPackageResponse[]>> {

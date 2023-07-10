@@ -284,8 +284,6 @@ const storeInfo = useStoreInformation();
 // define getter in store
 const { CarInfo } = storeToRefs(storeInfo);
 
-//define store
-const storePackage = useStorePackage();
 
 //define store
 const storeOrder = useStorePlaceorder();
@@ -296,6 +294,7 @@ const router = useRouter();
 
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
+    const storePackage = useStorePackage();
     PackageInfo.value = storePackage.PackageInfo;
     console.log("PackageInfo", PackageInfo.value);
     if (PackageInfo.value && CarInfo.value) {
@@ -417,7 +416,6 @@ const submitOrder = async (formData: any) => {
     ) {
       orderReq.OrderNo = response.apiResponse.Data.OrderNo;
       storeOrder.setOrder(orderReq);
-      router.push("/order/compulsory/payment");
     } else {
       isError.value = true;
       messageError.value = response.apiResponse.ErrorMessage ?? "";
@@ -434,7 +432,7 @@ const submitOrder = async (formData: any) => {
       orderReq.OrderNo = response.apiResponse.Data.OrderNo;
 
       storeOrder.setOrder(orderReq);
-      router.push("/order/compulsory/payment");
+      
     } else {
       isError.value = true;
       messageError.value = response.apiResponse.ErrorMessage ?? "";

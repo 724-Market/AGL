@@ -158,7 +158,7 @@
                   </aside>
                 </section>
 
-                <div class="shippped-tax-type" v-show="shippingPolicy == 'postal'">
+                <div class="shippped-tax-type" v-show="shippingPolicy == 'postal' && requestIncludeTax.length > 0">
                   <div class="form-hide-label">
                     <ElementsFormRadioShippedPolicy
                       v-model="shippedPolicy"

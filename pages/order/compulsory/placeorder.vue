@@ -9,10 +9,10 @@
   >
     <FormKit
       type="form"
+      @submit="submitOrder"
+      :actions="false"
       id="form-order"
       form-class="form-order form-theme"
-      #default="{ value }"
-      v-model="values"
       :incomplete-message="false"
     >
       <div class="row">
@@ -140,7 +140,6 @@
             name="order-submit"
             id="order-submit"
             :classes="{ input: 'btn-primary', outer: 'form-actions' }"
-            @click="submitOrder"
             :disabled="!checkSave"
             :loading="isLoading"
           />
@@ -284,7 +283,7 @@ const { CarInfo } = storeToRefs(storeInfo);
 
 const storePackage = useStorePackage();
 
-const {PackageInfo} = storeToRefs(storePackage);
+const { PackageInfo } = storeToRefs(storePackage);
 //define store
 const storeOrder = useStorePlaceorder();
 // define getter in store
@@ -297,7 +296,8 @@ const onLoad = onMounted(async () => {
     if (PackageInfo.value && CarInfo.value) {
       infomation.value = CarInfo.value;
       SubCarModel.value = infomation.value.SubCarModel;
-
+      console.log("AuthenInfo", AuthenInfo.value);
+      console.log("PackageInfo", PackageInfo.value);
       packageSelect.value = PackageInfo.value;
 
       isLoading.value = true;
@@ -362,6 +362,7 @@ const onLoad = onMounted(async () => {
 });
 // Submit form event
 const submitOrder = async (formData: any) => {
+  console.log(formData);
   isLoading.value = true;
 
   if (insuranceRecieve.value?.ShippingPolicy == "postal") {
@@ -396,8 +397,7 @@ const submitOrder = async (formData: any) => {
     DeliveryMethod2: RequestIncludeTax.value ? DeliveryMethod[1] : undefined,
     IsTaxInvoice: RequestIncludeTax.value,
   };
-  console.log("orderReq", orderReq);
-
+  storeOrder.setOrder(orderReq);
   isError.value = false;
   messageError.value = "";
 
@@ -425,8 +425,6 @@ const submitOrder = async (formData: any) => {
       response.apiResponse.Data
     ) {
       orderReq.OrderNo = response.apiResponse.Data.OrderNo;
-
-      
     } else {
       isError.value = true;
       messageError.value = response.apiResponse.ErrorMessage ?? "";
@@ -443,23 +441,26 @@ const submitOrder = async (formData: any) => {
       getData.apiResponse.Status == "200" &&
       getData.apiResponse.Data
     ) {
-
-      if(orderReq.Customer && orderReq.Customer.DefaultAddress){
-        orderReq.Customer.DefaultAddress.AddressID  = getData.apiResponse.Data.Order.Customer.DefaultAddress.AddressID
+      if (orderReq.Customer && orderReq.Customer.DefaultAddress) {
+        orderReq.Customer.DefaultAddress.AddressID =
+          getData.apiResponse.Data.Customer.DefaultAddress.AddressID;
       }
-      if(orderReq.Customer && orderReq.Customer.DeliveryAddress){
-        orderReq.Customer.DeliveryAddress.AddressID  = getData.apiResponse.Data.Order.Customer.DeliveryAddress.AddressID
+      if (orderReq.Customer && orderReq.Customer.DeliveryAddress && getData.apiResponse.Data.Customer.DeliveryAddress) {
+        orderReq.Customer.DeliveryAddress.AddressID =
+          getData.apiResponse.Data.Customer.DeliveryAddress.AddressID;
       }
-      if(orderReq.Customer && orderReq.Customer.TaxInvoiceAddress){
-        orderReq.Customer.TaxInvoiceAddress.AddressID  = getData.apiResponse.Data.Order.Customer.TaxInvoiceAddress.AddressID
+      if (orderReq.Customer && orderReq.Customer.TaxInvoiceAddress && getData.apiResponse.Data.Customer.TaxInvoiceAddress) {
+        orderReq.Customer.TaxInvoiceAddress.AddressID =
+          getData.apiResponse.Data.Customer.TaxInvoiceAddress.AddressID;
       }
-      if(orderReq.Customer && orderReq.Customer.TaxInvoiceDeliveryAddress){
-        orderReq.Customer.TaxInvoiceDeliveryAddress.AddressID  = getData.apiResponse.Data.Order.Customer.TaxInvoiceDeliveryAddress.AddressID
+      if (orderReq.Customer && orderReq.Customer.TaxInvoiceDeliveryAddress && getData.apiResponse.Data.Customer.TaxInvoiceDeliveryAddress) {
+        orderReq.Customer.TaxInvoiceDeliveryAddress.AddressID =
+          getData.apiResponse.Data.Customer.TaxInvoiceDeliveryAddress.AddressID;
       }
 
       storeOrder.setOrder(orderReq);
     }
-    
+
     router.push("/order/compulsory/payment");
   }
   isLoading.value = false;
@@ -576,20 +577,20 @@ const loadPrefix = async (isPerson: boolean) => {
 };
 const loadPapeRonHand = async () => {
   if (PackageInfo.value && PackageInfo.value.Paper) {
-      const req: PaperRequest = {
-        ProductID: PackageInfo.value.Paper.ProductID,
-      };
-      const response = await useRepository().pledge.paperonhand(req);
-      if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-        if (response.apiResponse.Data) {
-          if (packageSelect.value && packageSelect.value?.Paper) {
-            packageSelect.value.Paper.Quantity = response.apiResponse.Data[0].Quantity;
-          }
-        } else {
-          // data not found
+    const req: PaperRequest = {
+      ProductID: PackageInfo.value.Paper.ProductID,
+    };
+    const response = await useRepository().pledge.paperonhand(req);
+    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+      if (response.apiResponse.Data) {
+        if (packageSelect.value && packageSelect.value?.Paper) {
+          packageSelect.value.Paper.Quantity = response.apiResponse.Data[0].Quantity;
         }
       } else {
+        // data not found
       }
+    } else {
+    }
   }
 };
 const loadProvince = async () => {

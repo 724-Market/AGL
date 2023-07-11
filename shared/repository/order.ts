@@ -1,12 +1,12 @@
 import { PlaceOrderRequest, PlaceOrderResponse } from "../entities/placeorder-entity";
-import { OrderDetailRequest,OrderDetailResponse, OrderResponse } from "../entities/order-entity";
+import { OrderDetailRequest,OrderDetailResponse, OrderResponse,Order } from "../entities/order-entity";
 import { IAPIResponse } from "../entities/useApi-response";
 
 class OrderModule {
   private RESOURCE = '/OrderCMI';
 
-  async get(req:OrderDetailRequest): Promise<IAPIResponse<OrderResponse>> {
-    return await useCallApi().apiRepository<OrderResponse>(`${this.RESOURCE}/get`, req)
+  async get(req:OrderDetailRequest): Promise<IAPIResponse<Order>> {
+    return await useCallApi().apiRepository<Order>(`${this.RESOURCE}/get`, req)
   }
   async summary(req:OrderDetailRequest): Promise<IAPIResponse<OrderResponse>> {
     return await useCallApi().apiRepository<OrderResponse>(`${this.RESOURCE}/summary/get`, req)

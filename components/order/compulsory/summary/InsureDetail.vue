@@ -43,7 +43,7 @@
             </div>
             <div class="summary-item">
               <h4 class="topic">เบอร์โทรศัพท์</h4>
-              <p>{{ orderDetail.AssuredDetails.Email }}</p>
+              <p>{{ orderDetail.AssuredDetails.PhoneNumber }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ที่อยู่</h4>
@@ -196,8 +196,7 @@
             <div class="summary-item">
               <h4 class="topic">ที่อยู่จัดส่ง</h4>
               <p v-if="orderDetail.DeliveryPolicyDetails">
-                6/74 หมู่ 4 หมู่บ้านรุ้งตะวัน ตำบลคลองโยง อำเภอพุทธมณฑล จังหวัดนครปฐม
-                73170
+                {{ getFullAddressDelivery() }}
               </p>
               <p v-else>-</p>
             </div>
@@ -227,40 +226,41 @@
           <section class="summary-list" v-if="orderDetail.IsTaxInvoice">
             <div class="summary-item">
               <h4 class="topic">ออกใบกำกับภาษีให้</h4>
-              <p>บริษัท 724 มาร์เก็ต จำกัด (สาขาพระรามเก้า 0009)</p>
+              <p>{{ orderDetail.TaxInvoiceDetails.AddressFirstName }}{{ orderDetail.TaxInvoiceDetails.AddressLastName }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">เลขประจำตัวผู้เสียภาษี</h4>
-              <p>3909900987654</p>
+              <p>{{ orderDetail.TaxInvoiceDetails.AddressTaxID }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">อีเมล</h4>
-              <p>p.inhumba@gmail.com</p>
+              <p>{{ orderDetail.TaxInvoiceDetails.AddressEmail }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">เบอร์โทรศัพท์</h4>
-              <p>0890435478</p>
+              <p>{{ orderDetail.TaxInvoiceDetails.AddressPhoneNumber }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ที่อยู่</h4>
               <p>
-                724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160
+                {{ getFullAddressTaxInvoice() }}
               </p>
             </div>
             <div class="summary-item">
               <h4 class="topic">วิธีการรับใบกำกับภาษี</h4>
-              <p>รับกรมธรรม์ตัวจริงทางไปรษณีย์ (DHL Express)</p>
+              <p>{{ getDeliveryTextTaxInvoice() }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ชื่อผู้รับ</h4>
-              <p>นาย ปฐมพงศ์ สังคจิตต์</p>
+              <p v-if="orderDetail.DeliveryTaxInvoiceDetails">{{ orderDetail.DeliveryTaxInvoiceDetails.AddressFirstName }}{{ orderDetail.DeliveryTaxInvoiceDetails.AddressLastName }}</p>
+              <p v-else>-</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ที่อยู่จัดส่ง</h4>
-              <p>
-                6/74 หมู่ 4 หมู่บ้านรุ้งตะวัน ตำบลคลองโยง อำเภอพุทธมณฑล จังหวัดนครปฐม
-                73170
+              <p v-if="orderDetail.DeliveryTaxInvoiceDetails">
+                {{ getFullAddressDeliveryTaxInvoice() }}
               </p>
+              <p v-else>-</p>
             </div>
 
             <div class="summary-action">
@@ -343,7 +343,105 @@ const getFullAddress = (): string => {
   }
   return fullAddress;
 };
-
+const getFullAddressDelivery = (): string => {
+  let fullAddress = "";
+  if (orderDetail && orderDetail.value) {
+    if (orderDetail.value.DeliveryPolicyDetails.No.length > 0) {
+      fullAddress += orderDetail.value.DeliveryPolicyDetails.No + " ";
+    }
+    if (orderDetail.value.DeliveryPolicyDetails.Moo.length > 0) {
+      fullAddress += "หมู่ที่ " + orderDetail.value.DeliveryPolicyDetails.Moo + " ";
+    }
+    if (orderDetail.value.DeliveryPolicyDetails.Building.length > 0) {
+      fullAddress += orderDetail.value.DeliveryPolicyDetails.Building + " ";
+    }
+    if (orderDetail.value.DeliveryPolicyDetails.Alley.length > 0) {
+      fullAddress += "ซอย " + orderDetail.value.DeliveryPolicyDetails.Alley + " ";
+    }
+    if (orderDetail.value.DeliveryPolicyDetails.Road.length > 0) {
+      fullAddress += "ถนน " + orderDetail.value.DeliveryPolicyDetails.Road + " ";
+    }
+    if (orderDetail.value.DeliveryPolicyDetails.SubDistrictName.length > 0) {
+      fullAddress += orderDetail.value.DeliveryPolicyDetails.SubDistrictName + " ";
+    }
+    if (orderDetail.value.DeliveryPolicyDetails.DistrictName.length > 0) {
+      fullAddress += orderDetail.value.DeliveryPolicyDetails.DistrictName + " ";
+    }
+    if (orderDetail.value.DeliveryPolicyDetails.ProvinceName.length > 0) {
+      fullAddress += orderDetail.value.DeliveryPolicyDetails.ProvinceName + " ";
+    }
+    if (orderDetail.value.DeliveryPolicyDetails.ZipCode.length > 0) {
+      fullAddress += "รหัสไปรษณีย์ " + orderDetail.value.DeliveryPolicyDetails.ZipCode + " ";
+    }
+  }
+  return fullAddress;
+};
+const getFullAddressTaxInvoice = (): string => {
+  let fullAddress = "";
+  if (orderDetail && orderDetail.value && orderDetail.value.TaxInvoiceDetails) {
+    if (orderDetail.value.TaxInvoiceDetails.No.length > 0) {
+      fullAddress += orderDetail.value.TaxInvoiceDetails.No + " ";
+    }
+    if (orderDetail.value.TaxInvoiceDetails.Moo.length > 0) {
+      fullAddress += "หมู่ที่ " + orderDetail.value.TaxInvoiceDetails.Moo + " ";
+    }
+    if (orderDetail.value.TaxInvoiceDetails.Building.length > 0) {
+      fullAddress += orderDetail.value.TaxInvoiceDetails.Building + " ";
+    }
+    if (orderDetail.value.TaxInvoiceDetails.Alley.length > 0) {
+      fullAddress += "ซอย " + orderDetail.value.TaxInvoiceDetails.Alley + " ";
+    }
+    if (orderDetail.value.TaxInvoiceDetails.Road.length > 0) {
+      fullAddress += "ถนน " + orderDetail.value.TaxInvoiceDetails.Road + " ";
+    }
+    if (orderDetail.value.TaxInvoiceDetails.SubDistrictName.length > 0) {
+      fullAddress += orderDetail.value.TaxInvoiceDetails.SubDistrictName + " ";
+    }
+    if (orderDetail.value.TaxInvoiceDetails.DistrictName.length > 0) {
+      fullAddress += orderDetail.value.TaxInvoiceDetails.DistrictName + " ";
+    }
+    if (orderDetail.value.TaxInvoiceDetails.ProvinceName.length > 0) {
+      fullAddress += orderDetail.value.TaxInvoiceDetails.ProvinceName + " ";
+    }
+    if (orderDetail.value.TaxInvoiceDetails.ZipCode.length > 0) {
+      fullAddress += "รหัสไปรษณีย์ " + orderDetail.value.TaxInvoiceDetails.ZipCode + " ";
+    }
+  }
+  return fullAddress;
+};
+const getFullAddressDeliveryTaxInvoice = (): string => {
+  let fullAddress = "";
+  if (orderDetail && orderDetail.value && orderDetail.value.DeliveryTaxInvoiceDetails) {
+    if (orderDetail.value.DeliveryTaxInvoiceDetails.No) {
+      fullAddress += orderDetail.value.DeliveryTaxInvoiceDetails.No + " ";
+    }
+    if (orderDetail.value.DeliveryTaxInvoiceDetails.Moo.length > 0) {
+      fullAddress += "หมู่ที่ " + orderDetail.value.DeliveryTaxInvoiceDetails.Moo + " ";
+    }
+    if (orderDetail.value.DeliveryTaxInvoiceDetails.Building.length > 0) {
+      fullAddress += orderDetail.value.DeliveryTaxInvoiceDetails.Building + " ";
+    }
+    if (orderDetail.value.DeliveryTaxInvoiceDetails.Alley.length > 0) {
+      fullAddress += "ซอย " + orderDetail.value.DeliveryTaxInvoiceDetails.Alley + " ";
+    }
+    if (orderDetail.value.DeliveryTaxInvoiceDetails.Road.length > 0) {
+      fullAddress += "ถนน " + orderDetail.value.DeliveryTaxInvoiceDetails.Road + " ";
+    }
+    if (orderDetail.value.DeliveryTaxInvoiceDetails.SubDistrictName.length > 0) {
+      fullAddress += orderDetail.value.DeliveryTaxInvoiceDetails.SubDistrictName + " ";
+    }
+    if (orderDetail.value.DeliveryTaxInvoiceDetails.DistrictName.length > 0) {
+      fullAddress += orderDetail.value.DeliveryTaxInvoiceDetails.DistrictName + " ";
+    }
+    if (orderDetail.value.DeliveryTaxInvoiceDetails.ProvinceName.length > 0) {
+      fullAddress += orderDetail.value.DeliveryTaxInvoiceDetails.ProvinceName + " ";
+    }
+    if (orderDetail.value.DeliveryTaxInvoiceDetails.ZipCode.length > 0) {
+      fullAddress += "รหัสไปรษณีย์ " + orderDetail.value.DeliveryTaxInvoiceDetails.ZipCode + " ";
+    }
+  }
+  return fullAddress;
+};
 const getDeliveryText = (): string => {
   let text = "";
   if (orderDetail && orderDetail.value) {
@@ -367,6 +465,20 @@ const getDeliveryText = (): string => {
       orderDetail.value.DeliveryMethod1.DeliveryType == "DELIVERY"
     ) {
       text='รับกรมธรรม์ตัวจริงทางไปรษณีย์ ('+orderDetail.value.DeliveryMethod1.DeliveryChannelType+')'
+    }
+  }
+  return text;
+};
+const getDeliveryTextTaxInvoice = (): string => {
+  let text = "";
+  if (orderDetail && orderDetail.value) {
+    if (
+      orderDetail.value.DeliveryMethod1.MethodType == "ALL_AT_ONCE" &&
+      orderDetail.value.DeliveryMethod1.DeliveryType == "DELIVERY"
+    ) {
+      text='จัดส่งพร้อมกรมธรรม์'
+    } else  {
+      text='รับใบกำกับภาษีตัวจริงทางไปรษณีย์ ('+orderDetail.value.DeliveryMethod2.DeliveryChannelType+')'
     }
   }
   return text;

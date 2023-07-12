@@ -143,7 +143,7 @@ const loadOrderDetail = async (orderNo: string) => {
 const onLoad = onMounted(async () => {
   isLoading.value = true;
   //TODO testing implement order detail
-  await loadOrderDetail("AMC2301000157");
+  await loadOrderDetail("AMC2301000165");
   isLoading.value = false;
 });
 

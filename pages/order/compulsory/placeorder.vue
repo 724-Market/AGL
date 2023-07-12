@@ -145,7 +145,7 @@
               input: 'btn-primary',
               outer: 'form-actions',
             }"
-            @click="submitOrder"
+
             :disabled="!checkSave"
             :loading="isLoading"
           />

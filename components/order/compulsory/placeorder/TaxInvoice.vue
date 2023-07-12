@@ -261,7 +261,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { CustomerOrderRequest, DefaultAddress, OrderRequest, TaxInvoiceAddress, TaxInvoiceDeliveryAddress } from "~/shared/entities/placeorder-entity"
+import { CustomerOrderRequest, DefaultAddress, PlaceOrderRequest, TaxInvoiceAddress, TaxInvoiceDeliveryAddress } from "~/shared/entities/placeorder-entity"
 import { RadioOption, SelectOption } from "~/shared/entities/select-option"
 
 const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict','changeProvince2', 'changeDistrict2', 'changeSubDistrict2','changeTaxInvoice'])
@@ -280,7 +280,7 @@ const props = defineProps({
   isIncludeTax: String,//1,0
   shippingPolicy: String, // email,pdf,postal
   cacheOrderRequest:{
-    type:Object as ()=> OrderRequest
+    type:Object as ()=> PlaceOrderRequest
   }
 })
 

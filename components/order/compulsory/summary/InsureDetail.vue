@@ -1,5 +1,5 @@
 <template>
-  <div class="accordion" id="accordion-summary">
+  <div class="accordion" id="accordion-summary" v-if="orderDetail">
     <div class="accordion-item">
       <h3 class="accordion-header">
         <button
@@ -18,29 +18,28 @@
           <section class="summary-list">
             <div class="summary-item">
               <h4 class="topic">ผู้เอาประกันภัย</h4>
-              <p>นาย ปฐมพงศ์ สังคจิตต์</p>
+              <p>{{ orderDetail.AssuredDetails.Prefix }} {{ orderDetail.AssuredDetails.FirstName }} {{ orderDetail.AssuredDetails.LastName }}}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">เลขที่บัตรประชาชน</h4>
-              <p>3909900987654</p>
+              <p>{{ orderDetail.AssuredDetails.IDCard }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">วันเดือนปีเกิด</h4>
-              <p>2520-12-03 (45 ปี)</p>
+              <p>{{ getBirthDate(orderDetail.AssuredDetails.BirthDate) }} ({{ getAge(orderDetail.AssuredDetails.BirthDate) }} ปี)</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">อีเมล</h4>
-              <p>p.inhumba@gmail.com</p>
+              <p>{{ orderDetail.AssuredDetails.Email }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">เบอร์โทรศัพท์</h4>
-              <p>0890435478</p>
+              <p>{{ orderDetail.AssuredDetails.Email }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ที่อยู่</h4>
               <p>
-                6/74 หมู่ 4 หมู่บ้านรุ้งตะวัน ตำบลคลองโยง อำเภอพุทธมณฑล จังหวัดนครปฐม
-                73170
+                {{ getFullAddress() }}
               </p>
             </div>
 
@@ -69,27 +68,28 @@
           <section class="summary-list">
             <div class="summary-item">
               <h4 class="topic">รถยนต์</h4>
-              <p>MG รุ่น MG3 รุ่นย่อย D ปี 2018 (สีน้ำเงิน)</p>
+              <p>{{ orderDetail.CarDetails.CarBrand }} รุ่น {{ orderDetail.CarDetails.CarModel }} รุ่นย่อย D ปี {{ orderDetail.CarDetails.CarYear }} ({{ orderDetail.CarDetails.CarColor }})</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ลักษณะการใช้งาน</h4>
-              <p>รับจ้าง</p>
+              <p>{{ orderDetail.InsureDetails.UseCarName }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">เลขทะเบียนรถยนต์</h4>
-              <p>7กฮ - 7724 (ป้ายแดง)</p>
+              <p v-if="orderDetail.CarDetails.IsRedLicense">{{ orderDetail.CarDetails.CarLicense }} (ป้ายแดง)</p>
+              <p v-else>{{ orderDetail.CarDetails.CarLicense }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ทะเบียนจังหวัด</h4>
-              <p>กรุงเทพมหานคร</p>
+              <p>{{ orderDetail.CarDetails.LicenseProvince }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">เลขตัวถังรถยนต์</h4>
-              <p>TWG847NFU83</p>
+              <p>{{ orderDetail.CarDetails.NumBody }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">เลขเครื่องยนต์</h4>
-              <p>7238GUGDE2358</p>
+              <p>{{ orderDetail.CarDetails.NumEngine }}</p>
             </div>
 
             <div class="summary-action">
@@ -245,3 +245,66 @@
     </div>
   </div>
 </template>
+<script setup lang="ts">
+import { OrderDetails } from "~/shared/entities/order-entity";
+
+const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
+
+const props = defineProps({
+  orderDetail: {
+    type: Object as () => OrderDetails,
+  },
+});
+const getBirthDate = (birthdate:string):string=>{
+  const formatDate = useUtility().formatDate(birthdate,"D MMMM BBBB")
+  return formatDate
+}
+const getAge=(birthdate:string):string=>{
+  const date = new Date()
+  const birth = birthdate.split('-')
+  const age = date.getFullYear() -parseInt(birth[0])
+
+  return age.toFixed(0)
+}
+const getFullAddress = ():string => {
+  let fullAddress = "";
+  if (orderDetail && orderDetail.value) {
+
+    if (orderDetail.value.AssuredDetails.No.length > 0) {
+      fullAddress += orderDetail.value.AssuredDetails.No + " ";
+    }
+    if (orderDetail.value.AssuredDetails.Moo.length > 0) {
+      fullAddress += "หมู่ที่ " + orderDetail.value.AssuredDetails.Moo + " ";
+    }
+    if (orderDetail.value.AssuredDetails.Building.length > 0) {
+      fullAddress += orderDetail.value.AssuredDetails.Building + " "
+    }
+    if (orderDetail.value.AssuredDetails.Alley.length > 0) {
+      fullAddress += "ซอย " + orderDetail.value.AssuredDetails.Alley + " "
+    }
+    if (orderDetail.value.AssuredDetails.Road.length > 0) {
+      fullAddress += "ถนน " + orderDetail.value.AssuredDetails.Road + " "
+    }
+    if (orderDetail.value.AssuredDetails.SubDistrictName.length > 0) {
+      fullAddress += orderDetail.value.AssuredDetails.SubDistrictName + " "
+    }
+    if (orderDetail.value.AssuredDetails.DistrictName.length > 0) {
+      fullAddress += orderDetail.value.AssuredDetails.DistrictName + " "
+    }
+    if (orderDetail.value.AssuredDetails.ProvinceName.length > 0) {
+        fullAddress += orderDetail.value.AssuredDetails.ProvinceName + " "
+    }
+    if (orderDetail.value.AssuredDetails.ZipCode.length > 0) {
+      fullAddress += "รหัสไปรษณีย์ " + orderDetail.value.AssuredDetails.ZipCode + " "
+    }
+    
+  }
+  return fullAddress
+}
+
+const onLoad = onMounted(()=>{
+  if(props.orderDetail){
+    orderDetail.value = props.orderDetail
+  }
+})
+</script>

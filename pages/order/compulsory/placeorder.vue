@@ -435,7 +435,7 @@ const submitOrder = async (formData: any) => {
     const req: OrderDetailRequest = {
       OrderNo: orderReq.OrderNo ?? "",
     };
-    const getData = await useRepository().order.get(req);
+    const getData = await useRepository().order.summary(req);
     if (
       getData.apiResponse.Status &&
       getData.apiResponse.Status == "200" &&
@@ -443,19 +443,19 @@ const submitOrder = async (formData: any) => {
     ) {
       if (orderReq.Customer && orderReq.Customer.DefaultAddress) {
         orderReq.Customer.DefaultAddress.AddressID =
-          getData.apiResponse.Data.Customer.DefaultAddress.AddressID;
+          getData.apiResponse.Data.Order.Customer.DefaultAddress.AddressID;
       }
-      if (orderReq.Customer && orderReq.Customer.DeliveryAddress && getData.apiResponse.Data.Customer.DeliveryAddress) {
+      if (orderReq.Customer && orderReq.Customer.DeliveryAddress && getData.apiResponse.Data.Order.Customer.DeliveryAddress) {
         orderReq.Customer.DeliveryAddress.AddressID =
-          getData.apiResponse.Data.Customer.DeliveryAddress.AddressID;
+          getData.apiResponse.Data.Order.Customer.DeliveryAddress.AddressID;
       }
-      if (orderReq.Customer && orderReq.Customer.TaxInvoiceAddress && getData.apiResponse.Data.Customer.TaxInvoiceAddress) {
+      if (orderReq.Customer && orderReq.Customer.TaxInvoiceAddress && getData.apiResponse.Data.Order.Customer.TaxInvoiceAddress) {
         orderReq.Customer.TaxInvoiceAddress.AddressID =
-          getData.apiResponse.Data.Customer.TaxInvoiceAddress.AddressID;
+          getData.apiResponse.Data.Order.Customer.TaxInvoiceAddress.AddressID;
       }
-      if (orderReq.Customer && orderReq.Customer.TaxInvoiceDeliveryAddress && getData.apiResponse.Data.Customer.TaxInvoiceDeliveryAddress) {
+      if (orderReq.Customer && orderReq.Customer.TaxInvoiceDeliveryAddress && getData.apiResponse.Data.Order.Customer.TaxInvoiceDeliveryAddress) {
         orderReq.Customer.TaxInvoiceDeliveryAddress.AddressID =
-          getData.apiResponse.Data.Customer.TaxInvoiceDeliveryAddress.AddressID;
+          getData.apiResponse.Data.Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
       }
 
       storeOrder.setOrder(orderReq);

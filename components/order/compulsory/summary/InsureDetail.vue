@@ -18,7 +18,11 @@
           <section class="summary-list">
             <div class="summary-item">
               <h4 class="topic">ผู้เอาประกันภัย</h4>
-              <p>{{ orderDetail.AssuredDetails.Prefix }} {{ orderDetail.AssuredDetails.FirstName }} {{ orderDetail.AssuredDetails.LastName }}}</p>
+              <p>
+                {{ orderDetail.AssuredDetails.Prefix }}
+                {{ orderDetail.AssuredDetails.FirstName }}
+                {{ orderDetail.AssuredDetails.LastName }}}
+              </p>
             </div>
             <div class="summary-item">
               <h4 class="topic">เลขที่บัตรประชาชน</h4>
@@ -26,7 +30,12 @@
             </div>
             <div class="summary-item">
               <h4 class="topic">วันเดือนปีเกิด</h4>
-              <p>{{ getBirthDate(orderDetail.AssuredDetails.BirthDate) }} ({{ getAge(orderDetail.AssuredDetails.BirthDate) }} ปี)</p>
+              <p>
+                {{ getBirthDate(orderDetail.AssuredDetails.BirthDate) }} ({{
+                  getAge(orderDetail.AssuredDetails.BirthDate)
+                }}
+                ปี)
+              </p>
             </div>
             <div class="summary-item">
               <h4 class="topic">อีเมล</h4>
@@ -68,7 +77,13 @@
           <section class="summary-list">
             <div class="summary-item">
               <h4 class="topic">รถยนต์</h4>
-              <p>{{ orderDetail.CarDetails.CarBrand }} รุ่น {{ orderDetail.CarDetails.CarModel }} รุ่นย่อย D ปี {{ orderDetail.CarDetails.CarYear }} ({{ orderDetail.CarDetails.CarColor }})</p>
+              <p>
+                {{ orderDetail.CarDetails.CarBrand }} รุ่น
+                {{ orderDetail.CarDetails.CarModel }} รุ่นย่อย {{ orderDetail.CarDetails.SubCarModel ?? "ไม่ทราบ" }} ปี
+                {{ orderDetail.CarDetails.CarYear }} ({{
+                  orderDetail.CarDetails.CarColor
+                }})
+              </p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ลักษณะการใช้งาน</h4>
@@ -76,7 +91,9 @@
             </div>
             <div class="summary-item">
               <h4 class="topic">เลขทะเบียนรถยนต์</h4>
-              <p v-if="orderDetail.CarDetails.IsRedLicense">{{ orderDetail.CarDetails.CarLicense }} (ป้ายแดง)</p>
+              <p v-if="orderDetail.CarDetails.IsRedLicense">
+                {{ orderDetail.CarDetails.CarLicense }} (ป้ายแดง)
+              </p>
               <p v-else>{{ orderDetail.CarDetails.CarLicense }}</p>
             </div>
             <div class="summary-item">
@@ -117,11 +134,14 @@
           <section class="summary-list">
             <div class="summary-item">
               <h4 class="topic">บริษัทรับประกันภัย</h4>
-              <p>บริษัท คุ้มภัยประกันภัย จำกัด (มหาชน)</p>
+              <p>{{ orderDetail.InsureDetails.CompanyName }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ประเภทสินค้า</h4>
-              <p>พ.ร.บ. สำหรับรถยนต์นั่งส่วนบุคคล</p>
+              <p v-if="orderDetail.InsureDetails.InsureType == 'Compulsory'">
+                พ.ร.บ. สำหรับรถยนต์นั่งส่วนบุคคล
+              </p>
+              <p v-else>พ.ร.บ. สำหรับรถยนต์นั่งส่วนบุคคล</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">การซ่อม</h4>
@@ -129,7 +149,13 @@
             </div>
             <div class="summary-item">
               <h4 class="topic">กรมธรรม์คุ้มครอง</h4>
-              <p>01/01/2562 - 01/01/2563 (365 วัน)</p>
+              <p>
+                {{ getFormatDate(orderDetail.InsureDetails.ActiveStartDate) }} -
+                {{ getFormatDate(orderDetail.InsureDetails.ActiveEndDate) }} ({{
+                  getDayOfYear()
+                }}
+                วัน)
+              </p>
             </div>
 
             <div class="summary-action">
@@ -157,22 +183,23 @@
           <section class="summary-list">
             <div class="summary-item">
               <h4 class="topic">วิธีการรับกรมธรรม์</h4>
-              <p>รับกรมธรรม์ตัวจริงทางไปรษณีย์ (DHL Express)</p>
+              <p>{{ getDeliveryText() }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">อีเมลรับกรมธรรม์</h4>
-              <p>p.inhumba@gmail.com</p>
+              <p>{{ orderDetail.AssuredDetails.AddressEmail }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ชื่อผู้รับ</h4>
-              <p>นาย ปฐมพงศ์ สังคจิตต์</p>
+              <p> {{ orderDetail.AssuredDetails.FirstName }}  {{ orderDetail.AssuredDetails.LastName }} </p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ที่อยู่จัดส่ง</h4>
-              <p>
+              <p v-if="orderDetail.DeliveryPolicyDetails">
                 6/74 หมู่ 4 หมู่บ้านรุ้งตะวัน ตำบลคลองโยง อำเภอพุทธมณฑล จังหวัดนครปฐม
                 73170
               </p>
+              <p v-else>-</p>
             </div>
 
             <div class="summary-action">
@@ -197,7 +224,7 @@
       </h3>
       <div id="panel-summary-5" class="accordion-collapse collapse">
         <div class="accordion-body">
-          <section class="summary-list">
+          <section class="summary-list" v-if="orderDetail.IsTaxInvoice">
             <div class="summary-item">
               <h4 class="topic">ออกใบกำกับภาษีให้</h4>
               <p>บริษัท 724 มาร์เก็ต จำกัด (สาขาพระรามเก้า 0009)</p>
@@ -255,21 +282,37 @@ const props = defineProps({
     type: Object as () => OrderDetails,
   },
 });
-const getBirthDate = (birthdate:string):string=>{
-  const formatDate = useUtility().formatDate(birthdate,"D MMMM BBBB")
-  return formatDate
-}
-const getAge=(birthdate:string):string=>{
-  const date = new Date()
-  const birth = birthdate.split('-')
-  const age = date.getFullYear() -parseInt(birth[0])
+const getDayOfYear = (): string => {
+  let days = 0;
+  if (orderDetail.value) {
+    const startDate = new Date(orderDetail.value.InsureDetails.ActiveStartDate);
+    const endDate = new Date(orderDetail.value.InsureDetails.ActiveEndDate);
+    const diff = Math.abs(startDate.getTime() - endDate.getTime());
+    const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+    days = diffDays - 1;
+  }
 
-  return age.toFixed(0)
-}
-const getFullAddress = ():string => {
+  return days.toFixed(0);
+};
+const getFormatDate = (date: string): string => {
+  const formatDate = useUtility().formatDate(date, "DD/MM/BBBB");
+
+  return formatDate;
+};
+const getBirthDate = (birthdate: string): string => {
+  const formatDate = useUtility().formatDate(birthdate, "D MMMM BBBB");
+  return formatDate;
+};
+const getAge = (birthdate: string): string => {
+  const date = new Date();
+  const birth = birthdate.split("-");
+  const age = date.getFullYear() - parseInt(birth[0]);
+
+  return age.toFixed(0);
+};
+const getFullAddress = (): string => {
   let fullAddress = "";
   if (orderDetail && orderDetail.value) {
-
     if (orderDetail.value.AssuredDetails.No.length > 0) {
       fullAddress += orderDetail.value.AssuredDetails.No + " ";
     }
@@ -277,34 +320,60 @@ const getFullAddress = ():string => {
       fullAddress += "หมู่ที่ " + orderDetail.value.AssuredDetails.Moo + " ";
     }
     if (orderDetail.value.AssuredDetails.Building.length > 0) {
-      fullAddress += orderDetail.value.AssuredDetails.Building + " "
+      fullAddress += orderDetail.value.AssuredDetails.Building + " ";
     }
     if (orderDetail.value.AssuredDetails.Alley.length > 0) {
-      fullAddress += "ซอย " + orderDetail.value.AssuredDetails.Alley + " "
+      fullAddress += "ซอย " + orderDetail.value.AssuredDetails.Alley + " ";
     }
     if (orderDetail.value.AssuredDetails.Road.length > 0) {
-      fullAddress += "ถนน " + orderDetail.value.AssuredDetails.Road + " "
+      fullAddress += "ถนน " + orderDetail.value.AssuredDetails.Road + " ";
     }
     if (orderDetail.value.AssuredDetails.SubDistrictName.length > 0) {
-      fullAddress += orderDetail.value.AssuredDetails.SubDistrictName + " "
+      fullAddress += orderDetail.value.AssuredDetails.SubDistrictName + " ";
     }
     if (orderDetail.value.AssuredDetails.DistrictName.length > 0) {
-      fullAddress += orderDetail.value.AssuredDetails.DistrictName + " "
+      fullAddress += orderDetail.value.AssuredDetails.DistrictName + " ";
     }
     if (orderDetail.value.AssuredDetails.ProvinceName.length > 0) {
-        fullAddress += orderDetail.value.AssuredDetails.ProvinceName + " "
+      fullAddress += orderDetail.value.AssuredDetails.ProvinceName + " ";
     }
     if (orderDetail.value.AssuredDetails.ZipCode.length > 0) {
-      fullAddress += "รหัสไปรษณีย์ " + orderDetail.value.AssuredDetails.ZipCode + " "
+      fullAddress += "รหัสไปรษณีย์ " + orderDetail.value.AssuredDetails.ZipCode + " ";
     }
-    
   }
-  return fullAddress
-}
+  return fullAddress;
+};
 
-const onLoad = onMounted(()=>{
-  if(props.orderDetail){
-    orderDetail.value = props.orderDetail
+const getDeliveryText = (): string => {
+  let text = "";
+  if (orderDetail && orderDetail.value) {
+    if (
+      orderDetail.value.DeliveryMethod1.MethodType == "EXCLUDE" &&
+      orderDetail.value.DeliveryMethod1.DeliveryType == "PAPER"
+    ) {
+      text='รับกรมธรรม์ตัวจริงทางทางหน้าร้าน'
+    } else if (
+      orderDetail.value.DeliveryMethod1.MethodType == "EXCLUDE" &&
+      orderDetail.value.DeliveryMethod1.DeliveryType == "ELECTRONIC"
+    ) {
+      text='รับกรมธรรม์ตัวจริงทางอีเมล์'
+    } else if (
+      orderDetail.value.DeliveryMethod1.MethodType == "ALL_AT_ONCE" &&
+      orderDetail.value.DeliveryMethod1.DeliveryType == "DELIVERY"
+    ) {
+      text='รับกรมธรรม์ตัวจริงทางไปรษณีย์ ('+orderDetail.value.DeliveryMethod1.DeliveryChannelType+')'
+    } else if (
+      orderDetail.value.DeliveryMethod1.MethodType == "POLICY" &&
+      orderDetail.value.DeliveryMethod1.DeliveryType == "DELIVERY"
+    ) {
+      text='รับกรมธรรม์ตัวจริงทางไปรษณีย์ ('+orderDetail.value.DeliveryMethod1.DeliveryChannelType+')'
+    }
   }
-})
+  return text;
+};
+const onLoad = onMounted(() => {
+  if (props.orderDetail) {
+    orderDetail.value = props.orderDetail;
+  }
+});
 </script>

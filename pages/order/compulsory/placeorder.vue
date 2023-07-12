@@ -14,6 +14,8 @@
       id="form-order"
       form-class="form-order form-theme"
       :incomplete-message="false"
+      #default="{ value }"
+      v-model="values"
     >
       <div class="row">
         <div class="col-lg-8 col-xl-9">
@@ -136,10 +138,14 @@
 
           <FormKit
             type="submit"
-            label="ไปเลือกวิธีการชำระเงิน"
+            label="ไปเลือกวิธีชำระเงิน"
             name="order-submit"
             id="order-submit"
-            :classes="{ input: 'btn-primary', outer: 'form-actions' }"
+            :classes="{
+              input: 'btn-primary',
+              outer: 'form-actions',
+            }"
+            @click="submitOrder"
             :disabled="!checkSave"
             :loading="isLoading"
           />
@@ -376,7 +382,7 @@ const submitOrder = async (formData: any) => {
     insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault;
   const DeliveryMethod = getDeliveryMethod();
   let orderReq: PlaceOrderRequest = {
-    OrderNo: OrderInfo.value?.OrderNo ?? "",
+    OrderNo: OrderInfo.value?.OrderNo ?? undefined,
     Package: {
       UseCarCode: infomation.value?.CarUse ?? "",
       CarTypeCode: infomation.value?.CarType ?? "",
@@ -394,7 +400,7 @@ const submitOrder = async (formData: any) => {
     CarDetailsExtension: carDetail.value,
     Customer: insureDetail.value,
     DeliveryMethod1: DeliveryMethod[0],
-    DeliveryMethod2: RequestIncludeTax.value ? DeliveryMethod[1] : undefined,
+    DeliveryMethod2: RequestIncludeTax.value ? DeliveryMethod[1] : null,
     IsTaxInvoice: RequestIncludeTax.value,
   };
   storeOrder.setOrder(orderReq);
@@ -402,7 +408,7 @@ const submitOrder = async (formData: any) => {
   messageError.value = "";
 
   //create order
-  if (!orderReq.OrderNo && orderReq.OrderNo == "") {
+  if (!orderReq.OrderNo || orderReq.OrderNo == "") {
     const response = await useRepository().order.create(orderReq);
 
     if (
@@ -439,23 +445,36 @@ const submitOrder = async (formData: any) => {
     if (
       getData.apiResponse.Status &&
       getData.apiResponse.Status == "200" &&
-      getData.apiResponse.Data
+      getData.apiResponse.Data &&
+      getData.apiResponse.Data.length > 0
     ) {
       if (orderReq.Customer && orderReq.Customer.DefaultAddress) {
         orderReq.Customer.DefaultAddress.AddressID =
-          getData.apiResponse.Data.Order.Customer.DefaultAddress.AddressID;
+          getData.apiResponse.Data[0].Order.Customer.DefaultAddress.AddressID;
       }
-      if (orderReq.Customer && orderReq.Customer.DeliveryAddress && getData.apiResponse.Data.Order.Customer.DeliveryAddress) {
+      if (
+        orderReq.Customer &&
+        orderReq.Customer.DeliveryAddress &&
+        getData.apiResponse.Data[0].Order.Customer.DeliveryAddress
+      ) {
         orderReq.Customer.DeliveryAddress.AddressID =
-          getData.apiResponse.Data.Order.Customer.DeliveryAddress.AddressID;
+          getData.apiResponse.Data[0].Order.Customer.DeliveryAddress.AddressID;
       }
-      if (orderReq.Customer && orderReq.Customer.TaxInvoiceAddress && getData.apiResponse.Data.Order.Customer.TaxInvoiceAddress) {
+      if (
+        orderReq.Customer &&
+        orderReq.Customer.TaxInvoiceAddress &&
+        getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress
+      ) {
         orderReq.Customer.TaxInvoiceAddress.AddressID =
-          getData.apiResponse.Data.Order.Customer.TaxInvoiceAddress.AddressID;
+          getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress.AddressID;
       }
-      if (orderReq.Customer && orderReq.Customer.TaxInvoiceDeliveryAddress && getData.apiResponse.Data.Order.Customer.TaxInvoiceDeliveryAddress) {
+      if (
+        orderReq.Customer &&
+        orderReq.Customer.TaxInvoiceDeliveryAddress &&
+        getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress
+      ) {
         orderReq.Customer.TaxInvoiceDeliveryAddress.AddressID =
-          getData.apiResponse.Data.Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
+          getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
       }
 
       storeOrder.setOrder(orderReq);
@@ -518,36 +537,47 @@ const getDeliveryMethod = (): DeliveryMethod[] => {
       // จัดส่งตัวจริง
       case "postal":
         //จัดส่งพร้อมกรมธรรม์
-        if (TaxInvoiceAddressShipped.value == "together") {
-          data[0] = {
-            DeliveryChannelType:
-              insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
-            DeliveryEmail: "",
-            DeliveryType: "DELIVERY",
-            MethodType: "ALL_AT_ONCE",
-          };
-          data[1] = {
-            DeliveryChannelType: "",
-            DeliveryEmail: "",
-            DeliveryType: "",
-            MethodType: "",
-          };
+        if (RequestIncludeTax.value) {
+          if (TaxInvoiceAddressShipped.value == "together") {
+            data[0] = {
+              DeliveryChannelType:
+                insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
+              DeliveryEmail: "",
+              DeliveryType: "DELIVERY",
+              MethodType: "ALL_AT_ONCE",
+            };
+            data[1] = {
+              DeliveryChannelType: "",
+              DeliveryEmail: "",
+              DeliveryType: "",
+              MethodType: "",
+            };
+          }
+          //จัดส่งแยก
+          else {
+            data[0] = {
+              DeliveryChannelType:
+                insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
+              DeliveryEmail: "",
+              DeliveryType: "DELIVERY",
+              MethodType: "POLICY",
+            };
+            data[1] = {
+              DeliveryChannelType: TaxInvoiceAddressShipping.value,
+              DeliveryEmail: "",
+              DeliveryType: "DELIVERY",
+              MethodType: "TAXINVOICE",
+            };
+          }
         }
-        //จัดส่งแยก
-        else {
+        else{
           data[0] = {
-            DeliveryChannelType:
-              insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
-            DeliveryEmail: "",
-            DeliveryType: "DELIVERY",
-            MethodType: "POLICY",
-          };
-          data[1] = {
-            DeliveryChannelType: TaxInvoiceAddressShipping.value,
-            DeliveryEmail: "",
-            DeliveryType: "DELIVERY",
-            MethodType: "TAXINVOICE",
-          };
+              DeliveryChannelType:
+                insuranceRecieve.value?.PostalDelivary?.ShippingMethod ?? "",
+              DeliveryEmail: "",
+              DeliveryType: "DELIVERY",
+              MethodType: "POLICY",
+            };
         }
         break;
     }

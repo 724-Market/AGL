@@ -3,6 +3,8 @@ import { storeToRefs } from "pinia";
 import { Paging } from "~/shared/entities/packageList-entity";
 import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
 import dayjs from 'dayjs';
+import 'dayjs/locale/th' // import locale
+import buddhistEra from 'dayjs/plugin/buddhistEra' // import locale
 export default () => {
 
     const config = useRuntimeConfig()
@@ -13,6 +15,7 @@ export default () => {
         const store = useStoreUserAuth();
         const { AuthenInfo } = storeToRefs(store)
         const checkToken = store.checkTokenExpire()
+        console.log('checkToken',checkToken)
         if (checkToken) {
             if (AuthenInfo.value) {
                 token = AuthenInfo.value.accessToken
@@ -51,7 +54,9 @@ export default () => {
         return formattedCurrency
     }
     const formatDate = (dateString: string, format: string): string => {
-        const date = dayjs(dateString);
+        dayjs.extend(buddhistEra)
+        dayjs.locale('th')
+        const date = dayjs(dateString).locale('th');
         // Then specify how you want your dates to be formatted
         return date.format(format);
 

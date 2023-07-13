@@ -8,7 +8,7 @@ export interface PlaceOrderRequest {
   // DeliveryChannelType?: string
   // DeliveryEmail?: string
   DeliveryMethod1?: DeliveryMethod
-  DeliveryMethod2?: DeliveryMethod
+  DeliveryMethod2?: DeliveryMethod|null
   IsTaxInvoice?: boolean
 }
 

@@ -13,7 +13,7 @@ export const useStoreUserAuth = defineStore('useStoreUserAuth', {
         }
     },
     getters: {
-        AuthenInfo: state => sessionStorage.getItem("useStoreUserAuth") ? JSON.parse(sessionStorage.getItem("useStoreUserAuth") || "") as IUserAuth : undefined,
+        AuthenInfo: state => state,
     },
     actions: {
         async authLogin(request: any): Promise<WrapperResponse<IUserAuthResponse>> {
@@ -42,7 +42,7 @@ export const useStoreUserAuth = defineStore('useStoreUserAuth', {
             const response = await useRepository().session.refreshToken(refreshTokenId)
             
             const result = response.apiResponse
-
+            console.log(result)
             if (result.Data) {
                 this.$state.accessToken = result.Data.access_token
                 this.$state.issuedDate = result.Data['.issued']

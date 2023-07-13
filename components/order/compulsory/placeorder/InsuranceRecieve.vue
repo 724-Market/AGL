@@ -40,11 +40,12 @@
                   </div>
                 </section>
 
+                <!-- TODO: Element key duplicate with insure detail -->
                 <aside v-if="isPdfShipping" class="shipping-email-pdf col-md-12 col-lg-4">
                   <FormKit
                     type="email"
                     label="อีเมลสำหรับรับไฟล์กรมธรรม์"
-                    name="Email"
+                    name="EmailRecieve" 
                     v-model="emailText"
                     @change="handleEmailChange"
                     placeholder="xxxxxx@email.com"

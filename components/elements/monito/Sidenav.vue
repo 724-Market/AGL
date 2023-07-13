@@ -42,7 +42,7 @@
                                 <a class="nav-link" href="/payment/qr" title="QR Payment">QR Payment</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/page/thanks" title="Thanks">Thanks</a>
+                                <a class="nav-link" href="/order/compulsory/thanks" title="Thanks">Thanks</a>
                             </li>
                         </ul>
                     </div>

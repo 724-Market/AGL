@@ -3,6 +3,7 @@ import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
 export const useStorePlaceorder = defineStore('useStorePlaceorder', {
     state: (): PlaceOrderRequest => {
         return {
+            OrderNo:"",
             Package: {
                 UseCarCode: "",
                 CarTypeCode: "",

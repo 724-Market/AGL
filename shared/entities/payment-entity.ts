@@ -62,9 +62,46 @@ export interface DeliveryFee {
     DeliveryChannelType: string
 }
 
+export interface RadiioPaymentObject {
+    FeeQr: number
+    FeeCard: number
+    PercenCard: number
+    RemainPledge?: number
+}
+
+export interface SummaryDiscountObject {
+    PackagePrice: number
+    ShipopingCost: number
+    FeeCost: number
+    TotalPrice: number
+    DisPrice: number
+    SumPrice: number
+    PaymentMethod: string
+    DiscountMethod: string
+}
+
 export interface PaymentSaveRequest {
-    OrderNo: string,
+    OrderNo: string
+    PaymentType: string
+    DiscountType: string
+    DiscountValue: number
+    CouponCode: string
+    NumCredit: number
+    IsUseCredit: boolean
 }
 export interface PaymentSaveResponse {
-    OrderNo: string,
+    OrderNo: string
+    PaymentType: string
+    DiscountType: string
+    DeliveryAmount: number
+    FeeAmount: number
+    PaperAmount: number
+    CreditAmount: number
+    OrderAmount: number
+    GrandAmount: number
+    CashBack: number
+    CreateDate: string
+    CreateUser: string
+    UpdateDate: string
+    UpdateUser: string
 }

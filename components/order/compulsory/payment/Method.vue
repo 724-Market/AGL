@@ -11,6 +11,7 @@
 
     <ElementsFormRadioPaymentMethods 
       v-model="paymentMethodText" 
+      :order="order"
       :fee="radiioPaymentObject"
     />
 

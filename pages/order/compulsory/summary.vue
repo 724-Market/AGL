@@ -67,7 +67,7 @@
             :loading="isLoading"
           />
 
-          <NuxtLink to="payment" class="btn btn-back">ย้อนกลับ</NuxtLink>
+          <NuxtLink v-if="orderDetail" :to="'placeorder?orderNo='+orderDetail?.OrderNo" class="btn btn-back">ย้อนกลับ</NuxtLink>
         </div>
       </div>
     </FormKit>
@@ -77,11 +77,7 @@
 
 <script lang="ts" setup>
 // Define import
-import { IInformation } from "~~/shared/entities/information-entity";
 import { IPackageRequest, IPackageResponse } from "~~/shared/entities/packageList-entity";
-// Import store
-import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
-import { useStorePackageList } from "~/stores/order/storePackageList";
 
 // using pinia
 import { storeToRefs } from "pinia";

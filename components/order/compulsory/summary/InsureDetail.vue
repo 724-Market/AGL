@@ -53,7 +53,7 @@
             </div>
 
             <div class="summary-action">
-              <a class="btn" href="#">แก้ไขข้อมูล</a>
+              <a class="btn" :href="'/placeorder?orderNo='+orderDetail.OrderNo+'#InsureDetail'">แก้ไขข้อมูล</a>
             </div>
           </section>
         </div>
@@ -110,7 +110,7 @@
             </div>
 
             <div class="summary-action">
-              <a class="btn" href="#">แก้ไขข้อมูล</a>
+              <a class="btn" :href="'/information?orderNo='+orderDetail.OrderNo">แก้ไขข้อมูล</a>
             </div>
           </section>
         </div>
@@ -159,7 +159,7 @@
             </div>
 
             <div class="summary-action">
-              <a class="btn" href="#">แก้ไขข้อมูล</a>
+              <a class="btn" :href="'/packages?orderNo='+orderDetail.OrderNo">แก้ไขข้อมูล</a>
             </div>
           </section>
         </div>
@@ -202,7 +202,7 @@
             </div>
 
             <div class="summary-action">
-              <a class="btn" href="#">แก้ไขข้อมูล</a>
+              <a class="btn" :href="'/placeorder?orderNo='+orderDetail.OrderNo+'#InsuranceRecieve'">แก้ไขข้อมูล</a>
             </div>
           </section>
         </div>
@@ -264,7 +264,7 @@
             </div>
 
             <div class="summary-action">
-              <a class="btn" href="#">แก้ไขข้อมูล</a>
+              <a class="btn" :href="'/placeorder?orderNo='+orderDetail.OrderNo+'#TaxInvoice'">แก้ไขข้อมูล</a>
             </div>
           </section>
         </div>

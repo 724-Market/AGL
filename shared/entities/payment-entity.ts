@@ -105,3 +105,8 @@ export interface PaymentSaveResponse {
     UpdateDate: string
     UpdateUser: string
 }
+
+export interface PaymentConfirmRequest{
+    OrderNo:string
+    IsConsent:string
+}

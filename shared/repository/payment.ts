@@ -1,4 +1,4 @@
-import { CalculateRequest, CalculateResponse, PaymentSaveRequest, PaymentSaveResponse } from "../entities/payment-entity";
+import { CalculateRequest, CalculateResponse, PaymentConfirmRequest, PaymentSaveRequest, PaymentSaveResponse } from "../entities/payment-entity";
 import { IAPIResponse } from "../entities/useApi-response";
 
 class PaymentModule {
@@ -9,6 +9,9 @@ class PaymentModule {
     }
     async save(req:PaymentSaveRequest): Promise<IAPIResponse<PaymentSaveResponse>> {
       return await useCallApi().apiRepository<PaymentSaveResponse>(`${this.RESOURCE}/save`, req)
+    }
+    async confirm(req:PaymentConfirmRequest): Promise<IAPIResponse<PaymentSaveResponse>> {
+      return await useCallApi().apiRepository<PaymentSaveResponse>(`${this.RESOURCE}/confirm`, req)
     }
   }
   

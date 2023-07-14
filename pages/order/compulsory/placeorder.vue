@@ -453,6 +453,12 @@ const submitOrder = async (formData: any) => {
       getData.apiResponse.Data &&
       getData.apiResponse.Data.length > 0
     ) {
+      if(orderReq.Customer && orderReq.Customer.LegalPersonProfile){
+        orderReq.Customer.LegalPersonProfile.CustomerID =  getData.apiResponse.Data[0].Order.Customer.LegalPersonProfile.CustomerID;
+      }
+      if(orderReq.Customer && orderReq.Customer.PersonProfile){
+        orderReq.Customer.PersonProfile.CustomerID =  getData.apiResponse.Data[0].Order.Customer.PersonProfile.CustomerID;
+      }
       if (orderReq.Customer && orderReq.Customer.DefaultAddress) {
         orderReq.Customer.DefaultAddress.AddressID =
           getData.apiResponse.Data[0].Order.Customer.DefaultAddress.AddressID;

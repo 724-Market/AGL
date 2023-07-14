@@ -72,7 +72,7 @@
                     />
                   </div>
 
-                  <aside class="new-request-tax-address inner-section">
+                  <aside class="new-request-tax-address inner-section" v-if="addressIncludeTaxType=='addnew'">
                     <h4>แก้ไขใบกำกับภาษี</h4>
 
                     <div class="row">
@@ -225,8 +225,7 @@
                       v-model="addressDeliveryTaxType"
                     />
                   </div>
-
-                  <aside class="new-shipped-tax-address inner-section">
+                  <aside v-if="addressDeliveryTaxType=='addnew'" class="new-shipped-tax-address inner-section">
                     <h4>ที่อยู่จัดส่งใหม่</h4>
                     <div class="row">
                       <ElementsFormNewAddress
@@ -671,18 +670,3 @@ watch(()=>props.cacheOrderRequest,(newValue)=>{
 //   }
 // )
 </script>
-<style scoped>
-.new-basic-tax-address,
-.new-request-tax-address,
-.new-shipped-tax-address {
-  display: none;
-}
-
-.basic-tax-address:has(.formkit-input[value="addnew" i]:checked) .new-basic-tax-address,
-.request-tax-address:has(.formkit-input[value="addnew" i]:checked)
-  .new-request-tax-address,
-.shipped-tax-address:has(.formkit-input[value="addnew" i]:checked)
-  .new-shipped-tax-address {
-  display: block;
-}
-</style>

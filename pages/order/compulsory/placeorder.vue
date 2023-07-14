@@ -380,7 +380,12 @@ const submitOrder = async (formData: any) => {
 
   insureDetail.value.IsDeliveryAddressSameAsDefault =
     insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault;
-  const DeliveryMethod = getDeliveryMethod();
+  let DeliveryMethod = getDeliveryMethod();
+  let DeliveryMethod2= null
+  if(DeliveryMethod[1].MethodType!='')
+  {
+    DeliveryMethod2 = DeliveryMethod[1]
+  }
   let orderReq: PlaceOrderRequest = {
     OrderNo: OrderInfo.value?.OrderNo ?? undefined,
     Package: {
@@ -400,7 +405,7 @@ const submitOrder = async (formData: any) => {
     CarDetailsExtension: carDetail.value,
     Customer: insureDetail.value,
     DeliveryMethod1: DeliveryMethod[0],
-    DeliveryMethod2: RequestIncludeTax.value ? DeliveryMethod[1] : null,
+    DeliveryMethod2: RequestIncludeTax.value ? DeliveryMethod2 : null,
     IsTaxInvoice: RequestIncludeTax.value,
   };
   storeOrder.setOrder(orderReq);

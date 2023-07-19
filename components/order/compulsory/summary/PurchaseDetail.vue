@@ -1,20 +1,20 @@
 <template>
-  <div class="status-list">
+  <div class="status-list" v-if="$props.payment">
     <figure class="status-icon">
       <div class="icon order success"></div>
     </figure>
     <h4 class="title">รายละเอียดคำสั่งซื้อ</h4>
     <div class="status-item text-info text-big">
       <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
-      <p>7B2303094767564</p>
+      <p>{{ $props.orderNo }}</p>
     </div>
     <div class="status-item text-success">
       <h5 class="topic">วันที่ทำรายการ</h5>
-      <p>14 มี.ค. 2566 17:34</p>
+      <p>{{ formatDate($props.createDate ?? "") }}</p>
     </div>
     <div class="status-item text-danger">
       <h5 class="topic">ยอดชำระทั้งหมด</h5>
-      <p>8,000.00 บาท</p>
+      <p>{{ $props.payment.GrandAmount }} บาท</p>
     </div>
     <div class="status-item text-warning">
       <h5 class="topic">สถานะ</h5>
@@ -22,3 +22,21 @@
     </div>
   </div>
 </template>
+<script setup lang="ts">
+import {  PaymentDetails } from "~/shared/entities/order-entity";
+
+
+const props = defineProps({
+  orderNo:String,
+  createDate:String,
+  payment: {
+    type: Object as () => PaymentDetails,
+  },
+});
+
+const formatDate = (date:string):string=>{
+  const format =useUtility().formatDate(date, "DD MMMM BBBB HH:mm:ss");;
+
+  return format
+}
+</script>

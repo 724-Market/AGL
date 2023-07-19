@@ -53,7 +53,9 @@
             </div>
 
             <div class="summary-action">
-              <a class="btn" :href="'/placeorder?orderNo='+orderDetail.OrderNo+'#InsureDetail'">แก้ไขข้อมูล</a>
+              <button class="btn" @click="ActionEditData('placeorder#InsureDetail')">
+                แก้ไขข้อมูล
+              </button>
             </div>
           </section>
         </div>
@@ -79,7 +81,8 @@
               <h4 class="topic">รถยนต์</h4>
               <p>
                 {{ orderDetail.CarDetails.CarBrand }} รุ่น
-                {{ orderDetail.CarDetails.CarModel }} รุ่นย่อย {{ orderDetail.CarDetails.SubCarModel ?? "ไม่ทราบ" }} ปี
+                {{ orderDetail.CarDetails.CarModel }} รุ่นย่อย
+                {{ orderDetail.CarDetails.SubCarModel ?? "ไม่ทราบ" }} ปี
                 {{ orderDetail.CarDetails.CarYear }} ({{
                   orderDetail.CarDetails.CarColor
                 }})
@@ -110,7 +113,9 @@
             </div>
 
             <div class="summary-action">
-              <a class="btn" :href="'/information?orderNo='+orderDetail.OrderNo">แก้ไขข้อมูล</a>
+              <button class="btn" @click="ActionEditData('information')">
+                แก้ไขข้อมูล
+              </button>
             </div>
           </section>
         </div>
@@ -159,7 +164,7 @@
             </div>
 
             <div class="summary-action">
-              <a class="btn" :href="'/packages?orderNo='+orderDetail.OrderNo">แก้ไขข้อมูล</a>
+              <button class="btn" @click="ActionEditData('packages')">แก้ไขข้อมูล</button>
             </div>
           </section>
         </div>
@@ -191,7 +196,10 @@
             </div>
             <div class="summary-item">
               <h4 class="topic">ชื่อผู้รับ</h4>
-              <p> {{ orderDetail.AssuredDetails.FirstName }}  {{ orderDetail.AssuredDetails.LastName }} </p>
+              <p>
+                {{ orderDetail.AssuredDetails.FirstName }}
+                {{ orderDetail.AssuredDetails.LastName }}
+              </p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ที่อยู่จัดส่ง</h4>
@@ -202,7 +210,9 @@
             </div>
 
             <div class="summary-action">
-              <a class="btn" :href="'/placeorder?orderNo='+orderDetail.OrderNo+'#InsuranceRecieve'">แก้ไขข้อมูล</a>
+              <button class="btn" @click="ActionEditData('placeorder#InsuranceRecieve')">
+                แก้ไขข้อมูล
+              </button>
             </div>
           </section>
         </div>
@@ -226,7 +236,10 @@
           <section class="summary-list" v-if="orderDetail.IsTaxInvoice">
             <div class="summary-item">
               <h4 class="topic">ออกใบกำกับภาษีให้</h4>
-              <p>{{ orderDetail.TaxInvoiceDetails.AddressFirstName }}{{ orderDetail.TaxInvoiceDetails.AddressLastName }}</p>
+              <p>
+                {{ orderDetail.TaxInvoiceDetails.AddressFirstName }}
+                {{ orderDetail.TaxInvoiceDetails.AddressLastName }}
+              </p>
             </div>
             <div class="summary-item">
               <h4 class="topic">เลขประจำตัวผู้เสียภาษี</h4>
@@ -252,7 +265,10 @@
             </div>
             <div class="summary-item">
               <h4 class="topic">ชื่อผู้รับ</h4>
-              <p v-if="orderDetail.DeliveryTaxInvoiceDetails">{{ orderDetail.DeliveryTaxInvoiceDetails.AddressFirstName }}{{ orderDetail.DeliveryTaxInvoiceDetails.AddressLastName }}</p>
+              <p v-if="orderDetail.DeliveryTaxInvoiceDetails">
+                {{ orderDetail.DeliveryTaxInvoiceDetails.AddressFirstName
+                }}{{ orderDetail.DeliveryTaxInvoiceDetails.AddressLastName }}
+              </p>
               <p v-else>-</p>
             </div>
             <div class="summary-item">
@@ -264,7 +280,9 @@
             </div>
 
             <div class="summary-action">
-              <a class="btn" :href="'/placeorder?orderNo='+orderDetail.OrderNo+'#TaxInvoice'">แก้ไขข้อมูล</a>
+              <button class="btn" @click="ActionEditData('placeorder#TaxInvoice')">
+                แก้ไขข้อมูล
+              </button>
             </div>
           </section>
         </div>
@@ -274,7 +292,19 @@
 </template>
 <script setup lang="ts">
 import { OrderDetails } from "~/shared/entities/order-entity";
+import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
+import { storeToRefs } from "pinia";
+import { useStoreInformation } from "~/stores/order/storeInformation";
+import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
+import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import { IInformation } from "~/shared/entities/information-entity";
+//define store
+const store = useStoreOrderSummary();
 
+const infomation = useStoreInformation();
+const placeorder = useStorePlaceorder();
+// define getter in store
+const { OrderSummaryInfo } = storeToRefs(store);
 const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
 
 const props = defineProps({
@@ -371,7 +401,8 @@ const getFullAddressDelivery = (): string => {
       fullAddress += orderDetail.value.DeliveryPolicyDetails.ProvinceName + " ";
     }
     if (orderDetail.value.DeliveryPolicyDetails.ZipCode.length > 0) {
-      fullAddress += "รหัสไปรษณีย์ " + orderDetail.value.DeliveryPolicyDetails.ZipCode + " ";
+      fullAddress +=
+        "รหัสไปรษณีย์ " + orderDetail.value.DeliveryPolicyDetails.ZipCode + " ";
     }
   }
   return fullAddress;
@@ -437,7 +468,8 @@ const getFullAddressDeliveryTaxInvoice = (): string => {
       fullAddress += orderDetail.value.DeliveryTaxInvoiceDetails.ProvinceName + " ";
     }
     if (orderDetail.value.DeliveryTaxInvoiceDetails.ZipCode.length > 0) {
-      fullAddress += "รหัสไปรษณีย์ " + orderDetail.value.DeliveryTaxInvoiceDetails.ZipCode + " ";
+      fullAddress +=
+        "รหัสไปรษณีย์ " + orderDetail.value.DeliveryTaxInvoiceDetails.ZipCode + " ";
     }
   }
   return fullAddress;
@@ -449,22 +481,28 @@ const getDeliveryText = (): string => {
       orderDetail.value.DeliveryMethod1.MethodType == "EXCLUDE" &&
       orderDetail.value.DeliveryMethod1.DeliveryType == "PAPER"
     ) {
-      text='รับกรมธรรม์ตัวจริงทางทางหน้าร้าน'
+      text = "รับกรมธรรม์ตัวจริงทางทางหน้าร้าน";
     } else if (
       orderDetail.value.DeliveryMethod1.MethodType == "EXCLUDE" &&
       orderDetail.value.DeliveryMethod1.DeliveryType == "ELECTRONIC"
     ) {
-      text='รับกรมธรรม์ตัวจริงทางอีเมล์'
+      text = "รับกรมธรรม์ตัวจริงทางอีเมล์";
     } else if (
       orderDetail.value.DeliveryMethod1.MethodType == "ALL_AT_ONCE" &&
       orderDetail.value.DeliveryMethod1.DeliveryType == "DELIVERY"
     ) {
-      text='รับกรมธรรม์ตัวจริงทางไปรษณีย์ ('+orderDetail.value.DeliveryMethod1.DeliveryChannelType+')'
+      text =
+        "รับกรมธรรม์ตัวจริงทางไปรษณีย์ (" +
+        orderDetail.value.DeliveryMethod1.DeliveryChannelType +
+        ")";
     } else if (
       orderDetail.value.DeliveryMethod1.MethodType == "POLICY" &&
       orderDetail.value.DeliveryMethod1.DeliveryType == "DELIVERY"
     ) {
-      text='รับกรมธรรม์ตัวจริงทางไปรษณีย์ ('+orderDetail.value.DeliveryMethod1.DeliveryChannelType+')'
+      text =
+        "รับกรมธรรม์ตัวจริงทางไปรษณีย์ (" +
+        orderDetail.value.DeliveryMethod1.DeliveryChannelType +
+        ")";
     }
   }
   return text;
@@ -476,12 +514,60 @@ const getDeliveryTextTaxInvoice = (): string => {
       orderDetail.value.DeliveryMethod1.MethodType == "ALL_AT_ONCE" &&
       orderDetail.value.DeliveryMethod1.DeliveryType == "DELIVERY"
     ) {
-      text='จัดส่งพร้อมกรมธรรม์'
-    } else  {
-      text='รับใบกำกับภาษีตัวจริงทางไปรษณีย์ ('+orderDetail.value.DeliveryMethod2.DeliveryChannelType+')'
+      text = "จัดส่งพร้อมกรมธรรม์";
+    } else {
+      text =
+        "รับใบกำกับภาษีตัวจริงทางไปรษณีย์ (" +
+        orderDetail.value.DeliveryMethod2.DeliveryChannelType +
+        ")";
     }
   }
   return text;
+};
+const getCarDetail = (): string => {
+  let carDetail = "";
+  if (props.orderDetail) {
+    carDetail = `${props.orderDetail.CarDetails.CarBrand} ${props.orderDetail.CarDetails.CarModel} ${props.orderDetail.CarDetails.SubCarModel}  ${props.orderDetail.CarDetails.CarYear}`;
+  }
+  return carDetail;
+};
+const ActionEditData = (url: string) => {
+  const router = useRouter();
+  if (OrderSummaryInfo.value && OrderSummaryInfo.value.Order) {
+    const order = OrderSummaryInfo.value.Order;
+    if (url.includes("placeorder")) {
+      const req: PlaceOrderRequest = {
+        OrderNo: order.CarDetails.OrderNo,
+        Package: order.Package,
+        CarDetailsExtension: order.CarDetailsExtension,
+        Customer: order.Customer,
+        DeliveryMethod1: order.DeliveryMethod1,
+        DeliveryMethod2: order.DeliveryMethod2,
+        IsTaxInvoice: order.IsTaxInvoice,
+      };
+      placeorder.setOrder(req);
+    } else if (url.includes("information") || url.includes("packages")) {
+      const req: IInformation = {
+        CarBrand: order.CarDetails.CarBrand,
+        CarCC: order.CarDetails.CarCC.toFixed(0),
+        CarDetail: getCarDetail(),
+        CarModel: order.CarDetails.CarModel,
+        CarSize: order.CarDetails.CarType,
+        CarType: order.Package.CarTypeCode,
+        CarUse: order.Package.UseCarCode,
+        CarYear: order.CarDetails.CarYear.toFixed(0),
+        customSubCarModel: "",
+        EffectiveDate: order.Package.EffectiveDate,
+        EffectiveType: order.Package.EffectiveType,
+        ExpireDate: order.Package.ExpireDate,
+        SubCarModel: order.CarDetails.SubCarModel,
+        InsuranceDay: 0,
+      };
+      infomation.setInformation(req);
+    }
+  }
+
+  router.push("/order/compulsory/" + url);
 };
 const onLoad = onMounted(() => {
   if (props.orderDetail) {

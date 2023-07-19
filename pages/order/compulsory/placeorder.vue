@@ -302,8 +302,7 @@ const onLoad = onMounted(async () => {
     if (PackageInfo.value && CarInfo.value) {
       infomation.value = CarInfo.value;
       SubCarModel.value = infomation.value.SubCarModel;
-      console.log("AuthenInfo", AuthenInfo.value);
-      console.log("PackageInfo", PackageInfo.value);
+
       packageSelect.value = PackageInfo.value;
 
       isLoading.value = true;
@@ -319,7 +318,7 @@ const onLoad = onMounted(async () => {
     }
 
     if (OrderInfo.value) {
-      console.log("OrderInfo", OrderInfo.value);
+
       let insuranceRecieve: InsuranceRecieveObject = {
         ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? "",
         Email: OrderInfo.value.DeliveryMethod1?.DeliveryEmail ?? "",
@@ -368,7 +367,7 @@ const onLoad = onMounted(async () => {
 });
 // Submit form event
 const submitOrder = async (formData: any) => {
-  console.log(formData);
+
   isLoading.value = true;
 
   if (insuranceRecieve.value?.ShippingPolicy == "postal") {
@@ -453,19 +452,20 @@ const submitOrder = async (formData: any) => {
       getData.apiResponse.Data &&
       getData.apiResponse.Data.length > 0
     ) {
-      if(orderReq.Customer && orderReq.Customer.LegalPersonProfile){
+      if(orderReq.Customer && orderReq.Customer.LegalPersonProfile && getData.apiResponse.Data[0].Order){
         orderReq.Customer.LegalPersonProfile.CustomerID =  getData.apiResponse.Data[0].Order.Customer.LegalPersonProfile.CustomerID;
       }
-      if(orderReq.Customer && orderReq.Customer.PersonProfile){
+      if(orderReq.Customer && orderReq.Customer.PersonProfile && getData.apiResponse.Data[0].Order){
         orderReq.Customer.PersonProfile.CustomerID =  getData.apiResponse.Data[0].Order.Customer.PersonProfile.CustomerID;
       }
-      if (orderReq.Customer && orderReq.Customer.DefaultAddress) {
+      if (orderReq.Customer && orderReq.Customer.DefaultAddress && getData.apiResponse.Data[0].Order) {
         orderReq.Customer.DefaultAddress.AddressID =
           getData.apiResponse.Data[0].Order.Customer.DefaultAddress.AddressID;
       }
       if (
         orderReq.Customer &&
         orderReq.Customer.DeliveryAddress &&
+        getData.apiResponse.Data[0].Order &&
         getData.apiResponse.Data[0].Order.Customer.DeliveryAddress
       ) {
         orderReq.Customer.DeliveryAddress.AddressID =
@@ -474,6 +474,7 @@ const submitOrder = async (formData: any) => {
       if (
         orderReq.Customer &&
         orderReq.Customer.TaxInvoiceAddress &&
+        getData.apiResponse.Data[0].Order &&
         getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress
       ) {
         orderReq.Customer.TaxInvoiceAddress.AddressID =
@@ -482,6 +483,7 @@ const submitOrder = async (formData: any) => {
       if (
         orderReq.Customer &&
         orderReq.Customer.TaxInvoiceDeliveryAddress &&
+        getData.apiResponse.Data[0].Order &&
         getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress
       ) {
         orderReq.Customer.TaxInvoiceDeliveryAddress.AddressID =
@@ -868,7 +870,7 @@ const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
   carDetail.value = objectCarDetail;
 };
 const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject) => {
-  console.log('RecieveObject', RecieveObject)
+
   switch (RecieveObject.ShippingPolicy) {
     case "pdf":
       if (RecieveObject.Email.length > 0) checklist.value[2].className = "current";
@@ -933,8 +935,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
           insureDetail.value.DefaultAddress.No.length > 0 &&
           insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
           insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
-          insureDetail.value.DefaultAddress.SubDistrictID.length > 0 &&
-          insureDetail.value.DefaultAddress.ZipCode.length > 0
+          insureDetail.value.DefaultAddress.SubDistrictID.length > 0 
         ) {
           checklist.value[1].className = "current";
         } else {
@@ -953,8 +954,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
           insureDetail.value.DefaultAddress.No.length > 0 &&
           insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
           insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
-          insureDetail.value.DefaultAddress.SubDistrictID.length > 0 &&
-          insureDetail.value.DefaultAddress.ZipCode.length > 0
+          insureDetail.value.DefaultAddress.SubDistrictID.length > 0
         ) {
           checklist.value[1].className = "current";
         } else {
@@ -976,8 +976,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
           insureDetail.value.DefaultAddress.No.length > 0 &&
           insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
           insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
-          insureDetail.value.DefaultAddress.SubDistrictID.length > 0 &&
-          insureDetail.value.DefaultAddress.ZipCode.length > 0
+          insureDetail.value.DefaultAddress.SubDistrictID.length > 0 
         ) {
           checklist.value[1].className = "current";
         } else {
@@ -992,8 +991,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
           insureDetail.value.DefaultAddress.No.length > 0 &&
           insureDetail.value.DefaultAddress.ProvinceID.length > 0 &&
           insureDetail.value.DefaultAddress.DistrictID.length > 0 &&
-          insureDetail.value.DefaultAddress.SubDistrictID.length > 0 &&
-          insureDetail.value.DefaultAddress.ZipCode.length > 0
+          insureDetail.value.DefaultAddress.SubDistrictID.length > 0 
         ) {
           checklist.value[1].className = "current";
         } else {

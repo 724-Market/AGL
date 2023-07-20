@@ -91,6 +91,7 @@
 
 <script lang="ts" setup>
 // using pinia
+import { isString } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { IInformation } from "~/shared/entities/information-entity";
 import {
@@ -131,11 +132,10 @@ const loadOrderSummary = async (orderNo: string) => {
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
       // save to store
-      const data = response.apiResponse.Data[0]
+      const data = response.apiResponse.Data[0];
       store.setOrderSummary(data);
 
-      setStoretoStep(data)
-
+      setStoretoStep(data,orderNo);
     }
   }
 };
@@ -146,65 +146,67 @@ const getCarDetail = (): string => {
   }
   return carDetail;
 };
-const getDayOfYear = (EffectiveDate:string,ExpireDate:string): number => {
+const getDayOfYear = (EffectiveDate: string, ExpireDate: string): number => {
   let days = 0;
-  
-    const startDate = new Date(EffectiveDate);
-    const endDate = new Date(ExpireDate);
-    const diff = Math.abs(startDate.getTime() - endDate.getTime());
-    const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
-    days = diffDays - 1;
+
+  const startDate = new Date(EffectiveDate);
+  const endDate = new Date(ExpireDate);
+  const diff = Math.abs(startDate.getTime() - endDate.getTime());
+  const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+  days = diffDays - 1;
 
   return days;
 };
-const setStoretoStep = (data:OrderResponse)=>{
-
+const setStoretoStep = (data: OrderResponse,orderNo:string) => {
   if (data && data.Order) {
     const order = data.Order;
-   
-      const req: PlaceOrderRequest = {
-        OrderNo: order.CarDetails.OrderNo,
-        Package: order.Package,
-        CarDetailsExtension: order.CarDetailsExtension,
-        Customer: order.Customer,
-        DeliveryMethod1: order.DeliveryMethod1,
-        DeliveryMethod2: order.DeliveryMethod2,
-        IsTaxInvoice: order.IsTaxInvoice,
-      };
-      if(req.Customer && req.Customer.DefaultAddress){
-        req.Customer.DefaultAddress.ZipCode = orderDetail.value?.AssuredDetails.ZipCode
-      }
-      if(req.Customer && req.Customer.DeliveryAddress){
-        req.Customer.DeliveryAddress.ZipCode = orderDetail.value?.DeliveryPolicyDetails.ZipCode
-      }
-      if(req.Customer && req.Customer.TaxInvoiceAddress){
-        req.Customer.TaxInvoiceAddress.ZipCode = orderDetail.value?.TaxInvoiceDetails.ZipCode
-      }
-      if(req.Customer && req.Customer.TaxInvoiceDeliveryAddress){
-        req.Customer.TaxInvoiceDeliveryAddress.ZipCode = orderDetail.value?.DeliveryTaxInvoiceDetails.ZipCode
-      }
-      placeorder.setOrder(req);
 
-      const reqInfo: IInformation = {
-        CarBrand: order.Package.CarBrandID,
-        CarCC:orderDetail.value?.CarDetails.CarCC.toFixed(0) ?? "",
-        CarDetail: getCarDetail(),
-        CarModel: order.Package.CarModelID,
-        CarSize: order.Package.CarCategoryID,
-        CarType: order.Package.CarTypeCode,
-        CarUse: order.Package.UseCarCode,
-        CarYear: order.CarDetails.CarSalesYear.toFixed(0),
-        customSubCarModel: "",
-        EffectiveDate: order.Package.EffectiveDate,
-        EffectiveType: order.Package.EffectiveType,
-        ExpireDate: order.Package.ExpireDate,
-        SubCarModel: order.Package.CarModelID,
-        InsuranceDay: getDayOfYear(order.Package.EffectiveDate,order.Package.ExpireDate),
-      };
-      infomation.setInformation(reqInfo);
-   
+    const req: PlaceOrderRequest = {
+      OrderNo: orderNo,
+      Package: order.Package,
+      CarDetailsExtension: order.CarDetailsExtension,
+      Customer: order.Customer,
+      DeliveryMethod1: order.DeliveryMethod1,
+      DeliveryMethod2: order.DeliveryMethod2,
+      IsTaxInvoice: order.IsTaxInvoice,
+    };
+    console.log(req)
+    if (req.Customer && req.Customer.DefaultAddress) {
+      req.Customer.DefaultAddress.ZipCode = orderDetail.value?.AssuredDetails.ZipCode;
+    }
+    if (req.Customer && req.Customer.DeliveryAddress) {
+      req.Customer.DeliveryAddress.ZipCode =
+        orderDetail.value?.DeliveryPolicyDetails.ZipCode;
+    }
+    if (req.Customer && req.Customer.TaxInvoiceAddress) {
+      req.Customer.TaxInvoiceAddress.ZipCode =
+        orderDetail.value?.TaxInvoiceDetails.ZipCode;
+    }
+    if (req.Customer && req.Customer.TaxInvoiceDeliveryAddress) {
+      req.Customer.TaxInvoiceDeliveryAddress.ZipCode =
+        orderDetail.value?.DeliveryTaxInvoiceDetails.ZipCode;
+    }
+    placeorder.setOrder(req);
+
+    const reqInfo: IInformation = {
+      CarBrand: order.Package.CarBrandID,
+      CarCC: orderDetail.value?.CarDetails.CarCC.toFixed(0) ?? "",
+      CarDetail: getCarDetail(),
+      CarModel: order.Package.CarModelID,
+      CarSize: order.Package.CarCategoryID,
+      CarType: order.Package.CarTypeCode,
+      CarUse: order.Package.UseCarCode,
+      CarYear: order.CarDetails.CarSalesYear.toFixed(0),
+      customSubCarModel: "",
+      EffectiveDate: order.Package.EffectiveDate,
+      EffectiveType: order.Package.EffectiveType,
+      ExpireDate: order.Package.ExpireDate,
+      SubCarModel: order.Package.CarModelID,
+      InsuranceDay: getDayOfYear(order.Package.EffectiveDate, order.Package.ExpireDate),
+    };
+    infomation.setInformation(reqInfo);
   }
-}
+};
 const loadOrderDetail = async (orderNo: string) => {
   const req: OrderDetailRequest = {
     OrderNo: orderNo,
@@ -215,7 +217,6 @@ const loadOrderDetail = async (orderNo: string) => {
     if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
       orderDetail.value = response.apiResponse.Data[0].OrderDetails;
       paymentDetail.value = response.apiResponse.Data[0].PaymentDetails;
-
     } else {
       // data not found
     }
@@ -223,16 +224,26 @@ const loadOrderDetail = async (orderNo: string) => {
   }
 };
 const onLoad = onMounted(async () => {
-  isLoading.value = true;
-  //TODO testing implement order detail
-  await loadOrderDetail("AMC2307000036");
-  await loadOrderSummary("AMC2307000036")
-  
-  isLoading.value = false;
+  const route = useRoute();
+  console.log(route.query);
+  if (route.query && isString(route.query.OrderNo)) {
+    const OrderNo:string =  route.query.OrderNo
+    isLoading.value = true;
+    //TODO testing implement order detail
+    await loadOrderDetail(OrderNo); //AMC2307000036
+    await loadOrderSummary(OrderNo);
+
+    isLoading.value = false;
+  }
+  else{
+    const router = useRouter()
+    router.push('/order/compulsory/payment')
+  }
 });
 
 // Submit form event
 const submitOrder = async (formData: any) => {
+  isLoading.value = true;
   // Add waiting time for debug
   const req: PaymentConfirmRequest = {
     IsConsent: isConsent.value,
@@ -240,8 +251,12 @@ const submitOrder = async (formData: any) => {
   };
   const response = await useRepository().payment.confirm(req);
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    isLoading.value = false;
+    const router = useRouter();
+    router.push('/payment/qr')
   } else {
   }
+  isLoading.value = false;
 };
 
 // Define layout

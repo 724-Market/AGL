@@ -257,7 +257,7 @@ const submitOrder = async (formData: any) => {
   if (response.apiResponse.Status && response.apiResponse.Status == "200" && response.apiResponse.Data) {
     paymentSaveResponse.value = response.apiResponse.Data
     storePayment.setPayment(paymentSaveResponse.value)
-    router.push("/order/compulsory/summary");
+    router.push("/order/compulsory/summary?OrderNo="+paymentSaveResponse.value.OrderNo);
   } else {
     isError.value = true;
     messageError.value = response.apiResponse.ErrorMessage ?? ""

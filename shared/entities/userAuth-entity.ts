@@ -20,6 +20,6 @@ export interface IUserAuth{
     accessToken: string,
     expiresIn: number,
     tokenType: string,
-    refreshToken: string,
+    refresh_token: string,
     issuedDate:string,
 }

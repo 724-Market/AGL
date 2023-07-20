@@ -94,7 +94,13 @@ if (props.layoutClass === 'page-monito-minimal') {
 } else {
     showComponent.value = true
 }
-
+const getToken = async()=>{
+        const token = await useUtility().getToken()
+}
+const onLoad = onMounted(async ()=>{
+    getToken()
+    setTimeout(getToken,1000*60)
+})
 // Define style
 useHead({
     link: [{ rel: 'stylesheet', href: '/assets/css/monito.css' }],

@@ -4,8 +4,8 @@ export interface OrderDetailRequest {
     OrderNo: string
 }
 export interface OrderDetailResponse {
-    OrderDetails: OrderDetails
-    PaymentDetails: PaymentDetails
+    OrderDetails?: OrderDetails
+    PaymentDetails?: PaymentDetails
 }
 
 export interface OrderDetails {
@@ -214,11 +214,12 @@ export interface PaymentDetails {
 
 
 export interface OrderResponse {
-    Order: Order
-    Payment: Payment
+    Order?: Order
+    Payment?: Payment
   }
   
   export interface Order {
+    Package: Package
     CarDetails: CarDetails
     CarDetailsExtension: CarDetailsExtension
     Customer: Customer
@@ -236,7 +237,20 @@ export interface OrderResponse {
     CompanyCode: string
     CarSalesYear: number
   }
-  
+  export interface Package {
+    UseCarCode: string
+    CarTypeCode: string
+    CarCategoryID: string
+    CarSalesYear: string
+    CarBrandID: string
+    CarModelID: string
+    SubCarModelID: string
+    CompanyCode: string
+    AgentCode: string
+    EffectiveType: string
+    EffectiveDate: string
+    ExpireDate: string
+  }
   export interface CarDetailsExtension {
     License: string
     BodyNo: string

@@ -29,21 +29,7 @@ export const useStoreInformation = defineStore('useStoreInformation', {
         },
 
         clearInformation() {
-            this.$state = {
-                CarUse: "",
-                CarType: "",
-                CarSize: "",
-                CarYear: "",
-                CarBrand: "",
-                CarModel: "",
-                SubCarModel: "",
-                customSubCarModel: "",
-                CarCC: "",
-                EffectiveType: "",
-                EffectiveDate: "",
-                ExpireDate: "",
-                CarDetail: ""
-            }
+            this.$reset()
         }
     },
     persist: {

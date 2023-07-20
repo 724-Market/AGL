@@ -57,46 +57,7 @@ export const useStorePlaceorder = defineStore('useStorePlaceorder', {
         },
 
         clearOrder() {
-            this.$state = {
-                OrderNo:"",
-                Package: {
-                    UseCarCode: "",
-                    CarTypeCode: "",
-                    CarCategoryID: "",
-                    CarSalesYear: "",
-                    CarBrandID: "",
-                    CarModelID: "",
-                    SubCarModelID: "",
-                    CompanyCode: "",
-                    AgentCode: "",
-                    EffectiveType: "",
-                    EffectiveDate: "",
-                    ExpireDate: "",
-                },
-                CarDetailsExtension: {
-                    License: "",
-                    BodyNo: "",
-                    EngineNo: "",
-                    ColorID: "",
-                    LicenseProvinceID: "",
-                    LicenseFileID: "",
-                    IsRedLicense: false
-                },
-                Customer: {},
-                DeliveryMethod1:{
-                    MethodType: "",
-                    DeliveryType: "",
-                    DeliveryChannelType: "",
-                    DeliveryEmail: "",
-                },
-                DeliveryMethod2:{
-                    MethodType: "",
-                    DeliveryType: "",
-                    DeliveryChannelType: "",
-                    DeliveryEmail: "",
-                },
-                IsTaxInvoice: false
-            }
+            this.$reset()
         }
     },
     persist: {

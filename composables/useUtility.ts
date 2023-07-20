@@ -14,8 +14,8 @@ export default () => {
         // check token expire
         const store = useStoreUserAuth();
         const { AuthenInfo } = storeToRefs(store)
+        
         const checkToken = store.checkTokenExpire()
-        console.log('checkToken',checkToken)
         if (checkToken) {
             if (AuthenInfo.value) {
                 token = AuthenInfo.value.accessToken
@@ -23,7 +23,7 @@ export default () => {
         }
         else {
             // refresh token in store
-            const refresToken = AuthenInfo.value ? AuthenInfo.value.refreshToken : ""
+            const refresToken = AuthenInfo.value ? AuthenInfo.value.refresh_token : ""
             if (refresToken && refresToken != "") {
 
                 const data = await store.refreshToken(refresToken)
@@ -32,10 +32,7 @@ export default () => {
                 }
 
             }
-
-
         }
-
         return token
     }
     const getCompanyImage = (): string => {
@@ -86,7 +83,7 @@ export default () => {
             }
 
         }
-        console.log(page)
+        
         return page
     }
 

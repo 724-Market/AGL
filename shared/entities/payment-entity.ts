@@ -1,48 +1,47 @@
 export interface CalculateRequest {
     OrderNo: string
 }
-
+//TODO: Mock New Class
 export interface CalculateResponse {
     Total: number
     DebitCredit: DebitCredit
     BillPayment: BillPayment
     Pledge: Pledge
-    DeliveryFee: DeliveryFee[]
+    DeliveryFee?: DeliveryFee[]
 }
 export interface DebitCredit {
-    TotalDiscount: TotalDiscount
-    Max: Max
-    Fee: Fee
-    Paper: Paper
+    ZeroCommission?: CalculateData
+    SomeCommission?: CalculateData
+    FullCommission?: CalculateData
+    Paper?: Paper
 }
 export interface BillPayment {
-    TotalDiscount: TotalDiscount
-    Max: Max
-    Fee: Fee
-    Paper: Paper
+    ZeroCommission?: CalculateData
+    SomeCommission?: CalculateData
+    FullCommission?: CalculateData
+    Paper?: Paper
 }
 export interface Pledge {
-    TotalDiscount: TotalDiscount
-    Max: Max
+    ZeroCommission?: CalculateData
+    SomeCommission?: CalculateData
+    FullCommission?: CalculateData
+    Paper?: Paper
+}
+export interface CalculateData {
+    TotalDiscount: number
+    Max: number
     Fee: Fee
-    Paper: Paper
-}
-export interface TotalDiscount {
-    ZeroCommission: number
-    SomeCommission: number
-    FullCommission: number
-}
-export interface Max {
-    ZeroCommission: number
-    SomeCommission: number
-    FullCommission: number
+    Paper?: Paper
 }
 export interface Fee {
     Type: string
     Price: number
-    ZeroCommission: number
-    SomeCommission: number
-    FullCommission: number
+    Amount: number
+}
+export interface Max {
+    ZeroCommission?: number
+    SomeCommission?: number
+    FullCommission?: number
 }
 export interface Paper {
     Quantity: number
@@ -52,7 +51,7 @@ export interface Paper {
     SubCategory: string
     Company: string
     Type: string
-    Model: string
+    Model: number
     Name: string
     Price: number
 }
@@ -61,6 +60,62 @@ export interface DeliveryFee {
     Text: string
     DeliveryChannelType: string
 }
+//TODO: Mock New Class
+
+// export interface CalculateResponse {
+//     Total: number
+//     DebitCredit: DebitCredit
+//     BillPayment: BillPayment
+//     Pledge: Pledge
+//     DeliveryFee: DeliveryFee[]
+// }
+// export interface DebitCredit {
+//     TotalDiscount: TotalDiscount
+//     Max: Max
+//     Fee: Fee
+//     Paper: Paper
+// }
+// export interface BillPayment {
+//     TotalDiscount: TotalDiscount
+//     Max: Max
+//     Fee: Fee
+//     Paper: Paper
+// }
+// export interface Pledge {
+//     TotalDiscount: TotalDiscount
+//     Max: Max
+//     Fee: Fee
+//     Paper: Paper
+// }
+// export interface TotalDiscount {
+//     ZeroCommission: number
+//     SomeCommission: number
+//     FullCommission: number
+// }
+// export interface Fee {
+//     Type: string
+//     Price: number
+//     ZeroCommission: number
+//     SomeCommission: number
+//     FullCommission: number
+// }
+// export interface Paper {
+//     Quantity: number
+//     ProductID: string
+//     Brand: string
+//     Category: string
+//     SubCategory: string
+//     Company: string
+//     Type: string
+//     Model: number
+//     Name: string
+//     Price: number
+// }
+// export interface DeliveryFee {
+//     Price: number
+//     Text: string
+//     DeliveryChannelType: string
+// }
 
 export interface RadiioPaymentObject {
     FeeQr: number

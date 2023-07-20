@@ -58,25 +58,65 @@ const onLoad = onMounted(async () => {
 })
 
 const setDiscountMethodsOption = async (max: Max | undefined) => {
-    if(max != undefined) {
-        discountMethodsOption.value = [
-            {
-                label: 'หักส่วนลดเต็มจำนวน',
-                value: 'fulldiscount',
-                help: `ลดได้ ${max.ZeroCommission ?? '-'} บาท`
-            },
-            {
-                label: 'หักส่วนลดบางส่วน',
-                value: 'partialdiscount',
-                help: `ลดได้สูงสุด ${max.SomeCommission ?? '-'} บาท`,
-            },
-            {
-                label: 'ชำระเบี้ยเต็มจำนวน',
-                value: 'fullpay',
-                help: `ไม่ใช้ส่วนลด`,
-            }
-        ]
+  if(max != undefined) {
+    if(max.ZeroCommission != undefined && max.SomeCommission != undefined){
+      discountMethodsOption.value = [
+        {
+          label: 'หักส่วนลดเต็มจำนวน',
+          value: 'fulldiscount',
+          help: `ลดได้ ${max.ZeroCommission ?? '-'} บาท`,
+          attrs: { disabled: max.ZeroCommission == undefined ? true : false } 
+        },
+        {
+          label: 'หักส่วนลดบางส่วน',
+          value: 'partialdiscount',
+          help: `ลดได้สูงสุด ${max.SomeCommission ?? '-'} บาท`,
+          attrs: { disabled: max.SomeCommission == undefined ? true : false } 
+        },
+        {
+          label: 'ชำระเบี้ยเต็มจำนวน',
+          value: 'fullpay',
+          help: `ไม่ใช้ส่วนลด`,
+        }
+      ]
+    } else if(max.ZeroCommission != undefined && max.SomeCommission == undefined) {
+      discountMethodsOption.value = [
+        {
+          label: 'หักส่วนลดเต็มจำนวน',
+          value: 'fulldiscount',
+          help: `ลดได้ ${max.ZeroCommission ?? '-'} บาท`,
+          attrs: { disabled: max.ZeroCommission == undefined ? true : false } 
+        },
+        {
+          label: 'ชำระเบี้ยเต็มจำนวน',
+          value: 'fullpay',
+          help: `ไม่ใช้ส่วนลด`,
+        }
+      ]
+    } else if(max.ZeroCommission == undefined && max.SomeCommission != undefined) {
+      discountMethodsOption.value = [
+        {
+          label: 'หักส่วนลดบางส่วน',
+          value: 'partialdiscount',
+          help: `ลดได้สูงสุด ${max.SomeCommission ?? '-'} บาท`,
+          attrs: { disabled: max.SomeCommission == undefined ? true : false } 
+        },
+        {
+          label: 'ชำระเบี้ยเต็มจำนวน',
+          value: 'fullpay',
+          help: `ไม่ใช้ส่วนลด`,
+        }
+      ]
+    } else {
+      discountMethodsOption.value = [
+        {
+          label: 'ชำระเบี้ยเต็มจำนวน',
+          value: 'fullpay',
+          help: `ไม่ใช้ส่วนลด`,
+        }
+      ]
     }
+  }
 }
 
 watch(max, async (newMax) => {

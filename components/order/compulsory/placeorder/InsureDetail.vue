@@ -540,7 +540,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { DefaultAddress,CustomerOrderRequest, LegalPersonProfile, PersonProfile, OrderRequest } from "~/shared/entities/placeorder-entity";
+import { DefaultAddress,CustomerOrderRequest, LegalPersonProfile, PersonProfile, PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
 import { SelectOption } from "~/shared/entities/select-option";
 
 const emit = defineEmits(['changeCustomerType','changeProvince','changeDistrict','changeSubDistrict','changeFullAddress','changeInsureDetail'])
@@ -552,7 +552,7 @@ const props = defineProps({
   addrSubDistrict: Array<SelectOption>,
   addrZipCode:String,
   cacheOrderRequest:{
-    type:Object as ()=> OrderRequest
+    type:Object as ()=> PlaceOrderRequest
   }
 });
 //const emit = defineEmits(['changeCustomerType','changeCompanyType','changeProvince','changeDistrict','changeSubDistrict'])
@@ -865,7 +865,7 @@ watch(()=>props.cacheOrderRequest,(newValue)=>{
       defaultAddress.value = newValue.Customer.DefaultAddress
     }
     }
-    console.log(values)
+    
     handlerChangeInsureDetail()
   }
 

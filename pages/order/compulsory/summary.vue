@@ -32,15 +32,24 @@
               </div>
             </div>
 
-            <OrderCompulsorySummaryInsureDetail :order-detail="orderDetail" v-if="orderDetail"></OrderCompulsorySummaryInsureDetail>
+            <OrderCompulsorySummaryInsureDetail
+              :order-detail="orderDetail"
+              v-if="orderDetail"
+            ></OrderCompulsorySummaryInsureDetail>
           </div>
         </div>
 
         <div class="col-lg-5">
           <aside class="card">
-            <div class="card-body">
-              <OrderCompulsorySummaryPurchaseDetail></OrderCompulsorySummaryPurchaseDetail>
-              <OrderCompulsorySummaryPaymentStatus></OrderCompulsorySummaryPaymentStatus>
+            <div class="card-body" v-if="paymentDetail && orderDetail">
+              <OrderCompulsorySummaryPurchaseDetail
+                :payment="paymentDetail"
+                :order-no="orderDetail.OrderNo"
+                :create-date="orderDetail.OrderDate"
+              ></OrderCompulsorySummaryPurchaseDetail>
+              <OrderCompulsorySummaryPaymentStatus
+                :payment="paymentDetail"
+              ></OrderCompulsorySummaryPaymentStatus>
             </div>
 
             <div class="card-footer">
@@ -52,22 +61,27 @@
                   label="ยอมรับเงื่อนไขความคุ้มครองและข้อยกเว้นการทำประกัน และรับทราบนโยบายคุ้มครองข้อมูลส่วนบุคคล"
                   validation="required"
                   :validation-messages="{ required: 'กรุณาคลิกยอมรับเงื่อนไขและนโยบายฯ' }"
+                  v-model="isConsent"
                 />
               </div>
             </div>
           </aside>
-
           <FormKit
             type="submit"
             label="ไปต่อ"
             name="order-submit"
             id="order-submit"
             :classes="{ input: 'btn-primary', outer: 'form-actions' }"
-            :disabled="submitted"
+            :disabled="!isConsent"
             :loading="isLoading"
           />
 
-          <NuxtLink v-if="orderDetail" :to="'placeorder?orderNo='+orderDetail?.OrderNo" class="btn btn-back">ย้อนกลับ</NuxtLink>
+          <NuxtLink
+            v-if="orderDetail"
+            :to="'placeorder?orderNo=' + orderDetail.OrderNo"
+            class="btn btn-back"
+            >ย้อนกลับ</NuxtLink
+          >
         </div>
       </div>
     </FormKit>
@@ -76,60 +90,133 @@
 </template>
 
 <script lang="ts" setup>
-// Define import
-import { IPackageRequest, IPackageResponse } from "~~/shared/entities/packageList-entity";
-
 // using pinia
+import { isString } from "@vueuse/core";
 import { storeToRefs } from "pinia";
-import { IChecklist } from "~~/shared/entities/checklist-entity";
+import { IInformation } from "~/shared/entities/information-entity";
 import {
   OrderDetailRequest,
-  OrderDetailResponse,
   OrderDetails,
+  OrderResponse,
   PaymentDetails,
 } from "~/shared/entities/order-entity";
-
+import { PaymentConfirmRequest } from "~/shared/entities/payment-entity";
+import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import { useStoreInformation } from "~/stores/order/storeInformation";
+import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
+import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
+//define store
+const store = useStoreOrderSummary();
+// define getter in store
+const { OrderSummaryInfo } = storeToRefs(store);
+const infomation = useStoreInformation();
+const placeorder = useStorePlaceorder();
 // Define Variables
 // Loading state after form submiting
 const isLoading = ref(false);
-
-// Submitted state after submit
-const submitted = ref(false);
 
 // Response status for notice user
 const statusMessage = ref();
 const statusMessageType = ref();
 
-const packageList: globalThis.Ref<IPackageResponse[]> = ref([]);
-const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
 const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
 const paymentDetail: globalThis.Ref<PaymentDetails | undefined> = ref();
-const isSelect: globalThis.Ref<Boolean> = ref(false);
+const isConsent = ref();
 
 let values = reactive({});
+const loadOrderSummary = async (orderNo: string) => {
+  const req: OrderDetailRequest = {
+    OrderNo: orderNo,
+  };
+  const response = await useRepository().order.summary(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
+      // save to store
+      const data = response.apiResponse.Data[0];
+      store.setOrderSummary(data);
 
-const checklist: globalThis.Ref<IChecklist[]> = ref([
-  {
-    id: "1",
-    className: "",
-    desc: "เลือกช่องทางการชำระเงิน",
-  },
-  {
-    id: "2",
-    className: "",
-    desc: "เลือกการใช้ส่วนลด",
-  },
-]);
+      setStoretoStep(data,orderNo);
+    }
+  }
+};
+const getCarDetail = (): string => {
+  let carDetail = "";
+  if (orderDetail.value) {
+    carDetail = `${orderDetail.value.CarDetails.CarBrand} ${orderDetail.value.CarDetails.CarModel} ${orderDetail.value.CarDetails.SubCarModel}  ${orderDetail.value.CarDetails.CarYear}`;
+  }
+  return carDetail;
+};
+const getDayOfYear = (EffectiveDate: string, ExpireDate: string): number => {
+  let days = 0;
+
+  const startDate = new Date(EffectiveDate);
+  const endDate = new Date(ExpireDate);
+  const diff = Math.abs(startDate.getTime() - endDate.getTime());
+  const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+  days = diffDays - 1;
+
+  return days;
+};
+const setStoretoStep = (data: OrderResponse,orderNo:string) => {
+  if (data && data.Order) {
+    const order = data.Order;
+
+    const req: PlaceOrderRequest = {
+      OrderNo: orderNo,
+      Package: order.Package,
+      CarDetailsExtension: order.CarDetailsExtension,
+      Customer: order.Customer,
+      DeliveryMethod1: order.DeliveryMethod1,
+      DeliveryMethod2: order.DeliveryMethod2,
+      IsTaxInvoice: order.IsTaxInvoice,
+    };
+    console.log(req)
+    if (req.Customer && req.Customer.DefaultAddress) {
+      req.Customer.DefaultAddress.ZipCode = orderDetail.value?.AssuredDetails.ZipCode;
+    }
+    if (req.Customer && req.Customer.DeliveryAddress) {
+      req.Customer.DeliveryAddress.ZipCode =
+        orderDetail.value?.DeliveryPolicyDetails.ZipCode;
+    }
+    if (req.Customer && req.Customer.TaxInvoiceAddress) {
+      req.Customer.TaxInvoiceAddress.ZipCode =
+        orderDetail.value?.TaxInvoiceDetails.ZipCode;
+    }
+    if (req.Customer && req.Customer.TaxInvoiceDeliveryAddress) {
+      req.Customer.TaxInvoiceDeliveryAddress.ZipCode =
+        orderDetail.value?.DeliveryTaxInvoiceDetails.ZipCode;
+    }
+    placeorder.setOrder(req);
+
+    const reqInfo: IInformation = {
+      CarBrand: order.Package.CarBrandID,
+      CarCC: orderDetail.value?.CarDetails.CarCC.toFixed(0) ?? "",
+      CarDetail: getCarDetail(),
+      CarModel: order.Package.CarModelID,
+      CarSize: order.Package.CarCategoryID,
+      CarType: order.Package.CarTypeCode,
+      CarUse: order.Package.UseCarCode,
+      CarYear: order.CarDetails.CarSalesYear.toFixed(0),
+      customSubCarModel: "",
+      EffectiveDate: order.Package.EffectiveDate,
+      EffectiveType: order.Package.EffectiveType,
+      ExpireDate: order.Package.ExpireDate,
+      SubCarModel: order.Package.CarModelID,
+      InsuranceDay: getDayOfYear(order.Package.EffectiveDate, order.Package.ExpireDate),
+    };
+    infomation.setInformation(reqInfo);
+  }
+};
 const loadOrderDetail = async (orderNo: string) => {
   const req: OrderDetailRequest = {
     OrderNo: orderNo,
   };
+
   const response = await useRepository().order.details(req);
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
       orderDetail.value = response.apiResponse.Data[0].OrderDetails;
       paymentDetail.value = response.apiResponse.Data[0].PaymentDetails;
-      console.log('OrderDetails',orderDetail.value)
     } else {
       // data not found
     }
@@ -137,16 +224,39 @@ const loadOrderDetail = async (orderNo: string) => {
   }
 };
 const onLoad = onMounted(async () => {
-  isLoading.value = true;
-  //TODO testing implement order detail
-  await loadOrderDetail("AMC2301000165");
-  isLoading.value = false;
+  const route = useRoute();
+  console.log(route.query);
+  if (route.query && isString(route.query.OrderNo)) {
+    const OrderNo:string =  route.query.OrderNo
+    isLoading.value = true;
+    //TODO testing implement order detail
+    await loadOrderDetail(OrderNo); //AMC2307000036
+    await loadOrderSummary(OrderNo);
+
+    isLoading.value = false;
+  }
+  else{
+    const router = useRouter()
+    router.push('/order/compulsory/payment')
+  }
 });
 
 // Submit form event
 const submitOrder = async (formData: any) => {
+  isLoading.value = true;
   // Add waiting time for debug
-  await new Promise((r) => setTimeout(r, 1000));
+  const req: PaymentConfirmRequest = {
+    IsConsent: isConsent.value,
+    OrderNo: orderDetail.value?.OrderNo ?? "",
+  };
+  const response = await useRepository().payment.confirm(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    isLoading.value = false;
+    const router = useRouter();
+    router.push('/payment/qr')
+  } else {
+  }
+  isLoading.value = false;
 };
 
 // Define layout

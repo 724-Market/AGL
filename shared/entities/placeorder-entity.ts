@@ -4,9 +4,6 @@ export interface PlaceOrderRequest {
   Package?: PackageOrderRequest
   CarDetailsExtension?: CarDetailsExtension
   Customer?: CustomerOrderRequest
-  // DeliveryType?: string
-  // DeliveryChannelType?: string
-  // DeliveryEmail?: string
   DeliveryMethod1?: DeliveryMethod
   DeliveryMethod2?: DeliveryMethod|null
   IsTaxInvoice?: boolean
@@ -102,7 +99,7 @@ export interface DefaultAddress {
   Branch: string
   Alley: string
   Road: string,
-  ZipCode: string
+  ZipCode?: string
 }
 
 export interface DeliveryAddress {
@@ -131,7 +128,7 @@ export interface DeliveryAddress {
   Branch: string
   Alley: string
   Road: string
-  ZipCode: string
+  ZipCode?: string
 }
 
 export interface TaxInvoiceAddress {
@@ -160,6 +157,7 @@ export interface TaxInvoiceAddress {
   Branch: string
   Alley: string
   Road: string
+  ZipCode?:string
 }
 
 export interface TaxInvoiceDeliveryAddress {
@@ -188,6 +186,7 @@ export interface TaxInvoiceDeliveryAddress {
   Branch: string
   Alley: string
   Road: string
+  ZipCode?:string
 }
 export interface DeliveryMethod {
   MethodType: string

@@ -257,7 +257,7 @@ const submitOrder = async (formData: any) => {
   if (response.apiResponse.Status && response.apiResponse.Status == "200" && response.apiResponse.Data) {
     paymentSaveResponse.value = response.apiResponse.Data
     storePayment.setPayment(paymentSaveResponse.value)
-    router.push("/order/compulsory/summary");
+    router.push("/order/compulsory/summary?OrderNo="+paymentSaveResponse.value.OrderNo);
   } else {
     isError.value = true;
     messageError.value = response.apiResponse.ErrorMessage ?? ""
@@ -271,7 +271,7 @@ const getCalculate = async () => {
   const resCRedit = await useRepository().pledge.creditBalance();
   if (resCRedit.apiResponse.Status && resCRedit.apiResponse.Status == "200" && resCRedit.apiResponse.Data) {
     creditBalance.value = resCRedit.apiResponse.Data[0]
-    console.log('creditBalance', resCRedit.apiResponse.Data[0])
+    // console.log('creditBalance', resCRedit.apiResponse.Data[0])
   } else {
     isError.value = true;
     messageError.value = resCRedit.apiResponse.ErrorMessage ?? ""
@@ -294,9 +294,15 @@ const getCalculate = async () => {
 
 const handleSetSummary = async (summaryDiscount: SummaryDiscountObject) => {
   summaryDiscountObject.value = summaryDiscount 
-  if(summaryDiscountObject.value.PaymentMethod != '' && summaryDiscountObject.value.DiscountMethod != '') {
+  if(summaryDiscountObject.value.PaymentMethod != '' && summaryDiscountObject.value.DiscountMethod == '') {
+    checklist.value[0].className = 'current'
+    checklist.value[1].className = ''
+  } else if (summaryDiscountObject.value.PaymentMethod != '' && summaryDiscountObject.value.DiscountMethod != '') {
     checklist.value[0].className = 'current'
     checklist.value[1].className = 'current'
+  } else {
+    checklist.value[0].className = ''
+    checklist.value[1].className = ''
   }
 }
 

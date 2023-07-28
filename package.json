@@ -30,6 +30,7 @@
     "@formatjs/intl": "^2.7.1",
     "@formkit/nuxt": "latest",
     "@formkit/pro": "latest",
+    "@microsoft/signalr": "^7.0.9",
     "@pinia/nuxt": "^0.4.7",
     "dayjs": "^1.11.8",
     "npm": "^9.6.2",

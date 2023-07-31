@@ -15,6 +15,8 @@
                 <div class="text-center">
                     <button class="btn btn-open-loading d-inline-block" type="button">Open Loading</button>
                     <button class="btn btn-open-modal d-inline-block" type="button">Open Modal</button>
+                    <button class="btn-secondary btn-open-wallet d-inline-block"><i
+                            class="fa-solid fa-wallet"></i>เติมเงิน</button>
                 </div>
             </div>
         </div>
@@ -22,6 +24,8 @@
         <ElementsDialogLoading />
 
         <ElementsDialogModal />
+
+        <ElementsDialogPledge />
 
     </NuxtLayout>
 </template>

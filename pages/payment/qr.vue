@@ -37,6 +37,11 @@
                                         class="fa-solid fa-download"></i>บันทึก QR</a>
                             </div>
 
+                            <div class="qr-action">
+                                <a class="btn btn-outline-info" href="#" title="แชร์หน้านี้">แชร์หน้านี้</a>
+                                <a class="btn" href="#" title="เปลี่ยนช่องทางการชำระเงิน">เปลี่ยนช่องทางการชำระเงิน</a>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -93,7 +98,7 @@
 <script setup>
 // Define layout
 const layout = 'monito'
-const layoutClass = 'page-monito-minimal'
+const layoutClass = 'page-monito'
 const showPageSteps = false
 const showPageHeader = true
 

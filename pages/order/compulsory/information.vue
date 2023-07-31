@@ -154,7 +154,6 @@ import { defineEventHandler } from "~/server/api/setting.post";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { storeToRefs } from "pinia";
 import { IChecklist } from "~/shared/entities/checklist-entity";
-import PaymentNoticeService from "~/shared/services/payment-notice-service";
 
 // Define Store
 const store = useStoreInformation();
@@ -230,8 +229,8 @@ let values = reactive({})
 
 // Page Load Event Load CarYear, CarUse, Call Api Default CarType And Check Data In Store
 const onLoad = onMounted(async () => {
-  const signalRService = new PaymentNoticeService();
-  await signalRService.connect()
+  const paymentService = await useService().paymentNotice
+  await paymentService.connect();
   
   // isLoading.value = true
   await loadcarYesr('')

@@ -27,13 +27,18 @@ class PaymentNoticeService {
             }
         );
     }
-    
+
+    async testNotify() {
+        this.hubConnection.on('TestNotify', (data) => {
+          alert(data);
+          console.log(data);
+        });
+    }
   
     // async sendMessage(message) {
     //   if (!this.connection) {
     //     throw new Error('SignalR not connected');
     //   }
-  
     //   await this.connection.invoke('SendMessage', message);
     // }
 }

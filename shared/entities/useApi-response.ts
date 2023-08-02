@@ -10,3 +10,9 @@ export interface IAPIResponse<T> {
     apiResponse: WrapperResponse<T>
 
 }
+
+export interface IAPIPaymentGatewayResponse<T> {
+    status: string
+    message: string
+    data?: T
+}

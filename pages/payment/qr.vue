@@ -6,7 +6,7 @@
             <div class="col-lg-7">
 
                 <div class="card payment-card">
-                    <div class="card-body">
+                    <!-- <div class="card-body">
                         <div class="qr-payment">
 
                             <div class="status-list">
@@ -43,14 +43,15 @@
                             </div>
 
                         </div>
-                    </div>
+                    </div> -->
+                    <PaymentQrDetail></PaymentQrDetail>
                 </div>
 
             </div>
 
             <div class="col-lg-5">
 
-                <aside class="card">
+                <!-- <aside class="card">
                     <div class="card-header">
                         <h3 class="card-title">วิธีการชำระเงินด้วย QR</h3>
                     </div>
@@ -87,7 +88,8 @@
 
                     </div>
 
-                </aside>
+                </aside> -->
+                <PaymentQrMethod></PaymentQrMethod>
 
             </div>
         </div>
@@ -96,6 +98,27 @@
 </template>
 
 <script setup>
+import { storeToRefs } from "pinia";
+
+// Loading state after form submiting
+const isLoading = ref(false)
+
+// Submitted state after submit
+const submitted = ref(false)
+
+const isError = ref(false);
+const messageError = ref("");
+
+// Response status for notice user
+const statusMessage = ref()
+const statusMessageType = ref()
+
+const router = useRouter();
+
+const onLoad = onMounted(async () => {
+  
+})
+
 // Define layout
 const layout = 'monito'
 const layoutClass = 'page-monito'

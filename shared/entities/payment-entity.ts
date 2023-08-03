@@ -140,3 +140,17 @@ export interface PaymentGatewayResponse{
     payment_url:string
     payment_qr:string
 }
+
+export interface NoticePayment{
+    message:string
+    data:NoticePaymentData
+}
+
+export interface NoticePaymentData {
+    PaymentNo:string
+    PaymentType:string
+    Status:string
+    Message:string
+    PaymentDate:string
+    CancelDate:string
+}

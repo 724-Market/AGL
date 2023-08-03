@@ -1,8 +1,13 @@
 // import { HubConnectionBuilder } from '@microsoft/signalr';
 import * as signalR from '@microsoft/signalr';
+import { NoticePayment }  from "../entities/payment-entity";
+import { useStoreNoticePayment } from "~/stores/order/storeNoticePayment";
+
+const noticePayment = useStoreNoticePayment();
 
 class PaymentNoticeService {
     private hubConnection!: signalR.HubConnection;
+    private router = useRouter();
     
     async connect() {
         this.hubConnection = new signalR.HubConnectionBuilder()
@@ -28,10 +33,23 @@ class PaymentNoticeService {
         );
     }
 
-    async testNotify() {
-        this.hubConnection.on('TestNotify', (data) => {
-          alert(data);
-          console.log(data);
+    async RequestUpdateTopUpPayment() {
+        this.hubConnection.on('RequestUpdateTopUpPayment', (notice:NoticePayment) => {
+          console.log(notice);
+          if(notice.data) {
+            noticePayment.setNoticePayment(notice.data)
+            this.router.push("/order/compulsory/thanks");
+          }
+        });
+    }
+
+    async RequestUpdateOrderPayment() {
+        this.hubConnection.on('RequestUpdateOrderPayment', (notice:NoticePayment) => {
+          console.log(notice);
+          if(notice.data) {
+            noticePayment.setNoticePayment(notice.data)
+            this.router.push("/order/compulsory/thanks");
+          }
         });
     }
   

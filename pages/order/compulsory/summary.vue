@@ -105,6 +105,7 @@ import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
+import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 //define store
 const store = useStoreOrderSummary();
 // define getter in store
@@ -114,6 +115,8 @@ const infomation = useStoreInformation();
 
 const placeorder = useStorePlaceorder();
 const { OrderInfo } = storeToRefs(placeorder)
+
+const paymentGateway = useStorePaymentGateway()
 
 // Define Variables
 // Loading state after form submiting
@@ -271,10 +274,13 @@ const submitOrder = async (formData: any) => {
         refno: paymentConfirmRes?.PaymentNo ?? '',
         amount: paymentConfirmRes?.GrandAmount ?? 0
       };
+
       const responseGateway = await useRepository().payment.gateway(reqGateway);
 
       if (responseGateway.status == "200") {
         console.log('responseGateway', responseGateway)
+        let gatewayInfo = responseGateway.data as PaymentGatewayResponse
+        paymentGateway.setPaymenGateway(gatewayInfo)
         // const router = useRouter();
         // router.push('/payment/qr')
       }

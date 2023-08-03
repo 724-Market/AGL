@@ -229,8 +229,11 @@ let values = reactive({})
 
 // Page Load Event Load CarYear, CarUse, Call Api Default CarType And Check Data In Store
 const onLoad = onMounted(async () => {
+  //TODO: SignalR For Payment
   const paymentService = await useService().paymentNotice
-  await paymentService.connect();
+  await paymentService.connect()
+  await paymentService.RequestUpdateTopUpPayment()
+  await paymentService.RequestUpdateOrderPayment()
   
   // isLoading.value = true
   await loadcarYesr('')

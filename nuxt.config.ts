@@ -7,7 +7,7 @@ export default defineNuxtConfig({
 			FixValuePackageTaxInclude:process.env.FIX_VALUE_PACKAGE_TAXINCLUDE || "0",
 			FixDefaultPackagePaperBalance:process.env.FIX_DEFAULT_PACKAGE_PAPERBALANCE || "0",
 			FixValuePackagePaperBalance:process.env.FIX_VALUE_PACKAGE_PAPERBALANCE || "0",
-
+			GatewayToken: process.env.GATEWAY_TOKEN,
 		}
 
 	},

@@ -132,17 +132,17 @@ export default () => {
     }
 
     const postGateway = async<T>(url: string, params: any): Promise<IAPIPaymentGatewayResponse<T>> => {
+        const config = useRuntimeConfig()
         let result: IAPIPaymentGatewayResponse<T> =
         {
             status: "",
             message: "",
         }
         
-        let token = await useUtility().getToken()
         const response:any = await $fetch(url, {
             method: "POST",
             headers: {
-                Authorization: process.env.GATEWAY_TOKEN !== "" ? "Bearer " + process.env.GATEWAY_TOKEN : ""
+                Authorization: config.public.GatewayToken !== "" ? "Bearer " + config.public.GatewayToken : ""
             },
             body: JSON.stringify(params),
         });

@@ -99,6 +99,14 @@
 
 <script setup>
 import { storeToRefs } from "pinia";
+import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
+import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
+
+const orderSummary = useStoreOrderSummary();
+const { OrderSummaryInfo } = storeToRefs(orderSummary);
+
+const paymentGateway = useStorePaymentGateway();
+const { PaymenGatewaytInfo } = storeToRefs(paymentGateway);
 
 // Loading state after form submiting
 const isLoading = ref(false)
@@ -116,6 +124,19 @@ const statusMessageType = ref()
 const router = useRouter();
 
 const onLoad = onMounted(async () => {
+    if (AuthenInfo.value) {
+        if(PaymenGatewaytInfo.value) {
+            //TODO: SignalR For Payment
+            const paymentService = await useService().paymentNotice
+            await paymentService.connect()
+            await paymentService.RequestUpdateTopUpPayment()
+            await paymentService.RequestUpdateOrderPayment()
+        } else {
+            router.push("/history");
+        }
+    } else {
+        router.push("/login");
+    }
   
 })
 

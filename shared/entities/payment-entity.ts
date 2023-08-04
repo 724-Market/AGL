@@ -141,6 +141,15 @@ export interface PaymentGatewayResponse{
     payment_qr:string
 }
 
+export interface NoticePaymentRequest{
+    ClientID:string
+    DeviceID:string
+    ReferenceID:string
+    UserID:string
+    GroupType:string
+    AccessToken:string
+}
+
 export interface NoticePayment{
     message:string
     data:NoticePaymentData

@@ -25,7 +25,7 @@
                 <small>0543FRE3GDTEY094767</small>
 
                 <p>หรือคลิกปุ่มเพื่อบันทึก QR ด้านล่าง</p>
-                <a class="btn btn-secondary" href="#" title="บันทึก QR"><iclass="fa-solid fa-download"></i>บันทึก QR</a>
+                <a class="btn btn-secondary" href="#" title="บันทึก QR"><i class="fa-solid fa-download"></i>บันทึก QR</a>
             </div>
 
             <div class="qr-action">
@@ -38,5 +38,28 @@
 </template>
 
 <script setup lang="ts">
+import { PaymentGatewayResponse }  from "~/shared/entities/payment-entity"
 
+const paymenGatewaytInfo: globalThis.Ref<PaymentGatewayResponse | undefined> = ref()
+
+const props = defineProps({ 
+  paymenGatewayInfo: {
+    type: Object as () => PaymentGatewayResponse,
+  },
+})
+
+const onLoad = onMounted(async () => {
+  if(props.paymenGatewayInfo){
+    paymenGatewaytInfo.value = props.paymenGatewayInfo
+  }
+})
+
+watch(
+  () => props.paymenGatewayInfo,
+  async () => {
+    if (props.paymenGatewayInfo) {
+      paymenGatewaytInfo.value = props.paymenGatewayInfo
+    }
+  }
+)
 </script>

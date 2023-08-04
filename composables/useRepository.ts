@@ -6,6 +6,7 @@ import SessionModule from "~/shared/repository/session";
 import FileModule from "~/shared/repository/file";
 import PledgeModule from "~/shared/repository/pledge";
 import PaymentModule from "~/shared/repository/payment";
+import UserModule from "~/shared/repository/user";
 // import PaymentNoticeService from "~/shared/services/payment-notice-service";
 
 /** ApiInstance interface provides us with good typing */
@@ -18,6 +19,7 @@ interface IApiInstance {
     file: FileModule,
     payment: PaymentModule,
     pledge:PledgeModule,
+    user:UserModule,
     // paymentNotice:PaymentNoticeService
 }
 
@@ -33,6 +35,7 @@ export default  () => {
         file: new FileModule(),
         pledge:new PledgeModule(),
         payment: new PaymentModule(),
+        user: new UserModule(),
         // paymentNotice: new PaymentNoticeService(),
     };
 

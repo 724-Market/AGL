@@ -44,7 +44,9 @@
 
                         </div>
                     </div> -->
-                    <PaymentQrDetail></PaymentQrDetail>
+                    <PaymentQrDetail
+                        :paymen-gateway-info="paymenGatewaytInfo"
+                    ></PaymentQrDetail>
                 </div>
 
             </div>
@@ -97,10 +99,18 @@
     </NuxtLayout>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { storeToRefs } from "pinia";
+import { UserResponse } from "~/shared/entities/user-entity";
+import { NoticePaymentRequest, NoticePaymentData, PaymentGatewayResponse }  from "~/shared/entities/payment-entity";
+import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
+
+const paymenGatewaytInfo: globalThis.Ref<PaymentGatewayResponse | undefined> = ref()
+
+const storeAuth = useStoreUserAuth()
+const { AuthenInfo } = storeToRefs(storeAuth)
 
 const orderSummary = useStoreOrderSummary();
 const { OrderSummaryInfo } = storeToRefs(orderSummary);
@@ -126,11 +136,28 @@ const router = useRouter();
 const onLoad = onMounted(async () => {
     if (AuthenInfo.value) {
         if(PaymenGatewaytInfo.value) {
-            //TODO: SignalR For Payment
-            const paymentService = await useService().paymentNotice
-            await paymentService.connect()
-            await paymentService.RequestUpdateTopUpPayment()
-            await paymentService.RequestUpdateOrderPayment()
+            paymenGatewaytInfo.value = PaymenGatewaytInfo.value
+            const responseUser = await useRepository().user.GetUser();
+            
+            if (responseUser.apiResponse.Status && responseUser.apiResponse.Status == "200") {
+                if (responseUser.apiResponse.Data && responseUser.apiResponse.Data.length > 0) {
+                    const user:UserResponse = responseUser.apiResponse.Data[0]
+
+                    const paymentService = await useService().paymentNotice
+                    const paymentServiceReq: NoticePaymentRequest = {
+                        ClientID: 'AgentLoveWeb',
+                        DeviceID: '',
+                        ReferenceID: PaymenGatewaytInfo.value.refno1,
+                        UserID: user.ID,
+                        GroupType: 'qr',
+                        AccessToken: AuthenInfo.value.accessToken,
+                    }
+                    console.log('paymentServiceReq', paymentServiceReq)
+                    await paymentService.connect(paymentServiceReq)
+                    await paymentService.RequestUpdateTopUpPayment()
+                    await paymentService.RequestUpdateOrderPayment()
+                }
+            } 
         } else {
             router.push("/history");
         }

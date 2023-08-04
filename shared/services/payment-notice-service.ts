@@ -1,15 +1,22 @@
 // import { HubConnectionBuilder } from '@microsoft/signalr';
 import * as signalR from '@microsoft/signalr';
-import { NoticePayment }  from "../entities/payment-entity";
+import { NoticePaymentRequest, NoticePayment, PaymentGatewayResponse }  from "../entities/payment-entity";
+import { storeToRefs } from "pinia";
 import { useStoreNoticePayment } from "~/stores/order/storeNoticePayment";
+import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 
 const noticePayment = useStoreNoticePayment();
 
+const paymentGateway = useStorePaymentGateway();
+const { PaymenGatewaytInfo } = storeToRefs(paymentGateway);
+
 class PaymentNoticeService {
     private hubConnection!: signalR.HubConnection;
+    private paymenGatewaytInfo: globalThis.Ref<PaymentGatewayResponse | undefined> = ref()
     private router = useRouter();
     
-    async connect() {
+    async connect(req:NoticePaymentRequest) {
+        let url = `https://api-iom-signalr.724insure.net/SignalRHub?ClientID=${req.ClientID}&DeviceID=${req.DeviceID}&ReferenceID=${req.ReferenceID}&UserID=${req.UserID}&GroupType=${req.GroupType}&AccessToken=${req.AccessToken}`
         this.hubConnection = new signalR.HubConnectionBuilder()
             .configureLogging(signalR.LogLevel.Debug)
             .withUrl(`https://api-iom-signalr.724insure.net/SignalRHub`, {
@@ -37,8 +44,10 @@ class PaymentNoticeService {
         this.hubConnection.on('RequestUpdateTopUpPayment', (notice:NoticePayment) => {
           console.log(notice);
           if(notice.data) {
-            noticePayment.setNoticePayment(notice.data)
-            this.router.push("/order/compulsory/thanks");
+            if(PaymenGatewaytInfo.value.refno1 == notice.data.PaymentNo) {
+                noticePayment.setNoticePayment(notice.data)
+                this.router.push("/order/compulsory/thanks")
+            }
           }
         });
     }
@@ -47,18 +56,13 @@ class PaymentNoticeService {
         this.hubConnection.on('RequestUpdateOrderPayment', (notice:NoticePayment) => {
           console.log(notice);
           if(notice.data) {
-            noticePayment.setNoticePayment(notice.data)
-            this.router.push("/order/compulsory/thanks");
+            if(PaymenGatewaytInfo.value.refno1 == notice.data.PaymentNo) {
+                noticePayment.setNoticePayment(notice.data)
+                this.router.push("/order/compulsory/thanks")
+            }
           }
         });
     }
-  
-    // async sendMessage(message) {
-    //   if (!this.connection) {
-    //     throw new Error('SignalR not connected');
-    //   }
-    //   await this.connection.invoke('SendMessage', message);
-    // }
 }
 
 export default PaymentNoticeService;

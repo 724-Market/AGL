@@ -142,17 +142,15 @@ export default () => {
         const response:any = await $fetch(url, {
             method: "POST",
             headers: {
-                Authorization: config.public.GatewayToken !== "" ? "Bearer " + config.public.GatewayToken : ""
+                Authorization: config.public.GatewayToken !== "" ? config.public.GatewayToken : ""
             },
             body: JSON.stringify(params),
         });
 
-        if (response.status == 200) {
-            const jsonData = JSON.parse(response.data)
-        
-            result.status = jsonData.status
-            result.message = jsonData.message
-            result.data = jsonData.data
+        if (response.status == '0000') {
+            result.status = response.status
+            result.message = response.message
+            result.data = response.data
         }
 
         return result

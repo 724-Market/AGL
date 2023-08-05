@@ -276,13 +276,15 @@ const submitOrder = async (formData: any) => {
       };
 
       const responseGateway = await useRepository().payment.gateway(reqGateway);
-
-      if (responseGateway.status == "200") {
+      if (responseGateway.status == "0000") {
         console.log('responseGateway', responseGateway)
         let gatewayInfo = responseGateway.data as PaymentGatewayResponse
         paymentGateway.setPaymenGateway(gatewayInfo)
-        // const router = useRouter();
-        // router.push('/payment/qr')
+        if(gatewayInfo.payment_type == 'bill_payment') {
+          router.push('/payment/qr')
+        } else {
+          window.open(paymentGateway.payment_url, '_blank');
+        }
       }
     } else {
       // router.push('/order/compulsory/thanks')

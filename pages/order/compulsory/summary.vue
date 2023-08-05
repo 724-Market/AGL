@@ -49,6 +49,8 @@
               ></OrderCompulsorySummaryPurchaseDetail>
               <OrderCompulsorySummaryPaymentStatus
                 :payment="paymentDetail"
+                :options="optionDetail"
+                :payment-list="creditPaymenyAddList"
               ></OrderCompulsorySummaryPaymentStatus>
             </div>
 
@@ -95,6 +97,7 @@ import { isString } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { IInformation } from "~/shared/entities/information-entity";
 import {
+  OptionsResponse,
   OrderDetailRequest,
   OrderDetails,
   OrderResponse,
@@ -102,6 +105,7 @@ import {
 } from "~/shared/entities/order-entity";
 import { PaymentConfirmRequest, PaymentGatewayRequest, PaymentGatewayResponse } from "~/shared/entities/payment-entity";
 import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import { CreditHistoryPaymentAdd } from "~/shared/entities/pledge-entity";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
@@ -128,24 +132,12 @@ const statusMessageType = ref();
 
 const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
 const paymentDetail: globalThis.Ref<PaymentDetails | undefined> = ref();
+const optionDetail: globalThis.Ref<OptionsResponse | undefined> = ref();
+const creditPaymenyAddList: globalThis.Ref<CreditHistoryPaymentAdd | undefined> = ref();
 const isConsent = ref();
 
 let values = reactive({});
-const loadOrderSummary = async (orderNo: string) => {
-  const req: OrderDetailRequest = {
-    OrderNo: orderNo,
-  };
-  const response = await useRepository().order.summary(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
-      // save to store
-      const data = response.apiResponse.Data[0];
-      store.setOrderSummary(data);
 
-      setStoretoStep(data,orderNo);
-    }
-  }
-};
 const getCarDetail = (): string => {
   let carDetail = "";
   if (orderDetail.value) {
@@ -164,7 +156,7 @@ const getDayOfYear = (EffectiveDate: string, ExpireDate: string): number => {
 
   return days;
 };
-const setStoretoStep = (data: OrderResponse,orderNo:string) => {
+const setStoretoStep = (data: OrderResponse, orderNo: string) => {
   if (data && data.Order) {
     const order = data.Order;
 
@@ -177,7 +169,7 @@ const setStoretoStep = (data: OrderResponse,orderNo:string) => {
       DeliveryMethod2: order.DeliveryMethod2,
       IsTaxInvoice: order.IsTaxInvoice,
     };
-    console.log(req)
+    console.log(req);
     if (req.Customer && req.Customer.DefaultAddress) {
       req.Customer.DefaultAddress.ZipCode = orderDetail.value?.AssuredDetails.ZipCode;
     }
@@ -214,6 +206,21 @@ const setStoretoStep = (data: OrderResponse,orderNo:string) => {
     infomation.setInformation(reqInfo);
   }
 };
+const loadOrderSummary = async (orderNo: string) => {
+  const req: OrderDetailRequest = {
+    OrderNo: orderNo,
+  };
+  const response = await useRepository().order.summary(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
+      // save to store
+      const data = response.apiResponse.Data[0];
+      store.setOrderSummary(data);
+
+      setStoretoStep(data, orderNo);
+    }
+  }
+};
 const loadOrderDetail = async (orderNo: string) => {
   const req: OrderDetailRequest = {
     OrderNo: orderNo,
@@ -224,6 +231,20 @@ const loadOrderDetail = async (orderNo: string) => {
     if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
       orderDetail.value = response.apiResponse.Data[0].OrderDetails;
       paymentDetail.value = response.apiResponse.Data[0].PaymentDetails;
+      optionDetail.value = response.apiResponse.Options as OptionsResponse;
+      //console.log('Data',response.apiResponse.Data[0])
+      //console.log('Options',response.apiResponse.Options)
+    } else {
+      // data not found
+    }
+  } else {
+  }
+};
+const loadPledgeHistoryPaymentAddList = async () => {
+  const response = await useRepository().pledge.creditHistoryPaymentAddList();
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data) {
+      creditPaymenyAddList.value = response.apiResponse.Data;
     } else {
       // data not found
     }
@@ -234,17 +255,20 @@ const onLoad = onMounted(async () => {
   const route = useRoute();
   console.log(route.query);
   if (route.query && isString(route.query.OrderNo)) {
-    const OrderNo:string =  route.query.OrderNo
+    const OrderNo: string = route.query.OrderNo;
     isLoading.value = true;
     //TODO testing implement order detail
     await loadOrderDetail(OrderNo); //AMC2307000036
     await loadOrderSummary(OrderNo);
+    // set Payment List History Credit for wallet
+    if (paymentDetail.value && paymentDetail.value.PaymentType == "PLEDGE") {
+      await loadPledgeHistoryPaymentAddList();
+    }
 
     isLoading.value = false;
-  }
-  else{
-    const router = useRouter()
-    router.push('/order/compulsory/payment')
+  } else {
+    const router = useRouter();
+    router.push("/order/compulsory/payment");
   }
 });
 

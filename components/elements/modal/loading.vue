@@ -32,8 +32,6 @@
 
 <script setup lang="ts">
 
-import type { Modal } from "bootstrap";
-const { $bootstrap } = useNuxtApp();
 const props = defineProps({
     loading: Boolean,
 });
@@ -52,7 +50,6 @@ watch(
         }
     }
 )
-let modal: Modal;
 const onLoad = onMounted((
 ) => {
     // const myModal = document.getElementById("modal_demo") as Element

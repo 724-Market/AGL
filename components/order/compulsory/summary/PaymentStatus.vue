@@ -40,7 +40,7 @@
     </div>
   </div>
 
-  <div class="status-list"  v-if="$props.payment && $props.payment.PaymentType=='PLEDGE'">
+  <div class="status-list"  v-if="$props.payment && $props.payment.PaymentType=='PLEDGE' && $props.options">
     <figure class="status-icon">
       <div class="icon pledge danger"></div>
     </figure>
@@ -51,29 +51,51 @@
     </div>
     <div class="status-item">
       <h5 class="topic">ยอดเงินในวงเงินมัดจำ</h5>
-      <p>500.00 บาท</p>
+      <p>{{ $props.options.CreditError.Amount }} บาท</p>
     </div>
 
     <div class="status-info">
-      <div class="notice-danger">
-        <i class="fa-regular fa-circle-xmark"></i> วงเงินมัดจำไม่เพียงพอ
+      <div class="notice-danger" v-if="$props.options.CreditError.Message=='REQUIRE_INCREASE_CREDIT_LIMIT'">
+        <i class="fa-regular fa-circle-xmark"></i> ติดต่อ Agent เพื่อเพิ่มวงเงิน
+      </div>
+      <div class="notice-danger" v-else-if="$props.options.CreditError.Message=='REQUIRE_CREDIT_TOPUP'">
+        <i class="fa-regular fa-circle-xmark"></i> วงเงินไม่พอให้เติมเงิน
       </div>
       <div class="status-action">
-        <a class="btn btn-primary" href="#" title="เติมเงินมัดจำ">เติมเงินมัดจำ</a>
+        <button class="btn btn-primary" @click="openWallet" title="เติมเงินมัดจำ">เติมเงินมัดจำ</button>
         <a class="btn" href="/order/compulsory/payment" title="เปลี่ยนช่องทางการชำระเงิน"
           >เปลี่ยนช่องทางการชำระเงิน</a
         >
       </div>
     </div>
   </div>
+  <OrderCompulsorySummaryModalWallet :show="showWallet" :payment-list="props.paymentList" @close-wallet="closeWallet"></OrderCompulsorySummaryModalWallet>
 </template>
 <script setup lang="ts">
-import {  PaymentDetails } from "~/shared/entities/order-entity";
+import {  OptionsResponse, PaymentDetails } from "~/shared/entities/order-entity";
+import { CreditHistoryPaymentAdd } from "~/shared/entities/pledge-entity";
 
+const showWallet = ref(false)
 
 const props = defineProps({
   payment: {
     type: Object as () => PaymentDetails,
   },
+  options:{
+    type: Object as () => OptionsResponse,
+  },
+  paymentList:{
+    type: Object as () => CreditHistoryPaymentAdd,
+  },
+  
 });
+
+const openWallet = ()=>{
+  console.log('open Wallet')
+  showWallet.value = false
+  showWallet.value = true
+}
+const closeWallet = (status:boolean)=>{
+  showWallet.value = status
+}
 </script>

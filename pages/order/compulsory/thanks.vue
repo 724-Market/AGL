@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-lg-6">
 
-                <div class="card">
+                <!-- <div class="card">
                     <div class="card-body">
 
                         <div class="status-list">
@@ -44,9 +44,13 @@
                         </div>
 
                     </div>
-                </div>
+                </div> -->
+                <OrderCompulsoryThanksSuccess
+                    v-if="status == 'Success'"
+                    :notice-payment="noticePaymentInfo"
+                ></OrderCompulsoryThanksSuccess>
 
-                <div class="card">
+                <!-- <div class="card">
                     <div class="card-body">
 
                         <div class="status-list">
@@ -83,13 +87,17 @@
                         </div>
 
                     </div>
-                </div>
+                </div> -->
+                <OrderCompulsoryThanksCancel
+                    v-if="status == 'Cancel'"
+                    :notice-payment="noticePaymentInfo"
+                ></OrderCompulsoryThanksCancel>
 
             </div>
 
             <div class="col-lg-6">
 
-                <aside class="card">
+                <!-- <aside class="card">
                     <div class="card-body">
 
                         <div class="notice-info">
@@ -115,7 +123,8 @@
                         </div>
 
                     </div>
-                </aside>
+                </aside> -->
+                <OrderCompulsoryThanksContact></OrderCompulsoryThanksContact>
 
             </div>
         </div>
@@ -123,7 +132,51 @@
     </NuxtLayout>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+import { storeToRefs } from "pinia"
+import { NoticePaymentData }  from "~/shared/entities/payment-entity"
+import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
+import { useStoreNoticePayment } from "~/stores/order/storeNoticePayment"
+
+// Loading state after form submiting
+const isLoading = ref(false)
+
+// Submitted state after submit
+const submitted = ref(false)
+
+const isError = ref(false);
+const messageError = ref("");
+
+// Response status for notice user
+const statusMessage = ref()
+const statusMessageType = ref()
+
+let values = reactive({})
+
+const noticePaymentInfo:globalThis.Ref<NoticePaymentData | undefined> = ref()
+var status = ref("");
+
+const storeAuth = useStoreUserAuth()
+const { AuthenInfo } = storeToRefs(storeAuth)
+
+const noticePayment = useStoreNoticePayment()
+const { NoticePaymentInfo } = storeToRefs(noticePayment)
+
+const router = useRouter();
+
+const onLoad = onMounted(async () => {
+  if (AuthenInfo.value) {
+    if(NoticePaymentInfo.value) {
+        noticePaymentInfo.value = NoticePaymentInfo.value
+        status.value = noticePaymentInfo.value.Status
+    } else {
+        router.push("/order/compulsory/information");
+    }
+  } else {
+    router.push("/login");
+  }
+})
+
 // Define layout
 const layout = 'monito'
 const layoutClass = 'page-monito'

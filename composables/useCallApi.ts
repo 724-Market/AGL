@@ -1,4 +1,4 @@
-import { IAPIResponse } from "~/shared/entities/useApi-response"
+import { IAPIResponse, IAPIPaymentGatewayResponse } from "~/shared/entities/useApi-response"
 import { WrapperResponse } from "~/shared/entities/wrapper-response"
 
 export default () => {
@@ -131,6 +131,33 @@ export default () => {
 
     }
 
+    const postGateway = async<T>(url: string, params: any): Promise<IAPIPaymentGatewayResponse<T>> => {
+        const config = useRuntimeConfig()
+        let result: IAPIPaymentGatewayResponse<T> =
+        {
+            status: "",
+            message: "",
+        }
+        
+        const response:any = await $fetch(url, {
+            method: "POST",
+            headers: {
+                Authorization: config.public.GatewayToken !== "" ? "Bearer " + config.public.GatewayToken : ""
+            },
+            body: JSON.stringify(params),
+        });
+
+        if (response.status == 200) {
+            const jsonData = JSON.parse(response.data)
+        
+            result.status = jsonData.status
+            result.message = jsonData.message
+            result.data = jsonData.data
+        }
+
+        return result
+    }
+
     const apiRepository = async<T>(url: string, params: any): Promise<IAPIResponse<T>> => {
         const wrapper: WrapperResponse<T> = {
             Status: "",
@@ -169,6 +196,7 @@ export default () => {
     return {
         get,
         post,
+        postGateway,
         apiRepository
     }
 

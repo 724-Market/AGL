@@ -1,7 +1,6 @@
 export interface CalculateRequest {
     OrderNo: string
 }
-//TODO: Mock New Class
 export interface CalculateResponse {
     Total: number
     DebitCredit: DebitCredit
@@ -60,62 +59,6 @@ export interface DeliveryFee {
     Text: string
     DeliveryChannelType: string
 }
-//TODO: Mock New Class
-
-// export interface CalculateResponse {
-//     Total: number
-//     DebitCredit: DebitCredit
-//     BillPayment: BillPayment
-//     Pledge: Pledge
-//     DeliveryFee: DeliveryFee[]
-// }
-// export interface DebitCredit {
-//     TotalDiscount: TotalDiscount
-//     Max: Max
-//     Fee: Fee
-//     Paper: Paper
-// }
-// export interface BillPayment {
-//     TotalDiscount: TotalDiscount
-//     Max: Max
-//     Fee: Fee
-//     Paper: Paper
-// }
-// export interface Pledge {
-//     TotalDiscount: TotalDiscount
-//     Max: Max
-//     Fee: Fee
-//     Paper: Paper
-// }
-// export interface TotalDiscount {
-//     ZeroCommission: number
-//     SomeCommission: number
-//     FullCommission: number
-// }
-// export interface Fee {
-//     Type: string
-//     Price: number
-//     ZeroCommission: number
-//     SomeCommission: number
-//     FullCommission: number
-// }
-// export interface Paper {
-//     Quantity: number
-//     ProductID: string
-//     Brand: string
-//     Category: string
-//     SubCategory: string
-//     Company: string
-//     Type: string
-//     Model: number
-//     Name: string
-//     Price: number
-// }
-// export interface DeliveryFee {
-//     Price: number
-//     Text: string
-//     DeliveryChannelType: string
-// }
 
 export interface RadiioPaymentObject {
     FeeQr: number
@@ -164,4 +107,59 @@ export interface PaymentSaveResponse {
 export interface PaymentConfirmRequest{
     OrderNo:string
     IsConsent:string
+}
+
+export interface PaymentConfirmResponse{
+    PaymentType:string
+    PaymentStatus:string
+    GrandAmount:number
+    PaymentNo:string
+    OrderNo:string
+}
+
+export interface PaymentGatewayRequest{
+    payment_type:string
+    endpoint_code:string
+    orderid:string
+    refno:string
+    amount:number
+}
+
+export interface PaymentGatewayResponse{
+    orderid:string
+    refno1:string
+    refno2:string
+    amount:string
+    payment_id:string
+    payment_type:string
+    payment_channel:string
+    payment_status:string
+    payment_code:string
+    payment_date:string
+    pgc_url:string
+    payment_url:string
+    payment_qr:string
+}
+
+export interface NoticePaymentRequest{
+    ClientID:string
+    DeviceID:string
+    ReferenceID:string
+    UserID:string
+    GroupType:string
+    AccessToken:string
+}
+
+export interface NoticePayment{
+    message:string
+    data:NoticePaymentData
+}
+
+export interface NoticePaymentData {
+    PaymentNo:string
+    PaymentType:string
+    Status:string
+    Message:string
+    PaymentDate:string
+    CancelDate:string
 }

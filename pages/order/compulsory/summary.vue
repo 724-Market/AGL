@@ -103,18 +103,25 @@ import {
   OrderResponse,
   PaymentDetails,
 } from "~/shared/entities/order-entity";
-import { PaymentConfirmRequest } from "~/shared/entities/payment-entity";
+import { PaymentConfirmRequest, PaymentGatewayRequest, PaymentGatewayResponse } from "~/shared/entities/payment-entity";
 import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
 import { CreditHistoryPaymentAdd } from "~/shared/entities/pledge-entity";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
+import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 //define store
 const store = useStoreOrderSummary();
 // define getter in store
 const { OrderSummaryInfo } = storeToRefs(store);
+
 const infomation = useStoreInformation();
+
 const placeorder = useStorePlaceorder();
+const { OrderInfo } = storeToRefs(placeorder)
+
+const paymentGateway = useStorePaymentGateway()
+
 // Define Variables
 // Loading state after form submiting
 const isLoading = ref(false);
@@ -273,11 +280,37 @@ const submitOrder = async (formData: any) => {
     IsConsent: isConsent.value,
     OrderNo: orderDetail.value?.OrderNo ?? "",
   };
+
   const response = await useRepository().payment.confirm(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+  if (response.apiResponse.Status && response.apiResponse.Status == "200" && response.apiResponse.Data) {
     isLoading.value = false;
+
     const router = useRouter();
-    router.push("/payment/qr");
+
+    let paymentConfirmRes = response.apiResponse.Data[0]
+    let paymentType:string = paymentConfirmRes?.PaymentType.toLowerCase() ?? ''
+
+    if(paymentType == 'bill_payment' || paymentType == 'credit_card') {
+      const reqGateway: PaymentGatewayRequest = {
+        payment_type: paymentType,
+        endpoint_code: 'insurance_payment',
+        orderid: paymentConfirmRes?.OrderNo ?? '',
+        refno: paymentConfirmRes?.PaymentNo ?? '',
+        amount: paymentConfirmRes?.GrandAmount ?? 0
+      };
+
+      const responseGateway = await useRepository().payment.gateway(reqGateway);
+
+      if (responseGateway.status == "200") {
+        console.log('responseGateway', responseGateway)
+        let gatewayInfo = responseGateway.data as PaymentGatewayResponse
+        paymentGateway.setPaymenGateway(gatewayInfo)
+        // const router = useRouter();
+        // router.push('/payment/qr')
+      }
+    } else {
+      // router.push('/order/compulsory/thanks')
+    }
   } else {
   }
   isLoading.value = false;

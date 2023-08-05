@@ -229,9 +229,6 @@ let values = reactive({})
 
 // Page Load Event Load CarYear, CarUse, Call Api Default CarType And Check Data In Store
 const onLoad = onMounted(async () => {
-  const paymentService = await useService().paymentNotice
-  await paymentService.connect();
-  
   // isLoading.value = true
   await loadcarYesr('')
   await loadCarUse()

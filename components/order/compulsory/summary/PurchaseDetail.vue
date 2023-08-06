@@ -4,19 +4,19 @@
       <div class="icon order success"></div>
     </figure>
     <h4 class="title">รายละเอียดคำสั่งซื้อ</h4>
-    <div class="status-item text-info text-big">
+    <div class="status-item text-big">
       <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
       <p>{{ $props.orderNo }}</p>
     </div>
-    <div class="status-item text-success">
+    <div class="status-item ">
       <h5 class="topic">วันที่ทำรายการ</h5>
       <p>{{ formatDate($props.createDate ?? "") }}</p>
     </div>
-    <div class="status-item text-danger">
+    <div class="status-item">
       <h5 class="topic">ยอดชำระทั้งหมด</h5>
       <p>{{ $props.payment.GrandAmount }} บาท</p>
     </div>
-    <div class="status-item text-warning">
+    <div class="status-item">
       <h5 class="topic">สถานะ</h5>
       <p>รอชำระเงิน</p>
     </div>

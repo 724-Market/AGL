@@ -10,9 +10,9 @@
     </div>
 
     <div class="status-info">
-      <div class="notice-info">
+      <!-- <div class="notice-info">
         <i class="fa-regular fa-circle-info"></i> ค่าธรรมเนียม {{ $props.payment.FeeAmount }} บาท
-      </div>
+      </div> -->
       <div class="status-action">
         <a class="btn" href="/order/compulsory/payment" title="เปลี่ยนช่องทางการชำระเงิน"
           >เปลี่ยนช่องทางการชำระเงิน</a

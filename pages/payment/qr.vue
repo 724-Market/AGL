@@ -158,8 +158,8 @@ const onLoad = onMounted(async () => {
           };
           console.log("paymentServiceReq", paymentServiceReq);
           await paymentService.connect(paymentServiceReq);
-          await paymentService.RequestUpdateTopUpPayment();
-          await paymentService.RequestUpdateOrderPayment();
+          await paymentService.RequestUpdateTopUpPayment(PaymenGatewaytInfo.value);
+          await paymentService.RequestUpdateOrderPayment(PaymenGatewaytInfo.value);
         }
       }
     } else {

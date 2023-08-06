@@ -72,7 +72,7 @@
           </aside>
           <FormKit
             type="submit"
-            label="ไปต่อ"
+            label="ยืนยันการชำระ"
             name="order-submit"
             id="order-submit"
             :classes="{ input: 'btn-primary', outer: 'form-actions' }"

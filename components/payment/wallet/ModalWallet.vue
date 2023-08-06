@@ -184,6 +184,7 @@ import {
 } from "~/shared/entities/payment-entity";
 import { CreditHistoryPaymentAdd } from "~/shared/entities/pledge-entity";
 import { UserResponse } from "~/shared/entities/user-entity";
+import { useStoreNoticePayment } from "~/stores/order/storeNoticePayment";
 import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
 
 const emit = defineEmits(["closeWallet", "topupConfirm"]);
@@ -212,7 +213,8 @@ const isStep3 = ref(false);
 
 const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
-
+const noticePayment = useStoreNoticePayment();
+const { NoticePaymentInfo } = storeToRefs(noticePayment);
 const router = useRouter();
 
 // Submit form event
@@ -282,7 +284,12 @@ const signalRPaymentService = async () => {
           };
           console.log("paymentServiceReq", paymentServiceReq);
           await paymentService.connect(paymentServiceReq);
-          await paymentService.RequestUpdateTopUpPayment();
+          await paymentService.RequestUpdateTopUpPayment(props.walletPaymentGateway);
+          if(NoticePaymentInfo.value){
+            isStep3.value = true
+            isStep1.value = false
+            isStep2.value = false
+          }
         }
       }
     } else {

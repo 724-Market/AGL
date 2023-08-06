@@ -69,14 +69,15 @@
       </div>
     </div>
   </div>
-  <OrderCompulsorySummaryModalWallet :show="showWallet" :payment-list="props.paymentList" @close-wallet="closeWallet"></OrderCompulsorySummaryModalWallet>
+  <PaymentWalletModalWallet :show="showWallet" :payment-list="props.paymentList" @close-wallet="closeWallet" @topup-confirm="handleTopupConfirm" :wallet-payment-gateway="props.walletPaymentGateway"></PaymentWalletModalWallet>
 </template>
 <script setup lang="ts">
 import {  OptionsResponse, PaymentDetails } from "~/shared/entities/order-entity";
+import { PaymentGatewayResponse } from "~/shared/entities/payment-entity";
 import { CreditHistoryPaymentAdd } from "~/shared/entities/pledge-entity";
 
 const showWallet = ref(false)
-
+const emit = defineEmits(['closeWallet','topupConfirm'])
 const props = defineProps({
   payment: {
     type: Object as () => PaymentDetails,
@@ -87,7 +88,9 @@ const props = defineProps({
   paymentList:{
     type: Object as () => CreditHistoryPaymentAdd,
   },
-  
+  walletPaymentGateway:{
+    type: Object as () => PaymentGatewayResponse,
+  }
 });
 
 const openWallet = ()=>{
@@ -97,5 +100,8 @@ const openWallet = ()=>{
 }
 const closeWallet = (status:boolean)=>{
   showWallet.value = status
+}
+const handleTopupConfirm = (isConsent:boolean,Amount:boolean,paymentType:string)=>{
+  emit('topupConfirm',isConsent,Amount,paymentType)
 }
 </script>

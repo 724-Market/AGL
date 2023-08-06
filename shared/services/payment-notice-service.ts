@@ -1,7 +1,15 @@
 // import { HubConnectionBuilder } from '@microsoft/signalr';
 import * as signalR from '@microsoft/signalr';
 import { NoticePaymentRequest, NoticePayment, PaymentGatewayResponse }  from "../entities/payment-entity";
+// Pinia
+import { createPinia } from 'pinia'
 import { storeToRefs } from "pinia";
+// Pinia persist plugin
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+
+
 import { useStoreNoticePayment } from "~/stores/order/storeNoticePayment";
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 
@@ -46,7 +54,6 @@ class PaymentNoticeService {
           if(notice.data) {
             if(PaymenGatewaytInfo.value.refno1 == notice.data.PaymentNo) {
                 noticePayment.setNoticePayment(notice.data)
-                this.router.push("/order/compulsory/thanks")
             }
           }
         });

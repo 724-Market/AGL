@@ -14,8 +14,8 @@ class PledgeModule {
   async creditHistoryPaymentAddList(): Promise<IAPIResponse<CreditHistoryPaymentAdd>> {
     return await useCallApi().apiRepository<CreditHistoryPaymentAdd>(`${this.RESOURCE}/credit/history/payment-add/list`, {})
   }
-  async creditorderPaymentCreate(req:CreditOrderPaymentCreateRequest): Promise<IAPIResponse<CreditOrderPaymentCreateResponse>> {
-    return await useCallApi().apiRepository<CreditOrderPaymentCreateResponse>(`${this.RESOURCE}/creditorder/with-payment/create`, req)
+  async creditorderPaymentCreate(req:CreditOrderPaymentCreateRequest): Promise<IAPIResponse<CreditOrderPaymentCreateResponse[]>> {
+    return await useCallApi().apiRepository<CreditOrderPaymentCreateResponse[]>(`${this.RESOURCE}/creditorder/with-payment/create`, req)
   }
 }
 

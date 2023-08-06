@@ -5,7 +5,10 @@
         <button class="btn btn-close btn-close-wallet" @click="closeModal">ปิด</button>
       </div>
 
-      <div class="card-body pledge-step-1 is-active" v-if="props.paymentList">
+      <div
+        :class="isStep1 ? 'card-body pledge-step-1 is-active' : 'card-body pledge-step-1'"
+        v-if="props.paymentList"
+      >
         <FormKit
           type="form"
           @submit="submitPledge"
@@ -39,13 +42,13 @@
               v-bind:key="item"
               @click="AddAmount(item)"
             >
-              {{ useUtility().getCurrency(item) }}
+              {{ useUtility().getCurrency(item, 0) }}
             </button>
             <small>ขั้นต่ำ {{ minVolumn }} บาท สูงสุดไม่เกิน {{ maxVolumn }} บาท</small>
           </div>
           <h5>เลือกช่องทางการชำระเงิน</h5>
           <div class="form-hide-label payment-choice">
-            <ElementsFormRadioPledgeMethods />
+            <ElementsFormRadioPledgeMethods v-model="paymentType" />
           </div>
           <div class="form-hide-label accept-box">
             <FormKit
@@ -67,14 +70,19 @@
               input: 'btn-primary btn-accept',
               outer: 'pledge-action',
             }"
-            :disabled="!isConsent || !(Amount>=props.paymentList.Min && Amount<=props.paymentList.Max)"
+            :disabled="
+              !isConsent ||
+              !(Amount >= props.paymentList.Min && Amount <= props.paymentList.Max)
+            "
             :loading="isLoading"
           />
         </FormKit>
       </div>
 
-      <div class="card-body pledge-step-2">
-        <div class="qr-payment">
+      <div
+        :class="isStep2 ? 'card-body pledge-step-2 is-active' : 'card-body pledge-step-2'"
+      >
+        <!-- <div class="qr-payment">
           <div class="status-list">
             <div class="logo">724 Payment</div>
             <div class="status-item">
@@ -100,10 +108,15 @@
               ><i class="fa-solid fa-download"></i>บันทึก QR</a
             >
           </div>
-        </div>
+        </div> -->
+        <PaymentQrDetail
+          :paymen-gateway-info="props.walletPaymentGateway"
+        ></PaymentQrDetail>
       </div>
 
-      <div class="card-body pledge-step-3">
+      <div
+        :class="isStep3 ? 'card-body pledge-step-3 is-active' : 'card-body pledge-step-3'"
+      >
         <div class="status-list">
           <figure class="status-icon">
             <div class="icon check success"></div>
@@ -164,28 +177,48 @@
   </dialog>
 </template>
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import {
+  NoticePaymentRequest,
+  PaymentGatewayResponse,
+} from "~/shared/entities/payment-entity";
 import { CreditHistoryPaymentAdd } from "~/shared/entities/pledge-entity";
+import { UserResponse } from "~/shared/entities/user-entity";
+import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
 
-const emit = defineEmits(['closeWallet'])
+const emit = defineEmits(["closeWallet", "topupConfirm"]);
 
 const props = defineProps({
   show: Boolean,
   paymentList: {
     type: Object as () => CreditHistoryPaymentAdd,
   },
+  walletPaymentGateway: {
+    type: Object as () => PaymentGatewayResponse,
+  },
 });
 
 const _show = ref(false);
-const isLoading = ref(false);
 const historyPaymentList: globalThis.Ref<number[]> = ref([]);
 const minVolumn = ref("");
 const maxVolumn = ref("");
 const Amount = ref(0);
-const isConsent = ref(false)
+const isConsent = ref(false);
+const paymentType = ref("");
+const isLoading = ref(false);
+const isStep1 = ref(false);
+const isStep2 = ref(false);
+const isStep3 = ref(false);
+
+const storeAuth = useStoreUserAuth();
+const { AuthenInfo } = storeToRefs(storeAuth);
+
+const router = useRouter();
+
 // Submit form event
 const submitPledge = async (formData: any) => {
   // Add waiting time for debug
-  await new Promise((r) => setTimeout(r, 1000));
+  emit("topupConfirm", isConsent.value, Amount.value, paymentType.value);
 };
 const AddAmount = (credit: number) => {
   const amount = Amount.value;
@@ -207,25 +240,73 @@ watch(
     }
   }
 );
+watch(
+  () => props.walletPaymentGateway,
+  async () => {
+    console.log("prop value changed", props.walletPaymentGateway);
+    if (props.walletPaymentGateway) {
+      isStep1.value = false;
+      isStep2.value = true;
+      isStep3.value = false;
+
+      // init signalr in wallet
+      await signalRPaymentService();
+    }
+  }
+);
 const onLoad = onMounted(() => {
   // const myModal = document.getElementById("modal_demo") as Element
   // modal = new $bootstrap.Modal(myModal);
   if (props.show) {
     openModal();
-   
   }
 });
+
+const signalRPaymentService = async () => {
+  if (AuthenInfo.value) {
+    if (props.walletPaymentGateway) {
+      const responseUser = await useRepository().user.GetUser();
+
+      if (responseUser.apiResponse.Status && responseUser.apiResponse.Status == "200") {
+        if (responseUser.apiResponse.Data && responseUser.apiResponse.Data.length > 0) {
+          const user: UserResponse = responseUser.apiResponse.Data[0];
+
+          const paymentService = await useService().paymentNotice;
+          const paymentServiceReq: NoticePaymentRequest = {
+            ClientID: "AgentLoveWeb",
+            DeviceID: "",
+            ReferenceID: props.walletPaymentGateway.refno1,
+            UserID: user.ID,
+            GroupType: "qr",
+            AccessToken: AuthenInfo.value.accessToken,
+          };
+          console.log("paymentServiceReq", paymentServiceReq);
+          await paymentService.connect(paymentServiceReq);
+          await paymentService.RequestUpdateTopUpPayment();
+        }
+      }
+    } else {
+      router.push("/history");
+    }
+  } else {
+    router.push("/login");
+  }
+};
+
 function openModal() {
   //modal.show()
   _show.value = props.show;
+  isStep1.value = true;
+  isStep2.value = false;
+  isStep3.value = false;
   const dialogLoading = document.getElementById("wallet-dialog");
   if (dialogLoading) dialogLoading.showModal();
-    if (props.paymentList) {
-      props.paymentList.List.sort((a, b) => a - b);
-      historyPaymentList.value = props.paymentList.List;
-      minVolumn.value = useUtility().getCurrency(props.paymentList.Min);
-      maxVolumn.value = useUtility().getCurrency(props.paymentList.Max);
-    }
+  if (props.paymentList) {
+    props.paymentList.List.sort((a, b) => a - b);
+    historyPaymentList.value = props.paymentList.List;
+    minVolumn.value = useUtility().getCurrency(props.paymentList.Min, 0);
+    maxVolumn.value = useUtility().getCurrency(props.paymentList.Max, 0);
+  }
 }
 
 function closeModal() {
@@ -233,6 +314,6 @@ function closeModal() {
   _show.value = false;
   const dialogLoading = document.getElementById("wallet-dialog");
   if (dialogLoading) dialogLoading.close();
-  emit('closeWallet',false)
+  emit("closeWallet", false);
 }
 </script>

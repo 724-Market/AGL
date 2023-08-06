@@ -14,7 +14,7 @@ export default () => {
         // check token expire
         const store = useStoreUserAuth();
         const { AuthenInfo } = storeToRefs(store)
-        
+
         const checkToken = store.checkTokenExpire()
         if (checkToken) {
             if (AuthenInfo.value) {
@@ -40,10 +40,10 @@ export default () => {
         return image
     }
 
-    const getCurrency = (currency: number): string => {
+    const getCurrency = (currency: number, digit?: number): string => {
         const options: Intl.NumberFormatOptions = {
             style: 'decimal',
-            minimumFractionDigits: 2
+            minimumFractionDigits: digit ?? 2
             //currency: 'THB'
         }
         const numberFormat = new Intl.NumberFormat('th-TH', options)
@@ -83,8 +83,34 @@ export default () => {
             }
 
         }
-        
+
         return page
+    }
+    const downloadImage = (base64Image: string,filename:string) => {
+        // Convert the Base64 image to Blob
+        const byteString = atob(base64Image.split(',')[1]);
+        const mimeString = base64Image.split(',')[0].split(':')[1].split(';')[0];
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const uintArray = new Uint8Array(arrayBuffer);
+
+        for (let i = 0; i < byteString.length; i++) {
+            uintArray[i] = byteString.charCodeAt(i);
+        }
+
+        const blob = new Blob([arrayBuffer], { type: mimeString });
+
+        // Create a temporary link element
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+
+        // Set the filename for the downloaded image
+        link.download = filename //'qr.png';
+
+        // Programmatically click the link to trigger the download
+        link.click();
+
+        // Clean up the temporary link object
+        URL.revokeObjectURL(link.href);
     }
 
     return {
@@ -93,6 +119,7 @@ export default () => {
         getToken,
         getStepMenuFromUri,
         getPaging,
-        formatDate
+        formatDate,
+        downloadImage
     }
 }

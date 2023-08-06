@@ -1,15 +1,15 @@
 <template>
-    <div class="card-body">
-        <div class="qr-payment">
+    
+        <div class="qr-payment" v-if="$props.paymenGatewayInfo">
             <div class="status-list">
                 <div class="logo">724 Payment</div>
                 <div class="status-item">
                     <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
-                    <p>7B2303094767564</p>
+                    <p>{{ $props.paymenGatewayInfo.orderid }}</p>
                 </div>
                 <div class="status-item">
                     <h5 class="topic">จำนวนเงิน</h5>
-                    <p>123.45 บาท</p>
+                    <p>{{ useUtility().getCurrency(parseInt($props.paymenGatewayInfo.amount)) }}</p>
                 </div>
                 <div class="status-item text-warning">
                     <h5 class="topic">กรุณาชำระภายใน</h5>
@@ -19,21 +19,20 @@
 
             <div class="qr-info">
                 <figure class="qr-code">
-                    <img src="/uploads/qr.png" alt="">
+                    <img :src="$props.paymenGatewayInfo.payment_qr" alt="">
                 </figure>
 
-                <small>0543FRE3GDTEY094767</small>
+                <small>{{ $props.paymenGatewayInfo.refno1 }}</small>
 
                 <p>หรือคลิกปุ่มเพื่อบันทึก QR ด้านล่าง</p>
-                <a class="btn btn-secondary" href="#" title="บันทึก QR"><i class="fa-solid fa-download"></i>บันทึก QR</a>
+                <button class="btn btn-secondary" @click="downloadImage"><i class="fa-solid fa-download"></i>บันทึก QR</button>
             </div>
 
-            <div class="qr-action">
+            <!-- <div class="qr-action">
                 <a class="btn btn-outline-info" href="#" title="แชร์หน้านี้">แชร์หน้านี้</a>
                 <a class="btn" href="#" title="เปลี่ยนช่องทางการชำระเงิน">เปลี่ยนช่องทางการชำระเงิน</a>
-            </div>
+            </div> -->
         </div>
-    </div>
     
 </template>
 
@@ -53,6 +52,12 @@ const onLoad = onMounted(async () => {
     paymenGatewaytInfo.value = props.paymenGatewayInfo
   }
 })
+
+const downloadImage = ()=>{
+  if(props.paymenGatewayInfo && props.paymenGatewayInfo.payment_qr){
+    useUtility().downloadImage(props.paymenGatewayInfo.payment_qr,'paymeny_qr.png')
+  }
+}
 
 watch(
   () => props.paymenGatewayInfo,

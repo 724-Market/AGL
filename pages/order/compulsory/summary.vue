@@ -51,6 +51,8 @@
                 :payment="paymentDetail"
                 :options="optionDetail"
                 :payment-list="creditPaymenyAddList"
+                :wallet-payment-gateway="walletPaymentGateway"
+                @topup-confirm="handleTopupConfirm"
               ></OrderCompulsorySummaryPaymentStatus>
             </div>
 
@@ -103,9 +105,16 @@ import {
   OrderResponse,
   PaymentDetails,
 } from "~/shared/entities/order-entity";
-import { PaymentConfirmRequest, PaymentGatewayRequest, PaymentGatewayResponse } from "~/shared/entities/payment-entity";
+import {
+  PaymentConfirmRequest,
+  PaymentGatewayRequest,
+  PaymentGatewayResponse,
+} from "~/shared/entities/payment-entity";
 import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
-import { CreditHistoryPaymentAdd } from "~/shared/entities/pledge-entity";
+import {
+  CreditHistoryPaymentAdd,
+  CreditOrderPaymentCreateRequest,
+} from "~/shared/entities/pledge-entity";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
@@ -118,14 +127,13 @@ const { OrderSummaryInfo } = storeToRefs(store);
 const infomation = useStoreInformation();
 
 const placeorder = useStorePlaceorder();
-const { OrderInfo } = storeToRefs(placeorder)
+const { OrderInfo } = storeToRefs(placeorder);
 
-const paymentGateway = useStorePaymentGateway()
+const paymentGateway = useStorePaymentGateway();
 
 // Define Variables
 // Loading state after form submiting
 const isLoading = ref(false);
-
 // Response status for notice user
 const statusMessage = ref();
 const statusMessageType = ref();
@@ -134,6 +142,7 @@ const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
 const paymentDetail: globalThis.Ref<PaymentDetails | undefined> = ref();
 const optionDetail: globalThis.Ref<OptionsResponse | undefined> = ref();
 const creditPaymenyAddList: globalThis.Ref<CreditHistoryPaymentAdd | undefined> = ref();
+const walletPaymentGateway: globalThis.Ref<PaymentGatewayResponse | undefined> = ref();
 const isConsent = ref();
 
 let values = reactive({});
@@ -282,32 +291,36 @@ const submitOrder = async (formData: any) => {
   };
 
   const response = await useRepository().payment.confirm(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200" && response.apiResponse.Data) {
+  if (
+    response.apiResponse.Status &&
+    response.apiResponse.Status == "200" &&
+    response.apiResponse.Data
+  ) {
     isLoading.value = false;
 
     const router = useRouter();
 
-    let paymentConfirmRes = response.apiResponse.Data[0]
-    let paymentType:string = paymentConfirmRes?.PaymentType.toLowerCase() ?? ''
+    let paymentConfirmRes = response.apiResponse.Data[0];
+    let paymentType: string = paymentConfirmRes?.PaymentType.toLowerCase() ?? "";
 
-    if(paymentType == 'bill_payment' || paymentType == 'credit_card') {
+    if (paymentType == "bill_payment" || paymentType == "credit_card") {
       const reqGateway: PaymentGatewayRequest = {
         payment_type: paymentType,
-        endpoint_code: 'insurance_payment',
-        orderid: paymentConfirmRes?.OrderNo ?? '',
-        refno: paymentConfirmRes?.PaymentNo ?? '',
-        amount: paymentConfirmRes?.GrandAmount ?? 0
+        endpoint_code: "insurance_payment",
+        orderid: paymentConfirmRes?.OrderNo ?? "",
+        refno: paymentConfirmRes?.PaymentNo ?? "",
+        amount: paymentConfirmRes?.GrandAmount ?? 0,
       };
 
       const responseGateway = await useRepository().payment.gateway(reqGateway);
       if (responseGateway.status == "0000") {
-        console.log('responseGateway', responseGateway)
-        let gatewayInfo = responseGateway.data as PaymentGatewayResponse
-        paymentGateway.setPaymenGateway(gatewayInfo)
-        if(gatewayInfo.payment_type == 'bill_payment') {
-          router.push('/payment/qr')
+        console.log("responseGateway", responseGateway);
+        let gatewayInfo = responseGateway.data as PaymentGatewayResponse;
+        paymentGateway.setPaymenGateway(gatewayInfo);
+        if (gatewayInfo.payment_type == "bill_payment") {
+          router.push("/payment/qr");
         } else {
-          window.open(paymentGateway.payment_url, '_blank');
+          window.open(paymentGateway.payment_url, "_blank");
         }
       }
     } else {
@@ -316,6 +329,44 @@ const submitOrder = async (formData: any) => {
   } else {
   }
   isLoading.value = false;
+};
+
+const handleTopupConfirm = async (
+  isConsent: boolean,
+  Amount: number,
+  paymentType: string
+) => {
+  isLoading.value = true;
+  console.log(isConsent, Amount, paymentType);
+  const req: CreditOrderPaymentCreateRequest = {
+    Amount: Amount,
+    IsConsent: isConsent,
+    PaymentType: "BILL_PAYMENT",
+  };
+  const response = await useRepository().pledge.creditorderPaymentCreate(req);
+  if (
+    response.apiResponse.Status &&
+    response.apiResponse.Status == "200" &&
+    response.apiResponse.Data
+  ) {
+    let paymentConfirmRes = response.apiResponse.Data[0];
+
+    const reqGateway: PaymentGatewayRequest = {
+      payment_type: "bill_payment",
+      endpoint_code: "credit_payment",
+      orderid: paymentConfirmRes.CreditOrderNo,
+      refno: paymentConfirmRes.CreditPaymentNo,
+      amount: paymentConfirmRes.Amount,
+    };
+
+    const responseGateway = await useRepository().payment.gateway(reqGateway);
+    if (responseGateway.status == "0000") {
+      console.log("Wallet responseGateway", responseGateway);
+      let gatewayInfo = responseGateway.data as PaymentGatewayResponse;
+      walletPaymentGateway.value = gatewayInfo;
+    }
+    isLoading.value = false;
+  }
 };
 
 // Define layout

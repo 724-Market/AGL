@@ -13,6 +13,9 @@ import { IAPIResponse, IAPIPaymentGatewayResponse } from "../entities/useApi-res
 class PaymentModule {
   private RESOURCE = '/Payment';
 
+  async get(req:CalculateRequest): Promise<IAPIResponse<CalculateResponse[]>> {
+    return await useCallApi().apiRepository<CalculateResponse[]>(`${this.RESOURCE}/calculate`, req)
+  }
   async calculate(req:CalculateRequest): Promise<IAPIResponse<CalculateResponse[]>> {
     return await useCallApi().apiRepository<CalculateResponse[]>(`${this.RESOURCE}/calculate`, req)
   }

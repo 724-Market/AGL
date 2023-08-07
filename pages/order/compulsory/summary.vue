@@ -46,9 +46,15 @@
                 :payment="paymentDetail"
                 :order-no="orderDetail.OrderNo"
                 :create-date="orderDetail.OrderDate"
+                :credit-balance="creditBalance"
               ></OrderCompulsorySummaryPurchaseDetail>
               <OrderCompulsorySummaryPaymentStatus
                 :payment="paymentDetail"
+                :options="optionDetail"
+                :payment-list="creditPaymenyAddList"
+                :wallet-payment-gateway="walletPaymentGateway"
+                @topup-confirm="handleTopupConfirm"
+                @close-wallet="handleCloseWallet"
               ></OrderCompulsorySummaryPaymentStatus>
             </div>
 
@@ -68,7 +74,7 @@
           </aside>
           <FormKit
             type="submit"
-            label="ไปต่อ"
+            label="ยืนยันการชำระ"
             name="order-submit"
             id="order-submit"
             :classes="{ input: 'btn-primary', outer: 'form-actions' }"
@@ -95,50 +101,61 @@ import { isString } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { IInformation } from "~/shared/entities/information-entity";
 import {
+  OptionsResponse,
   OrderDetailRequest,
   OrderDetails,
   OrderResponse,
   PaymentDetails,
 } from "~/shared/entities/order-entity";
-import { PaymentConfirmRequest } from "~/shared/entities/payment-entity";
+import {
+  PaymentConfirmRequest,
+  PaymentGatewayRequest,
+  PaymentGatewayResponse,
+  PaymentGetRequest,
+} from "~/shared/entities/payment-entity";
 import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import {
+  CreditBalanceResponse,
+  CreditHistoryPaymentAdd,
+  CreditOrderPaymentCreateRequest,
+} from "~/shared/entities/pledge-entity";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
+import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
+import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
+
 //define store
 const store = useStoreOrderSummary();
 // define getter in store
 const { OrderSummaryInfo } = storeToRefs(store);
+
 const infomation = useStoreInformation();
+
 const placeorder = useStorePlaceorder();
+const { OrderInfo } = storeToRefs(placeorder);
+
+const paymentGat = useStorePaymentGet();
+
+const paymentGateway = useStorePaymentGateway();
+
 // Define Variables
 // Loading state after form submiting
 const isLoading = ref(false);
-
 // Response status for notice user
 const statusMessage = ref();
 const statusMessageType = ref();
 
 const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
 const paymentDetail: globalThis.Ref<PaymentDetails | undefined> = ref();
+const optionDetail: globalThis.Ref<OptionsResponse | undefined> = ref();
+const creditPaymenyAddList: globalThis.Ref<CreditHistoryPaymentAdd | undefined> = ref();
+const walletPaymentGateway: globalThis.Ref<PaymentGatewayResponse | undefined> = ref();
+const creditBalance: globalThis.Ref<CreditBalanceResponse | undefined> = ref();
 const isConsent = ref();
 
 let values = reactive({});
-const loadOrderSummary = async (orderNo: string) => {
-  const req: OrderDetailRequest = {
-    OrderNo: orderNo,
-  };
-  const response = await useRepository().order.summary(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
-      // save to store
-      const data = response.apiResponse.Data[0];
-      store.setOrderSummary(data);
 
-      setStoretoStep(data,orderNo);
-    }
-  }
-};
 const getCarDetail = (): string => {
   let carDetail = "";
   if (orderDetail.value) {
@@ -157,7 +174,7 @@ const getDayOfYear = (EffectiveDate: string, ExpireDate: string): number => {
 
   return days;
 };
-const setStoretoStep = (data: OrderResponse,orderNo:string) => {
+const setStoretoStep = (data: OrderResponse, orderNo: string) => {
   if (data && data.Order) {
     const order = data.Order;
 
@@ -170,7 +187,7 @@ const setStoretoStep = (data: OrderResponse,orderNo:string) => {
       DeliveryMethod2: order.DeliveryMethod2,
       IsTaxInvoice: order.IsTaxInvoice,
     };
-    console.log(req)
+    console.log(req);
     if (req.Customer && req.Customer.DefaultAddress) {
       req.Customer.DefaultAddress.ZipCode = orderDetail.value?.AssuredDetails.ZipCode;
     }
@@ -207,6 +224,21 @@ const setStoretoStep = (data: OrderResponse,orderNo:string) => {
     infomation.setInformation(reqInfo);
   }
 };
+const loadOrderSummary = async (orderNo: string) => {
+  const req: OrderDetailRequest = {
+    OrderNo: orderNo,
+  };
+  const response = await useRepository().order.summary(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
+      // save to store
+      const data = response.apiResponse.Data[0];
+      store.setOrderSummary(data);
+
+      setStoretoStep(data, orderNo);
+    }
+  }
+};
 const loadOrderDetail = async (orderNo: string) => {
   const req: OrderDetailRequest = {
     OrderNo: orderNo,
@@ -217,6 +249,31 @@ const loadOrderDetail = async (orderNo: string) => {
     if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
       orderDetail.value = response.apiResponse.Data[0].OrderDetails;
       paymentDetail.value = response.apiResponse.Data[0].PaymentDetails;
+      optionDetail.value = response.apiResponse.Options as OptionsResponse;
+      //console.log('Data',response.apiResponse.Data[0])
+      //console.log('Options',response.apiResponse.Options)
+    } else {
+      // data not found
+    }
+  } else {
+  }
+};
+const loadPledgeHistoryPaymentAddList = async () => {
+  const response = await useRepository().pledge.creditHistoryPaymentAddList();
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data) {
+      creditPaymenyAddList.value = response.apiResponse.Data;
+    } else {
+      // data not found
+    }
+  } else {
+  }
+};
+const loadPledgeCreditBalance = async () => {
+  const response = await useRepository().pledge.creditBalance();
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data) {
+      creditBalance.value = response.apiResponse.Data[0];
     } else {
       // data not found
     }
@@ -227,17 +284,21 @@ const onLoad = onMounted(async () => {
   const route = useRoute();
   console.log(route.query);
   if (route.query && isString(route.query.OrderNo)) {
-    const OrderNo:string =  route.query.OrderNo
+    const OrderNo: string = route.query.OrderNo;
     isLoading.value = true;
     //TODO testing implement order detail
     await loadOrderDetail(OrderNo); //AMC2307000036
     await loadOrderSummary(OrderNo);
+    // set Payment List History Credit for wallet
+    if (paymentDetail.value && paymentDetail.value.PaymentType == "PLEDGE") {
+      await loadPledgeHistoryPaymentAddList();
+      await loadPledgeCreditBalance();
+    }
 
     isLoading.value = false;
-  }
-  else{
-    const router = useRouter()
-    router.push('/order/compulsory/payment')
+  } else {
+    const router = useRouter();
+    router.push("/order/compulsory/payment");
   }
 });
 
@@ -249,16 +310,103 @@ const submitOrder = async (formData: any) => {
     IsConsent: isConsent.value,
     OrderNo: orderDetail.value?.OrderNo ?? "",
   };
+
   const response = await useRepository().payment.confirm(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+  if (
+    response.apiResponse.Status &&
+    response.apiResponse.Status == "200" &&
+    response.apiResponse.Data
+  ) {
     isLoading.value = false;
+
     const router = useRouter();
-    router.push('/payment/qr')
+
+    let paymentConfirmRes = response.apiResponse.Data[0];
+    let paymentType: string = paymentConfirmRes?.PaymentType.toLowerCase() ?? "";
+
+    if (paymentType == "bill_payment" || paymentType == "credit_card") {
+      const reqGateway: PaymentGatewayRequest = {
+        payment_type: paymentType,
+        endpoint_code: "insurance_payment",
+        orderid: paymentConfirmRes?.OrderNo ?? "",
+        refno: paymentConfirmRes?.PaymentNo ?? "",
+        amount: paymentConfirmRes?.GrandAmount ?? 0,
+      };
+
+      const responseGateway = await useRepository().payment.gateway(reqGateway);
+      if (responseGateway.status == "0000") {
+        let gatewayInfo = responseGateway.data as PaymentGatewayResponse;
+        await paymentGateway.setPaymenGateway(gatewayInfo);
+        if (gatewayInfo.payment_type == "bill_payment") {
+          router.push("/payment/qr");
+        } else {
+          window.open(paymentGateway.payment_url, "_blank");
+        }
+      }
+    } else {
+      const req: PaymentGetRequest = {
+        PaymentNo: paymentConfirmRes.PaymentNo,
+      };
+      const responsePaymentGet = await useRepository().payment.get(req);
+      if (
+        responsePaymentGet.apiResponse.Status &&
+        responsePaymentGet.apiResponse.Status == "200" &&
+        responsePaymentGet.apiResponse.Data
+      ) {
+        await paymentGat.setPaymentGet(responsePaymentGet.apiResponse.Data[0]);
+        router.push("/order/compulsory/thanks");
+      }
+    }
   } else {
   }
   isLoading.value = false;
 };
 
+const handleTopupConfirm = async (
+  isConsent: boolean,
+  Amount: number,
+  paymentType: string
+) => {
+  isLoading.value = true;
+  console.log(isConsent, Amount, paymentType);
+  const req: CreditOrderPaymentCreateRequest = {
+    Amount: Amount,
+    IsConsent: isConsent,
+    PaymentType: "BILL_PAYMENT",
+  };
+  const response = await useRepository().pledge.creditorderPaymentCreate(req);
+  if (
+    response.apiResponse.Status &&
+    response.apiResponse.Status == "200" &&
+    response.apiResponse.Data
+  ) {
+    let paymentConfirmRes = response.apiResponse.Data[0];
+
+    const reqGateway: PaymentGatewayRequest = {
+      payment_type: "bill_payment",
+      endpoint_code: "credit_payment",
+      orderid: paymentConfirmRes.CreditOrderNo,
+      refno: paymentConfirmRes.CreditPaymentNo,
+      amount: paymentConfirmRes.Amount,
+    };
+
+    const responseGateway = await useRepository().payment.gateway(reqGateway);
+    if (responseGateway.status == "0000") {
+      console.log("Wallet responseGateway", responseGateway);
+      let gatewayInfo = responseGateway.data as PaymentGatewayResponse;
+      walletPaymentGateway.value = gatewayInfo;
+    }
+    isLoading.value = false;
+  }
+};
+const handleCloseWallet = async (status: boolean,refresh:boolean) => {
+  if(refresh){
+    isLoading.value= true
+  await loadPledgeCreditBalance();
+  isLoading.value= false
+  }
+  
+};
 // Define layout
 const layout = "monito";
 const layoutClass = "page-monito";

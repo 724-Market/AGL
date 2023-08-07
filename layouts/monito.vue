@@ -89,6 +89,8 @@ const props = defineProps({
 
 const showComponent = ref(true)
 
+
+
 if (props.layoutClass === 'page-monito-minimal') {
     showComponent.value = false
 } else {

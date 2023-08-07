@@ -18,3 +18,22 @@ export interface CreditBalanceResponse {
     AvailablePeriodAmount: number
     AvailablePeriodBalance: number
 }
+
+export interface CreditHistoryPaymentAdd {
+    Min: number,
+    Max: number,
+    List: number[]
+}
+export interface CreditOrderPaymentCreateRequest {
+    PaymentType: string,
+    Amount: number,
+    IsConsent: boolean
+}
+export interface CreditOrderPaymentCreateResponse {
+    CreditOrderNo: string,
+    CreditPaymentNo: string,
+    Amount: number
+}
+export interface CreditOrderPaymentGetRequest {
+    PaymentNo:string
+}

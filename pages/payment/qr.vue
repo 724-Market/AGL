@@ -1,13 +1,17 @@
 <template>
-    <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-        :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
-
-        <div class="row">
-            <div class="col-lg-7">
-
-                <div class="card payment-card">
-                    <div class="card-body">
-                        <div class="payment-info">
+  <NuxtLayout
+    :name="layout"
+    :layout-class="layoutClass"
+    :page-title="pageTitle"
+    :page-category="pageCategory"
+    :show-page-steps="showPageSteps"
+    :show-page-header="showPageHeader"
+  >
+    <div class="row">
+      <div class="col-lg-7">
+        <div class="card payment-card">
+          <!-- <div class="card-body">
+                        <div class="qr-payment">
 
                             <div class="status-list">
                                 <div class="logo">724 Payment</div>
@@ -43,14 +47,15 @@
                             </div>
 
                         </div>
-                    </div>
-                </div>
+                    </div> -->
+          <div class="card-body">
+            <PaymentQrDetail :paymen-gateway-info="paymenGatewaytInfo"></PaymentQrDetail>
+          </div>
+        </div>
+      </div>
 
-            </div>
-
-            <div class="col-lg-5">
-
-                <aside class="card">
+      <div class="col-lg-5">
+        <!-- <aside class="card">
                     <div class="card-header">
                         <h3 class="card-title">วิธีการชำระเงินด้วย QR</h3>
                     </div>
@@ -87,32 +92,118 @@
 
                     </div>
 
-                </aside>
-
-            </div>
-        </div>
-
-    </NuxtLayout>
+                </aside> -->
+        <PaymentQrMethod></PaymentQrMethod>
+      </div>
+    </div>
+  </NuxtLayout>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+import { storeToRefs } from "pinia";
+import { UserResponse } from "~/shared/entities/user-entity";
+import {
+  NoticePaymentRequest,
+  NoticePaymentData,
+  PaymentGatewayResponse,
+} from "~/shared/entities/payment-entity";
+import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
+import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
+import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
+
+const paymenGatewaytInfo: globalThis.Ref<PaymentGatewayResponse | undefined> = ref();
+
+const storeAuth = useStoreUserAuth();
+const { AuthenInfo } = storeToRefs(storeAuth);
+
+const orderSummary = useStoreOrderSummary();
+const { OrderSummaryInfo } = storeToRefs(orderSummary);
+
+const paymentGateway = useStorePaymentGateway();
+const { PaymenGatewaytInfo } = storeToRefs(paymentGateway);
+
+// Loading state after form submiting
+const isLoading = ref(false);
+
+// Submitted state after submit
+const submitted = ref(false);
+
+const isError = ref(false);
+const messageError = ref("");
+
+// Response status for notice user
+const statusMessage = ref();
+const statusMessageType = ref();
+
+const router = useRouter();
+
+const onLoad = onMounted(async () => {
+  if (AuthenInfo.value) {
+    if (PaymenGatewaytInfo.value) {
+      paymenGatewaytInfo.value = PaymenGatewaytInfo.value;
+      const responseUser = await useRepository().user.GetUser();
+
+      if (responseUser.apiResponse.Status && responseUser.apiResponse.Status == "200") {
+        if (responseUser.apiResponse.Data && responseUser.apiResponse.Data.length > 0) {
+          const user: UserResponse = responseUser.apiResponse.Data[0];
+          let deviceId = await getUA()
+          const paymentService = await useService().paymentNotice;
+          const paymentServiceReq: NoticePaymentRequest = {
+            ClientID: "AgentLoveWeb",
+            DeviceID: deviceId,
+            ReferenceID: PaymenGatewaytInfo.value.refno1,
+            UserID: user.ID,
+            GroupType: "qr",
+            AccessToken: AuthenInfo.value.accessToken,
+          };
+          console.log("paymentServiceReq", paymentServiceReq);
+          await paymentService.connect(paymentServiceReq);
+          await paymentService.RequestUpdateTopUpPayment(PaymenGatewaytInfo.value);
+          await paymentService.RequestUpdateOrderPayment(PaymenGatewaytInfo.value);
+        }
+      }
+    } else {
+      router.push("/history");
+    }
+  } else {
+    router.push("/login");
+  }
+});
+
+const getUA = async () => {
+    var ua= navigator.userAgent;
+    var tem; 
+    var M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+    if(/trident/i.test(M[1])){
+        tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
+        return 'IE '+(tem[1] || '');
+    }
+    if(M[1]=== 'Chrome'){
+        tem= ua.match(/\b(OPR|Edge)\/(\d+)/);
+        if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+    }
+    M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+    if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
+    return M.join(' ');
+}
+
 // Define layout
-const layout = 'monito'
-const layoutClass = 'page-monito'
-const showPageSteps = false
-const showPageHeader = true
+const layout = "monito";
+const layoutClass = "page-monito";
+const showPageSteps = false;
+const showPageHeader = true;
 
 // Define page meta
-const pageTitle = 'ชำระเงินด้วย QR'
-const pageCategory = 'แจ้งงาน พ.ร.บ.'
-const pageDescription = ''
+const pageTitle = "ชำระเงินด้วย QR";
+const pageCategory = "แจ้งงาน พ.ร.บ.";
+const pageDescription = "";
 
 // Define meta seo
 useHead({
-    title: pageTitle,
-    meta: [{ name: 'description', content: pageDescription }],
-    bodyAttrs: {
-        class: 'category-payment single-qr',
-    },
-})
+  title: pageTitle,
+  meta: [{ name: "description", content: pageDescription }],
+  bodyAttrs: {
+    class: "category-payment single-qr",
+  },
+});
 </script>

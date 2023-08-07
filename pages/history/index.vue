@@ -1,5 +1,6 @@
 <template>
-  <NuxtLayout :name="layout">
+  <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
 
     <div class="row">
       <div class="col">
@@ -10,11 +11,6 @@
           <div class="card">
 
             <div class="card-body">
-
-              <div class="notice-info">แสดงผลการค้นหา "0890435478" จากหมายเลขโทรศัพท์ และ "ป้ายแดง", "นครปฐม"
-                <button type="button" class="btn-secondary"><i class="fa-solid fa-circle-xmark"></i>
-                  ล้างค่าการค้นหา</button>
-              </div>
 
               <div class="search-box">
 
@@ -98,6 +94,11 @@
           </div>
 
         </FormKit>
+
+        <aside class="search-result">
+          <div class="notice-info">แสดงรายการจากผลการค้นหา "0890435478" จากหมายเลขโทรศัพท์ และ "ป้ายแดง", "นครปฐม" <button
+              type="button" class="btn-info"><i class="fa-solid fa-eraser"></i>ล้างค่าการค้นหา</button></div>
+        </aside>
 
         <div id="transaction-stats" class="card-stat-stack">
 
@@ -188,8 +189,11 @@
             <a href="#" title="ไม่สำเร็จ">
               <div class="stat-wrapper has-compare">
                 <div class="stat-header">
-                  <h5 class="topic">ไม่สำเร็จ</h5>
-                  <span class="value">2</span>
+                  <h5 class="topic">ไม่สำเร็จ<span class="badge-navy" data-bs-toggle="tooltip"
+                      data-bs-custom-class="meta-tooltip"
+                      data-bs-title="A/B<br>A คือ งานที่ไม่สมบูรณ์ สามารถทำการคืนเงินได้<br>B คือ งานที่ไม่สำเร็จ"
+                      data-bs-html="true"><i class="fa-solid fa-circle-question"></i></span></h5>
+                  <span class="value">2<small>/6</small></span>
                 </div>
                 <div class="stat-action">
                   <figure class="figure">
@@ -214,10 +218,10 @@
                   <th data-orderable="false"></th>
                   <th data-orderable="false"></th>
                   <th>เลขที่คำสั่งซื้อ</th>
-                  <th data-orderable="false">ข้อมูลรถ</th>
+                  <th data-orderable="false">รายการ</th>
                   <th>จำนวนเงิน (บาท)</th>
                   <th data-orderable="false">ผู้เอาประกัน</th>
-                  <th data-orderable="false">รายการ</th>
+                  <th>สถานะ</th>
                   <th class="meta-head" data-orderable="false">รูปแบบการทำรายการ</th>
                 </tr>
               </thead>
@@ -225,8 +229,8 @@
                 <tr>
                   <td>
                     <div class="dropdown">
-                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <ul class="dropdown-menu">
@@ -237,23 +241,31 @@
                         <li>
                           <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#"><span class="icon-refund">ยกเลิกและคืนส่วนลด</span></a>
-                        </li>
+                        <li><a class="dropdown-item" href="#"><span class="icon-refund">ยกเลิกและคืนส่วนลด</span></a></li>
                       </ul>
                     </div>
                   </td>
                   <td class="has-child"></td>
                   <td class="order">#200300033675<time datetime="2023-05-05 08:08">2023-05-05 08:08</time></td>
-                  <td class="license">ก-9999 (ป้ายแดง)<span>MG MG3 ปี 2018</span></td>
+                  <td class="subject">ก-9999 (ป้ายแดง)<span>MG MG3 ปี 2018</span></td>
                   <td class="amount">645.21<span>ส่วนลด 0.00</span></td>
                   <td class="name">ปฐมพงศ์ สังคจิตต์<span>089-xxx-x478</span></td>
-                  <td class="description">ประกันภัยชั้น 1 รถยนต์<span>สำหรับรถส่วนบุคคล</span></td>
+                  <td class="status">
+                    <div class="badge-dot badge">แบบร่าง</div><span></span>
+                    <div class="badge-dot badge-warning">รอชำระเงิน</div><span>สิ้นสุด 12/06/2566</span>
+                    <div class="badge-dot badge-warning">รับแจ้งงาน</div><span>เลขแจ้งงาน 7245647435</span>
+                    <div class="badge-dot badge-warning">กำลังจัดส่ง</div><span>DHL เลขพัสดุ ETH-35426-455</span>
+                    <div class="badge-dot badge-success">สำเร็จ</div><span><a class="attached" href="#"
+                        title="ดูไฟล์กรมธรรม์">กรมธรรม์ TR-4635-453-32-1</a></span>
+                    <div class="badge-dot badge-danger">ไม่สำเร็จ</div><span>ไม่รับแจ้งงาน</span>
+                  </td>
                   <td>
                     <div class="meta">
                       <span class="badge meta-online" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทำรายการแบบ online"><em>On</em></span>
+                        data-bs-title="ทำรายการแบบ online<br>โดย ปฐมพงศ์ สังคจิตต์" data-bs-html="true"><em>On</em></span>
                       <span class="badge meta-offline" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทำรายการแบบ offline"><em>Off</em></span>
+                        data-bs-title="ทำรายการแบบ offline<br>โดย ปฐมพงศ์ สังคจิตต์"
+                        data-bs-html="true"><em>Off</em></span>
                       <span class="badge meta-new" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
                         data-bs-title="งานใหม่"><em>N</em></span>
                       <span class="badge meta-renew" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
@@ -274,6 +286,9 @@
                         data-bs-title="ชำระด้วย บัตรเครดิต/บัตรเดบิต"><em>บัตรเครดิต/บัตรเดบิต</em></span>
                       <span class="badge meta-installment" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
                         data-bs-title="ชำระด้วย บัตรเครดิต/บัตรเดบิต ผ่อน 6 เดือน"><em>/ 6</em></span>
+                      <span class="badge meta-installment-cash" data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip" data-bs-title="ชำระด้วย เงินสด ผ่อน 12 เดือน"><em>/
+                          12</em></span>
                       <span class="badge meta-pledge" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
                         data-bs-title="ชำระด้วย วงเงินมัดจำ"><em>วงเงินมัดจำ</em></span>
                       <span class="badge meta-fulldiscount" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
@@ -288,21 +303,23 @@
                 <tr>
                   <td>
                     <div class="dropdown">
-                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#"><span class="icon-tracking">ติดตามสถานะ</span></a></li>
+                        <li><a class="dropdown-item" href="#"><span class="icon-refund">ยกเลิกและคืนส่วนลด</span></a></li>
                       </ul>
                     </div>
                   </td>
-                  <td class="has-child"></td>
-                  <td class="order">#200300034435<time datetime="2022-02-05 02:08">2022-02-05 02:08</time></td>
-                  <td class="license">นก-9876<span>HONDA BRV ปี 2020</span></td>
+                  <td></td>
+                  <td class="order">#200300098425<time datetime="2022-02-05 02:08">2022-02-05 02:08</time></td>
+                  <td class="subject">นก-987<span>HONDA BRV ปี 2020</span></td>
                   <td class="amount">645.21<span>ส่วนลด 0.00</span></td>
                   <td class="name">วิทยา อภิมหาบุณย์<span>089-xxx-x464</span></td>
-                  <td class="description">ประกันภัยชั้น 3 รถยนต์<span>สำหรับรถรับจ้าง</span></td>
+                  <td class="status">
+                    <div class="badge-dot badge-danger">ไม่สำเร็จ</div><span>ไม่รับแจ้งงาน</span>
+                  </td>
                   <td>
                     <div class="meta">
                       <span class="badge meta-online" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
@@ -323,8 +340,45 @@
                 <tr>
                   <td>
                     <div class="dropdown">
-                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                      </a>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><span class="icon-tracking">ติดตามสถานะ</span></a></li>
+                      </ul>
+                    </div>
+                  </td>
+                  <td class="has-child"></td>
+                  <td class="order">#200300034435<time datetime="2022-02-05 02:08">2022-02-05 02:08</time></td>
+                  <td class="subject">นก-9876<span>HONDA BRV ปี 2020</span></td>
+                  <td class="amount">645.21<span>ส่วนลด 0.00</span></td>
+                  <td class="name">วิทยา อภิมหาบุณย์<span>089-xxx-x464</span></td>
+                  <td class="status">
+                    <div class="badge-dot badge-warning">รอชำระเงิน</div><span>สิ้นสุด 12/06/2566</span>
+                  </td>
+                  <td>
+                    <div class="meta">
+                      <span class="badge meta-online" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทำรายการแบบ online"><em>On</em></span>
+                      <span class="badge meta-new" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                        data-bs-title="งานใหม่"><em>N</em></span>
+                      <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ไทยศรี"><em>ERGO</em></span>
+                      <span class="badge meta-product meta-include" data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip" data-bs-title="ป.1 & พ.ร.บ."><em>ควบ</em></span>
+                      <span class="badge meta-qr" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย QR"><em>QR</em></span>
+                      <span class="badge meta-partialdiscount" data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip" data-bs-title="หักส่วนลดบางส่วน"><em>หักบางส่วน</em></span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="dropdown">
+                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <ul class="dropdown-menu">
@@ -334,10 +388,12 @@
                   </td>
                   <td></td>
                   <td class="order">#220700017966<time datetime="2023-03-25 10:23">2023-03-25 10:23</time></td>
-                  <td class="license">9กต-3420<span>MG MG3 ปี 2018</span></td>
+                  <td class="subject">9กต-3420<span>MG MG3 ปี 2018</span></td>
                   <td class="amount">645.21<span>ส่วนลด 93.00</span></td>
                   <td class="name">ปฐมพงศ์ สังคจิตต์<span>089-xxx-x478</span></td>
-                  <td class="description">พ.ร.บ. รถยนต์<span>สำหรับรถส่วนบุคคล</span></td>
+                  <td class="status">
+                    <div class="badge-dot badge">แบบร่าง</div><span></span>
+                  </td>
                   <td>
                     <div class="meta">
                       <span class="badge meta-online" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
@@ -358,8 +414,8 @@
                 <tr class="is-open">
                   <td>
                     <div class="dropdown">
-                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <ul class="dropdown-menu">
@@ -370,10 +426,13 @@
                   </td>
                   <td class="has-child"></td>
                   <td class="order">#210700947101<time datetime="2023-03-25 10:23">2023-04-12 11:06</time></td>
-                  <td class="license">4กท-4720<span>TOYOTA INNOVA ปี 2015</span></td>
-                  <td class="amount">1,899.25<span>ส่วนลด 245.07</span></td>
+                  <td class="subject">4กท-4720<span>TOYOTA INNOVA ปี 2015</span></td>
+                  <td class="amount">1,899.25 (2,457.23)<span>ส่วนลด 245.07</span></td>
                   <td class="name">พัชราภรณ์ โภชนะวนิชย์<span>089-xxx-x077</span></td>
-                  <td class="description">พ.ร.บ. รถยนต์<span>สำหรับรถส่วนบุคคล</span></td>
+                  <td class="status">
+                    <div class="badge-dot badge-success">สำเร็จ</div><span><a class="attached" href="#"
+                        title="ดูไฟล์กรมธรรม์">กรมธรรม์ TR-4635-453-32-1</a></span>
+                  </td>
                   <td>
                     <div class="meta">
                       <span class="badge meta-offline" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
@@ -391,17 +450,54 @@
                     </div>
                   </td>
                 </tr>
-              </tbody>
-            </table>
+                <tr class="is-child">
+                  <td>
+                    <div class="dropdown">
+                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                      </a>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><span class="icon-payment">ชำระเงิน</span></a></li>
+                        <li><a class="dropdown-item" href="#"><span class="icon-tracking">ติดตามสถานะ</span></a></li>
+                      </ul>
+                    </div>
+                  </td>
+                  <td class="the-child"></td>
+                  <td class="order">#210700947102<time datetime="2023-03-25 10:23">2023-04-12 11:06</time></td>
+                  <td class="subject">4กท-4720<span>TOYOTA INNOVA ปี 2015</span></td>
+                  <td class="amount">645.21 (2,457.23)<span>ส่วนลด 34.87</span></td>
+                  <td class="name">พัชราภรณ์ โภชนะวนิชย์<span>089-xxx-x077</span></td>
+                  <td class="status">
+                    <div class="badge-dot badge-warning">กำลังจัดส่ง</div><span>DHL เลขพัสดุ ETH-35426-455</span>
+                  </td>
+                  <td>
+                  <div class="meta">
+                    <span class="badge meta-offline" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                      data-bs-title="ทำรายการแบบ offline"><em>Off</em></span>
+                    <span class="badge meta-renew" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                      data-bs-title="งานต่ออายุ"><em>R</em></span>
+                    <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                      data-bs-title="ทิพยประกันภัย"><em>TIP</em></span>
+                    <span class="badge meta-product" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                      data-bs-title="พ.ร.บ."><em>พรบ</em></span>
+                    <span class="badge meta-pledge" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                      data-bs-title="ชำระด้วย วงเงินมัดจำ"><em>วงเงินมัดจำ</em></span>
+                    <span class="badge meta-fulldiscount" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                      data-bs-title="หักส่วนลดเต็มจำนวน"><em>หักเต็ม</em></span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-          </div>
         </div>
-
       </div>
-    </div>
 
-  </NuxtLayout>
-</template>
+    </div>
+  </div>
+
+</NuxtLayout></template>
 
 <script lang="ts" setup>
 // Define import
@@ -424,14 +520,22 @@ const submitSearch = async (formData: any) => {
 }
 
 // Define layout
-const layout = "monito"
+const layout = 'monito'
+const layoutClass = 'page-monito'
+const showPageSteps = false
+const showPageHeader = true
+
+// Define page meta
+const pageTitle = 'History ประวัติการทำรายการ'
+const pageCategory = 'ประวัติการทำรายการ'
+const pageDescription = ''
 
 // Define meta seo
 useHead({
-  title: "History ประวัติการทำรายการ",
-  meta: [{ name: "description", content: "History ประวัติการทำรายการ" }],
+  title: pageTitle,
+  meta: [{ name: 'description', content: pageDescription }],
   bodyAttrs: {
-    class: "page-history category-datatable single-transaction",
+    class: 'page-history category-datatable single-transaction',
   },
 })
 </script>

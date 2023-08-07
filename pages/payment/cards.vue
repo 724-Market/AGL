@@ -25,21 +25,9 @@
                                 </div>
                             </div>
 
-                            <div class="qr-info">
-                                <figure class="qr-code">
-                                    <img src="/uploads/qr.png" alt="">
-                                </figure>
-
-                                <small>0543FRE3GDTEY094767</small>
-
-                                <p>หรือคลิกปุ่มเพื่อบันทึก QR ด้านล่าง</p>
-                                <a class="btn btn-secondary" href="#" title="บันทึก QR"><i
-                                        class="fa-solid fa-download"></i>บันทึก QR</a>
-                            </div>
-
                             <div class="payment-action">
-                                <a class="btn btn-outline-info" href="#" title="แชร์หน้านี้">แชร์หน้านี้</a>
-                                <a class="btn" href="#" title="เปลี่ยนช่องทางการชำระเงิน">เปลี่ยนช่องทางการชำระเงิน</a>
+                                <a class="btn-secondary" href="#"
+                                    title="ตรวจสอบสถานะการชำระเงิน">ตรวจสอบสถานะการชำระเงิน</a>
                             </div>
 
                         </div>
@@ -52,12 +40,12 @@
 
                 <aside class="card">
                     <div class="card-header">
-                        <h3 class="card-title">วิธีการชำระเงินด้วย QR</h3>
+                        <h3 class="card-title">วิธีการชำระเงินด้วย บัตรเครดิต/บัตรเดบิต</h3>
                     </div>
 
                     <div class="card-body">
 
-                        <div class="procedure">
+                        <div class="procedure d-none">
                             <h4>ขั้นตอนการสแกน QR ที่แนะนำ</h4>
                             <ol>
                                 <li>เปิดแอปพลิเคชันธนาคารบนอุปกรณ์ของท่าน</li>
@@ -80,9 +68,9 @@
                             </ol>
                         </div>
 
-                        <div class="notice-warning">
-                            <i class="fa-regular fa-circle-info"></i> QR นี้
-                            ใช้ได้เฉพาะรายการคำสั่งซื้อนี้เท่านั้น<br><b><u>ไม่สามารถใช้ซ้ำได้</u></b>
+                        <div class="notice-info">
+                            <i class="fa-regular fa-circle-info"></i>
+                            ระบบไม่มีการเก็บบันทึกข้อมูลบัตรเครดิต/บัตรเดบิตของท่าน มั่นใจได้ในความปลอดภัยตลอดการใช้งาน
                         </div>
 
                     </div>
@@ -103,7 +91,7 @@ const showPageSteps = false
 const showPageHeader = true
 
 // Define page meta
-const pageTitle = 'ชำระเงินด้วย QR'
+const pageTitle = 'ชำระเงินด้วย บัตรเครดิต/บัตรเดบิต'
 const pageCategory = 'แจ้งงาน พ.ร.บ.'
 const pageDescription = ''
 
@@ -112,7 +100,7 @@ useHead({
     title: pageTitle,
     meta: [{ name: 'description', content: pageDescription }],
     bodyAttrs: {
-        class: 'category-payment single-qr',
+        class: 'category-payment single-cards',
     },
 })
 </script>

@@ -54,7 +54,7 @@
             </div>
 
             <div class="card-body pledge-step-2 is-active">
-                <div class="qr-payment">
+                <div class="payment-info">
                     <div class="status-list">
                         <div class="logo">724 Payment</div>
                         <div class="status-item">

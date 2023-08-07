@@ -12,7 +12,7 @@
                 </div>
                 <div class="status-item">
                     <h5 class="topic">วันที่ทำรายการสำเร็จ</h5>
-                    <p>{{ $props.paymentGet.PaymentDate }}</p>
+                    <p>{{ useUtility().formatDate($props.paymentGet.PaymentDate,"D MMMM BBBB HH:mm:ss") }}</p>
                 </div>
                 <div class="status-item text-warning">
                     <h5 class="topic">สถานะ</h5>

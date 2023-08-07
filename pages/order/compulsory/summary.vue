@@ -46,6 +46,7 @@
                 :payment="paymentDetail"
                 :order-no="orderDetail.OrderNo"
                 :create-date="orderDetail.OrderDate"
+                :credit-balance="creditBalance"
               ></OrderCompulsorySummaryPurchaseDetail>
               <OrderCompulsorySummaryPaymentStatus
                 :payment="paymentDetail"
@@ -53,6 +54,7 @@
                 :payment-list="creditPaymenyAddList"
                 :wallet-payment-gateway="walletPaymentGateway"
                 @topup-confirm="handleTopupConfirm"
+                @close-wallet="handleCloseWallet"
               ></OrderCompulsorySummaryPaymentStatus>
             </div>
 
@@ -109,10 +111,11 @@ import {
   PaymentConfirmRequest,
   PaymentGatewayRequest,
   PaymentGatewayResponse,
-  PaymentGetRequest
+  PaymentGetRequest,
 } from "~/shared/entities/payment-entity";
 import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
 import {
+  CreditBalanceResponse,
   CreditHistoryPaymentAdd,
   CreditOrderPaymentCreateRequest,
 } from "~/shared/entities/pledge-entity";
@@ -132,7 +135,7 @@ const infomation = useStoreInformation();
 const placeorder = useStorePlaceorder();
 const { OrderInfo } = storeToRefs(placeorder);
 
-const paymentGat = useStorePaymentGet()
+const paymentGat = useStorePaymentGet();
 
 const paymentGateway = useStorePaymentGateway();
 
@@ -148,6 +151,7 @@ const paymentDetail: globalThis.Ref<PaymentDetails | undefined> = ref();
 const optionDetail: globalThis.Ref<OptionsResponse | undefined> = ref();
 const creditPaymenyAddList: globalThis.Ref<CreditHistoryPaymentAdd | undefined> = ref();
 const walletPaymentGateway: globalThis.Ref<PaymentGatewayResponse | undefined> = ref();
+const creditBalance: globalThis.Ref<CreditBalanceResponse | undefined> = ref();
 const isConsent = ref();
 
 let values = reactive({});
@@ -265,6 +269,17 @@ const loadPledgeHistoryPaymentAddList = async () => {
   } else {
   }
 };
+const loadPledgeCreditBalance = async () => {
+  const response = await useRepository().pledge.creditBalance();
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data) {
+      creditBalance.value = response.apiResponse.Data[0];
+    } else {
+      // data not found
+    }
+  } else {
+  }
+};
 const onLoad = onMounted(async () => {
   const route = useRoute();
   console.log(route.query);
@@ -277,6 +292,7 @@ const onLoad = onMounted(async () => {
     // set Payment List History Credit for wallet
     if (paymentDetail.value && paymentDetail.value.PaymentType == "PLEDGE") {
       await loadPledgeHistoryPaymentAddList();
+      await loadPledgeCreditBalance();
     }
 
     isLoading.value = false;
@@ -327,14 +343,18 @@ const submitOrder = async (formData: any) => {
           window.open(paymentGateway.payment_url, "_blank");
         }
       }
-    } else { 
+    } else {
       const req: PaymentGetRequest = {
         PaymentNo: paymentConfirmRes.PaymentNo,
       };
-      const responsePaymentGet= await useRepository().payment.get(req);
-      if(responsePaymentGet.apiResponse.Status &&  responsePaymentGet.apiResponse.Status == "200" && responsePaymentGet.apiResponse.Data) {
-        await paymentGat.setPaymentGet(responsePaymentGet.apiResponse.Data[0])
-        router.push('/order/compulsory/thanks')
+      const responsePaymentGet = await useRepository().payment.get(req);
+      if (
+        responsePaymentGet.apiResponse.Status &&
+        responsePaymentGet.apiResponse.Status == "200" &&
+        responsePaymentGet.apiResponse.Data
+      ) {
+        await paymentGat.setPaymentGet(responsePaymentGet.apiResponse.Data[0]);
+        router.push("/order/compulsory/thanks");
       }
     }
   } else {
@@ -379,7 +399,14 @@ const handleTopupConfirm = async (
     isLoading.value = false;
   }
 };
-
+const handleCloseWallet = async (status: boolean,refresh:boolean) => {
+  if(refresh){
+    isLoading.value= true
+  await loadPledgeCreditBalance();
+  isLoading.value= false
+  }
+  
+};
 // Define layout
 const layout = "monito";
 const layoutClass = "page-monito";

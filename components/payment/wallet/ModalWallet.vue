@@ -2,7 +2,9 @@
   <dialog id="wallet-dialog" v-show="_show">
     <div class="dialog-card">
       <div class="card-header">
-        <button class="btn btn-close btn-close-wallet" @click="closeModal">ปิด</button>
+        <button type="button" class="btn btn-close btn-close-wallet" @click="closeModal(false)">
+          ปิด
+        </button>
       </div>
 
       <div
@@ -111,28 +113,38 @@
         </div> -->
         <PaymentQrDetail
           :paymen-gateway-info="props.walletPaymentGateway"
+          :payment-type="'wallet'"
+          @check-payment="hanlderCheckPayment"
         ></PaymentQrDetail>
       </div>
 
       <div
+        v-if="paymentResponse"
         :class="isStep3 ? 'card-body pledge-step-3 is-active' : 'card-body pledge-step-3'"
       >
-        <div class="status-list">
+        <div class="status-list" v-if="isSuccess">
           <figure class="status-icon">
             <div class="icon check success"></div>
           </figure>
           <h4 class="title">ชำระเงินสำเร็จแล้ว</h4>
           <div class="status-item">
             <h5 class="topic">หมายเลขทำรายการ</h5>
-            <p>7B2303094767564</p>
+            <p>{{ paymentResponse.PaymentNo }}</p>
           </div>
           <div class="status-item">
             <h5 class="topic">จำนวนเงิน</h5>
-            <p>123.45 บาท</p>
+            <p>{{ useUtility().getCurrency(paymentResponse.GrandAmount, 2) }} บาท</p>
           </div>
           <div class="status-item">
             <h5 class="topic">วันที่ทำรายการสำเร็จ</h5>
-            <p>14 มี.ค. 2566 17:34</p>
+            <p>
+              {{
+                useUtility().formatDate(
+                  paymentResponse.CreateDate,
+                  "D MMMM BBBB HH:mm:ss"
+                )
+              }}
+            </p>
           </div>
           <div class="status-item text-success">
             <h5 class="topic">สถานะ</h5>
@@ -140,25 +152,25 @@
           </div>
           <div class="status-info">
             <div class="status-action">
-              <a class="btn btn-close-wallet" href="#" title="ปิดหน้าต่างนี้"
-                >ปิดหน้าต่างนี้</a
-              >
+              <button type="button" class="btn btn-close-wallet" @click="closeModal(true)">
+                ปิดหน้าต่างนี้
+              </button>
             </div>
           </div>
         </div>
 
-        <div class="status-list">
+        <div class="status-list" v-else>
           <figure class="status-icon">
             <div class="icon cross danger"></div>
           </figure>
           <h4 class="title">ชำระเงินไม่สำเร็จ</h4>
           <div class="status-item">
             <h5 class="topic">หมายเลขทำรายการ</h5>
-            <p>7B2303094767564</p>
+            <p>{{ paymentResponse.PaymentNo }}</p>
           </div>
           <div class="status-item">
             <h5 class="topic">จำนวนเงิน</h5>
-            <p>123.45 บาท</p>
+            <p>{{ useUtility().getCurrency(paymentResponse.GrandAmount, 2) }} บาท</p>
           </div>
           <div class="status-item text-danger">
             <h5 class="topic">สถานะ</h5>
@@ -166,9 +178,14 @@
           </div>
           <div class="status-info">
             <div class="status-action">
-              <a class="btn btn-close-wallet" href="#" title="ทำรายการใหม่"
-                >ทำรายการใหม่</a
+              <button
+                type="button"
+                class="btn btn-close-wallet"
+                @click="reset"
+                title="ทำรายการใหม่"
               >
+                ทำรายการใหม่
+              </button>
             </div>
           </div>
         </div>
@@ -181,6 +198,7 @@ import { storeToRefs } from "pinia";
 import {
   NoticePaymentRequest,
   PaymentGatewayResponse,
+  PaymentGetResponse,
 } from "~/shared/entities/payment-entity";
 import { CreditHistoryPaymentAdd } from "~/shared/entities/pledge-entity";
 import { UserResponse } from "~/shared/entities/user-entity";
@@ -201,6 +219,7 @@ const props = defineProps({
 
 const _show = ref(false);
 const historyPaymentList: globalThis.Ref<number[]> = ref([]);
+const paymentResponse: globalThis.Ref<PaymentGetResponse | undefined> = ref();
 const minVolumn = ref("");
 const maxVolumn = ref("");
 const Amount = ref(0);
@@ -210,6 +229,7 @@ const isLoading = ref(false);
 const isStep1 = ref(false);
 const isStep2 = ref(false);
 const isStep3 = ref(false);
+const isSuccess = ref(false);
 
 const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
@@ -238,7 +258,7 @@ watch(
     if (props.show) {
       openModal();
     } else {
-      closeModal();
+      closeModal(false);
     }
   }
 );
@@ -263,6 +283,19 @@ const onLoad = onMounted(() => {
     openModal();
   }
 });
+const hanlderCheckPayment = (response: PaymentGetResponse) => {
+  paymentResponse.value = response;
+  if (!response.IsPending) {
+    if (!response.IsCancel && response.IsSuccess) {
+      isSuccess.value = true;
+    } else {
+      isSuccess.value = false;
+    }
+    isStep3.value = true;
+    isStep1.value = false;
+    isStep2.value = false;
+  }
+};
 
 const signalRPaymentService = async () => {
   if (AuthenInfo.value) {
@@ -285,11 +318,11 @@ const signalRPaymentService = async () => {
           console.log("paymentServiceReq", paymentServiceReq);
           await paymentService.connect(paymentServiceReq);
           await paymentService.RequestUpdateTopUpPayment(props.walletPaymentGateway);
-          if(NoticePaymentInfo.value){
-            isStep3.value = true
-            isStep1.value = false
-            isStep2.value = false
-          }
+          // if(NoticePaymentInfo.value){
+          //   isStep3.value = true
+          //   isStep1.value = false
+          //   isStep2.value = false
+          // }
         }
       }
     } else {
@@ -300,6 +333,13 @@ const signalRPaymentService = async () => {
   }
 };
 
+const reset = () => {
+  isStep1.value = true;
+  isStep2.value = false;
+  isStep3.value = false;
+  isSuccess.value = false;
+  paymentResponse.value = undefined;
+};
 function openModal() {
   //modal.show()
   _show.value = props.show;
@@ -316,11 +356,11 @@ function openModal() {
   }
 }
 
-function closeModal() {
+function closeModal(refresh:boolean) {
   //modal.hide()
   _show.value = false;
   const dialogLoading = document.getElementById("wallet-dialog");
   if (dialogLoading) dialogLoading.close();
-  emit("closeWallet", false);
+  emit("closeWallet", false,refresh);
 }
 </script>

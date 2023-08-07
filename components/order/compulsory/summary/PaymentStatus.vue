@@ -1,13 +1,13 @@
 <template>
   <div class="status-list" v-if="$props.payment && $props.payment.PaymentType=='BILL_PAYMENT'">
-    <figure class="status-icon">
+    <!-- <figure class="status-icon">
       <div class="icon qr warning"></div>
     </figure>
     <h4 class="title">ชำระเงินด้วย QR</h4>
     <div class="status-item text-blue text-big">
       <h5 class="topic">ยอดรวมที่ต้องชำระ</h5>
       <p>{{ $props.payment.GrandAmount }} บาท</p>
-    </div>
+    </div> -->
 
     <div class="status-info">
       <!-- <div class="notice-info">
@@ -22,14 +22,14 @@
   </div>
 
   <div class="status-list" v-if="$props.payment && $props.payment.PaymentType=='CREDIT_CARD'">
-    <figure class="status-icon">
+    <!-- <figure class="status-icon">
       <div class="icon cards warning"></div>
     </figure>
     <h4 class="title">ชำระเงินด้วย บัตรเครดิต/บัตรเดบิต</h4>
     <div class="status-item text-blue text-big">
       <h5 class="topic">ยอดรวมที่ต้องชำระ</h5>
       <p>{{ $props.payment.GrandAmount }} บาท</p>
-    </div>
+    </div> -->
 
     <div class="status-info">
       <div class="status-action">
@@ -41,7 +41,7 @@
   </div>
 
   <div class="status-list"  v-if="$props.payment && $props.payment.PaymentType=='PLEDGE' && $props.options">
-    <figure class="status-icon">
+    <!-- <figure class="status-icon">
       <div class="icon pledge danger"></div>
     </figure>
     <h4 class="title">ชำระเงินด้วย วงเงินมัดจำ</h4>
@@ -52,7 +52,7 @@
     <div class="status-item">
       <h5 class="topic">ยอดเงินในวงเงินมัดจำ</h5>
       <p>{{ $props.options.CreditError.Amount }} บาท</p>
-    </div>
+    </div> -->
 
     <div class="status-info">
       <div class="notice-danger" v-if="$props.options.CreditError.Message=='REQUIRE_INCREASE_CREDIT_LIMIT'">
@@ -98,8 +98,9 @@ const openWallet = ()=>{
   showWallet.value = false
   showWallet.value = true
 }
-const closeWallet = (status:boolean)=>{
+const closeWallet = (status:boolean,refresh:boolean)=>{
   showWallet.value = status
+  emit('closeWallet',status,refresh)
 }
 const handleTopupConfirm = (isConsent:boolean,Amount:boolean,paymentType:string)=>{
   emit('topupConfirm',isConsent,Amount,paymentType)

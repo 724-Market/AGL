@@ -34,3 +34,6 @@ export interface CreditOrderPaymentCreateResponse {
     CreditPaymentNo: string,
     Amount: number
 }
+export interface CreditOrderPaymentGetRequest {
+    PaymentNo:string
+}

@@ -109,6 +109,7 @@ import {
   PaymentConfirmRequest,
   PaymentGatewayRequest,
   PaymentGatewayResponse,
+  PaymentGetRequest
 } from "~/shared/entities/payment-entity";
 import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
 import {
@@ -119,6 +120,8 @@ import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
+import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
+
 //define store
 const store = useStoreOrderSummary();
 // define getter in store
@@ -128,6 +131,8 @@ const infomation = useStoreInformation();
 
 const placeorder = useStorePlaceorder();
 const { OrderInfo } = storeToRefs(placeorder);
+
+const paymentGat = useStorePaymentGet()
 
 const paymentGateway = useStorePaymentGateway();
 
@@ -314,17 +319,23 @@ const submitOrder = async (formData: any) => {
 
       const responseGateway = await useRepository().payment.gateway(reqGateway);
       if (responseGateway.status == "0000") {
-        console.log("responseGateway", responseGateway);
         let gatewayInfo = responseGateway.data as PaymentGatewayResponse;
-        paymentGateway.setPaymenGateway(gatewayInfo);
+        await paymentGateway.setPaymenGateway(gatewayInfo);
         if (gatewayInfo.payment_type == "bill_payment") {
           router.push("/payment/qr");
         } else {
           window.open(paymentGateway.payment_url, "_blank");
         }
       }
-    } else {
-      // router.push('/order/compulsory/thanks')
+    } else { 
+      const req: PaymentGetRequest = {
+        PaymentNo: paymentConfirmRes.PaymentNo,
+      };
+      const responsePaymentGet= await useRepository().payment.get(req);
+      if(responsePaymentGet.apiResponse.Status &&  responsePaymentGet.apiResponse.Status == "200" && responsePaymentGet.apiResponse.Data) {
+        await paymentGat.setPaymentGet(responsePaymentGet.apiResponse.Data[0])
+        router.push('/order/compulsory/thanks')
+      }
     }
   } else {
   }

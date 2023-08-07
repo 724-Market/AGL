@@ -25,7 +25,10 @@
                 <small>{{ $props.paymenGatewayInfo.refno1 }}</small>
 
                 <p>หรือคลิกปุ่มเพื่อบันทึก QR ด้านล่าง</p>
-                <button class="btn btn-secondary" @click="downloadImage"><i class="fa-solid fa-download"></i>บันทึก QR</button>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" @click="downloadImage"><i class="fa-solid fa-download"></i>บันทึก QR</button>
+                    <button v-if="isCheck" class="btn btn-outline-primary" @click="checkPayment">Check</button>
+                </div>
             </div>
 
             <!-- <div class="qr-action">
@@ -36,10 +39,22 @@
     
 </template>
 
+<style scoped>
+.btn-group {
+  position: relative;
+  display: flex;
+  vertical-align: middle;
+}
+</style>
+
 <script setup lang="ts">
-import { PaymentGatewayResponse }  from "~/shared/entities/payment-entity"
+import { PaymentGatewayResponse, PaymentGetRequest }  from "~/shared/entities/payment-entity"
+import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
 
 const paymenGatewaytInfo: globalThis.Ref<PaymentGatewayResponse | undefined> = ref()
+var isCheck = ref(false)
+
+const paymentGat = useStorePaymentGet()
 
 const props = defineProps({ 
   paymenGatewayInfo: {
@@ -51,11 +66,26 @@ const onLoad = onMounted(async () => {
   if(props.paymenGatewayInfo){
     paymenGatewaytInfo.value = props.paymenGatewayInfo
   }
+  setTimeout(() => {
+    isCheck.value = true
+  }, 30000);
 })
 
 const downloadImage = ()=>{
   if(props.paymenGatewayInfo && props.paymenGatewayInfo.payment_qr){
     useUtility().downloadImage(props.paymenGatewayInfo.payment_qr,'paymeny_qr.png')
+  }
+}
+
+const checkPayment = async () => {
+  const router = useRouter();
+  const req: PaymentGetRequest = {
+    PaymentNo: paymenGatewaytInfo.value?.refno2 ?? '',
+  };
+  const response = await useRepository().payment.get(req);
+  if(response.apiResponse.Status &&  response.apiResponse.Status == "200" && response.apiResponse.Data) {
+    await paymentGat.setPaymentGet(response.apiResponse.Data[0])
+    router.push('/order/compulsory/thanks')
   }
 }
 

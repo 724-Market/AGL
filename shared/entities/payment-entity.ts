@@ -117,6 +117,48 @@ export interface PaymentConfirmResponse{
     OrderNo:string
 }
 
+export interface PaymentGetRequest{
+    PaymentNo:string
+}
+
+export interface PaymentGetResponse{
+    ID:string
+    OwnerID:string
+    UserID:string
+    PaymentNo:string
+    PaymentType:string
+    DiscountType:string
+    CouponCode:string
+    NumCredit:number 
+    Status:string
+    LogMessage:string
+    TransferFileID:string
+    TransferBankCode:string
+    TransferDate:string
+    DeliveryAmount:number 
+    FeeAmount:number 
+    DiscountAmount:number 
+    PaperAmount:number 
+    CreditAmount:number 
+    OrderAmount:number 
+    GrandAmount:number 
+    IsTransfer:boolean
+    IsConsent:boolean
+    IsCallback:boolean
+    IsSuccess:boolean
+    IsCancel:boolean
+    IsPending:boolean
+    IsDelete:boolean
+    PaymentDate:string
+    PaymentUser:string
+    CancelDate:string
+    CancelUser:string
+    CreateDate:string
+    CreateUser:string
+    UpdateDate:string
+    UpdateUser:string
+}
+
 export interface PaymentGatewayRequest{
     payment_type:string
     endpoint_code:string

@@ -6,18 +6,23 @@ import { CalculateRequest,
   PaymentSaveRequest, 
   PaymentSaveResponse ,
   PaymentGatewayRequest,
-  PaymentGatewayResponse
+  PaymentGatewayResponse,
+  PaymentGetRequest,
+  PaymentGetResponse
 } from "../entities/payment-entity";
 import { IAPIResponse, IAPIPaymentGatewayResponse } from "../entities/useApi-response";
 
 class PaymentModule {
   private RESOURCE = '/Payment';
 
-  async get(req:CalculateRequest): Promise<IAPIResponse<CalculateResponse[]>> {
-    return await useCallApi().apiRepository<CalculateResponse[]>(`${this.RESOURCE}/calculate`, req)
-  }
+  // async get(req:CalculateRequest): Promise<IAPIResponse<CalculateResponse[]>> {
+  //   return await useCallApi().apiRepository<CalculateResponse[]>(`${this.RESOURCE}/calculate`, req)
+  // }
   async calculate(req:CalculateRequest): Promise<IAPIResponse<CalculateResponse[]>> {
     return await useCallApi().apiRepository<CalculateResponse[]>(`${this.RESOURCE}/calculate`, req)
+  }
+  async get(req:PaymentGetRequest): Promise<IAPIResponse<PaymentGetResponse[]>> {
+    return await useCallApi().apiRepository<PaymentGetResponse[]>(`${this.RESOURCE}/get`, req)
   }
   async save(req:PaymentSaveRequest): Promise<IAPIResponse<PaymentSaveResponse>> {
     return await useCallApi().apiRepository<PaymentSaveResponse>(`${this.RESOURCE}/save`, req)

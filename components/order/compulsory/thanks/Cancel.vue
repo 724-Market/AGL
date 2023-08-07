@@ -8,11 +8,11 @@
                 <h4 class="title">ทำรายการไม่สำเร็จ</h4>
                 <div class="status-item text-info text-big">
                     <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
-                    <p>{{ noticePaymentInfo.PaymentNo }}</p>
+                    <p>{{ $props.paymentGet.PaymentNo }}</p>
                 </div>
                 <div class="status-item">
                     <h5 class="topic">วันที่ทำรายการ</h5>
-                    <p>{{ noticePaymentInfo.CancelDate }}</p>
+                    <p>{{ $props.paymentGet.PaymentDate }}</p>
                 </div>
                 <div class="status-item text-danger">
                     <h5 class="topic">สถานะ</h5>
@@ -37,27 +37,27 @@
 </template>
 
 <script setup lang="ts">
-import { NoticePaymentData }  from "~/shared/entities/payment-entity"
+import { PaymentGetResponse }  from "~/shared/entities/payment-entity"
 
-const noticePaymentInfo: globalThis.Ref<NoticePaymentData | undefined> = ref()
+const paymentGetInfo: globalThis.Ref<PaymentGetResponse | undefined> = ref()
 
 const props = defineProps({ 
-  noticePayment: {
-    type: Object as () => NoticePaymentData,
+  paymentGetInfo: {
+    type: Object as () => PaymentGetResponse,
   },
 })
 
 const onLoad = onMounted(async () => {
-  if(props.noticePayment){
-    noticePaymentInfo.value = props.noticePayment
+  if(props.paymentGetInfo){
+    paymentGetInfo.value = props.paymentGetInfo
   }
 })
 
 watch(
-  () => props.noticePayment,
+  () => props.paymentGetInfo,
   async () => {
-    if (props.noticePayment) {
-      noticePaymentInfo.value = props.noticePayment
+    if (props.paymentGetInfo) {
+      paymentGetInfo.value = props.paymentGetInfo
     }
   }
 )

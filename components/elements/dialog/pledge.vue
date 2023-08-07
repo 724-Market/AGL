@@ -10,9 +10,10 @@
                     form-class="form-pledge form-theme" #default="{ value }" v-model="values" :incomplete-message="false">
 
                     <figure class="dialog-icon"><i class="fa-regular fa-wallet"></i></figure>
+
                     <h5>กรอกจำนวนเงินที่ต้องการเติม</h5>
                     <div class="form-hide-label topup-value">
-                        <FormKit type="number" label="จำนวนเงินที่ต้องการเติม" name="amount"
+                        <FormKit type="number" label="จำนวนเงินที่ต้องการเติม" name="amount" inputmode="numeric"
                             validation="required|number|min:100|max:1000000" :validation-messages="{
                                 required: 'กรุณากรอกจำนวนเงิน',
                                 number: 'กรุณากรอกเป็นตัวเลขเท่านั้น',
@@ -26,26 +27,33 @@
                         <button>500</button>
                         <button>1,000</button>
                         <button>1,500</button>
-                        <button>2,000</button><small>ขั้นต่ำ 100 บาท สูงสุดไม่เกิน 1,000,000 บาท</small>
+                        <button>2,000</button>
+                        <small>ขั้นต่ำ 100 บาท สูงสุดไม่เกิน 1,000,000 บาท</small>
                     </div>
+
                     <h5>เลือกช่องทางการชำระเงิน</h5>
                     <div class="form-hide-label payment-choice">
                         <ElementsFormRadioPledgeMethods />
                     </div>
+                    <div class="notice-info">มีค่าธรรมเนียม 3 บาท<br>(ยกเว้นค่าธรรมเนียม เมื่อเติมเงิน 20,000 บาทขึ้นไป)
+                    </div>
+
                     <div class="form-hide-label accept-box">
                         <FormKit type="checkbox" value="accept" name="terms-conditions"
                             label="ข้าพเจ้าเข้าใจข้อกำหนดและยอมรับเงื่อนไขต่างๆ และตกลงยอมรับผูกพันตามข้อกำหนด"
                             validation="required"
                             :validation-messages="{ required: 'กรุณาคลิกยอมรับข้อกำหนดและเงื่อนไข' }" />
                     </div>
+
                     <FormKit type="submit" label="ยืนยันการเติมเงิน" name="pledge-submit" id="pledge-submit" :classes="{
                         input: 'btn-primary btn-accept',
                         outer: 'pledge-action',
                     }" :disabled="isLoading" :loading="isLoading" />
+
                 </FormKit>
             </div>
 
-            <div class="card-body pledge-step-2">
+            <div class="card-body pledge-step-2 is-active">
                 <div class="qr-payment">
                     <div class="status-list">
                         <div class="logo">724 Payment</div>
@@ -54,8 +62,16 @@
                             <p>7B2303094767564</p>
                         </div>
                         <div class="status-item">
-                            <h5 class="topic">จำนวนเงิน</h5>
-                            <p>123.45 บาท</p>
+                            <h5 class="topic">จำนวนเงินที่ต้องชำระ</h5>
+                            <p>1,000 บาท</p>
+                        </div>
+                        <div class="status-item">
+                            <h5 class="topic">มีค่าธรรมเนียม</h5>
+                            <p>3 บาท</p>
+                        </div>
+                        <div class="status-item">
+                            <h5 class="topic">ยอดเงินเติมที่สามารถใช้ได้</h5>
+                            <p>997 บาท</p>
                         </div>
                         <div class="status-item text-warning">
                             <h5 class="topic">กรุณาชำระภายใน</h5>
@@ -74,7 +90,7 @@
                 </div>
             </div>
 
-            <div class="card-body pledge-step-3">
+            <div class="card-body pledge-step-3 is-active">
                 <div class="status-list">
                     <figure class="status-icon">
                         <div class="icon check success"></div>
@@ -86,7 +102,7 @@
                     </div>
                     <div class="status-item">
                         <h5 class="topic">จำนวนเงิน</h5>
-                        <p>123.45 บาท</p>
+                        <p>1,000 บาท</p>
                     </div>
                     <div class="status-item">
                         <h5 class="topic">วันที่ทำรายการสำเร็จ</h5>
@@ -114,7 +130,7 @@
                     </div>
                     <div class="status-item">
                         <h5 class="topic">จำนวนเงิน</h5>
-                        <p>123.45 บาท</p>
+                        <p>1,000 บาท</p>
                     </div>
                     <div class="status-item text-danger">
                         <h5 class="topic">สถานะ</h5>

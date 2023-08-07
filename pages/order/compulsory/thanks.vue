@@ -77,7 +77,7 @@
                                 </div>
                                 <div class="status-action">
                                     <a class="btn" href="#" title="เปลี่ยนช่องทางการชำระเงิน">เปลี่ยนช่องทางการชำระเงิน</a>
-                                    <a class="btn btn-warning" href="#" title="ติดต่อเจ้าหน้าที่">ติดต่อเจ้าหน้าที่</a>
+                                    <a class="btn" href="#" title="ชำระเงินอีกครั้ง">ชำระเงินอีกครั้ง</a>
                                 </div>
                             </div>
                         </div>

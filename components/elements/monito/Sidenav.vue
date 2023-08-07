@@ -42,6 +42,10 @@
                                 <a class="nav-link" href="/payment/qr" title="QR Payment">QR Payment</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="/payment/cards"
+                                    title="บัตรเครดิต/บัตรเดบิต">บัตรเครดิต/บัตรเดบิต</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="/order/compulsory/thanks" title="Thanks">Thanks</a>
                             </li>
                         </ul>

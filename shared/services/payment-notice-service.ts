@@ -14,7 +14,7 @@ import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
 
 class PaymentNoticeService {
     private hubConnection!: signalR.HubConnection;
-    private paymenGatewaytInfo: globalThis.Ref<PaymentGatewayResponse | undefined> = ref()
+    // private paymenGatewaytInfo: globalThis.Ref<PaymentGatewayResponse | undefined> = ref()
     private router = useRouter();
     
     async connect(req:NoticePaymentRequest) {

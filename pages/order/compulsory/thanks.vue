@@ -27,9 +27,15 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia"
-import { NoticePaymentData, PaymentGetResponse }  from "~/shared/entities/payment-entity"
+import { isString } from "@vueuse/core";
+import { NoticePaymentData, PaymentGetRequest, PaymentGetResponse }  from "~/shared/entities/payment-entity"
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
+import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
+import { useStoreInformation } from "~/stores/order/storeInformation";
+import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
+import { useStorePayment } from "~/stores/order/storePayment";
+import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 
 // Loading state after form submiting
 const isLoading = ref(false)
@@ -52,6 +58,12 @@ var status = ref("");
 const storeAuth = useStoreUserAuth()
 const { AuthenInfo } = storeToRefs(storeAuth)
 
+const placeorder = useStorePlaceorder()
+const information = useStoreInformation()
+const orderSummary = useStoreOrderSummary()
+const payment = useStorePayment()
+const paymentGateway = useStorePaymentGateway()
+
 const paymentGat = useStorePaymentGet()
 const { PaymentGetInfo } = storeToRefs(paymentGat)
 
@@ -59,9 +71,27 @@ const router = useRouter();
 
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
+    const route = useRoute();
     if(PaymentGetInfo.value) {
         paymentGetInfo.value = PaymentGetInfo.value
         status.value = paymentGetInfo.value.IsSuccess && !paymentGetInfo.value.IsDelete ? 'Success' : 'Cancel'
+        //TODO: Clear Store
+        await placeorder.clearOrder()
+        await information.clearInformation()
+        await orderSummary.clearOrderSummary()
+        await payment.clearPayment()
+        await paymentGateway.clearPaymenGateway()
+        await paymentGat.clearPaymentGet()
+    } else if(route.query && isString(route.query.PaymentNo)) {
+        const PaymentNo: string = route.query.PaymentNo;
+        const req: PaymentGetRequest = {
+            PaymentNo: PaymentNo,
+        };
+        const response = await useRepository().payment.get(req);
+        if(response.apiResponse.Status &&  response.apiResponse.Status == "200" && response.apiResponse.Data) {
+            paymentGetInfo.value = response.apiResponse.Data[0]
+            status.value = paymentGetInfo.value.IsSuccess && !paymentGetInfo.value.IsDelete ? 'Success' : 'Cancel'
+        }
     } else {
         router.push("/history");
     }

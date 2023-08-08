@@ -15,7 +15,7 @@ export const useStorePackageList = defineStore('useStorePackageList', {
         async getPackageList(request: any): Promise<WrapperResponse<IPackageResponse[]>> {
             const req = request as IPackageRequest
             const response = await useCallApi().post<IPackageResponse[]>({
-                URL: '/Policy/package/list/get',
+                URL: '/Policy/package/list',
                 UseCarCode: req.UseCarCode,
                 CarTypeCode: req.CarTypeCode,
                 CarCategoryID: req.CarCategoryID,

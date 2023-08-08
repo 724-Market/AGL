@@ -62,22 +62,20 @@
         <i class="fa-regular fa-circle-xmark"></i> วงเงินไม่พอให้เติมเงิน
       </div>
       <div class="status-action">
-        <button class="btn btn-primary" @click="openWallet" title="เติมเงินมัดจำ">เติมเงินมัดจำ</button>
+        <button type="button" class="btn btn-primary" @click="openWallet" title="เติมเงินมัดจำ">เติมเงินมัดจำ</button>
         <a class="btn" href="/order/compulsory/payment" title="เปลี่ยนช่องทางการชำระเงิน"
           >เปลี่ยนช่องทางการชำระเงิน</a
         >
       </div>
     </div>
   </div>
-  <PaymentWalletModalWallet :show="showWallet" :payment-list="props.paymentList" @close-wallet="closeWallet" @topup-confirm="handleTopupConfirm" :wallet-payment-gateway="props.walletPaymentGateway"></PaymentWalletModalWallet>
+  
 </template>
 <script setup lang="ts">
 import {  OptionsResponse, PaymentDetails } from "~/shared/entities/order-entity";
-import { PaymentGatewayResponse } from "~/shared/entities/payment-entity";
-import { CreditHistoryPaymentAdd } from "~/shared/entities/pledge-entity";
 
 const showWallet = ref(false)
-const emit = defineEmits(['closeWallet','topupConfirm'])
+const emit = defineEmits(['openWallet'])
 const props = defineProps({
   payment: {
     type: Object as () => PaymentDetails,
@@ -85,24 +83,11 @@ const props = defineProps({
   options:{
     type: Object as () => OptionsResponse,
   },
-  paymentList:{
-    type: Object as () => CreditHistoryPaymentAdd,
-  },
-  walletPaymentGateway:{
-    type: Object as () => PaymentGatewayResponse,
-  }
 });
 
 const openWallet = ()=>{
-  console.log('open Wallet')
-  showWallet.value = false
-  showWallet.value = true
+console.log('openWallet')
+  emit('openWallet',true)
 }
-const closeWallet = (status:boolean,refresh:boolean)=>{
-  showWallet.value = status
-  emit('closeWallet',status,refresh)
-}
-const handleTopupConfirm = (isConsent:boolean,Amount:boolean,paymentType:string)=>{
-  emit('topupConfirm',isConsent,Amount,paymentType)
-}
+
 </script>

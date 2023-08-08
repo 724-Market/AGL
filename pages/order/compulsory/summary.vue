@@ -11,7 +11,7 @@
       type="form"
       @submit="submitOrder"
       :actions="false"
-      id="form-order"
+      id="form-summary"
       form-class="form-order form-theme"
       v-model="values"
       :incomplete-message="false"
@@ -51,10 +51,8 @@
               <OrderCompulsorySummaryPaymentStatus
                 :payment="paymentDetail"
                 :options="optionDetail"
-                :payment-list="creditPaymenyAddList"
-                :wallet-payment-gateway="walletPaymentGateway"
-                @topup-confirm="handleTopupConfirm"
-                @close-wallet="handleCloseWallet"
+               @open-wallet="handlerOpenWallet"
+               
               ></OrderCompulsorySummaryPaymentStatus>
             </div>
 
@@ -91,6 +89,7 @@
         </div>
       </div>
     </FormKit>
+    <PaymentWalletModalWallet :show="showWallet"  :payment-list="creditPaymenyAddList" @close-wallet="handleCloseWallet" @topup-confirm="handleTopupConfirm" :wallet-payment-gateway="walletPaymentGateway"></PaymentWalletModalWallet>
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   </NuxtLayout>
 </template>
@@ -153,6 +152,7 @@ const creditPaymenyAddList: globalThis.Ref<CreditHistoryPaymentAdd | undefined> 
 const walletPaymentGateway: globalThis.Ref<PaymentGatewayResponse | undefined> = ref();
 const creditBalance: globalThis.Ref<CreditBalanceResponse | undefined> = ref();
 const isConsent = ref();
+const showWallet = ref(false);
 
 let values = reactive({});
 
@@ -362,6 +362,11 @@ const submitOrder = async (formData: any) => {
   isLoading.value = false;
 };
 
+const handlerOpenWallet = (open:boolean)=>{
+  console.log('handlerOpenWallet',open)
+  showWallet.value = false
+  showWallet.value = open
+}
 const handleTopupConfirm = async (
   isConsent: boolean,
   Amount: number,
@@ -405,6 +410,7 @@ const handleCloseWallet = async (status: boolean,refresh:boolean) => {
   await loadPledgeCreditBalance();
   isLoading.value= false
   }
+  showWallet.value = false
   
 };
 // Define layout

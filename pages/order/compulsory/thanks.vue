@@ -77,12 +77,12 @@ const onLoad = onMounted(async () => {
         console.log('paymentGetInfo.value', paymentGetInfo.value as PaymentGetResponse)
         status.value = paymentGetInfo.value.IsSuccess && !paymentGetInfo.value.IsDelete ? 'Success' : 'Cancel'
         //TODO: Clear Store
-        // await placeorder.clearOrder()
-        // await information.clearInformation()
-        // await orderSummary.clearOrderSummary()
-        // await payment.clearPayment()
-        // await paymentGateway.clearPaymenGateway()
-        // await paymentGat.clearPaymentGet()
+        await placeorder.clearOrder()
+        await information.clearInformation()
+        await orderSummary.clearOrderSummary()
+        await payment.clearPayment()
+        await paymentGateway.clearPaymenGateway()
+        await paymentGat.clearPaymentGet()
     } else if(route.query && isString(route.query.PaymentNo)) {
         const PaymentNo: string = route.query.PaymentNo;
         const req: PaymentGetRequest = {

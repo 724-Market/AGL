@@ -368,7 +368,7 @@ const submitOrder = async (formData: any) => {
         if (gatewayInfo.payment_type == "bill_payment") {
           router.push("/payment/qr");
         } else {
-          window.open(paymentGateway.payment_url, "_blank");
+          window.open(paymentGateway.response_url, "_blank");
           router.push("/payment/waitpayment");
         }
       }

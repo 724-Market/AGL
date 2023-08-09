@@ -186,6 +186,7 @@ export interface PaymentGatewayResponse{
     pgc_url:string
     payment_url:string
     payment_qr:string
+    response_url:string
 }
 
 export interface NoticePaymentRequest{

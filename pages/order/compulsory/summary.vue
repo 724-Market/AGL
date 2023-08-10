@@ -349,7 +349,7 @@ const submitOrder = async (formData: any) => {
           orderid: paymentConfirmRes?.OrderNo ?? "",
           refno: paymentConfirmRes?.PaymentNo ?? "",
           amount: paymentConfirmRes?.GrandAmount ?? 0,
-          response_url: `${config.public.BaseUrl}/order/compulsory/thanks?PaymentNo=${paymentConfirmRes?.PaymentNo}`
+          response_url: `${config.public.BaseUrlWeb}/order/compulsory/thanks?PaymentNo=${paymentConfirmRes?.PaymentNo}`
         }
       }
 
@@ -368,7 +368,7 @@ const submitOrder = async (formData: any) => {
         if (gatewayInfo.payment_type == "bill_payment") {
           router.push("/payment/qr");
         } else {
-          window.open(paymentGateway.response_url, "_blank");
+          window.open(paymentGateway.payment_url, "_blank");
           router.push("/payment/waitpayment");
         }
       }

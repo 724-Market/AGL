@@ -72,7 +72,7 @@ const router = useRouter();
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
     const route = useRoute();
-    if(PaymentGetInfo.value) {
+    if(PaymentGetInfo.value && PaymentGetInfo.value.PaymentNo != '') {
         paymentGetInfo.value = PaymentGetInfo.value
         console.log('paymentGetInfo.value', paymentGetInfo.value as PaymentGetResponse)
         status.value = paymentGetInfo.value.IsSuccess && !paymentGetInfo.value.IsDelete ? 'Success' : 'Cancel'

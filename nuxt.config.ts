@@ -2,6 +2,7 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			BaseUrl: process.env.BASE_API || "http://localhost:3000",
+			BaseUrlWeb: process.env.BASE_WEB,
 			CompanyImage: process.env.COMPANY_IMAGE || "",
 			FixDefaultPackageTaxInclude:process.env.FIX_DEFAULT_PACKAGE_TAXINCLUDE || "0",
 			FixValuePackageTaxInclude:process.env.FIX_VALUE_PACKAGE_TAXINCLUDE || "0",

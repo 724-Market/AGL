@@ -17,7 +17,9 @@ export const useStorePaymentGateway = defineStore('useStorePaymentGateway', {
             payment_date: '',
             pgc_url: '',
             payment_url: '',
-            payment_qr: ''
+            payment_qr: '',
+            response_url:''
+
         }
     },
     getters: {
@@ -30,23 +32,9 @@ export const useStorePaymentGateway = defineStore('useStorePaymentGateway', {
         },
 
         clearPaymenGateway() {
-            this.$state = {
-                orderid: '',
-                refno1: '',
-                refno2: '',
-                amount: '',
-                payment_id: '',
-                payment_type: '',
-                endpoint_code: '',
-                payment_channel: '',
-                payment_expired: '',
-                payment_status: '',
-                payment_code: '',
-                payment_date: '',
-                pgc_url: '',
-                payment_url: '',
-                payment_qr: ''
-            }
+            this.$reset()
+            this.$dispose()
+            sessionStorage.removeItem('useStorePaymentGateway')
         }
     },
     persist: {

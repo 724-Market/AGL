@@ -17,6 +17,8 @@ export const useStoreOrderSummary = defineStore('useStoreOrderSummary', {
         },
         clearOrderSummary() {
             this.$reset()
+            this.$dispose()
+            sessionStorage.removeItem('useStoreOrderSummary')
         }
     },
     persist: {

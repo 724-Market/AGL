@@ -63,6 +63,7 @@ export default () => {
             result.respOptions = undefined
 
         }
+        console.log(result)
         return result
     }
     const get = async <T>(params: any): Promise<IAPIResponse<T>> => {
@@ -132,28 +133,48 @@ export default () => {
     }
 
     const postGateway = async<T>(url: string, params: any): Promise<IAPIPaymentGatewayResponse<T>> => {
-        const config = useRuntimeConfig()
-        let result: IAPIPaymentGatewayResponse<T> =
+        const result: IAPIPaymentGatewayResponse<T> =
         {
-            status: "",
-            message: "",
+            message:'',
+            status:'',
         }
-        
-        const response:any = await $fetch(url, {
+        params.URL = url
+        const { data, pending, error, refresh } = await useFetch('/api/gateway', {
             method: "POST",
-            headers: {
-                Authorization: config.public.GatewayToken !== "" ? config.public.GatewayToken : ""
-            },
-            body: JSON.stringify(params),
-        });
+            body: params,
+            onResponse({ request, response }) {
+                console.log('%c' + params.URL + '%crequest', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', request)
+                console.log('%c' + params.URL + '%cresponse', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(1, 77, 103);padding:3px;border-radius:2px', response)
+                console.log('%c' + params.URL + '%cresponse.status', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', response.status)
 
-        if (response.status == '0000') {
-            result.status = response.status
-            result.message = response.message
-            result.data = response.data
-        }
-
+                
+                if (response.status == 200) {
+                    result.status = response._data.status
+                    result.message = response._data.message
+                    result.data = response._data.data
+                }
+            }
+        })
         return result
+        // const config = useRuntimeConfig()
+        // let result: IAPIPaymentGatewayResponse<T> =
+        // {
+        //     status: "",
+        //     message: "",
+
+        // }
+        
+        // const response:any = await $fetch(url, {
+        //     method: "POST",
+        //     headers: {
+        //         Authorization: config.public.GatewayToken !== "" ? config.public.GatewayToken : ""
+        //     },
+        //     body: JSON.stringify(params),
+        // });
+
+       
+
+        
     }
 
     const apiRepository = async<T>(url: string, params: any): Promise<IAPIResponse<T>> => {

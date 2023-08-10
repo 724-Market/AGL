@@ -21,14 +21,9 @@ export const useStoreNoticePayment = defineStore('useStoreNoticePayment', {
         },
 
         clearNoticePayment() {
-            this.$state = {
-                PaymentNo: '',
-                PaymentType: '',
-                Status: '',
-                Message: '',
-                PaymentDate: '',
-                CancelDate: '',
-            }
+            this.$reset()
+            this.$dispose()
+            sessionStorage.removeItem('useStoreNoticePayment')
         }
     },
     persist: {

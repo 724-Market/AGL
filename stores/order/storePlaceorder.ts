@@ -58,6 +58,8 @@ export const useStorePlaceorder = defineStore('useStorePlaceorder', {
 
         clearOrder() {
             this.$reset()
+            this.$dispose()
+            sessionStorage.removeItem('useStorePlaceorder')
         }
     },
     persist: {

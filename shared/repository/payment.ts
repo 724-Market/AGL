@@ -31,7 +31,7 @@ class PaymentModule {
     return await useCallApi().apiRepository<PaymentConfirmResponse[]>(`${this.RESOURCE}/confirm`, req)
   }
   async gateway(req:PaymentGatewayRequest): Promise<IAPIPaymentGatewayResponse<PaymentGatewayResponse>> {
-    return await useCallApi().postGateway<PaymentGatewayResponse>(`https://pgc.724insure.net/api/v1/payment`, req)
+    return await useCallApi().postGateway<PaymentGatewayResponse>(``, req)
   }
 }
   

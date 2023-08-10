@@ -8,11 +8,13 @@
                 <h4 class="title">ทำรายการไม่สำเร็จ</h4>
                 <div class="status-item text-info text-big">
                     <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
-                    <p>{{ $props.paymentGet.PaymentNo }}</p>
+                     <!-- <p>{{ $props.paymentGet.PaymentNo }}</p> -->
+                    <p>{{ PaymentNo }}</p>
                 </div>
                 <div class="status-item">
                     <h5 class="topic">วันที่ทำรายการ</h5>
-                    <p>{{ $props.paymentGet.PaymentDate }}</p>
+                    <!-- <p>{{ useUtility().formatDate($props.paymentGet.PaymentDate,"D MMMM BBBB HH:mm:ss") }}</p> -->
+                     <p>{{ useUtility().formatDate(PaymentDate,"D MMMM BBBB HH:mm:ss") }}</p>
                 </div>
                 <div class="status-item text-danger">
                     <h5 class="topic">สถานะ</h5>
@@ -40,6 +42,8 @@
 import { PaymentGetResponse }  from "~/shared/entities/payment-entity"
 
 const paymentGetInfo: globalThis.Ref<PaymentGetResponse | undefined> = ref()
+var PaymentNo = ref('')
+var PaymentDate = ref('')
 
 const props = defineProps({ 
   paymentGetInfo: {
@@ -50,6 +54,8 @@ const props = defineProps({
 const onLoad = onMounted(async () => {
   if(props.paymentGetInfo){
     paymentGetInfo.value = props.paymentGetInfo
+    PaymentNo.value = paymentGetInfo.value.PaymentNo
+    PaymentDate.value = paymentGetInfo.value.CancelDate
   }
 })
 
@@ -58,6 +64,8 @@ watch(
   async () => {
     if (props.paymentGetInfo) {
       paymentGetInfo.value = props.paymentGetInfo
+      PaymentNo.value = paymentGetInfo.value.PaymentNo
+      PaymentDate.value = paymentGetInfo.value.CancelDate
     }
   }
 )

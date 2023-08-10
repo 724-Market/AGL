@@ -10,9 +10,9 @@
         <h5 class="topic">จำนวนเงิน</h5>
         <p>{{ useUtility().getCurrency(parseInt($props.paymenGatewayInfo.amount)) }}</p>
       </div>
-      <div class="status-item text-warning">
+      <div class="status-item text-warning" v-if="$props.paymenGatewayInfo.payment_expired != ''">
         <h5 class="topic">กรุณาชำระภายใน</h5>
-        <p>14 มี.ค. 2566 17:34 น.</p>
+        <p>{{ $props.paymenGatewayInfo.payment_expired }}</p>
       </div>
     </div>
 

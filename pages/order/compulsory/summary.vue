@@ -90,6 +90,7 @@
       </div>
     </FormKit>
     <PaymentWalletModalWallet :show="showWallet"  :payment-list="creditPaymenyAddList" @close-wallet="handleCloseWallet" @topup-confirm="handleTopupConfirm" :wallet-payment-gateway="walletPaymentGateway"></PaymentWalletModalWallet>
+    <PaymentWalletModalWarningWallet :show="showWarningWallet" @close-warning="handleCloseWarning"></PaymentWalletModalWarningWallet>
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   </NuxtLayout>
 </template>
@@ -123,6 +124,7 @@ import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
+import { defineEventHandler } from "~/server/api/setting.post";
 
 //define store
 const store = useStoreOrderSummary();
@@ -153,6 +155,7 @@ const walletPaymentGateway: globalThis.Ref<PaymentGatewayResponse | undefined> =
 const creditBalance: globalThis.Ref<CreditBalanceResponse | undefined> = ref();
 const isConsent = ref();
 const showWallet = ref(false);
+const showWarningWallet = ref(false);
 
 let values = reactive({});
 
@@ -325,13 +328,38 @@ const submitOrder = async (formData: any) => {
     let paymentType: string = paymentConfirmRes?.PaymentType.toLowerCase() ?? "";
 
     if (paymentType == "bill_payment" || paymentType == "credit_card") {
-      const reqGateway: PaymentGatewayRequest = {
-        payment_type: paymentType,
-        endpoint_code: "insurance_payment",
-        orderid: paymentConfirmRes?.OrderNo ?? "",
-        refno: paymentConfirmRes?.PaymentNo ?? "",
-        amount: paymentConfirmRes?.GrandAmount ?? 0,
-      };
+      //TODO: Check type And Pass param for type
+      const config = useRuntimeConfig()
+      let reqGateway: PaymentGatewayRequest
+      if(paymentType == 'bill_payment') {
+        reqGateway = {
+          payment_type: paymentType,
+          endpoint_code: "insurance_payment",
+          orderid: paymentConfirmRes?.OrderNo ?? "",
+          refno: paymentConfirmRes?.PaymentNo ?? "",
+          expire_type: defineEventHandler.paymentGateWayExpireType,
+          expire_value: defineEventHandler.paymentGateWayExpireValue,
+          amount: paymentConfirmRes?.GrandAmount ?? 0,
+        }
+      }
+      else {
+        reqGateway = {
+          payment_type: paymentType,
+          endpoint_code: "insurance_payment",
+          orderid: paymentConfirmRes?.OrderNo ?? "",
+          refno: paymentConfirmRes?.PaymentNo ?? "",
+          amount: paymentConfirmRes?.GrandAmount ?? 0,
+          response_url: `${config.public.BaseUrlWeb}/order/compulsory/thanks?PaymentNo=${paymentConfirmRes?.PaymentNo}`
+        }
+      }
+
+      // const reqGateway: PaymentGatewayRequest = {
+      //   payment_type: paymentType,
+      //   endpoint_code: "insurance_payment",
+      //   orderid: paymentConfirmRes?.OrderNo ?? "",
+      //   refno: paymentConfirmRes?.PaymentNo ?? "",
+      //   amount: paymentConfirmRes?.GrandAmount ?? 0,
+      // };
 
       const responseGateway = await useRepository().payment.gateway(reqGateway);
       if (responseGateway.status == "0000") {
@@ -341,6 +369,7 @@ const submitOrder = async (formData: any) => {
           router.push("/payment/qr");
         } else {
           window.open(paymentGateway.payment_url, "_blank");
+          router.push("/payment/waitpayment");
         }
       }
     } else {
@@ -358,6 +387,7 @@ const submitOrder = async (formData: any) => {
       }
     }
   } else {
+    showWarningWallet.value = true
   }
   isLoading.value = false;
 };
@@ -392,6 +422,8 @@ const handleTopupConfirm = async (
       endpoint_code: "credit_payment",
       orderid: paymentConfirmRes.CreditOrderNo,
       refno: paymentConfirmRes.CreditPaymentNo,
+      expire_type: defineEventHandler.paymentGateWayExpireType,
+      expire_value: defineEventHandler.paymentGateWayExpireValue,
       amount: paymentConfirmRes.Amount,
     };
 
@@ -412,6 +444,9 @@ const handleCloseWallet = async (status: boolean,refresh:boolean) => {
   }
   showWallet.value = false
   
+};
+const handleCloseWarning = async () => {
+  window.location.reload();
 };
 // Define layout
 const layout = "monito";

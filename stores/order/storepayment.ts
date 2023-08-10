@@ -32,22 +32,9 @@ export const useStorePayment = defineStore('useStorePayment', {
         },
 
         clearPayment() {
-            this.$state = {
-                OrderNo: '',
-                PaymentType: '',
-                DiscountType: '',
-                DeliveryAmount: 0,
-                FeeAmount: 0,
-                PaperAmount: 0,
-                CreditAmount: 0,
-                OrderAmount: 0,
-                GrandAmount: 0,
-                CashBack: 0,
-                CreateDate: '',
-                CreateUser: '',
-                UpdateDate: '',
-                UpdateUser: '',
-            }
+            this.$reset()
+            this.$dispose()
+            sessionStorage.removeItem('useStorePayment')
         }
     },
     persist: {

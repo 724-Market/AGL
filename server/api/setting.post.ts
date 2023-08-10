@@ -18,5 +18,7 @@ export const defineEventHandler = {
     CoverageExpireDateNotFullYearMaxDay : 545, 
     CoverageFuture: 90
   },
-  defaultMessageError: 'เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ'
+  defaultMessageError: 'เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ',
+  paymentGateWayExpireType: 'minute', // (date, minute)
+  paymentGateWayExpireValue: '3' // (2023-08-15 12:00:00, 3)
 }

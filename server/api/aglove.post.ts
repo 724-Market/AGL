@@ -1,6 +1,4 @@
 
-import { useStoreUserAuth } from "~~/stores/user/storeUserAuth"
-
 export default defineEventHandler(async (event) => {
 
   const body = await readBody(event)

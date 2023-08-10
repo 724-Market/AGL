@@ -305,17 +305,16 @@ const signalRPaymentService = async () => {
       if (responseUser.apiResponse.Status && responseUser.apiResponse.Status == "200") {
         if (responseUser.apiResponse.Data && responseUser.apiResponse.Data.length > 0) {
           const user: UserResponse = responseUser.apiResponse.Data[0];
-
+          let deviceId = await useUtility().getDeviceId()
           const paymentService = await useService().paymentNotice;
           const paymentServiceReq: NoticePaymentRequest = {
             ClientID: "AgentLoveWeb",
-            DeviceID: "",
+            DeviceID: deviceId,
             ReferenceID: props.walletPaymentGateway.refno1,
             UserID: user.ID,
             GroupType: "qr",
             AccessToken: AuthenInfo.value.accessToken,
           };
-          console.log("paymentServiceReq", paymentServiceReq);
           await paymentService.connect(paymentServiceReq);
           await paymentService.RequestUpdateTopUpPayment(props.walletPaymentGateway);
           // if(NoticePaymentInfo.value){

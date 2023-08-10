@@ -30,6 +30,8 @@ export const useStoreInformation = defineStore('useStoreInformation', {
 
         clearInformation() {
             this.$reset()
+            this.$dispose()
+            sessionStorage.removeItem('useStoreInformation')
         }
     },
     persist: {

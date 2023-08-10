@@ -164,7 +164,10 @@ export interface PaymentGatewayRequest{
     endpoint_code:string
     orderid:string
     refno:string
+    expire_type?:string
+    expire_value?:string
     amount:number
+    response_url?:string
 }
 
 export interface PaymentGatewayResponse{
@@ -174,13 +177,16 @@ export interface PaymentGatewayResponse{
     amount:string
     payment_id:string
     payment_type:string
+    endpoint_code:string
     payment_channel:string
+    payment_expired:string
     payment_status:string
     payment_code:string
     payment_date:string
     pgc_url:string
     payment_url:string
     payment_qr:string
+    response_url:string
 }
 
 export interface NoticePaymentRequest{

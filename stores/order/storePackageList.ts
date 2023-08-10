@@ -35,9 +35,9 @@ export const useStorePackageList = defineStore('useStorePackageList', {
         },
         
         clearPackageList() {
-            this.$state = {
-                Status: ""
-            }
+            this.$reset()
+            this.$dispose()
+            sessionStorage.removeItem('useStorePackageList')
         }
     },
     persist: {

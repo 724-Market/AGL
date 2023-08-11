@@ -40,7 +40,7 @@ import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
-import { useStorePayment } from "~/stores/order/storePayment";
+import { useStorePayment } from "~/stores/order/storePayments";
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 
 // Loading state after form submiting

@@ -122,7 +122,7 @@ import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStorePackage } from "~/stores/order/storePackage";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
-import { useStorePayment } from "~/stores/order/storePayment";
+import { useStorePayment } from "~/stores/order/storePayments";
 
 // using pinia
 import { storeToRefs } from "pinia";

@@ -32,6 +32,8 @@
     "@formkit/pro": "latest",
     "@microsoft/signalr": "^7.0.9",
     "@pinia/nuxt": "^0.4.7",
+    "datatables.net-bs5": "^1.13.6",
+    "datatables.net-vue3": "^2.1.2",
     "dayjs": "^1.11.8",
     "npm": "^9.6.2",
     "pinia": "^2.0.33",

@@ -28,6 +28,10 @@
                 <button class="btn-gray btn-cancel-modal">ยกเลิก</button>
             </div>
             <div class="card-footer">
+                <button class="btn-danger">ยืนยันการลบ</button>
+                <button class="btn-gray btn-cancel-modal">ยกเลิก</button>
+            </div>
+            <div class="card-footer">
                 <button class="btn-primary">รับทราบ</button>
             </div>
         </div>

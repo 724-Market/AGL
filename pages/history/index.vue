@@ -212,7 +212,8 @@
         <div class="card">
           <div class="card-body card-table">
 
-            <table id="datatables" class="table table-transaction nowrap" data-order='[[ 2, "asc" ]]'>
+            <DataTable id="datatables" class="table table-transaction nowrap" data-order='[[ 2, "asc" ]]'
+              :options="datatableOptions">
               <thead>
                 <tr>
                   <th data-orderable="false"></th>
@@ -241,7 +242,7 @@
                         <li>
                           <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#"><span class="icon-refund">ยกเลิกและคืนส่วนลด</span></a></li>
+                        <li><a class="dropdown-item" href="#"><span class="icon-trash">ลบแบบร่างนี้</span></a></li>
                       </ul>
                     </div>
                   </td>
@@ -365,8 +366,8 @@
                         data-bs-title="งานใหม่"><em>N</em></span>
                       <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
                         data-bs-title="ไทยศรี"><em>ERGO</em></span>
-                      <span class="badge meta-product meta-include" data-bs-toggle="tooltip"
-                        data-bs-custom-class="meta-tooltip" data-bs-title="ป.1 & พ.ร.บ."><em>ควบ</em></span>
+                      <span class="badge meta-product" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ประกันอุบัติเหตุ"><em>PA</em></span>
                       <span class="badge meta-qr" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
                         data-bs-title="ชำระด้วย QR"><em>QR</em></span>
                       <span class="badge meta-partialdiscount" data-bs-toggle="tooltip"
@@ -383,6 +384,10 @@
                       </a>
                       <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="#"><span class="icon-edit">ทำรายการต่อ</span></a></li>
+                        <li>
+                          <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#"><span class="icon-trash">ลบแบบร่างนี้</span></a></li>
                       </ul>
                     </div>
                   </td>
@@ -472,35 +477,38 @@
                     <div class="badge-dot badge-warning">กำลังจัดส่ง</div><span>DHL เลขพัสดุ ETH-35426-455</span>
                   </td>
                   <td>
-                  <div class="meta">
-                    <span class="badge meta-offline" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                      data-bs-title="ทำรายการแบบ offline"><em>Off</em></span>
-                    <span class="badge meta-renew" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                      data-bs-title="งานต่ออายุ"><em>R</em></span>
-                    <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                      data-bs-title="ทิพยประกันภัย"><em>TIP</em></span>
-                    <span class="badge meta-product" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                      data-bs-title="พ.ร.บ."><em>พรบ</em></span>
-                    <span class="badge meta-pledge" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                      data-bs-title="ชำระด้วย วงเงินมัดจำ"><em>วงเงินมัดจำ</em></span>
-                    <span class="badge meta-fulldiscount" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                      data-bs-title="หักส่วนลดเต็มจำนวน"><em>หักเต็ม</em></span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                    <div class="meta">
+                      <span class="badge meta-offline" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทำรายการแบบ offline"><em>Off</em></span>
+                      <span class="badge meta-renew" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                        data-bs-title="งานต่ออายุ"><em>R</em></span>
+                      <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทิพยประกันภัย"><em>TIP</em></span>
+                      <span class="badge meta-product" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                        data-bs-title="พ.ร.บ."><em>พรบ</em></span>
+                      <span class="badge meta-pledge" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย วงเงินมัดจำ"><em>วงเงินมัดจำ</em></span>
+                      <span class="badge meta-fulldiscount" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                        data-bs-title="หักส่วนลดเต็มจำนวน"><em>หักเต็ม</em></span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </DataTable>
 
+          </div>
         </div>
+
       </div>
-
     </div>
-  </div>
 
-</NuxtLayout></template>
+  </NuxtLayout>
+</template>
 
 <script lang="ts" setup>
 // Define import
+import DataTable from 'datatables.net-vue3'
+import DataTablesCore from 'datatables.net-bs5'
 
 // Define Variables
 // Loading state after form submiting
@@ -517,6 +525,32 @@ const submitSearch = async (formData: any) => {
   // Add waiting time for debug
   await new Promise((r) => setTimeout(r, 1000))
 
+}
+
+onMounted(() => {
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+})
+
+// DataTable
+DataTable.use(DataTablesCore)
+
+// DataTable options
+const datatableOptions = {
+  filter: false,
+  language: {
+    paginate: {
+      previous: 'ก่อนหน้า',
+      next: 'ถัดไป'
+    },
+    info: 'แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ',
+    infoEmpty: 'ไม่มีรายการ',
+    infoFiltered: '(จากทั้งหมด _MAX_ รายการ)',
+    lengthMenu: 'แสดง _MENU_ รายการ',
+    search: 'ค้นหา',
+    emptyTable: 'ไม่มีรายการ',
+    zeroRecords: 'ไม่มีรายการ'
+  }
 }
 
 // Define layout

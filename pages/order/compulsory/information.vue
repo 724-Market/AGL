@@ -649,7 +649,7 @@ const checkFromDate = async () => {
 
 // Submit form event
 const submitOrder = async (formData: any) => {
-  store.clearInformation();
+  //store.clearInformation();
 
   let informationData = formData as IInformation;
   informationData.InsuranceDay = insuranceDay.value

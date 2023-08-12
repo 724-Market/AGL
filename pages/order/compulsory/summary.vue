@@ -236,8 +236,10 @@ const loadOrderSummary = async (orderNo: string) => {
     if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
       // save to store
       const data = response.apiResponse.Data[0];
+      if(data.Order != undefined) {
+        data.Order.OrderNo = orderNo
+      }
       store.setOrderSummary(data);
-
       setStoretoStep(data, orderNo);
     }
   }

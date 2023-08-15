@@ -219,6 +219,7 @@ export interface OrderResponse {
 }
 
 export interface Order {
+  OrderNo: string
   Package: Package
   CarDetails: CarDetails
   CarDetailsExtension: CarDetailsExtension

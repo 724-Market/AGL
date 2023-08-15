@@ -259,6 +259,7 @@ const onLoad = onMounted(async () => {
         }
       
         emailText = insuranceRecieveCache.value.Email
+        emailValue = insuranceRecieveCache.value.Email
         // await handleRadioShippingPolicyChange(insuranceRecieveCache.value.ShippingPolicy)
 
         if(shippingPolicyText.value == 'postal') {
@@ -539,6 +540,7 @@ watch(
             shippingPolicyText.value = 'postal'
           }
           emailText = insuranceRecieveCache.value.Email
+          emailValue = insuranceRecieveCache.value.Email
           // await handleRadioShippingPolicyChange(insuranceRecieveCache.value.ShippingPolicy)
 
           if(shippingPolicyText.value == 'postal') {

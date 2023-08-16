@@ -64,6 +64,19 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#" title="คลังกระดาษ">คลังกระดาษ</a>
                             </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#menu-history" title="ข้อมูลประวัติ" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="menu-history">
+                        <i class="fa-duotone fa-clock-rotate-left"></i><span class="nav-link-text">ข้อมูลประวัติ</span>
+                    </a>
+                    <div class="collapse" id="menu-history" data-bs-parent="#sidenav-collapse-main">
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/history/order" title="ประวัติการทำรายการ">ประวัติการทำรายการ</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#" title="ประวัติการเติมเงิน">ประวัติการเติมเงิน</a>
                             </li>
@@ -72,11 +85,6 @@
                             </li>
                         </ul>
                     </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/history" title="ประวัติการทำรายการ">
-                        <i class="fa-duotone fa-clock-rotate-left"></i><span class="nav-link-text">ประวัติการทำรายการ</span>
-                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" title="ติดตามสถานะ">

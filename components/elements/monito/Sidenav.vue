@@ -14,12 +14,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="#menu-compulsory" title="แจ้งงาน พ.ร.บ." data-bs-toggle="collapse"
-                        role="button" aria-expanded="true" aria-controls="menu-compulsory">
-                        <i class="fa-duotone fa-memo-circle-check"></i><span class="nav-link-text">แจ้งงาน พ.ร.บ.</span>
+                    <a class="nav-link active" href="#menu-order" title="แจ้งงาน" data-bs-toggle="collapse" role="button"
+                        aria-expanded="true" aria-controls="menu-order">
+                        <i class="fa-duotone fa-memo-circle-check"></i><span class="nav-link-text">แจ้งงาน</span>
                     </a>
-                    <div class="collapse show" id="menu-compulsory" data-bs-parent="#sidenav-collapse-main">
+                    <div class="collapse show" id="menu-order" data-bs-parent="#sidenav-collapse-main">
                         <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/order" title="ประวัติการทำรายการ">ประวัติการทำรายการ</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/order/compulsory/information" title="กรอกข้อมูล">กรอกข้อมูล</a>
                             </li>
@@ -59,29 +62,16 @@
                     <div class="collapse" id="menu-wallet" data-bs-parent="#sidenav-collapse-main">
                         <ul class="nav">
                             <li class="nav-item">
-                                <a class="nav-link" href="#" title="เติมเงิน">เติมเงิน</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" title="คลังกระดาษ">คลังกระดาษ</a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#menu-history" title="ข้อมูลประวัติ" data-bs-toggle="collapse" role="button"
-                        aria-expanded="false" aria-controls="menu-history">
-                        <i class="fa-duotone fa-clock-rotate-left"></i><span class="nav-link-text">ข้อมูลประวัติ</span>
-                    </a>
-                    <div class="collapse" id="menu-history" data-bs-parent="#sidenav-collapse-main">
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href="/history/order" title="ประวัติการทำรายการ">ประวัติการทำรายการ</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" href="#" title="ประวัติการเติมเงิน">ประวัติการเติมเงิน</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#" title="ประวัติการใช้กระดาษ">ประวัติการใช้กระดาษ</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" title="เติมเงิน">เติมเงิน</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" title="คลังกระดาษ">คลังกระดาษ</a>
                             </li>
                         </ul>
                     </div>

@@ -426,7 +426,7 @@ const handleTopupConfirm = async (
       refno: paymentConfirmRes.CreditPaymentNo,
       expire_type: defineEventHandler.paymentGateWayExpireType,
       expire_value: defineEventHandler.paymentGateWayExpireValue,
-      amount: paymentConfirmRes.Amount,
+      amount: paymentConfirmRes.OrderAmount,
     };
 
     const responseGateway = await useRepository().payment.gateway(reqGateway);

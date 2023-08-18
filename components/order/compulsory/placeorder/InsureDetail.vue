@@ -312,6 +312,7 @@
                     class="insured-headoffice-information"
                     v-if="CompanyClassifierText == 'headoffice'"
                   >
+                  <!-- //TODO : Bug Data Not Bliding -->
                     <h3>ชื่อผู้เอาประกันภัย (นิติบุคคล : สำนักงานใหญ่)</h3>
 
                     <div class="row">
@@ -862,7 +863,11 @@ watch(()=>props.cacheOrderRequest,(newValue)=>{
       prefixID.value =newValue.Customer.PersonProfile.PrefixID
     }
     if(newValue.Customer.LegalPersonProfile){
-      legalPersonProfile.value =  newValue.Customer.LegalPersonProfile
+      const legalPerson = newValue.Customer.LegalPersonProfile
+
+      legalPersonProfile.value = legalPerson
+
+      prefixID.value = legalPerson.PrefixID
     }
 
     if(newValue.Customer.DefaultAddress){
@@ -870,7 +875,7 @@ watch(()=>props.cacheOrderRequest,(newValue)=>{
       defaultAddress.value = newValue.Customer.DefaultAddress
     }
     }
-    
+    console.log('legalPersonProfile.value', legalPersonProfile.value)
     handlerChangeInsureDetail()
   }
 

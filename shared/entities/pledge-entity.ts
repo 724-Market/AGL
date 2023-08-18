@@ -30,9 +30,12 @@ export interface CreditOrderPaymentCreateRequest {
     IsConsent: boolean
 }
 export interface CreditOrderPaymentCreateResponse {
+    CreateDate: string,
     CreditOrderNo: string,
-    CreditPaymentNo: string,
-    Amount: number
+    CreditPaymentNo: string
+    FeeAmount: number
+    GrandAmount: number
+    OrderAmount: number
 }
 export interface CreditOrderPaymentGetRequest {
     PaymentNo:string

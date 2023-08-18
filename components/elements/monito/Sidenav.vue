@@ -73,6 +73,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#" title="คลังกระดาษ">คลังกระดาษ</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" title="คลังกระดาษ 2">คลังกระดาษ 2</a>
+                            </li>
                         </ul>
                     </div>
                 </li>

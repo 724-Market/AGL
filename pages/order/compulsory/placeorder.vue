@@ -968,7 +968,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
       if (insureDetail.value.IsBranch) {
         if (
           insureDetail.value.LegalPersonProfile.PrefixID.length > 0 &&
-          insureDetail.value.LegalPersonProfile.ContactFirstName.length > 0 &&
+          insureDetail.value.LegalPersonProfile.Name.length > 0 &&
           insureDetail.value.LegalPersonProfile.ContactPhoneNumber.length > 0 &&
           insureDetail.value.LegalPersonProfile.TaxID.length > 0 &&
           insureDetail.value.LegalPersonProfile.BranchID.length > 0 &&
@@ -985,7 +985,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
       } else {
         if (
           insureDetail.value.LegalPersonProfile.PrefixID.length > 0 &&
-          insureDetail.value.LegalPersonProfile.ContactFirstName.length > 0 &&
+          insureDetail.value.LegalPersonProfile.Name.length > 0 &&
           insureDetail.value.LegalPersonProfile.ContactPhoneNumber.length > 0 &&
           insureDetail.value.LegalPersonProfile.TaxID.length > 0 &&
           insureDetail.value.DefaultAddress.No.length > 0 &&

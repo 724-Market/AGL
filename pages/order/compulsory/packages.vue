@@ -278,8 +278,7 @@ const submitOrder = async (formData: any) => {
       packageSelect.value.AgentCode = AuthenInfo.value.userName
     }
     
-    storePackage.clearPackage();
-    const data = storePackage.setPackage(packageSelect.value);
+    storePackage.setPackage(packageSelect.value);
 
     submitted.value = false; // Form submitted status
     isLoading.value = false

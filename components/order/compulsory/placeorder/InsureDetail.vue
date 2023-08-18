@@ -183,6 +183,7 @@
                           :options="Prefix"
                           validation="required"
                           :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                          v-model="personProfile.PrefixID"
                           
                         />
                       </div>
@@ -191,7 +192,7 @@
                           type="text"
                           label="Firstname"
                           name="FirstName"
-                          placeholder="Firstn-ame"
+                          placeholder="Firstname"
                           v-model="personProfile.FirstName"
                           @change="handlerChangePersonalProfile"
                           :validation-rules="{ special_characters }"
@@ -340,7 +341,7 @@
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
                           }"
                           autocomplete="false"
-                          v-model="legalPersonProfile.ContactFirstName"
+                          v-model="legalPersonProfile.Name"
                           @change="handlerChangeLegalPersonProfile"
                         />
                       </div>
@@ -426,7 +427,7 @@
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
                           }"
                           autocomplete="false"
-                          v-model="legalPersonProfile.ContactFirstName"
+                          v-model="legalPersonProfile.Name"
                           @change="handlerChangeLegalPersonProfile"
                         />
                       </div>
@@ -619,9 +620,10 @@ const onLoad = onMounted(()=>{
   if(props.addrZipCode){
     addrZipCode.value = props.addrZipCode
   }
+  console.log(props.cacheOrderRequest)
   if(props.cacheOrderRequest){
-
-    if(props.cacheOrderRequest.Customer){
+    
+    if(props.cacheOrderRequest.Customer && props.cacheOrderRequest.OrderNo!=""){
       // ประเภทผู้เอาประกัน
       InsuredTypeText.value = props.cacheOrderRequest.Customer.IsPerson==true ? 'person' : 'company'
 
@@ -724,6 +726,8 @@ const handlerChangeInsureDetail = ()=>{
     }
     else if (data.LegalPersonProfile){
       data.DefaultAddress.TaxID = data.LegalPersonProfile.TaxID
+      data.LegalPersonProfile.ContactFirstName = data.LegalPersonProfile.Name
+      data.LegalPersonProfile.ContactLastName="-"
       data.DefaultAddress.FirstName = data.LegalPersonProfile.ContactFirstName
       data.DefaultAddress.LastName = data.LegalPersonProfile.ContactLastName
       data.DefaultAddress.Email = data.LegalPersonProfile.ContactEmail
@@ -834,7 +838,8 @@ watch(CompanyClassifierText, async (newCompanyClassifierText) => {
 });
 watch(()=>props.cacheOrderRequest,(newValue)=>{
   if(newValue){
-    if(newValue.Customer){
+    
+    if(newValue.Customer && newValue.OrderNo && newValue.OrderNo!=""){
       // ประเภทผู้เอาประกัน
       InsuredTypeText.value = newValue.Customer.IsPerson==true ? 'person' : 'company'
 

@@ -63,7 +63,6 @@
 
                     <div class="row">
                       <div class="col-sm-4 col-lg-3">
-                        
                         <FormKit
                           type="select"
                           label="คำนำหน้า"
@@ -184,7 +183,6 @@
                           validation="required"
                           :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
                           v-model="personProfile.PrefixID"
-                          
                         />
                       </div>
                       <div class="col-sm-8 col-lg-4">
@@ -312,9 +310,8 @@
                     class="insured-headoffice-information"
                     v-if="CompanyClassifierText == 'headoffice'"
                   >
-                  <!-- //TODO : Bug Data Not Bliding -->
+                    <!-- //TODO : Bug Data Not Bliding -->
                     <h3>ชื่อผู้เอาประกันภัย (นิติบุคคล : สำนักงานใหญ่)</h3>
-
                     <div class="row">
                       <div class="col-sm-4 col-lg-3">
                         <FormKit
@@ -350,7 +347,7 @@
                         <FormKit
                           type="text"
                           label="เลขประจำตัวผู้เสียภาษี"
-                          name="TaxId"
+                          name="CompanyTaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี"
                           validation="required|length:13|number"
                           :validation-messages="{
@@ -367,7 +364,7 @@
                         <FormKit
                           type="text"
                           label="หมายเลขโทรศัพท์"
-                          name="PhoneNumber"
+                          name="CompanyPhoneNumber"
                           placeholder="098765XXXX"
                           validation="required|+length:10|number"
                           :validation-messages="{
@@ -384,7 +381,7 @@
                         <FormKit
                           type="email"
                           label="อีเมล"
-                          name="Email"
+                          name="CompanyEmail"
                           placeholder="xxxxxx@email.com"
                           autocomplete="false"
                           v-model="legalPersonProfile.ContactEmail"
@@ -406,7 +403,7 @@
                         <FormKit
                           type="select"
                           label="ประเภทกิจการ"
-                          name="CompanyType"
+                          name="BranchCompanyType"
                           placeholder="ประเภทกิจการ"
                           :options="Prefix"
                           validation="required"
@@ -419,7 +416,7 @@
                         <FormKit
                           type="text"
                           label="ชื่อกิจการ"
-                          name="CompanyName"
+                          name="BranchCompanyName"
                           placeholder="ชื่อกิจการ"
                           :validation-rules="{ special_characters }"
                           validation="required|special_characters"
@@ -436,7 +433,7 @@
                         <FormKit
                           type="text"
                           label="เลขประจำตัวผู้เสียภาษี"
-                          name="TaxId"
+                          name="BranchTaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี"
                           validation="required|length:13|number"
                           :validation-messages="{
@@ -487,7 +484,7 @@
                         <FormKit
                           type="text"
                           label="หมายเลขโทรศัพท์"
-                          name="PhoneNumber"
+                          name="BranchPhoneNumber"
                           placeholder="098765XXXX"
                           validation="required|+length:10|number"
                           :validation-messages="{
@@ -504,7 +501,7 @@
                         <FormKit
                           type="email"
                           label="อีเมล"
-                          name="Email"
+                          name="BranchEmail"
                           placeholder="xxxxxx@email.com"
                           autocomplete="false"
                           v-model="legalPersonProfile.ContactEmail"
@@ -624,7 +621,7 @@ const onLoad = onMounted(()=>{
   }
   console.log(props.cacheOrderRequest)
   if(props.cacheOrderRequest){
-    
+
     if(props.cacheOrderRequest.Customer && props.cacheOrderRequest.OrderNo!=""){
       // ประเภทผู้เอาประกัน
       InsuredTypeText.value = props.cacheOrderRequest.Customer.IsPerson==true ? 'person' : 'company'
@@ -646,6 +643,7 @@ const onLoad = onMounted(()=>{
     }
     if(props.cacheOrderRequest.Customer.LegalPersonProfile){
       legalPersonProfile.value =  props.cacheOrderRequest.Customer.LegalPersonProfile
+      console.log("mount legalPersonProfile.value",legalPersonProfile)
     }
 
     if(props.cacheOrderRequest.Customer.DefaultAddress){
@@ -821,7 +819,7 @@ watch(InsuredTypeText, async (newInsuredTypeText) => {
     insureDetail.value.IsBranch = false
     insureDetail.value.IsPerson = newInsuredTypeText=='person'
     // clear data when change to customer type
-    clearData()
+    //clearData()
     handlerChangeCustomerType(newInsuredTypeText)
   }
 
@@ -835,36 +833,37 @@ watch(CompanyClassifierText, async (newCompanyClassifierText) => {
     insureDetail.value.IsBranch = newCompanyClassifierText =='branch'
     insureDetail.value.IsPerson = false
 
-    clearData()
+    //clearData()
   }
 });
 watch(()=>props.cacheOrderRequest,(newValue)=>{
   if(newValue){
-    
-    if(newValue.Customer && newValue.OrderNo && newValue.OrderNo!=""){
+    const Customer = newValue.Customer
+    if(Customer && newValue.OrderNo && newValue.OrderNo!=""){
       // ประเภทผู้เอาประกัน
-      InsuredTypeText.value = newValue.Customer.IsPerson==true ? 'person' : 'company'
+      InsuredTypeText.value =Customer.IsPerson==true ? 'person' : 'company'
 
 
-      if(newValue.Customer.IsPerson==true && newValue.Customer.PersonProfile){
+      if(Customer.IsPerson==true && Customer.PersonProfile){
         // ลักษณะบุคคลธรรมดา
-        InsuredClassifierText.value = newValue.Customer.PersonProfile.NationalityID=='62ED0829703B4E589A2A63C740B88155' ? 'thai' : 'foreigner'
+        InsuredClassifierText.value = Customer.PersonProfile.NationalityID=='62ED0829703B4E589A2A63C740B88155' ? 'thai' : 'foreigner'
       }
       else{
         // ลักษณะนิติบุคคล
-        CompanyClassifierText.value= newValue.Customer.IsBranch==true ? 'branch' : 'headoffice'
+        CompanyClassifierText.value= Customer.IsBranch==true ? 'branch' : 'headoffice'
       }
 
-      insureDetail.value = newValue.Customer
-    if(newValue.Customer.PersonProfile){
-      const person = newValue.Customer.PersonProfile
+      insureDetail.value = Customer
+    if(Customer.PersonProfile){
+      const person = Customer.PersonProfile
       //console.log(JSON.stringify(person))
       personProfile.value =  person
       //personProfile.value.PrefixID = props.cacheOrderRequest.Customer.PersonProfile.PrefixID
-      prefixID.value =newValue.Customer.PersonProfile.PrefixID
+      prefixID.value =Customer.PersonProfile.PrefixID
     }
-    if(newValue.Customer.LegalPersonProfile){
-      const legalPerson = newValue.Customer.LegalPersonProfile
+    if(Customer.LegalPersonProfile){
+
+      const legalPerson = Customer.LegalPersonProfile
 
       legalPersonProfile.value = legalPerson
 
@@ -872,9 +871,9 @@ watch(()=>props.cacheOrderRequest,(newValue)=>{
       console.log('legalPersonProfile.value', legalPersonProfile.value)
     }
 
-    if(newValue.Customer.DefaultAddress){
+    if(Customer.DefaultAddress){
       // console.log(props.cacheOrderRequest.Customer.DefaultAddress)
-      defaultAddress.value = newValue.Customer.DefaultAddress
+      defaultAddress.value = Customer.DefaultAddress
     }
     }
     handlerChangeInsureDetail()

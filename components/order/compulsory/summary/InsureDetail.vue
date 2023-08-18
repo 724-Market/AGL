@@ -21,7 +21,7 @@
               <p>
                 {{ orderDetail.AssuredDetails.Prefix }}
                 {{ orderDetail.AssuredDetails.FirstName }}
-                {{ orderDetail.AssuredDetails.LastName }}}
+                {{ orderDetail.AssuredDetails.LastName }}
               </p>
             </div>
             <div class="summary-item">

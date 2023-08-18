@@ -585,6 +585,7 @@ const legalPersonProfile:globalThis.Ref<LegalPersonProfile> = ref({
   ContactPhoneNumber: '',
   ContactEmail: '',
 })
+// const legalPersonProfile:globalThis.Ref<LegalPersonProfile|undefined> = ref()
 const defaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref()
 
 const InsuredTypeText:globalThis.Ref<String> = ref('person')
@@ -868,6 +869,7 @@ watch(()=>props.cacheOrderRequest,(newValue)=>{
       legalPersonProfile.value = legalPerson
 
       prefixID.value = legalPerson.PrefixID
+      console.log('legalPersonProfile.value', legalPersonProfile.value)
     }
 
     if(newValue.Customer.DefaultAddress){
@@ -875,7 +877,6 @@ watch(()=>props.cacheOrderRequest,(newValue)=>{
       defaultAddress.value = newValue.Customer.DefaultAddress
     }
     }
-    console.log('legalPersonProfile.value', legalPersonProfile.value)
     handlerChangeInsureDetail()
   }
 

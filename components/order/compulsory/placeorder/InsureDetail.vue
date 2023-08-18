@@ -711,7 +711,7 @@ const handlerChangeLegalPersonProfile = ()=>{
 
   handlerChangeInsureDetail()
 }
-const handlerChangeInsureDetail = ()=>{
+const handlerChangeInsureDetail = async ()=>{
   let data:CustomerOrderRequest = insureDetail.value
   data.DefaultAddress = insureDetail.value.DefaultAddress
   data.LegalPersonProfile = insureDetail.value.LegalPersonProfile

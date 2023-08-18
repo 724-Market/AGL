@@ -870,7 +870,7 @@ const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
   carDetail.value = objectCarDetail;
 };
 const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject) => {
-  console.log('RecieveObject', RecieveObject)
+  // console.log('RecieveObject', RecieveObject)
   switch (RecieveObject.ShippingPolicy) {
     case "pdf":
       if (RecieveObject.Email.length > 0) checklist.value[2].className = "current";
@@ -906,6 +906,7 @@ const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject
   insuranceRecieve.value = RecieveObject;
 };
 const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
+  console.log('InsureDetail', InsureDetail)
   checklist.value[1].className = "";
   changeInsure.value = true;
   insureDetail.value = InsureDetail;

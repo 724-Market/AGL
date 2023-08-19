@@ -47,6 +47,7 @@ function openModal() {
 
 function closeModal() {
     //modal.hide()
+    window.location.reload();
     _loading.value = false
 }
 

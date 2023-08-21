@@ -1,6 +1,6 @@
 // import { HubConnectionBuilder } from '@microsoft/signalr';
 import * as signalR from '@microsoft/signalr';
-import { NoticePaymentRequest, NoticePayment, PaymentGatewayResponse, PaymentGetRequest }  from "../entities/payment-entity";
+import { NoticePaymentRequest, NoticePaymentData, PaymentGatewayResponse, PaymentGetRequest }  from "../entities/payment-entity";
 // Pinia
 import { createPinia } from 'pinia'
 
@@ -43,46 +43,46 @@ class PaymentNoticeService {
     }
 
     async RequestUpdateTopUpPayment(PaymenGatewaytInfo:PaymentGatewayResponse) {
-        this.hubConnection.on('RequestUpdateTopUpPayment', async (notice:NoticePayment) => {
-          console.log(notice);
-          if(notice.data) {
-            if(PaymenGatewaytInfo.refno2 == notice.data.PaymentNo) {
-                // const noticePayment = useStoreNoticePayment();
-                // noticePayment.setNoticePayment(notice.data)
-                // this.router.push("/order/compulsory/thanks")
+        this.hubConnection.on('RequestUpdateTopUpPayment', async (message:string, data:string) => {
+          console.log(message, data);
+          if(data) {
+            const res: NoticePaymentData = JSON.parse(data)
+            console.log(res)
+            if(PaymenGatewaytInfo.refno2 == res.PaymentNo) {
+                this.router.push('/order/compulsory/thanks?PaymentNo=' + res.PaymentNo)
 
-                const paymentGat = useStorePaymentGet();
-                const req: PaymentGetRequest = {
-                    PaymentNo: notice.data.PaymentNo,
-                };
-                const response = await useRepository().payment.get(req);
-                if(response.apiResponse.Status &&  response.apiResponse.Status == "200" && response.apiResponse.Data) {
-                    paymentGat.setPaymentGet(response.apiResponse.Data[0])
-                    this.router.push('/order/compulsory/thanks')
-                }
+                // const paymentGat = useStorePaymentGet();
+                // const req: PaymentGetRequest = {
+                //     PaymentNo: res.PaymentNo,
+                // };
+                // const response = await useRepository().payment.get(req);
+                // if(response.apiResponse.Status &&  response.apiResponse.Status == "200" && response.apiResponse.Data) {
+                //     paymentGat.setPaymentGet(response.apiResponse.Data[0])
+                //     this.router.push('/order/compulsory/thanks')
+                // }
             }
           }
         });
     }
 
     async RequestUpdateOrderPayment(PaymenGatewaytInfo:PaymentGatewayResponse) {
-        this.hubConnection.on('RequestUpdateOrderPayment', async (notice:NoticePayment) => {
-          console.log(notice);
-          if(notice.data) {
-            if(PaymenGatewaytInfo.refno2 == notice.data.PaymentNo) {
-                // const noticePayment = useStoreNoticePayment();
-                // noticePayment.setNoticePayment(notice.data)
-                // this.router.push("/order/compulsory/thanks")
+        this.hubConnection.on('RequestUpdateOrderPayment', async (message:string, data:string) => {
+          console.log(message, data);
+          if(data) {
+            const res: NoticePaymentData = JSON.parse(data)
+            console.log(res)
+            if(PaymenGatewaytInfo.refno2 == res.PaymentNo) {
+                this.router.push('/order/compulsory/thanks?PaymentNo=' + res.PaymentNo)
 
-                const paymentGat = useStorePaymentGet();
-                const req: PaymentGetRequest = {
-                    PaymentNo: notice.data.PaymentNo,
-                };
-                const response = await useRepository().payment.get(req);
-                if(response.apiResponse.Status &&  response.apiResponse.Status == "200" && response.apiResponse.Data) {
-                    paymentGat.setPaymentGet(response.apiResponse.Data[0])
-                    this.router.push('/order/compulsory/thanks')
-                }
+                // const paymentGat = useStorePaymentGet();
+                // const req: PaymentGetRequest = {
+                //     PaymentNo: res.PaymentNo,
+                // };
+                // const response = await useRepository().payment.get(req);
+                // if(response.apiResponse.Status &&  response.apiResponse.Status == "200" && response.apiResponse.Data) {
+                //     paymentGat.setPaymentGet(response.apiResponse.Data[0])
+                //     this.router.push('/order/compulsory/thanks')
+                // }
             }
           }
         });

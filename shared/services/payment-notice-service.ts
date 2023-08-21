@@ -1,24 +1,15 @@
 // import { HubConnectionBuilder } from '@microsoft/signalr';
 import * as signalR from '@microsoft/signalr';
 import { NoticePaymentRequest, NoticePaymentData, PaymentGatewayResponse, PaymentGetRequest }  from "../entities/payment-entity";
-// Pinia
-import { createPinia } from 'pinia'
-
-// Pinia persist plugin
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-const pinia = createPinia()
-pinia.use(piniaPluginPersistedstate)
-
-import { useStoreNoticePayment } from "~/stores/order/storeNoticePayment";
-import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
 
 class PaymentNoticeService {
     private hubConnection!: signalR.HubConnection;
     // private paymenGatewaytInfo: globalThis.Ref<PaymentGatewayResponse | undefined> = ref()
     private router = useRouter();
+    private route = useRoute();
     
     async connect(req:NoticePaymentRequest) {
-        let url = `https://api-iom-signalr.724insure.net/SignalRHub?ClientID=${req.ClientID}&DeviceID=${req.DeviceID}&ReferenceID=${req.ReferenceID}&UserID=${req.UserID}&GroupType=${req.GroupType}&AccessToken=${req.AccessToken}`
+        const url = `https://api-iom-signalr.724insure.net/SignalRHub?ClientID=${req.ClientID}&DeviceID=${req.DeviceID}&ReferenceID=${req.ReferenceID}&UserID=${req.UserID}&GroupType=${req.GroupType}&AccessToken=${req.AccessToken}`
         this.hubConnection = new signalR.HubConnectionBuilder()
             .configureLogging(signalR.LogLevel.Debug)
             .withUrl(`${url}`, {
@@ -49,7 +40,7 @@ class PaymentNoticeService {
             const res: NoticePaymentData = JSON.parse(data)
             console.log(res)
             if(PaymenGatewaytInfo.refno2 == res.PaymentNo) {
-                this.router.push('/order/compulsory/thanks?PaymentNo=' + res.PaymentNo)
+                this.router.push('#topup_thanks?PaymentNo=' + res.PaymentNo)
 
                 // const paymentGat = useStorePaymentGet();
                 // const req: PaymentGetRequest = {

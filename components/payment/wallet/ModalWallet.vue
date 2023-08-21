@@ -2,7 +2,11 @@
   <dialog id="wallet-dialog" v-show="_show">
     <div class="dialog-card">
       <div class="card-header">
-        <button type="button" class="btn btn-close btn-close-wallet" @click="closeModal(false)">
+        <button
+          type="button"
+          class="btn btn-close btn-close-wallet"
+          @click="closeModal(false)"
+        >
           ปิด
         </button>
       </div>
@@ -152,7 +156,11 @@
           </div>
           <div class="status-info">
             <div class="status-action">
-              <button type="button" class="btn btn-close-wallet" @click="closeModal(true)">
+              <button
+                type="button"
+                class="btn btn-close-wallet"
+                @click="closeModal(true)"
+              >
                 ปิดหน้าต่างนี้
               </button>
             </div>
@@ -198,6 +206,7 @@ import { storeToRefs } from "pinia";
 import {
   NoticePaymentRequest,
   PaymentGatewayResponse,
+  PaymentGetRequest,
   PaymentGetResponse,
 } from "~/shared/entities/payment-entity";
 import { CreditHistoryPaymentAdd } from "~/shared/entities/pledge-entity";
@@ -236,6 +245,7 @@ const { AuthenInfo } = storeToRefs(storeAuth);
 const noticePayment = useStoreNoticePayment();
 const { NoticePaymentInfo } = storeToRefs(noticePayment);
 const router = useRouter();
+const route = useRoute();
 
 // Submit form event
 const submitPledge = async (formData: any) => {
@@ -276,6 +286,27 @@ watch(
     }
   }
 );
+watch(
+  () => route.hash,
+  async () => {
+    console.log("route.hash", route.hash);
+    if (route.hash.includes("#topup_thanks")) {
+      const PaymentNo: string = route.hash.split("?PaymentNo=")[1];
+      const req: PaymentGetRequest = {
+        PaymentNo: PaymentNo,
+      };
+      const response = await useRepository().pledge.creditorderPaymentGet(req);
+      if (
+        response.apiResponse.Status &&
+        response.apiResponse.Status == "200" &&
+        response.apiResponse.Data
+      ) {
+        paymentResponse.value = response.apiResponse.Data[0];
+        hanlderCheckPayment(paymentResponse.value);
+      }
+    }
+  }
+);
 const onLoad = onMounted(() => {
   // const myModal = document.getElementById("modal_demo") as Element
   // modal = new $bootstrap.Modal(myModal);
@@ -305,7 +336,7 @@ const signalRPaymentService = async () => {
       if (responseUser.apiResponse.Status && responseUser.apiResponse.Status == "200") {
         if (responseUser.apiResponse.Data && responseUser.apiResponse.Data.length > 0) {
           const user: UserResponse = responseUser.apiResponse.Data[0];
-          let deviceId = await useUtility().getDeviceId()
+          let deviceId = await useUtility().getDeviceId();
           const paymentService = await useService().paymentNotice;
           const paymentServiceReq: NoticePaymentRequest = {
             ClientID: "AgentLoveWeb",
@@ -355,11 +386,11 @@ function openModal() {
   }
 }
 
-function closeModal(refresh:boolean) {
+function closeModal(refresh: boolean) {
   //modal.hide()
   _show.value = false;
   const dialogLoading = document.getElementById("wallet-dialog");
   if (dialogLoading) dialogLoading.close();
-  emit("closeWallet", false,refresh);
+  emit("closeWallet", false, refresh);
 }
 </script>

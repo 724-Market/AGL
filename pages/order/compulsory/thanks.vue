@@ -42,6 +42,8 @@ import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
 import { useStorePayment } from "~/stores/order/storePayments";
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
+import { useStorePackage } from "~/stores/order/storePackage";
+import { useStorePackageList } from "~/stores/order/storePackageList";
 
 // Loading state after form submiting
 const isLoading = ref(false);
@@ -66,7 +68,10 @@ const { AuthenInfo } = storeToRefs(storeAuth);
 
 const placeorder = useStorePlaceorder();
 const information = useStoreInformation();
+const packages = useStorePackage();
+const packageList = useStorePackageList();
 const orderSummary = useStoreOrderSummary();
+const { OrderSummaryInfo } = storeToRefs(orderSummary);
 const payment = useStorePayment();
 const paymentGateway = useStorePaymentGateway();
 
@@ -77,6 +82,11 @@ const router = useRouter();
 
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
+    console.log('OrderSummaryInfo.value',OrderSummaryInfo.value)
+    console.log('PaymentGetInfo.value',PaymentGetInfo.value)
+    if(!OrderSummaryInfo.value) {
+        router.push("/order");
+    }
     const route = useRoute();
     if (PaymentGetInfo.value && PaymentGetInfo.value.PaymentNo != "") {
       paymentGetInfo.value = PaymentGetInfo.value;
@@ -87,12 +97,14 @@ const onLoad = onMounted(async () => {
           : "Cancel";
       if (status.value == "Success") {
         //TODO: Clear Store
-        placeorder.clearOrder();
-        information.clearInformation();
-        orderSummary.clearOrderSummary();
-        payment.clearPayment();
-        paymentGateway.clearPaymenGateway();
-        paymentGat.clearPaymentGet();
+        placeorder.clearOrder()
+        information.clearInformation()
+        orderSummary.clearOrderSummary()
+        packages.clearPackage()
+        packageList.clearPackageList()
+        payment.clearPayment()
+        paymentGateway.clearPaymenGateway()
+        paymentGat.clearPaymentGet()
       }
     } else if (route.query && isString(route.query.PaymentNo)) {
       const PaymentNo: string = route.query.PaymentNo;
@@ -111,12 +123,14 @@ const onLoad = onMounted(async () => {
             ? "Success"
             : "Cancel";
         if (status.value == "Success") {
-          placeorder.clearOrder();
-          information.clearInformation();
-          orderSummary.clearOrderSummary();
-          payment.clearPayment();
-          paymentGateway.clearPaymenGateway();
-          paymentGat.clearPaymentGet();
+          placeorder.clearOrder()
+          information.clearInformation()
+          packages.clearPackage()
+          packageList.clearPackageList()
+          orderSummary.clearOrderSummary()
+          payment.clearPayment()
+          paymentGateway.clearPaymenGateway()
+          paymentGat.clearPaymentGet()
         }
       }
     } else {

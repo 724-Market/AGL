@@ -55,7 +55,7 @@ class PaymentNoticeService {
                 // const req: PaymentGetRequest = {
                 //     PaymentNo: res.PaymentNo,
                 // };
-                // const response = await useRepository().payment.get(req);
+                // const response = await useRepository().pledge.creditorderPaymentGet(req);
                 // if(response.apiResponse.Status &&  response.apiResponse.Status == "200" && response.apiResponse.Data) {
                 //     paymentGat.setPaymentGet(response.apiResponse.Data[0])
                 //     this.router.push('/order/compulsory/thanks')
@@ -72,17 +72,15 @@ class PaymentNoticeService {
             const res: NoticePaymentData = JSON.parse(data)
             console.log(res)
             if(PaymenGatewaytInfo.refno2 == res.PaymentNo) {
-                this.router.push('/order/compulsory/thanks?PaymentNo=' + res.PaymentNo)
-
-                // const paymentGat = useStorePaymentGet();
-                // const req: PaymentGetRequest = {
-                //     PaymentNo: res.PaymentNo,
-                // };
-                // const response = await useRepository().payment.get(req);
-                // if(response.apiResponse.Status &&  response.apiResponse.Status == "200" && response.apiResponse.Data) {
-                //     paymentGat.setPaymentGet(response.apiResponse.Data[0])
-                //     this.router.push('/order/compulsory/thanks')
-                // }
+                const paymentGat = useStorePaymentGet();
+                const req: PaymentGetRequest = {
+                    PaymentNo: res.PaymentNo,
+                };
+                const response = await useRepository().payment.get(req);
+                if(response.apiResponse.Status &&  response.apiResponse.Status == "200" && response.apiResponse.Data) {
+                    paymentGat.setPaymentGet(response.apiResponse.Data[0])
+                    this.router.push('/order/compulsory/thanks')
+                }
             }
           }
         });

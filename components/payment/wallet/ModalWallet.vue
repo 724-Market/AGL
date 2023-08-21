@@ -310,7 +310,7 @@ const signalRPaymentService = async () => {
           const paymentServiceReq: NoticePaymentRequest = {
             ClientID: "AgentLoveWeb",
             DeviceID: deviceId,
-            ReferenceID: props.walletPaymentGateway.refno1,
+            ReferenceID: props.walletPaymentGateway.refno2,
             UserID: user.ID,
             GroupType: "qr",
             AccessToken: AuthenInfo.value.accessToken,

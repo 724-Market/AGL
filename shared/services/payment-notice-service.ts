@@ -43,7 +43,7 @@ class PaymentNoticeService {
     }
 
     async RequestUpdateTopUpPayment(PaymenGatewaytInfo:PaymentGatewayResponse) {
-        this.hubConnection.on('RequestUpdateTopUpPayment', async (notice:NoticePayment) => {
+        this.hubConnection.on('RequestUpdateTopUpPayment', async (notice:any) => {
           console.log(notice);
           if(notice.data) {
             if(PaymenGatewaytInfo.refno1 == notice.data.PaymentNo) {
@@ -66,7 +66,7 @@ class PaymentNoticeService {
     }
 
     async RequestUpdateOrderPayment(PaymenGatewaytInfo:PaymentGatewayResponse) {
-        this.hubConnection.on('RequestUpdateOrderPayment', async (notice:NoticePayment) => {
+        this.hubConnection.on('RequestUpdateOrderPayment', async (notice:any) => {
           console.log(notice);
           if(notice.data) {
             if(PaymenGatewaytInfo.refno1 == notice.data.PaymentNo) {

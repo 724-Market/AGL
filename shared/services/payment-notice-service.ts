@@ -43,10 +43,10 @@ class PaymentNoticeService {
     }
 
     async RequestUpdateTopUpPayment(PaymenGatewaytInfo:PaymentGatewayResponse) {
-        this.hubConnection.on('RequestUpdateTopUpPayment', async (notice:any) => {
+        this.hubConnection.on('RequestUpdateTopUpPayment', async (notice:NoticePayment) => {
           console.log(notice);
           if(notice.data) {
-            if(PaymenGatewaytInfo.refno1 == notice.data.PaymentNo) {
+            if(PaymenGatewaytInfo.refno2 == notice.data.PaymentNo) {
                 // const noticePayment = useStoreNoticePayment();
                 // noticePayment.setNoticePayment(notice.data)
                 // this.router.push("/order/compulsory/thanks")
@@ -66,10 +66,10 @@ class PaymentNoticeService {
     }
 
     async RequestUpdateOrderPayment(PaymenGatewaytInfo:PaymentGatewayResponse) {
-        this.hubConnection.on('RequestUpdateOrderPayment', async (notice:any) => {
+        this.hubConnection.on('RequestUpdateOrderPayment', async (notice:NoticePayment) => {
           console.log(notice);
           if(notice.data) {
-            if(PaymenGatewaytInfo.refno1 == notice.data.PaymentNo) {
+            if(PaymenGatewaytInfo.refno2 == notice.data.PaymentNo) {
                 // const noticePayment = useStoreNoticePayment();
                 // noticePayment.setNoticePayment(notice.data)
                 // this.router.push("/order/compulsory/thanks")

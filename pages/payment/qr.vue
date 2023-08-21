@@ -151,13 +151,13 @@ const onLoad = onMounted(async () => {
           const paymentServiceReq: NoticePaymentRequest = {
             ClientID: "AgentLoveWeb",
             DeviceID: deviceId,
-            ReferenceID: PaymenGatewaytInfo.value.refno1,
+            ReferenceID: PaymenGatewaytInfo.value.refno2,
             UserID: user.ID,
             GroupType: "qr",
             AccessToken: AuthenInfo.value.accessToken,
           };
           await paymentService.connect(paymentServiceReq);
-          // await paymentService.RequestUpdateTopUpPayment(PaymenGatewaytInfo.value);
+          await paymentService.RequestUpdateTopUpPayment(PaymenGatewaytInfo.value);
           await paymentService.RequestUpdateOrderPayment(PaymenGatewaytInfo.value);
         }
       }

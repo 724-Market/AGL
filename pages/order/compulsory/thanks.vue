@@ -120,7 +120,7 @@ const onLoad = onMounted(async () => {
         }
       }
     } else {
-      router.push("/history");
+      router.push("/order");
     }
   } else {
     router.push("/login");

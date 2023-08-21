@@ -81,9 +81,9 @@ const onLoad = onMounted(async () => {
                 const paymentServiceReq: NoticePaymentRequest = {
                     ClientID: "AgentLoveWeb",
                     DeviceID: deviceId,
-                    ReferenceID: PaymenGatewaytInfo.value.refno1,
+                    ReferenceID: PaymenGatewaytInfo.value.refno2,
                     UserID: user.ID,
-                    GroupType: "wait",
+                    GroupType: "CreditCard",
                     AccessToken: AuthenInfo.value.accessToken,
                 };
                 await paymentService.connect(paymentServiceReq);
@@ -91,7 +91,7 @@ const onLoad = onMounted(async () => {
             }
         }
     } else {
-        router.push("/history");
+        router.push("/order");
     }
 });
 

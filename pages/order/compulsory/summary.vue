@@ -448,7 +448,13 @@ const handleCloseWallet = async (status: boolean,refresh:boolean) => {
   
 };
 const handleCloseWarning = async () => {
-  window.location.reload();
+  //window.location.reload();
+  if(OrderInfo.value.OrderNo)
+  {
+    const router = useRouter();
+    router.push('/order/compulsory/summary?OrderNo='+OrderInfo.value.OrderNo)
+  }
+  
 };
 // Define layout
 const layout = "monito";

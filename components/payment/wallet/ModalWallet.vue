@@ -199,6 +199,7 @@
         </div>
       </div>
     </div>
+    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   </dialog>
 </template>
 <script setup lang="ts">
@@ -293,7 +294,8 @@ watch(
     console.log("route.hash", route.hash);
     if (route.hash.includes("#topup_thanks") && props.walletPaymentGateway) {
       const PaymentNo: string = route.hash.split("?PaymentNo=")[1];
-      if (props.walletPaymentGateway.payment_id == PaymentNo) {
+      if (props.walletPaymentGateway.refno2 == PaymentNo) {
+        isLoading.value = true
         const req: PaymentGetRequest = {
           PaymentNo: PaymentNo,
         };
@@ -306,6 +308,7 @@ watch(
           paymentResponse.value = response.apiResponse.Data[0];
           hanlderCheckPayment(paymentResponse.value);
         }
+        isLoading.value = false
       }
     }
   }

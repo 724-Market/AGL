@@ -29,13 +29,13 @@ class PaymentNoticeService {
 
         this.hubConnection
             .onclose(function() {
-                alert('Server has disconnected');
+                console.log('Server has disconnected');
             }
         );
     }
 
     async disconnect() {
-        this.hubConnection.stop();
+       this.hubConnection.stop()
     }
 
     async RequestUpdateTopUpPayment(PaymenGatewaytInfo:PaymentGatewayResponse) {

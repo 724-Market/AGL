@@ -199,6 +199,7 @@
         </div>
       </div>
     </div>
+    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   </dialog>
 </template>
 <script setup lang="ts">
@@ -211,6 +212,7 @@ import {
 } from "~/shared/entities/payment-entity";
 import { CreditHistoryPaymentAdd } from "~/shared/entities/pledge-entity";
 import { UserResponse } from "~/shared/entities/user-entity";
+import PaymentNoticeService from "~/shared/services/payment-notice-service";
 import { useStoreNoticePayment } from "~/stores/order/storeNoticePayment";
 import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
 
@@ -239,7 +241,7 @@ const isStep1 = ref(false);
 const isStep2 = ref(false);
 const isStep3 = ref(false);
 const isSuccess = ref(false);
-
+let paymentService:PaymentNoticeService
 const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
 const noticePayment = useStoreNoticePayment();
@@ -290,24 +292,29 @@ watch(
   () => route.hash,
   async () => {
     console.log("route.hash", route.hash);
-    if (route.hash.includes("#topup_thanks")) {
+    if (route.hash.includes("#topup_thanks") && props.walletPaymentGateway) {
       const PaymentNo: string = route.hash.split("?PaymentNo=")[1];
-      const req: PaymentGetRequest = {
-        PaymentNo: PaymentNo,
-      };
-      const response = await useRepository().pledge.creditorderPaymentGet(req);
-      if (
-        response.apiResponse.Status &&
-        response.apiResponse.Status == "200" &&
-        response.apiResponse.Data
-      ) {
-        paymentResponse.value = response.apiResponse.Data[0];
-        hanlderCheckPayment(paymentResponse.value);
+      if (props.walletPaymentGateway.refno2 == PaymentNo) {
+        isLoading.value = true
+        const req: PaymentGetRequest = {
+          PaymentNo: PaymentNo,
+        };
+        const response = await useRepository().pledge.creditorderPaymentGet(req);
+        if (
+          response.apiResponse.Status &&
+          response.apiResponse.Status == "200" &&
+          response.apiResponse.Data
+        ) {
+          paymentResponse.value = response.apiResponse.Data[0];
+          hanlderCheckPayment(paymentResponse.value);
+        }
+        isLoading.value = false
       }
     }
   }
 );
-const onLoad = onMounted(() => {
+const onLoad = onMounted(async () => {
+  paymentService = await useService().paymentNotice;
   // const myModal = document.getElementById("modal_demo") as Element
   // modal = new $bootstrap.Modal(myModal);
   if (props.show) {
@@ -337,7 +344,6 @@ const signalRPaymentService = async () => {
         if (responseUser.apiResponse.Data && responseUser.apiResponse.Data.length > 0) {
           const user: UserResponse = responseUser.apiResponse.Data[0];
           let deviceId = await useUtility().getDeviceId();
-          const paymentService = await useService().paymentNotice;
           const paymentServiceReq: NoticePaymentRequest = {
             ClientID: "AgentLoveWeb",
             DeviceID: deviceId,
@@ -386,11 +392,12 @@ function openModal() {
   }
 }
 
-function closeModal(refresh: boolean) {
+async function closeModal(refresh: boolean) {
   //modal.hide()
   _show.value = false;
   const dialogLoading = document.getElementById("wallet-dialog");
   if (dialogLoading) dialogLoading.close();
+  paymentService.disconnect();
   emit("closeWallet", false, refresh);
 }
 </script>

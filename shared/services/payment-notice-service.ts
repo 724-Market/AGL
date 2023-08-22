@@ -1,6 +1,7 @@
 // import { HubConnectionBuilder } from '@microsoft/signalr';
 import * as signalR from '@microsoft/signalr';
 import { NoticePaymentRequest, NoticePaymentData, PaymentGatewayResponse, PaymentGetRequest }  from "../entities/payment-entity";
+import { useStorePaymentGet } from '~/stores/order/storePaymentGet';
 
 class PaymentNoticeService {
     private hubConnection!: signalR.HubConnection;

@@ -34,6 +34,10 @@ class PaymentNoticeService {
         );
     }
 
+    async disconnect() {
+        this.hubConnection.stop();
+    }
+
     async RequestUpdateTopUpPayment(PaymenGatewaytInfo:PaymentGatewayResponse) {
         this.hubConnection.on('RequestUpdateTopUpPayment', async (message:string, data:string) => {
           console.log(message, data);

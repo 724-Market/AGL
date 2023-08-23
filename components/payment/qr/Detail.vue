@@ -34,7 +34,7 @@
           class="btn btn-outline-primary"
           @click="checkPayment"
         >
-          Check
+          ตรวจสอบสถานะการชำระเงิน
         </button>
       </div>
     </div>

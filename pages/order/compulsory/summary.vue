@@ -80,9 +80,10 @@
             :loading="isLoading"
           />
 
+          <!-- :to="'placeorder?orderNo=' + orderDetail.OrderNo" -->
           <NuxtLink
             v-if="orderDetail"
-            :to="'placeorder?orderNo=' + orderDetail.OrderNo"
+            to="payment"
             class="btn btn-back"
             >ย้อนกลับ</NuxtLink
           >

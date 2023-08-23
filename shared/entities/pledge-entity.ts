@@ -40,3 +40,13 @@ export interface CreditOrderPaymentCreateResponse {
 export interface CreditOrderPaymentGetRequest {
     PaymentNo:string
 }
+
+export interface PaymentFeeLimitResponse {
+    Type:string,
+    Amount:number,
+    Max:number,
+    Min:number
+}
+export interface PaymentFeeLimitRequest {
+    PaymentType:string,
+}

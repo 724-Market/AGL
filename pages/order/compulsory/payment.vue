@@ -86,7 +86,7 @@
             id="order-submit" :disabled="!checkSave" :loading="isLoading"
             :classes="{ input: 'btn-primary', outer: 'form-actions' }" />
 
-          <NuxtLink to="packages" class="btn btn-back">ย้อนกลับ</NuxtLink>
+          <NuxtLink to="placeorder" class="btn btn-back">ย้อนกลับ</NuxtLink>
 
         </div>
       </div>

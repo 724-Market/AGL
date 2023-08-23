@@ -111,7 +111,7 @@ const validateWallet = (): boolean => {
   let validate: boolean = false;
   if (props.options) {
     if (
-      //props.options.CreditError.Message == "" ||
+      props.options.CreditError.Message == "" ||
       props.options.CreditError.Message == "REQUIRE_INCREASE_CREDIT_LIMIT"
     ) {
       validate = false;

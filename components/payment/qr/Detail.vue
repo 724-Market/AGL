@@ -14,6 +14,14 @@
         <h5 class="topic">กรุณาชำระภายใน</h5>
         <p>{{ useUtility().formatDate($props.paymenGatewayInfo.payment_expired,"D MMMM BBBB HH:mm:ss") }}</p>
       </div>
+      <div class="status-item" v-if="$props.paymentType=='wallet'">
+        <h5 class="topic">ค่าธรรมเนียม</h5>
+        <p>{{ useUtility().getCurrency($props.feeAmount ?? 0) }}</p>
+      </div>
+      <div class="status-item" v-if="$props.paymentType=='wallet'">
+        <h5 class="topic">Wallet</h5>
+        <p>{{ useUtility().getCurrency(parseInt($props.paymenGatewayInfo.amount) - ($props.feeAmount ?? 0)) }}</p>
+      </div>
     </div>
 
     <div class="qr-info">
@@ -73,6 +81,7 @@ const props = defineProps({
     type: Object as () => PaymentGatewayResponse,
   },
   paymentType: String,
+  feeAmount:Number
 });
 
 const onLoad = onMounted(async () => {

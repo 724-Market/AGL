@@ -54,8 +54,11 @@
           </div>
           <h5>เลือกช่องทางการชำระเงิน</h5>
           <div class="form-hide-label payment-choice">
-            <ElementsFormRadioPledgeMethods v-model="paymentType" />
+            <ElementsFormRadioPledgeMethods v-model="paymentType"  />
+            <small>{{ feeMessage }}</small><br>
+            <small>{{ topupMessage }}</small>
           </div>
+         
           <div class="form-hide-label accept-box">
             <FormKit
               type="checkbox"
@@ -116,8 +119,10 @@
           </div>
         </div> -->
         <PaymentQrDetail
+          v-if="isStep2"
           :paymen-gateway-info="props.walletPaymentGateway"
           :payment-type="'wallet'"
+          :fee-amount="feeAmount"
           @check-payment="hanlderCheckPayment"
         ></PaymentQrDetail>
       </div>
@@ -199,7 +204,7 @@
         </div>
       </div>
     </div>
-    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+    <!-- <ElementsModalLoading :loading="isLoading"></ElementsModalLoading> -->
   </dialog>
 </template>
 <script setup lang="ts">
@@ -210,11 +215,15 @@ import {
   PaymentGetRequest,
   PaymentGetResponse,
 } from "~/shared/entities/payment-entity";
-import { CreditHistoryPaymentAdd } from "~/shared/entities/pledge-entity";
+import {
+  CreditHistoryPaymentAdd,
+  PaymentFeeLimitRequest,
+} from "~/shared/entities/pledge-entity";
 import { UserResponse } from "~/shared/entities/user-entity";
 import PaymentNoticeService from "~/shared/services/payment-notice-service";
 import { useStoreNoticePayment } from "~/stores/order/storeNoticePayment";
 import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
+import { useStoreFeeLimit } from "~/stores/plege/storeFeeLimit";
 
 const emit = defineEmits(["closeWallet", "topupConfirm"]);
 
@@ -241,14 +250,20 @@ const isStep1 = ref(false);
 const isStep2 = ref(false);
 const isStep3 = ref(false);
 const isSuccess = ref(false);
-let paymentService:PaymentNoticeService
+let paymentService: PaymentNoticeService;
 const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
 const noticePayment = useStoreNoticePayment();
 const { NoticePaymentInfo } = storeToRefs(noticePayment);
+
+const feeLimit = useStoreFeeLimit();
+const { FeeLimitInfo } = storeToRefs(feeLimit);
 const router = useRouter();
 const route = useRoute();
 
+const feeAmount = ref(0);
+const feeMessage = ref("");
+const topupMessage = ref("");
 // Submit form event
 const submitPledge = async (formData: any) => {
   // Add waiting time for debug
@@ -262,6 +277,7 @@ const AddAmount = (credit: number) => {
       Amount.value = total;
     }
   }
+  getMessageWallet(Amount.value)
 };
 watch(
   () => props.show,
@@ -289,13 +305,20 @@ watch(
   }
 );
 watch(
+  ()=>paymentType.value,
+  ()=>{
+    console.log('change value paymentType',paymentType)
+    getMessageWallet(Amount.value)
+  }
+)
+watch(
   () => route.hash,
   async () => {
     console.log("route.hash", route.hash);
     if (route.hash.includes("#topup_thanks") && props.walletPaymentGateway) {
       const PaymentNo: string = route.hash.split("?PaymentNo=")[1];
       if (props.walletPaymentGateway.refno2 == PaymentNo) {
-        isLoading.value = true
+        isLoading.value = true;
         const req: PaymentGetRequest = {
           PaymentNo: PaymentNo,
         };
@@ -308,19 +331,40 @@ watch(
           paymentResponse.value = response.apiResponse.Data[0];
           hanlderCheckPayment(paymentResponse.value);
         }
-        isLoading.value = false
+        isLoading.value = false;
       }
     }
   }
 );
 const onLoad = onMounted(async () => {
   paymentService = await useService().paymentNotice;
+
   // const myModal = document.getElementById("modal_demo") as Element
   // modal = new $bootstrap.Modal(myModal);
   if (props.show) {
     openModal();
   }
 });
+const getMessageWallet = async (amount: number) => {
+  const req: PaymentFeeLimitRequest = {
+    PaymentType: "BILL_PAYMENT",
+  };
+  const response = await feeLimit.getFeeLimit(req);
+  if (response.Status && response.Status == "200") {
+    if (response.Data) {
+      console.log('getMessagetWallet',response)
+      const filter = response.Data.filter((x) => amount>=x.Min && amount<=x.Max);
+      if (filter.length > 0) {
+        feeMessage.value = `ค่าธรรมเนียม ${useUtility().getCurrency(filter[0].Amount,2)} บาท`;
+        feeAmount.value = filter[0].Amount
+        topupMessage.value = `เติม ${useUtility().getCurrency(filter[0].Min)} บาท ขึ้นไป ไม่เสียค่าธรรมเนียม`;
+      }
+    } else {
+      // data not found
+    }
+  } else {
+  }
+};
 const hanlderCheckPayment = (response: PaymentGetResponse) => {
   paymentResponse.value = response;
   if (!response.IsPending) {

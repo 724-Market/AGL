@@ -51,8 +51,7 @@
               <OrderCompulsorySummaryPaymentStatus
                 :payment="paymentDetail"
                 :options="optionDetail"
-               @open-wallet="handlerOpenWallet"
-               
+                @open-wallet="handlerOpenWallet"
               ></OrderCompulsorySummaryPaymentStatus>
             </div>
 
@@ -81,18 +80,25 @@
           />
 
           <!-- :to="'placeorder?orderNo=' + orderDetail.OrderNo" -->
-          <NuxtLink
-            v-if="orderDetail"
-            to="payment"
-            class="btn btn-back"
+          <NuxtLink v-if="orderDetail" to="payment" class="btn btn-back"
             >ย้อนกลับ</NuxtLink
           >
         </div>
       </div>
     </FormKit>
-    <PaymentWalletModalWallet :show="showWallet"  :payment-list="creditPaymenyAddList" @close-wallet="handleCloseWallet" @topup-confirm="handleTopupConfirm" :wallet-payment-gateway="walletPaymentGateway"></PaymentWalletModalWallet>
-    <PaymentWalletModalWarningWallet :show="showWarningWallet" @close-warning="handleCloseWarning"></PaymentWalletModalWarningWallet>
+    <PaymentWalletModalWallet
+      :show="showWallet"
+      :payment-list="creditPaymenyAddList"
+      @close-wallet="handleCloseWallet"
+      @topup-confirm="handleTopupConfirm"
+      :wallet-payment-gateway="walletPaymentGateway"
+    ></PaymentWalletModalWallet>
+    <PaymentWalletModalWarningWallet
+      :show="showWarningWallet"
+      @close-warning="handleCloseWarning"
+    ></PaymentWalletModalWarningWallet>
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+    <ElementsModalAlert v-if="isError" :is-error="isError" :message="messageError" />
   </NuxtLayout>
 </template>
 
@@ -119,12 +125,15 @@ import {
   CreditBalanceResponse,
   CreditHistoryPaymentAdd,
   CreditOrderPaymentCreateRequest,
+  PaymentFeeLimitRequest,
+  PaymentFeeLimitResponse,
 } from "~/shared/entities/pledge-entity";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
+import { useStoreFeeLimit } from "~/stores/plege/storeFeeLimit";
 import { defineEventHandler } from "~/server/api/setting.post";
 
 //define store
@@ -141,6 +150,8 @@ const paymentGat = useStorePaymentGet();
 
 const paymentGateway = useStorePaymentGateway();
 
+const paymentFeeLimmit = useStoreFeeLimit();
+
 // Define Variables
 // Loading state after form submiting
 const isLoading = ref(false);
@@ -154,9 +165,12 @@ const optionDetail: globalThis.Ref<OptionsResponse | undefined> = ref();
 const creditPaymenyAddList: globalThis.Ref<CreditHistoryPaymentAdd | undefined> = ref();
 const walletPaymentGateway: globalThis.Ref<PaymentGatewayResponse | undefined> = ref();
 const creditBalance: globalThis.Ref<CreditBalanceResponse | undefined> = ref();
+const paymentFeeLimmitInfo: globalThis.Ref<PaymentFeeLimitResponse[]> = ref([]);
 const isConsent = ref();
 const showWallet = ref(false);
 const showWarningWallet = ref(false);
+const isError = ref(false);
+const messageError = ref("");
 
 let values = reactive({});
 
@@ -237,8 +251,8 @@ const loadOrderSummary = async (orderNo: string) => {
     if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
       // save to store
       const data = response.apiResponse.Data[0];
-      if(data.Order != undefined) {
-        data.Order.OrderNo = orderNo
+      if (data.Order != undefined) {
+        data.Order.OrderNo = orderNo;
       }
       store.setOrderSummary(data);
       setStoretoStep(data, orderNo);
@@ -269,6 +283,7 @@ const loadPledgeHistoryPaymentAddList = async () => {
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if (response.apiResponse.Data) {
       creditPaymenyAddList.value = response.apiResponse.Data;
+      return creditPaymenyAddList.value
     } else {
       // data not found
     }
@@ -280,6 +295,22 @@ const loadPledgeCreditBalance = async () => {
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if (response.apiResponse.Data) {
       creditBalance.value = response.apiResponse.Data[0];
+      return creditBalance.value
+    } else {
+      // data not found
+    }
+  } else {
+  }
+};
+const loadPledgeFeeLimit = async () => {
+  const req: PaymentFeeLimitRequest = {
+    PaymentType: "BILL_PAYMENT",
+  };
+  const response = await paymentFeeLimmit.getFeeLimit(req);
+  if (response.Status && response.Status == "200") {
+    if (response.Data) {
+      paymentFeeLimmitInfo.value = response.Data;
+      return paymentFeeLimmitInfo.value
     } else {
       // data not found
     }
@@ -297,8 +328,15 @@ const onLoad = onMounted(async () => {
     await loadOrderSummary(OrderNo);
     // set Payment List History Credit for wallet
     if (paymentDetail.value && paymentDetail.value.PaymentType == "PLEDGE") {
-      await loadPledgeHistoryPaymentAddList();
-      await loadPledgeCreditBalance();
+      isLoading.value = true;
+      Promise.all([
+        loadPledgeHistoryPaymentAddList(),
+        loadPledgeCreditBalance(),
+        loadPledgeFeeLimit(),
+      ]).then((values) => {
+        console.log(values);
+        isLoading.value = false;
+      });
     }
 
     isLoading.value = false;
@@ -332,9 +370,9 @@ const submitOrder = async (formData: any) => {
 
     if (paymentType == "bill_payment" || paymentType == "credit_card") {
       //TODO: Check type And Pass param for type
-      const config = useRuntimeConfig()
-      let reqGateway: PaymentGatewayRequest
-      if(paymentType == 'bill_payment') {
+      const config = useRuntimeConfig();
+      let reqGateway: PaymentGatewayRequest;
+      if (paymentType == "bill_payment") {
         reqGateway = {
           payment_type: paymentType,
           endpoint_code: "insurance_payment",
@@ -343,17 +381,16 @@ const submitOrder = async (formData: any) => {
           expire_type: defineEventHandler.paymentGateWayExpireType,
           expire_value: defineEventHandler.paymentGateWayExpireValue,
           amount: paymentConfirmRes?.GrandAmount ?? 0,
-        }
-      }
-      else {
+        };
+      } else {
         reqGateway = {
           payment_type: paymentType,
           endpoint_code: "insurance_payment",
           orderid: paymentConfirmRes?.OrderNo ?? "",
           refno: paymentConfirmRes?.PaymentNo ?? "",
           amount: paymentConfirmRes?.GrandAmount ?? 0,
-          response_url: `${config.public.BaseUrlWeb}/order/compulsory/thanks?PaymentNo=${paymentConfirmRes?.PaymentNo}`
-        }
+          response_url: `${config.public.BaseUrlWeb}/order/compulsory/thanks?PaymentNo=${paymentConfirmRes?.PaymentNo}`,
+        };
       }
 
       // const reqGateway: PaymentGatewayRequest = {
@@ -374,6 +411,11 @@ const submitOrder = async (formData: any) => {
           window.open(paymentGateway.payment_url, "_blank");
           router.push("/payment/waitpayment");
         }
+      } else {
+        if (responseGateway.message) {
+          messageError.value = responseGateway.message;
+          isError.value = true;
+        }
       }
     } else {
       const req: PaymentGetRequest = {
@@ -387,19 +429,29 @@ const submitOrder = async (formData: any) => {
       ) {
         await paymentGat.setPaymentGet(responsePaymentGet.apiResponse.Data[0]);
         router.push("/order/compulsory/thanks");
+      } else {
+        if (responsePaymentGet.apiResponse.Message) {
+          messageError.value = responsePaymentGet.apiResponse.Message;
+          isError.value = true;
+        }
       }
     }
   } else {
-    showWarningWallet.value = true
+    if (response.apiResponse.ErrorMessage) {
+      messageError.value = response.apiResponse.ErrorMessage;
+      isError.value = true;
+    }
+
+    //showWarningWallet.value = true
   }
   isLoading.value = false;
 };
 
-const handlerOpenWallet = (open:boolean)=>{
-  console.log('handlerOpenWallet',open)
-  showWallet.value = false
-  showWallet.value = open
-}
+const handlerOpenWallet = (open: boolean) => {
+  console.log("handlerOpenWallet", open);
+  showWallet.value = false;
+  showWallet.value = open;
+};
 const handleTopupConfirm = async (
   isConsent: boolean,
   Amount: number,
@@ -439,23 +491,20 @@ const handleTopupConfirm = async (
     isLoading.value = false;
   }
 };
-const handleCloseWallet = async (status: boolean,refresh:boolean) => {
-  if(refresh){
-    isLoading.value= true
-  await loadPledgeCreditBalance();
-  isLoading.value= false
+const handleCloseWallet = async (status: boolean, refresh: boolean) => {
+  if (refresh) {
+    isLoading.value = true;
+    await loadPledgeCreditBalance();
+    isLoading.value = false;
   }
-  showWallet.value = false
-  
+  showWallet.value = false;
 };
 const handleCloseWarning = async () => {
   //window.location.reload();
-  if(OrderInfo.value.OrderNo)
-  {
+  if (OrderInfo.value.OrderNo) {
     const router = useRouter();
-    router.push('/order/compulsory/summary?OrderNo='+OrderInfo.value.OrderNo)
+    router.push("/order/compulsory/summary?OrderNo=" + OrderInfo.value.OrderNo);
   }
-  
 };
 // Define layout
 const layout = "monito";

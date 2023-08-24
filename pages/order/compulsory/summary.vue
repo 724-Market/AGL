@@ -504,8 +504,16 @@ const handleTopupConfirm = async (
       let gatewayInfo = responseGateway.data as PaymentGatewayResponse;
       walletPaymentGateway.value = gatewayInfo;
     }
-    isLoading.value = false;
+   else{
+    isError.value = true
+    messageError.value = responseGateway.message ?? ""
+   }
   }
+  else{
+    isError.value = true
+    messageError.value = response.apiResponse.Message ?? ""
+  }
+  isLoading.value = false;
 };
 const handleCloseWallet = async (status: boolean, refresh: boolean) => {
   if (refresh) {

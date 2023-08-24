@@ -17,7 +17,6 @@
       >
         <FormKit
           type="form"
-          @submit="submitPledge"
           :actions="false"
           id="form-pledge"
           form-class="form-pledge form-theme"
@@ -44,6 +43,7 @@
           </div>
           <div class="topup">
             <button
+              type="button"
               v-for="item in historyPaymentList"
               v-bind:key="item"
               @click="AddAmount(item)"
@@ -54,11 +54,12 @@
           </div>
           <h5>เลือกช่องทางการชำระเงิน</h5>
           <div class="form-hide-label payment-choice">
-            <ElementsFormRadioPledgeMethods v-model="paymentType"  />
-            <small>{{ feeMessage }}</small><br>
+            <ElementsFormRadioPledgeMethods v-model="paymentType" />
+            <small>{{ feeMessage }}</small
+            ><br />
             <small>{{ topupMessage }}</small>
           </div>
-         
+
           <div class="form-hide-label accept-box">
             <FormKit
               type="checkbox"
@@ -70,13 +71,27 @@
               v-model="isConsent"
             />
           </div>
-          <FormKit
-            type="submit"
+          <button type="button"
+          class="formkit-input btn btn-primary btn-accept pledge-action"
+            @click="submitPledge"
             label="ยืนยันการเติมเงิน"
             name="pledge-submit"
             id="pledge-submit"
+            :disabled="
+              !isConsent ||
+              !(Amount >= props.paymentList.Min && Amount <= props.paymentList.Max)
+            "
+            :loading="isLoading"
+            >ยืนยันการเติมเงิน</button>
+          <!-- <FormKit
+            type="button"
+            @click="submitPledge"
+            label="ยืนยันการเติมเงิน"
+            name="pledge-submit"
+            id="pledge-submit"
+            class="btn btn-primary btn-accept"
             :classes="{
-              input: 'btn-primary btn-accept',
+             // input: 'btn btn-primary btn-accept',
               outer: 'pledge-action',
             }"
             :disabled="
@@ -84,7 +99,7 @@
               !(Amount >= props.paymentList.Min && Amount <= props.paymentList.Max)
             "
             :loading="isLoading"
-          />
+          /> -->
         </FormKit>
       </div>
 
@@ -270,14 +285,17 @@ const submitPledge = async (formData: any) => {
   emit("topupConfirm", isConsent.value, Amount.value, paymentType.value);
 };
 const AddAmount = (credit: number) => {
-  const amount = Amount.value;
+  const amount = parseInt(Amount.value.toString());
   let total = amount + credit;
   if (props.paymentList) {
     if (total >= props.paymentList.Min && total <= props.paymentList.Max) {
       Amount.value = total;
     }
+    else{
+      Amount.value  =props.paymentList.Max
+    }
   }
-  getMessageWallet(Amount.value)
+  //getMessageWallet();
 };
 watch(
   () => props.show,
@@ -305,12 +323,12 @@ watch(
   }
 );
 watch(
-  ()=>paymentType.value,
-  ()=>{
-    console.log('change value paymentType',paymentType)
-    getMessageWallet(Amount.value)
+  () => paymentType.value,
+  () => {
+    console.log("change value paymentType", paymentType);
+    //getMessageWallet(Amount.value);
   }
-)
+);
 watch(
   () => route.hash,
   async () => {
@@ -338,31 +356,33 @@ watch(
 );
 const onLoad = onMounted(async () => {
   paymentService = await useService().paymentNotice;
-
+  getMessageWallet()
   // const myModal = document.getElementById("modal_demo") as Element
   // modal = new $bootstrap.Modal(myModal);
   if (props.show) {
     openModal();
   }
 });
-const getMessageWallet = async (amount: number) => {
+const getMessageWallet = async () => {
   const req: PaymentFeeLimitRequest = {
     PaymentType: "BILL_PAYMENT",
   };
   const response = await feeLimit.getFeeLimit(req);
   if (response.Status && response.Status == "200") {
     if (response.Data) {
-      console.log('getMessagetWallet',response)
-      const filter = response.Data.filter((x) => amount>=x.Min && amount<=x.Max);
+      
+      let filter = response.Data.filter((x) => x.Amount > 0);
       if (filter.length > 0) {
-        feeMessage.value = `ค่าธรรมเนียม ${useUtility().getCurrency(filter[0].Amount,2)} บาท`;
-        feeAmount.value = filter[0].Amount
-        if(filter[0].Amount==0){
-          topupMessage.value = `เติม ${useUtility().getCurrency(filter[0].Min)} บาท ขึ้นไป ไม่เสียค่าธรรมเนียม`;
-        }
-        else{
-          topupMessage.value=''
-        }
+        feeMessage.value = `ค่าธรรมเนียม ${useUtility().getCurrency(
+          filter[0].Amount,
+          2
+        )} บาท`;
+      }
+      filter = response.Data.filter((x) => x.Amount == 0);
+      if (filter.length > 0) {
+        topupMessage.value = `เติม ${useUtility().getCurrency(
+          filter[0].Min
+        )} บาท ขึ้นไป ไม่เสียค่าธรรมเนียม`;
       }
     } else {
       // data not found
@@ -450,3 +470,16 @@ async function closeModal(refresh: boolean) {
   emit("closeWallet", false, refresh);
 }
 </script>
+<style scoped>
+.btn-primary a.btn-primary {
+    background-color: #138543!important;
+    border-color: #138543!important;
+    color: #fff!important;
+}
+.btn:disabled{
+  background: var(--fk-color-border) !important;
+    color: var(--fk-color-button) !important;
+    cursor: not-allowed;
+}
+
+</style>

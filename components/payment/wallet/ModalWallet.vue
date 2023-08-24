@@ -357,7 +357,12 @@ const getMessageWallet = async (amount: number) => {
       if (filter.length > 0) {
         feeMessage.value = `ค่าธรรมเนียม ${useUtility().getCurrency(filter[0].Amount,2)} บาท`;
         feeAmount.value = filter[0].Amount
-        topupMessage.value = `เติม ${useUtility().getCurrency(filter[0].Min)} บาท ขึ้นไป ไม่เสียค่าธรรมเนียม`;
+        if(filter[0].Amount==0){
+          topupMessage.value = `เติม ${useUtility().getCurrency(filter[0].Min)} บาท ขึ้นไป ไม่เสียค่าธรรมเนียม`;
+        }
+        else{
+          topupMessage.value=''
+        }
       }
     } else {
       // data not found

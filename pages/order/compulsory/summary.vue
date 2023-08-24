@@ -75,7 +75,7 @@
             name="order-submit"
             id="order-submit"
             :classes="{ input: 'btn-primary', outer: 'form-actions' }"
-            :disabled="!isConsent"
+            :disabled="validatePaymment()"
             :loading="isLoading"
           />
 
@@ -87,6 +87,7 @@
       </div>
     </FormKit>
     <PaymentWalletModalWallet
+    v-if="showWallet"
       :show="showWallet"
       :payment-list="creditPaymenyAddList"
       @close-wallet="handleCloseWallet"
@@ -174,6 +175,21 @@ const messageError = ref("");
 
 let values = reactive({});
 
+const validatePaymment = ():boolean=>{
+  let validate = false
+  if(isConsent)
+  {
+    if(paymentDetail.value && paymentDetail.value.PaymentType=="PLEDGE")
+    {
+      if(creditBalance.value && creditBalance.value.AvailableBalance<paymentDetail.value.OrderAmount){
+        validate = true
+      }
+    }
+  }
+  else validate= true
+
+  return validate
+}
 const getCarDetail = (): string => {
   let carDetail = "";
   if (orderDetail.value) {

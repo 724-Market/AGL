@@ -1,4 +1,4 @@
-import { IAPIResponse, IAPIPaymentGatewayResponse } from "~/shared/entities/useApi-response"
+import { IAPIResponse, IAPIPaymentGatewayResponse, IDataTableResponse } from "~/shared/entities/useApi-response"
 import { WrapperResponse } from "~/shared/entities/wrapper-response"
 
 export default () => {
@@ -156,25 +156,36 @@ export default () => {
             }
         })
         return result
-        // const config = useRuntimeConfig()
-        // let result: IAPIPaymentGatewayResponse<T> =
-        // {
-        //     status: "",
-        //     message: "",
+    }
 
-        // }
-        
-        // const response:any = await $fetch(url, {
-        //     method: "POST",
-        //     headers: {
-        //         Authorization: config.public.GatewayToken !== "" ? config.public.GatewayToken : ""
-        //     },
-        //     body: JSON.stringify(params),
-        // });
+    const postDataTable = async<T>(url: string, params: any): Promise<IDataTableResponse<T>> => {
+        const result: IDataTableResponse<T> =
+        {
+            status:'',
+            draw: 0,
+            recordsTotal: 0,
+            recordsFiltered: 0
+        }
+        params.URL = url
+        const { data, pending, error, refresh } = await useFetch('/api/aglove', {
+            method: "POST",
+            body: params,
+            onResponse({ request, response }) {
+                console.log('%c' + params.URL + '%crequest', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', request)
+                console.log('%c' + params.URL + '%cresponse', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(1, 77, 103);padding:3px;border-radius:2px', response)
+                console.log('%c' + params.URL + '%cresponse.status', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', response.status)
 
-       
-
-        
+                
+                if (response.status == 200) {
+                    result.status = response._data.status
+                    result.draw = response._data.draw
+                    result.recordsTotal = response._data.recordsTotal
+                    result.recordsFiltered = response._data.recordsFiltered
+                    result.data = response._data.data
+                }
+            }
+        })
+        return result
     }
 
     const apiRepository = async<T>(url: string, params: any): Promise<IAPIResponse<T>> => {
@@ -216,6 +227,7 @@ export default () => {
         get,
         post,
         postGateway,
+        postDataTable,
         apiRepository
     }
 

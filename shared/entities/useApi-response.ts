@@ -16,3 +16,11 @@ export interface IAPIPaymentGatewayResponse<T> {
     message: string
     data?: T
 }
+
+export interface IDataTableResponse<T> {
+    status: string
+    draw?: number
+    recordsTotal?: number
+    recordsFiltered?: number
+    data?: T
+}

@@ -5,7 +5,7 @@
     <div class="row">
       <div class="col">
 
-        <FormKit type="form" @submit="submitSearch" :actions="false" id="form-search" form-class="form-search form-theme"
+        <!-- <FormKit type="form" @submit="submitSearch" :actions="false" id="form-search" form-class="form-search form-theme"
           #default="{ value }" v-model="values" :incomplete-message="false">
 
           <div class="card">
@@ -93,9 +93,9 @@
 
           </div>
 
-        </FormKit>
+        </FormKit> -->
 
-        <aside class="search-result">
+        <!-- <aside class="search-result">
           <div class="notice-info">แสดงรายการจากผลการค้นหา "0890435478" จากหมายเลขโทรศัพท์ และ "ป้ายแดง", "นครปฐม" <button
               type="button" class="btn-info"><i class="fa-solid fa-eraser"></i>ล้างค่าการค้นหา</button></div>
         </aside>
@@ -207,7 +207,11 @@
             </a>
           </div>
 
-        </div>
+        </div> -->
+
+        <OrderHistorySearch></OrderHistorySearch>
+
+        <OrderHistoryFilter></OrderHistoryFilter>
 
         <div class="card">
           <div class="card-body card-table">

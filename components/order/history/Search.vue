@@ -4,16 +4,19 @@
         <div class="card">
           <div class="card-body">
             <div class="search-box">
-              <FormKit type="select" label="ค้นหาจาก" name="SearchCategory" placeholder="หมวดหมู่การค้นหา" :options="{
-                tel: 'หมายเลขโทรศัพท์',
-                car: 'ข้อมูลรถ',
-                invoice: 'เลขที่คำสั่งซื้อ'
-              }" validation="required" :validation-messages="{ required: 'กรุณาเลือกหมวดหมู่' }" />
+              <!-- <FormKit type="select" label="ค้นหาจาก" name="SearchCategory" placeholder="หมวดหมู่การค้นหา" 
+                :options="searchOption" v-model="SearchCategory"
+                validation="required" :validation-messages="{ required: 'กรุณาเลือกหมวดหมู่' }" /> -->
+              <FormKit type="select" label="ค้นหาจาก" name="SearchCategory" placeholder="หมวดหมู่การค้นหา" 
+                :options="searchOption" v-model="SearchCategory"
+                :validation="[['required'],
+                              ['matches', /^$|/]
+                              ]" :validation-messages="{
+                              required: 'กรุณาเลือกหมวดหมู่', matches: 'กรุณาเลือกหมวดหมู่2'
+              }"/>
 
-              <FormKit type="text" label="คำค้นหา" name="SearchText" placeholder="ระบุคำค้นหา" validation="required"
-                :validation-messages="{
-                  required: 'กรุณาใส่คำค้นหา'
-                }" autocomplete="off" />
+              <FormKit type="text" label="คำค้นหา" name="SearchText" placeholder="ระบุคำค้นหา" v-model="searchText"
+                validation="required" :validation-messages="{ required: 'กรุณาใส่คำค้นหา'}" autocomplete="off" />
 
               <FormKit type="submit" label="ค้นหา" name="search-submit" id="search-submit" :classes="{
                 input: 'btn-primary btn-search',
@@ -74,12 +77,47 @@
 
     <aside class="search-result">
         <div class="notice-info">
-            แสดงรายการจากผลการค้นหา "0890435478" จากหมายเลขโทรศัพท์ และ "ป้ายแดง", "นครปฐม" 
-            <button type="button" class="btn-info"><i class="fa-solid fa-eraser"></i>ล้างค่าการค้นหา</button>
+            แสดงรายการจากผลการค้นหา "{{searchText}}" จาก {{SearchCategoryShow}}
+            <button type="button" class="btn-info" @click="clearSearch()"><i class="fa-solid fa-eraser"></i>ล้างค่าการค้นหา</button>
         </div>
     </aside>
 </template>
 
 <script setup lang="ts">
+import { SelectOption } from "~/shared/entities/select-option";
+import { 
+  HistorySearch
+} from "~/shared/entities/order-entity";
 
+const emit = defineEmits(['searchHistory'])
+
+var searchOption: globalThis.Ref<SelectOption[]> = ref([
+  { label: 'หมวดหมู่การค้นหา', value: '', attrs: { disabled: true }  },
+  { label: 'หมายเลขโทรศัพท์', value: 'tel' },
+  { label: 'ข้อมูลรถ', value: 'car' },
+  { label: 'เลขที่คำสั่งซื้อ', value: 'invoice' },
+]);
+var SearchCategory = ref('')
+var searchText = ref('')
+const historySearch: globalThis.Ref<HistorySearch | undefined> = ref()
+
+var SearchCategoryShow= ref('')
+
+watch(SearchCategory, async (newCategory) => {
+  let category = searchOption.value.find(w => w.value == newCategory);
+  SearchCategoryShow.value = category?.label ?? ''
+});
+
+const clearSearch = async () => {
+  SearchCategory.value = ''
+  searchText.value = ''
+}
+
+const submitSearch = async (formData: any) => {
+  let historySearch: HistorySearch = {
+    SearchCategory: formData.SearchCategory,
+    SearchText: formData.SearchText
+  }
+  emit('searchHistory', historySearch)
+}
 </script>

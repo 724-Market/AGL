@@ -209,9 +209,16 @@
 
         </div> -->
 
-        <OrderHistorySearch></OrderHistorySearch>
+        <OrderHistorySearch
+          @search-history="handleSearch"
+        ></OrderHistorySearch>
 
-        <OrderHistoryFilter></OrderHistoryFilter>
+        <OrderHistoryStatus
+          v-if="statusGroup"
+          @change-status="handleChangeStatus"
+          :status-group="statusGroup"
+          :status-search="statusSearch"
+        ></OrderHistoryStatus>
 
         <div class="card">
           <div class="card-body card-table">
@@ -655,31 +662,72 @@
 </template>
 
 <script lang="ts" setup>
+import { 
+  StatusGroupResponse, 
+  SubHistoryRequest, 
+  HistoryResponse,
+  HistorySearch
+} from "~/shared/entities/order-entity";
+
+import { storeToRefs } from "pinia";
+import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 // Define import
 import DataTable from 'datatables.net-vue3'
 import DataTablesCore from 'datatables.net-bs5'
 
-// Define Variables
-// Loading state after form submiting
 const isLoading = ref(false)
-
-// Submitted state after submit
 const submitted = ref(false)
-
 let values = reactive({})
 
-// Submit form event
-const submitSearch = async (formData: any) => {
+const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
+const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
+var statusSearch = ref('')
+var statusSelect = ref('')
 
-  // Add waiting time for debug
-  await new Promise((r) => setTimeout(r, 1000))
 
-}
+const storeAuth = useStoreUserAuth();
+const { AuthenInfo } = storeToRefs(storeAuth);
 
-onMounted(() => {
-  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+const router = useRouter();
+
+const onLoad = onMounted(async () => {
+  if (AuthenInfo.value) {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+    var statusRes = await useRepository().order.statusGroup();
+    if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
+      if (statusRes.apiResponse.Data) {
+        statusGroup.value = statusRes.apiResponse.Data
+        console.log('statusGroup.value', statusGroup.value)
+      }
+    } 
+  } else {
+    router.push("/login");
+  }
 })
+
+const onSearch = async () => {
+  let search = {
+    status: statusSelect.value,
+    SearchCategory: historySearch.value?.SearchCategory,
+    SearchText: historySearch.value?.SearchText
+  }
+  console.log('search', search)
+};
+
+const handleChangeStatus = async (status: string) => {
+  // console.log('handleChangeStatus', status)
+  statusSelect.value = status
+  await onSearch()
+};
+
+const handleSearch = async (searchValue: HistorySearch) => {
+  // console.log('handleSearch', searchValue)
+  statusSearch.value = 'clear'  
+  historySearch.value = searchValue
+  await onSearch()
+};
 
 // DataTable
 DataTable.use(DataTablesCore)

@@ -93,9 +93,14 @@ const emit = defineEmits(['searchHistory'])
 
 var searchOption: globalThis.Ref<SelectOption[]> = ref([
   { label: 'หมวดหมู่การค้นหา', value: '', attrs: { disabled: true }  },
-  { label: 'หมายเลขโทรศัพท์', value: 'tel' },
-  { label: 'ข้อมูลรถ', value: 'car' },
-  { label: 'เลขที่คำสั่งซื้อ', value: 'invoice' },
+  { label: 'เลขที่คำสั่งซื้อ', value: 'OrderNo' },
+  { label: 'ผลิตภัณฑ์', value: 'OrderGroupType' },
+  { label: 'จำนวนเงิน', value: 'OrderAmount' },
+  { label: 'หมายเลขโทรศัพท์', value: 'PhoneNumber' },
+  { label: 'ผู้เอาประกัน', value: 'AssuredFullName' },
+  { label: 'สถานะ', value: 'Status' },
+  { label: 'ประเภทการคีย์งาน', value: 'CreateType' },
+  { label: 'ประเภทงาน', value: 'JobType' },
 ]);
 var SearchCategory = ref('')
 var searchText = ref('')

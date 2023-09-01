@@ -29,6 +29,9 @@ class OrderModule {
   async save(req:PlaceOrderRequest): Promise<IAPIResponse<PlaceOrderResponse>> {
     return await useCallApi().apiRepository<PlaceOrderResponse>(`${this.RESOURCE}/save`, req)
   }
+  async delete(req:OrderDetailRequest): Promise<IAPIResponse<OrderDetailResponse[]>> {
+    return await useCallApi().apiRepository<OrderDetailResponse[]>(`${this.RESOURCE}/delete`, req)
+  }
 
   async statusGroup(): Promise<IAPIResponse<StatusGroupResponse>> {
     return await useCallApi().apiRepository<StatusGroupResponse>(`${this.RESOURCE_Order}/status/group/get`, {})

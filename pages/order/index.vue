@@ -657,12 +657,16 @@
 
       </div>
     </div>
-
+  <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
+import {
+  PlaceOrderRequest
+} from "~/shared/entities/placeorder-entity";
 import { 
+  OrderDetailRequest,
   StatusGroupResponse, 
   SubHistoryRequest, 
   HistoryResponse,
@@ -671,6 +675,7 @@ import {
 
 import { storeToRefs } from "pinia";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
+import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 // Define import
 import DataTable from 'datatables.net-vue3'
 import DataTablesCore from 'datatables.net-bs5'
@@ -684,9 +689,10 @@ const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
 var statusSearch = ref('')
 var statusSelect = ref('')
 
-
 const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
+
+const storeOrder = useStorePlaceorder();
 
 const router = useRouter();
 
@@ -707,6 +713,58 @@ const onLoad = onMounted(async () => {
   }
 })
 
+const onResume = async (OrderNo: string) => { //ทำรายการต่อ
+  isLoading.value = true
+  let req: OrderDetailRequest = {
+    OrderNo: OrderNo
+  }
+  let order: PlaceOrderRequest = {}
+  var getData = await useRepository().order.summary(req);
+  if (getData.apiResponse.Status && getData.apiResponse.Status == "200" && getData.apiResponse.Data && getData.apiResponse.Data.length > 0) {
+    if(order.Customer && order.Customer.LegalPersonProfile && getData.apiResponse.Data[0].Order){
+      order.Customer.LegalPersonProfile.CustomerID = getData.apiResponse.Data[0].Order.Customer.LegalPersonProfile.CustomerID;
+    }
+    if(order.Customer && order.Customer.PersonProfile && getData.apiResponse.Data[0].Order){
+      order.Customer.PersonProfile.CustomerID = getData.apiResponse.Data[0].Order.Customer.PersonProfile.CustomerID;
+    }
+    if (order.Customer && order.Customer.DefaultAddress && getData.apiResponse.Data[0].Order) {
+      order.Customer.DefaultAddress.AddressID = getData.apiResponse.Data[0].Order.Customer.DefaultAddress.AddressID;
+    }
+    if (order.Customer && order.Customer.DeliveryAddress && getData.apiResponse.Data[0].Order && getData.apiResponse.Data[0].Order.Customer.DeliveryAddress) {
+      order.Customer.DeliveryAddress.AddressID = getData.apiResponse.Data[0].Order.Customer.DeliveryAddress.AddressID;
+    }
+    if (order.Customer && order.Customer.TaxInvoiceAddress && getData.apiResponse.Data[0].Order && getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress) {
+      order.Customer.TaxInvoiceAddress.AddressID = getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress.AddressID;
+    }
+    if (order.Customer && order.Customer.TaxInvoiceDeliveryAddress && getData.apiResponse.Data[0].Order && getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress) {
+      order.Customer.TaxInvoiceDeliveryAddress.AddressID = getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
+    }
+
+    storeOrder.setOrder(order);
+  }
+  router.push("/order/compulsory/payment");
+  isLoading.value = false
+}
+
+const onDelete = async (OrderNo: string) => { //ลบแบบร่างนี้
+  isLoading.value = true
+  let req: OrderDetailRequest = {
+    OrderNo: OrderNo
+  }
+  var response = await useRepository().order.delete(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data) {
+      console.log('Delete Msg', response.apiResponse.Data)
+      // await onSearch()
+    }
+  } 
+  isLoading.value = false
+}
+
+const onPayment = async (OrderNo: string) => { //ชำระเงิน
+  router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
+}
+
 const onSearch = async () => {
   let search = {
     status: statusSelect.value,
@@ -714,20 +772,20 @@ const onSearch = async () => {
     SearchText: historySearch.value?.SearchText
   }
   console.log('search', search)
-};
+}
 
 const handleChangeStatus = async (status: string) => {
   // console.log('handleChangeStatus', status)
   statusSelect.value = status
   await onSearch()
-};
+}
 
 const handleSearch = async (searchValue: HistorySearch) => {
   // console.log('handleSearch', searchValue)
   statusSearch.value = 'clear'  
   historySearch.value = searchValue
   await onSearch()
-};
+}
 
 // DataTable
 DataTable.use(DataTablesCore)

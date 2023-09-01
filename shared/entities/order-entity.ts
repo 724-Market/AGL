@@ -442,6 +442,10 @@ export interface CreditError {
   Amount: number
 }
 
+export interface HistorySearch {
+  SearchCategory: string
+  SearchText: string
+}
 export interface StatusGroupResponse {
   Draft: number
   Pending: number

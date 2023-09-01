@@ -9,9 +9,219 @@
   >
     <div class="row">
       <div class="col">
+
+        <!-- <FormKit type="form" @submit="submitSearch" :actions="false" id="form-search" form-class="form-search form-theme"
+          #default="{ value }" v-model="values" :incomplete-message="false">
+
+          <div class="card">
+
+            <div class="card-body">
+
+              <div class="search-box">
+
+                <FormKit type="select" label="ค้นหาจาก" name="SearchCategory" placeholder="หมวดหมู่การค้นหา" :options="{
+                  tel: 'หมายเลขโทรศัพท์',
+                  car: 'ข้อมูลรถ',
+                  invoice: 'เลขที่คำสั่งซื้อ'
+                }" validation="required" :validation-messages="{ required: 'กรุณาเลือกหมวดหมู่' }" />
+
+                <FormKit type="text" label="คำค้นหา" name="SearchText" placeholder="ระบุคำค้นหา" validation="required"
+                  :validation-messages="{
+                    required: 'กรุณาใส่คำค้นหา'
+                  }" autocomplete="off" />
+
+                <FormKit type="submit" label="ค้นหา" name="search-submit" id="search-submit" :classes="{
+                  input: 'btn-primary btn-search',
+                  outer: 'form-actions',
+                }" :disabled="submitted" :loading="isLoading" />
+
+              </div>
+
+              <div class="accordion search-advance-box" id="accordion-search-advance">
+                <div class="accordion-item">
+                  <h5 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#panel-search-advance" aria-expanded="false" aria-controls="panel-search-advance">
+                      ค้นหาขั้นสูง
+                    </button>
+                  </h5>
+                  <div id="panel-search-advance" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+
+                      <div class="advance-section">
+                        <div class="section">
+
+                          <FormKit type="checkbox" label="หัวข้อการกรองข้อมูล" name="" :options="{
+                            1: '1',
+                            2: '2',
+                            3: '3',
+                          }" />
+
+                        </div>
+
+                        <div class="section">
+
+                          <FormKit type="radio" label="หัวข้อการกรองข้อมูล" name="" :options="{
+                            1: '1',
+                            2: '2',
+                            3: '3',
+                          }" />
+
+                        </div>
+
+                        <div class="section">
+
+                          <FormKit type="select" label="จังหวัด" name="" placeholder="ระบุคำค้นหา" :options="{
+                            1: '1',
+                            2: '2',
+                            3: '3'
+                          }" />
+
+                          <FormKit type="text" label="รหัสไปรษณีย์" name="" placeholder="ระบุคำค้นหา"
+                            autocomplete="off" />
+
+                        </div>
+
+                        <div class="section">
+
+                          <FormKit type="text" label="สถานะ" name="" placeholder="ระบุคำค้นหา" autocomplete="off" />
+
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </FormKit> -->
+
+        <!-- <aside class="search-result">
+          <div class="notice-info">แสดงรายการจากผลการค้นหา "0890435478" จากหมายเลขโทรศัพท์ และ "ป้ายแดง", "นครปฐม" <button
+              type="button" class="btn-info"><i class="fa-solid fa-eraser"></i>ล้างค่าการค้นหา</button></div>
+        </aside>
+
+        <div id="transaction-stats" class="card-stat-stack">
+
+          <div class="card-stat">
+            <a href="#" title="แบบร่าง">
+              <div class="stat-wrapper">
+                <div class="stat-header">
+                  <h5 class="topic">แบบร่าง</h5>
+                  <span class="value">7</span>
+                </div>
+                <div class="stat-action">
+                  <figure class="figure">
+                    <i class="fa-duotone fa-file-pen fa-swap-opacity"></i>
+                  </figure>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="card-stat is-active">
+            <a href="#" title="รอชำระเงิน">
+              <div class="stat-wrapper">
+                <div class="stat-header">
+                  <h5 class="topic">รอชำระเงิน</h5>
+                  <span class="value">4,321</span>
+                </div>
+                <div class="stat-action">
+                  <figure class="figure">
+                    <i class="fa-duotone fa-hourglass-clock fa-swap-opacity"></i>
+                  </figure>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="card-stat">
+            <a href="#" title="รับแจ้งงาน">
+              <div class="stat-wrapper">
+                <div class="stat-header">
+                  <h5 class="topic">รับแจ้งงาน</h5>
+                  <span class="value">26</span>
+                </div>
+                <div class="stat-action">
+                  <figure class="figure">
+                    <i class="fa-duotone fa-memo-circle-info fa-swap-opacity"></i>
+                  </figure>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="card-stat">
+            <a href="#" title="กำลังจัดส่ง">
+              <div class="stat-wrapper">
+                <div class="stat-header">
+                  <h5 class="topic">กำลังจัดส่ง</h5>
+                  <span class="value">5</span>
+                </div>
+                <div class="stat-action">
+                  <figure class="figure">
+                    <i class="fa-duotone fa-truck-fast"></i>
+                  </figure>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="card-stat is-success">
+            <a href="#" title="สำเร็จ">
+              <div class="stat-wrapper has-compare">
+                <div class="stat-header">
+                  <h5 class="topic">สำเร็จ</h5>
+                  <span class="value">28,439</span>
+                </div>
+                <div class="stat-action">
+                  <figure class="figure">
+                    <i class="fa-solid fa-check fa-lg"></i>
+                  </figure>
+                </div>
+                <div class="stat-info">
+                  <p class="is-up"><span>3.24%</span>เทียบกับ 30 วันล่าสุด</p>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="card-stat is-danger">
+            <a href="#" title="ไม่สำเร็จ">
+              <div class="stat-wrapper has-compare">
+                <div class="stat-header">
+                  <h5 class="topic">ไม่สำเร็จ<span class="badge-navy" data-bs-toggle="tooltip"
+                      data-bs-custom-class="meta-tooltip"
+                      data-bs-title="A/B<br>A คือ งานที่ไม่สมบูรณ์ สามารถทำการคืนเงินได้<br>B คือ งานที่ไม่สำเร็จ"
+                      data-bs-html="true"><i class="fa-solid fa-circle-question"></i></span></h5>
+                  <span class="value">2<small>/6</small></span>
+                </div>
+                <div class="stat-action">
+                  <figure class="figure">
+                    <i class="fa-solid fa-xmark-large"></i>
+                  </figure>
+                </div>
+                <div class="stat-info">
+                  <p class="is-down"><span>1.95%</span>เทียบกับ 30 วันล่าสุด</p>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div> -->
+
         <OrderHistorySearch></OrderHistorySearch>
 
-        <OrderHistoryFilter></OrderHistoryFilter>
+        <OrderHistoryStatus
+          v-if="statusGroup"
+          @change-status="handleChangeStatus"
+          :status-group="statusGroup"
+          :status-search="statusSearch"
+        ></OrderHistoryStatus>
 
         <div class="card">
           <div class="card-body card-table">
@@ -915,6 +1125,15 @@
 </template>
 
 <script lang="ts" setup>
+import { 
+  StatusGroupResponse, 
+  SubHistoryRequest, 
+  HistoryResponse,
+  HistorySearch
+} from "~/shared/entities/order-entity";
+
+import { storeToRefs } from "pinia";
+import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 // Define import
 import DataTable from "datatables.net-vue3";
 import DataTablesCore from "datatables.net-bs5";
@@ -931,16 +1150,16 @@ let values = reactive({});
 
 // Submit form event
 const submitSearch = async (formData: any) => {
+
   // Add waiting time for debug
-  await new Promise((r) => setTimeout(r, 1000));
-};
+  await new Promise((r) => setTimeout(r, 1000))
+
+}
 
 onMounted(() => {
-  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-  const tooltipList = [...tooltipTriggerList].map(
-    (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
-  );
-});
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+})
 
 // DataTable
 

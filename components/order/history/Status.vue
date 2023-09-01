@@ -1,0 +1,185 @@
+<template>
+    <div id="transaction-stats" class="card-stat-stack">
+
+        <div class="card-stat" :class="{ 'is-active' : isActive[0]}">
+            <a @click="onChangeFilter('Draft')" title="แบบร่าง">
+            <div class="stat-wrapper">
+                <div class="stat-header">
+                <h5 class="topic">แบบร่าง</h5>
+                <span class="value">{{ $props.statusGroup.Draft }}</span>
+                </div>
+                <div class="stat-action">
+                <figure class="figure">
+                    <i class="fa-duotone fa-file-pen fa-swap-opacity"></i>
+                </figure>
+                </div>
+            </div>
+            </a>
+        </div>
+
+        <div class="card-stat" :class="{ 'is-active' : isActive[1]}">
+            <a @click="onChangeFilter('Pending')" title="รอชำระเงิน">
+            <div class="stat-wrapper">
+                <div class="stat-header">
+                <h5 class="topic">รอชำระเงิน</h5>
+                <span class="value">{{ $props.statusGroup.Pending }}</span>
+                </div>
+                <div class="stat-action">
+                <figure class="figure">
+                    <i class="fa-duotone fa-hourglass-clock fa-swap-opacity"></i>
+                </figure>
+                </div>
+            </div>
+            </a>
+        </div>
+
+        <div class="card-stat" :class="{ 'is-active' : isActive[2]}">
+            <a @click="onChangeFilter('Process')" title="รับแจ้งงาน">
+            <div class="stat-wrapper">
+                <div class="stat-header">
+                <h5 class="topic">รับแจ้งงาน</h5>
+                <span class="value">{{ $props.statusGroup.Process }}</span>
+                </div>
+                <div class="stat-action">
+                <figure class="figure">
+                    <i class="fa-duotone fa-memo-circle-info fa-swap-opacity"></i>
+                </figure>
+                </div>
+            </div>
+            </a>
+        </div>
+
+        <div class="card-stat" :class="{ 'is-active' : isActive[3]}">
+            <a @click="onChangeFilter('Delivery')" title="กำลังจัดส่ง">
+            <div class="stat-wrapper">
+                <div class="stat-header">
+                <h5 class="topic">กำลังจัดส่ง</h5>
+                <span class="value">{{ $props.statusGroup.Delivery }}</span>
+                </div>
+                <div class="stat-action">
+                <figure class="figure">
+                    <i class="fa-duotone fa-truck-fast"></i>
+                </figure>
+                </div>
+            </div>
+            </a>
+        </div>
+
+        <div class="card-stat is-success" :class="{ 'is-active' : isActive[4]}">
+            <a @click="onChangeFilter('Success')" title="สำเร็จ">
+            <div class="stat-wrapper has-compare">
+                <div class="stat-header">
+                <h5 class="topic">สำเร็จ</h5>
+                <span class="value">{{ $props.statusGroup.Success }}</span>
+                </div>
+                <div class="stat-action">
+                <figure class="figure">
+                    <i class="fa-solid fa-check fa-lg"></i>
+                </figure>
+                </div>
+                <div class="stat-info">
+                <!-- <p class="is-up"><span>3.24%</span>เทียบกับ 30 วันล่าสุด</p> -->
+                </div>
+            </div>
+            </a>
+        </div>
+
+        <div class="card-stat is-danger" :class="{ 'is-active' : isActive[5]}">
+            <a @click="onChangeFilter('Cancel')" title="ไม่สำเร็จ">
+            <div class="stat-wrapper has-compare">
+                <div class="stat-header">
+                <h5 class="topic">ไม่สำเร็จ<span class="badge-navy" data-bs-toggle="tooltip"
+                    data-bs-custom-class="meta-tooltip"
+                    data-bs-title="A/B<br>A คือ งานที่ไม่สมบูรณ์ สามารถทำการคืนเงินได้<br>B คือ งานที่ไม่สำเร็จ"
+                    data-bs-html="true"><i class="fa-solid fa-circle-question"></i></span></h5>
+                <span class="value">{{ $props.statusGroup.CancelComplete }}<small>/{{ $props.statusGroup.CancelPending }}</small></span>
+                </div>
+                <div class="stat-action">
+                <figure class="figure">
+                    <i class="fa-solid fa-xmark-large"></i>
+                </figure>
+                </div>
+                <div class="stat-info">
+                <!-- <p class="is-down"><span>1.95%</span>เทียบกับ 30 วันล่าสุด</p> -->
+                </div>
+            </div>
+            </a>
+        </div>
+
+    </div>
+</template>
+
+<script setup lang="ts">
+import { 
+  StatusGroupResponse
+} from "~/shared/entities/order-entity";
+
+const emit = defineEmits(['changeStatus'])
+
+const props = defineProps({ 
+  statusGroup : {
+    type: Object as () => StatusGroupResponse,
+  },
+  statusSearch : String    
+})
+
+const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref()
+var statusSearch = ref('')
+var cardStat = 'card-stat'
+var isActive = ref([false, true, false, false, false, false])
+
+const onLoad = onMounted(async () => {
+  if(props.statusGroup){
+    statusGroup.value = props.statusGroup
+  }
+  if(props.statusSearch){
+    statusSearch.value = props.statusSearch
+  }
+})
+
+const onChangeFilter = async (status: string) => {
+    // console.log('filter', filter)
+    statusSearch.value = ''
+    switch(status) {
+        case 'Draft':
+            isActive.value = [true, false, false, false, false, false]
+            break;
+        case 'Pending':
+            isActive.value = [false, true, false, false, false, false]
+            break;
+        case 'Process':
+            isActive.value = [false, false, true, false, false, false]
+            break;
+        case 'Delivery':
+            isActive.value = [false, false, false, true, false, false]
+            break;
+        case 'Success':
+            isActive.value = [false, false, false, false, true, false]
+            break;
+        case 'Cancel':
+            isActive.value = [false, false, false, false, false, true]
+            break;
+    }
+    emit('changeStatus', status)
+};
+
+watch(
+  () => props.statusGroup,
+  async () => {
+    if (props.statusGroup) {
+      statusGroup.value = props.statusGroup
+    }
+  }
+)
+
+watch(
+  () => props.statusSearch,
+  async () => {
+    if (props.statusSearch) {
+      statusSearch.value = props.statusSearch
+      if(statusSearch.value == 'clear') isActive.value = [false, false, false, false, false, false]
+      //emit('changeStatus', 'clear')
+    }
+  }
+)
+</script>

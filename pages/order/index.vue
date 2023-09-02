@@ -1233,6 +1233,14 @@ const onCheckStatus = async (OrderNo: string) => { //ติดตามสถา
   console.log('check status order : ', OrderNo)
 }
 
+const onDowloadPolicy = async (url: string) => { //ดาวโหลดกรมธรรม์
+  window.open(url, "_blank");
+}
+
+const onContactCustomerService = async (url: string) => { //ติดต่อเจ้าหน้าที่
+  window.open(url, "_blank");
+}
+
 const onSearch = async () => {
   let search = {
     status: statusSelect.value,

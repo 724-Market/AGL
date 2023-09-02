@@ -1,3 +1,4 @@
+
 <template>
   <div class="dropdown">
     <a
@@ -53,6 +54,13 @@
   </div>
 </template>
 <script setup lang="ts">
+import { HistoryResponse } from "~/shared/entities/order-entity";
+
+const props = defineProps({
+  row: {
+    type: Object as () => HistoryResponse,
+  },
+});
 const resume = () => {
   alert("resume");
 };

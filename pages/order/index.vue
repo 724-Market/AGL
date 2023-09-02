@@ -1224,7 +1224,7 @@ const columns = [
   },
   { data: "OrderNo", title: "", targets: 1 },
   { data: "OrderNo", title: "เลขที่คำสั่งซื้อ", targets: 2, className: "order" },
-  { data: "CarBrand", title: "ข้อมูลรถ", targets: 3, className: "subject" },
+  { data: "OrderGroupType", title: "ผลิตภัณฑ์", targets: 3, className: "subject" },
   { data: "GrandAmount", title: "จำนวนเงิน (บาท)", targets: 4, className: "amount" },
   { data: "FirstName", title: "ผู้เอาประกัน", targets: 5, className: "name" },
   { data: "FirstName", title: "สถานะ", targets: 6, className: "status" },

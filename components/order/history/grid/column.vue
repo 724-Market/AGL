@@ -4,8 +4,11 @@
     }}<time datetime="2023-05-05 08:08">{{ props.row.CreateDate }}</time>
   </div>
   <div v-if="props.field && props.field == 'subject' && props.row">
-    {{ props.row.CarLicense }} {{ props.row.RedLicense != "" ? "(ป้ายแดง)" : ""
-    }}<span>{{ props.row.CarBrand }} {{ props.row.CarModel }} ปี </span>
+    <span v-if="props.row.OrderGroupType=='INSURANCE'">ประกันภัย</span>
+    <span v-else>ทรัพย์สิน</span>
+    <span v-if="props.row.OrderType=='COMPULSORY'">(ภาคบังคับ)</span>
+    <span v-else-if="props.row.OrderType=='VOLUNTARY'">(ภาคสมัครใจ)</span>
+    
   </div>
   <div v-if="props.field && props.field == 'amount' && props.row">
     {{ props.row.OrderAmount }}<span>ส่วนลด {{ props.row.DiscountAmount }}</span>

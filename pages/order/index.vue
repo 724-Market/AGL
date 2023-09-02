@@ -1,11 +1,15 @@
 <template>
-  <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
-
+  <NuxtLayout
+    :name="layout"
+    :layout-class="layoutClass"
+    :page-title="pageTitle"
+    :page-category="pageCategory"
+    :show-page-steps="showPageSteps"
+    :show-page-header="showPageHeader"
+  >
     <div class="row">
       <div class="col">
-
-        <FormKit type="form" @submit="submitSearch" :actions="false" id="form-search" form-class="form-search form-theme"
+        <!-- <FormKit type="form" @submit="submitSearch" :actions="false" id="form-search" form-class="form-search form-theme"
           #default="{ value }" v-model="values" :incomplete-message="false">
 
           <div class="card">
@@ -93,9 +97,9 @@
 
           </div>
 
-        </FormKit>
+        </FormKit> -->
 
-        <aside class="search-result">
+        <!-- <aside class="search-result">
           <div class="notice-info">แสดงรายการจากผลการค้นหา "0890435478" จากหมายเลขโทรศัพท์ และ "ป้ายแดง", "นครปฐม" <button
               type="button" class="btn-info"><i class="fa-solid fa-eraser"></i>ล้างค่าการค้นหา</button></div>
         </aside>
@@ -207,14 +211,25 @@
             </a>
           </div>
 
-        </div>
+        </div> -->
+
+        <OrderHistorySearch></OrderHistorySearch>
+
+        <OrderHistoryStatus
+          v-if="statusGroup"
+          @change-status="handleChangeStatus"
+          :status-group="statusGroup"
+          :status-search="statusSearch"
+        ></OrderHistoryStatus>
 
         <div class="card">
           <div class="card-body card-table">
-
-            <DataTable id="datatables" class="table table-transaction nowrap" data-order='[[ 2, "asc" ]]'
-              :options="datatableOptions">
-
+            <DataTable
+              id="datatables"
+              class="table table-transaction nowrap"
+              data-order='[[ 2, "asc" ]]'
+              :options="datatableOptions"
+            >
               <thead>
                 <tr>
                   <th data-orderable="false"></th>
@@ -228,37 +243,66 @@
                 </tr>
               </thead>
 
-              <tbody>
-                <tr class="is-parent">
+              <!-- <tbody>
+                <tr class="">
                   <td>
                     <div class="dropdown">
-                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                      <a
+                        class="btn btn-ellipsis dropdown-toggle"
+                        href="#"
+                        role="button"
+                        title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#" title="ทำรายการต่อ"><span
-                              class="icon-edit">ทำรายการต่อ</span></a></li>
-                        <li><a class="dropdown-item" href="#" title="ชำระเงิน"><span
-                              class="icon-payment">ชำระเงิน</span></a></li>
-                        <li><a class="dropdown-item" href="#" title="ติดตามสถานะ"><span
-                              class="icon-tracking">ติดตามสถานะ</span></a></li>
-                        <li><a class="dropdown-item" href="#" title="รายละเอียดกรมธรรม์"><span
-                              class="icon-policy">รายละเอียดกรมธรรม์</span></a></li>
-                        <li><a class="dropdown-item" href="#" title="ดาวน์โหลดกรมธรรม์"><span
-                              class="icon-download-file">ดาวน์โหลดกรมธรรม์</span></a></li>
                         <li>
-                          <hr class="dropdown-divider">
+                          <a class="dropdown-item" href="#" title="ทำรายการต่อ"
+                            ><span class="icon-edit">ทำรายการต่อ</span></a
+                          >
                         </li>
-                        <li><a class="dropdown-item" href="#" title="ติดต่อเจ้าหน้าที่"><span
-                              class="icon-help">ติดต่อเจ้าหน้าที่</span></a></li>
-                        <li><a class="dropdown-item" href="#" title="ลบแบบร่างนี้"><span
-                              class="icon-trash">ลบแบบร่างนี้</span></a></li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ชำระเงิน"
+                            ><span class="icon-payment">ชำระเงิน</span></a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ติดตามสถานะ"
+                            ><span class="icon-tracking">ติดตามสถานะ</span></a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="รายละเอียดกรมธรรม์"
+                            ><span class="icon-policy">รายละเอียดกรมธรรม์</span></a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ดาวน์โหลดกรมธรรม์"
+                            ><span class="icon-download-file">ดาวน์โหลดกรมธรรม์</span></a
+                          >
+                        </li>
+                        <li>
+                          <hr class="dropdown-divider" />
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ติดต่อเจ้าหน้าที่"
+                            ><span class="icon-help">ติดต่อเจ้าหน้าที่</span></a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ลบแบบร่างนี้"
+                            ><span class="icon-trash">ลบแบบร่างนี้</span></a
+                          >
+                        </li>
                       </ul>
                     </div>
                   </td>
                   <td class="has-child"></td>
-                  <td class="order">#200300033675<time datetime="2023-05-05 08:08">2023-05-05 08:08</time></td>
+                  <td class="order">
+                    #200300033675<time datetime="2023-05-05 08:08">2023-05-05 08:08</time>
+                  </td>
                   <td class="subject">ก-9999 (ป้ายแดง)<span>MG MG3 ปี 2018</span></td>
                   <td class="amount">645.21<span>ส่วนลด 0.00</span></td>
                   <td class="name">ปฐมพงศ์ สังคจิตต์<span>089-xxx-x478</span></td>
@@ -267,50 +311,144 @@
                     <div class="badge-dot badge-warning">รอชำระเงิน</div>
                     <div class="badge-dot badge-warning">รับแจ้งงาน</div>
                     <div class="badge-dot badge-warning">กำลังจัดส่ง</div>
-                    <div class="badge-dot badge-success">สำเร็จ</div><span><a class="attached" href="#"
-                        title="ดาวน์โหลดกรมธรรม์">กรมธรรม์ TR-4635-453-32-1</a></span>
+                    <div class="badge-dot badge-success">สำเร็จ</div>
+                    <span
+                      ><a class="attached" href="#" title="ดาวน์โหลดกรมธรรม์"
+                        >กรมธรรม์ TR-4635-453-32-1</a
+                      ></span
+                    >
                     <div class="badge-dot badge-danger">ไม่สำเร็จ</div>
                   </td>
                   <td>
                     <div class="meta">
-                      <span class="badge meta-online" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทำรายการแบบ online<br>โดย ปฐมพงศ์ สังคจิตต์" data-bs-html="true"><em>On</em></span>
-                      <span class="badge meta-offline" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
+                      <span
+                        class="badge meta-online"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทำรายการแบบ online<br>โดย ปฐมพงศ์ สังคจิตต์"
+                        data-bs-html="true"
+                        ><em>On</em></span
+                      >
+                      <span
+                        class="badge meta-offline"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
                         data-bs-title="ทำรายการแบบ offline<br>โดย ปฐมพงศ์ สังคจิตต์"
-                        data-bs-html="true"><em>Off</em></span>
-                      <span class="badge meta-new" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="งานใหม่"><em>N</em></span>
-                      <span class="badge meta-renew" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="งานต่ออายุ"><em>R</em></span>
-                      <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทิพยประกันภัย"><em>TIP</em></span>
-                      <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ไทยศรี"><em>ERGO</em></span>
-                      <span class="badge meta-product" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="พ.ร.บ."><em>พรบ</em></span>
-                      <span class="badge meta-product" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ประกันภัย ประเภท 1"><em>ป.1</em></span>
-                      <span class="badge meta-product" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ประกันภัย ประเภท 3+"><em>ป.3+</em></span>
-                      <span class="badge meta-product meta-include" data-bs-toggle="tooltip"
-                        data-bs-custom-class="meta-tooltip" data-bs-title="ป.1 & พ.ร.บ."><em>ควบ</em></span>
-                      <span class="badge meta-qr" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ชำระด้วย QR"><em>QR</em></span>
-                      <span class="badge meta-card" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ชำระด้วย บัตรเครดิต/บัตรเดบิต"><em>บัตรเครดิต/บัตรเดบิต</em></span>
-                      <span class="badge meta-installment" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ชำระด้วย บัตรเครดิต/บัตรเดบิต ผ่อน 6 เดือน"><em>/ 6</em></span>
-                      <span class="badge meta-installment-cash" data-bs-toggle="tooltip"
-                        data-bs-custom-class="meta-tooltip" data-bs-title="ชำระด้วย เงินสด ผ่อน 12 เดือน"><em>/
-                          12</em></span>
-                      <span class="badge meta-pledge" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ชำระด้วย วงเงินมัดจำ"><em>วงเงินมัดจำ</em></span>
-                      <span class="badge meta-fulldiscount" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="หักส่วนลดเต็มจำนวน"><em>หักเต็ม</em></span>
-                      <span class="badge meta-partialdiscount" data-bs-toggle="tooltip"
-                        data-bs-custom-class="meta-tooltip" data-bs-title="หักส่วนลดบางส่วน"><em>หักบางส่วน</em></span>
-                      <span class="badge meta-fullpay" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ชำระเบี้ยเต็มจำนวน"><em>จ่ายเต็ม</em></span>
+                        data-bs-html="true"
+                        ><em>Off</em></span
+                      >
+                      <span
+                        class="badge meta-new"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="งานใหม่"
+                        ><em>N</em></span
+                      >
+                      <span
+                        class="badge meta-renew"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="งานต่ออายุ"
+                        ><em>R</em></span
+                      >
+                      <span
+                        class="badge meta-company"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทิพยประกันภัย"
+                        ><em>TIP</em></span
+                      >
+                      <span
+                        class="badge meta-company"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ไทยศรี"
+                        ><em>ERGO</em></span
+                      >
+                      <span
+                        class="badge meta-product"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="พ.ร.บ."
+                        ><em>พรบ</em></span
+                      >
+                      <span
+                        class="badge meta-product"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ประกันภัย ประเภท 1"
+                        ><em>ป.1</em></span
+                      >
+                      <span
+                        class="badge meta-product"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ประกันภัย ประเภท 3+"
+                        ><em>ป.3+</em></span
+                      >
+                      <span
+                        class="badge meta-product meta-include"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ป.1 & พ.ร.บ."
+                        ><em>ควบ</em></span
+                      >
+                      <span
+                        class="badge meta-qr"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย QR"
+                        ><em>QR</em></span
+                      >
+                      <span
+                        class="badge meta-card"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย บัตรเครดิต/บัตรเดบิต"
+                        ><em>บัตรเครดิต/บัตรเดบิต</em></span
+                      >
+                      <span
+                        class="badge meta-installment"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย บัตรเครดิต/บัตรเดบิต ผ่อน 6 เดือน"
+                        ><em>/ 6</em></span
+                      >
+                      <span
+                        class="badge meta-installment-cash"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย เงินสด ผ่อน 12 เดือน"
+                        ><em>/ 12</em></span
+                      >
+                      <span
+                        class="badge meta-pledge"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย วงเงินมัดจำ"
+                        ><em>วงเงินมัดจำ</em></span
+                      >
+                      <span
+                        class="badge meta-fulldiscount"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="หักส่วนลดเต็มจำนวน"
+                        ><em>หักเต็ม</em></span
+                      >
+                      <span
+                        class="badge meta-partialdiscount"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="หักส่วนลดบางส่วน"
+                        ><em>หักบางส่วน</em></span
+                      >
+                      <span
+                        class="badge meta-fullpay"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระเบี้ยเต็มจำนวน"
+                        ><em>จ่ายเต็ม</em></span
+                      >
                     </div>
                   </td>
                 </tr>
@@ -318,20 +456,34 @@
                 <tr>
                   <td>
                     <div class="dropdown">
-                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                      <a
+                        class="btn btn-ellipsis dropdown-toggle"
+                        href="#"
+                        role="button"
+                        title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#" title="ติดตามสถานะ"><span
-                              class="icon-tracking">ติดตามสถานะ</span></a></li>
-                        <li><a class="dropdown-item" href="#" title="ติดต่อเจ้าหน้าที่"><span
-                              class="icon-help">ติดต่อเจ้าหน้าที่</span></a></li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ติดตามสถานะ"
+                            ><span class="icon-tracking">ติดตามสถานะ</span></a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ติดต่อเจ้าหน้าที่"
+                            ><span class="icon-help">ติดต่อเจ้าหน้าที่</span></a
+                          >
+                        </li>
                       </ul>
                     </div>
                   </td>
                   <td></td>
-                  <td class="order">#210700947105<time datetime="2022-02-05 02:08">2022-02-05 02:08</time></td>
+                  <td class="order">
+                    #210700947105<time datetime="2022-02-05 02:08">2022-02-05 02:08</time>
+                  </td>
                   <td class="subject">นก-987<span>HONDA BRV ปี 2020</span></td>
                   <td class="amount">645.21<span>ส่วนลด 0.00</span></td>
                   <td class="name">วิทยา อภิมหาบุณย์<span>089-xxx-x464</span></td>
@@ -340,18 +492,48 @@
                   </td>
                   <td>
                     <div class="meta">
-                      <span class="badge meta-online" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทำรายการแบบ online"><em>On</em></span>
-                      <span class="badge meta-new" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="งานใหม่"><em>N</em></span>
-                      <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ไทยศรี"><em>ERGO</em></span>
-                      <span class="badge meta-product" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="พ.ร.บ."><em>พรบ</em></span>
-                      <span class="badge meta-qr" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ชำระด้วย QR"><em>QR</em></span>
-                      <span class="badge meta-partialdiscount" data-bs-toggle="tooltip"
-                        data-bs-custom-class="meta-tooltip" data-bs-title="หักส่วนลดบางส่วน"><em>หักบางส่วน</em></span>
+                      <span
+                        class="badge meta-online"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทำรายการแบบ online"
+                        ><em>On</em></span
+                      >
+                      <span
+                        class="badge meta-new"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="งานใหม่"
+                        ><em>N</em></span
+                      >
+                      <span
+                        class="badge meta-company"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ไทยศรี"
+                        ><em>ERGO</em></span
+                      >
+                      <span
+                        class="badge meta-product"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="พ.ร.บ."
+                        ><em>พรบ</em></span
+                      >
+                      <span
+                        class="badge meta-qr"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย QR"
+                        ><em>QR</em></span
+                      >
+                      <span
+                        class="badge meta-partialdiscount"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="หักส่วนลดบางส่วน"
+                        ><em>หักบางส่วน</em></span
+                      >
                     </div>
                   </td>
                 </tr>
@@ -359,20 +541,34 @@
                 <tr>
                   <td>
                     <div class="dropdown">
-                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                      <a
+                        class="btn btn-ellipsis dropdown-toggle"
+                        href="#"
+                        role="button"
+                        title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#" title="ชำระเงิน"><span
-                              class="icon-payment">ชำระเงิน</span></a></li>
-                        <li><a class="dropdown-item" href="#" title="ติดตามสถานะ"><span
-                              class="icon-tracking">ติดตามสถานะ</span></a></li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ชำระเงิน"
+                            ><span class="icon-payment">ชำระเงิน</span></a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ติดตามสถานะ"
+                            ><span class="icon-tracking">ติดตามสถานะ</span></a
+                          >
+                        </li>
                       </ul>
                     </div>
                   </td>
                   <td></td>
-                  <td class="order">#200300034435<time datetime="2022-02-05 02:08">2022-02-05 02:08</time></td>
+                  <td class="order">
+                    #200300034435<time datetime="2022-02-05 02:08">2022-02-05 02:08</time>
+                  </td>
                   <td class="subject">นก-9876<span>HONDA BRV ปี 2020</span></td>
                   <td class="amount">645.21<span>ส่วนลด 0.00</span></td>
                   <td class="name">วิทยา อภิมหาบุณย์<span>089-xxx-x464</span></td>
@@ -381,18 +577,48 @@
                   </td>
                   <td>
                     <div class="meta">
-                      <span class="badge meta-online" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทำรายการแบบ online"><em>On</em></span>
-                      <span class="badge meta-new" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="งานใหม่"><em>N</em></span>
-                      <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ไทยศรี"><em>ERGO</em></span>
-                      <span class="badge meta-product" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="พ.ร.บ."><em>พรบ</em></span>
-                      <span class="badge meta-qr" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ชำระด้วย QR"><em>QR</em></span>
-                      <span class="badge meta-partialdiscount" data-bs-toggle="tooltip"
-                        data-bs-custom-class="meta-tooltip" data-bs-title="หักส่วนลดบางส่วน"><em>หักบางส่วน</em></span>
+                      <span
+                        class="badge meta-online"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทำรายการแบบ online"
+                        ><em>On</em></span
+                      >
+                      <span
+                        class="badge meta-new"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="งานใหม่"
+                        ><em>N</em></span
+                      >
+                      <span
+                        class="badge meta-company"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ไทยศรี"
+                        ><em>ERGO</em></span
+                      >
+                      <span
+                        class="badge meta-product"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="พ.ร.บ."
+                        ><em>พรบ</em></span
+                      >
+                      <span
+                        class="badge meta-qr"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย QR"
+                        ><em>QR</em></span
+                      >
+                      <span
+                        class="badge meta-partialdiscount"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="หักส่วนลดบางส่วน"
+                        ><em>หักบางส่วน</em></span
+                      >
                     </div>
                   </td>
                 </tr>
@@ -400,18 +626,29 @@
                 <tr>
                   <td>
                     <div class="dropdown">
-                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                      <a
+                        class="btn btn-ellipsis dropdown-toggle"
+                        href="#"
+                        role="button"
+                        title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#" title="ติดตามสถานะ"><span
-                              class="icon-tracking">ติดตามสถานะ</span></a></li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ติดตามสถานะ"
+                            ><span class="icon-tracking">ติดตามสถานะ</span></a
+                          >
+                        </li>
                       </ul>
                     </div>
                   </td>
                   <td></td>
-                  <td class="order">#200300034466<time datetime="2023-03-15 03:08">2023-03-15 03:08</time></td>
+                  <td class="order">
+                    #200300034466<time datetime="2023-03-15 03:08">2023-03-15 03:08</time>
+                  </td>
                   <td class="subject">ฏก-1234<span>PORCHE ปี 2010</span></td>
                   <td class="amount">56,789.12<span>ส่วนลด 1,200.00</span></td>
                   <td class="name">วิทยา อภิมหาบุณย์<span>089-xxx-x464</span></td>
@@ -420,19 +657,48 @@
                   </td>
                   <td>
                     <div class="meta">
-                      <span class="badge meta-online" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทำรายการแบบ offline"><em>Off</em></span>
-                      <span class="badge meta-new" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="งานใหม่"><em>N</em></span>
-                      <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ไทยศรี"><em>ERGO</em></span>
-                      <span class="badge meta-product" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ป.1"><em>ป.1</em></span>
-                      <span class="badge meta-installment-cash" data-bs-toggle="tooltip"
-                        data-bs-custom-class="meta-tooltip" data-bs-title="ชำระด้วย เงินสด ผ่อน 12 เดือน"><em>/
-                          12</em></span>
-                      <span class="badge meta-partialdiscount" data-bs-toggle="tooltip"
-                        data-bs-custom-class="meta-tooltip" data-bs-title="หักส่วนลดบางส่วน"><em>หักบางส่วน</em></span>
+                      <span
+                        class="badge meta-online"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทำรายการแบบ offline"
+                        ><em>Off</em></span
+                      >
+                      <span
+                        class="badge meta-new"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="งานใหม่"
+                        ><em>N</em></span
+                      >
+                      <span
+                        class="badge meta-company"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ไทยศรี"
+                        ><em>ERGO</em></span
+                      >
+                      <span
+                        class="badge meta-product"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ป.1"
+                        ><em>ป.1</em></span
+                      >
+                      <span
+                        class="badge meta-installment-cash"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย เงินสด ผ่อน 12 เดือน"
+                        ><em>/ 12</em></span
+                      >
+                      <span
+                        class="badge meta-partialdiscount"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="หักส่วนลดบางส่วน"
+                        ><em>หักบางส่วน</em></span
+                      >
                     </div>
                   </td>
                 </tr>
@@ -440,23 +706,37 @@
                 <tr>
                   <td>
                     <div class="dropdown">
-                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                      <a
+                        class="btn btn-ellipsis dropdown-toggle"
+                        href="#"
+                        role="button"
+                        title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#" title="ทำรายการต่อ"><span
-                              class="icon-edit">ทำรายการต่อ</span></a></li>
                         <li>
-                          <hr class="dropdown-divider">
+                          <a class="dropdown-item" href="#" title="ทำรายการต่อ"
+                            ><span class="icon-edit">ทำรายการต่อ</span></a
+                          >
                         </li>
-                        <li><a class="dropdown-item" href="#" title="ลบแบบร่างนี้"><span
-                              class="icon-trash">ลบแบบร่างนี้</span></a></li>
+                        <li>
+                          <hr class="dropdown-divider" />
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ลบแบบร่างนี้"
+                            ><span class="icon-trash">ลบแบบร่างนี้</span></a
+                          >
+                        </li>
                       </ul>
                     </div>
                   </td>
                   <td></td>
-                  <td class="order">#220700017966<time datetime="2023-03-25 10:23">2023-03-25 10:23</time></td>
+                  <td class="order">
+                    #220700017966<time datetime="2023-03-25 10:23">2023-03-25 10:23</time>
+                  </td>
                   <td class="subject">9กต-3420<span>MG MG3 ปี 2018</span></td>
                   <td class="amount">645.21<span>ส่วนลด 93.00</span></td>
                   <td class="name">ปฐมพงศ์ สังคจิตต์<span>089-xxx-x478</span></td>
@@ -465,14 +745,34 @@
                   </td>
                   <td>
                     <div class="meta">
-                      <span class="badge meta-online" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทำรายการแบบ online"><em>On</em></span>
-                      <span class="badge meta-renew" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="งานต่ออายุ"><em>R</em></span>
-                      <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ซมโปะประกันภัย"><em>SJNK</em></span>
-                      <span class="badge meta-product" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ประกันภัย ประเภท 1"><em>ป.1</em></span>
+                      <span
+                        class="badge meta-online"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทำรายการแบบ online"
+                        ><em>On</em></span
+                      >
+                      <span
+                        class="badge meta-renew"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="งานต่ออายุ"
+                        ><em>R</em></span
+                      >
+                      <span
+                        class="badge meta-company"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ซมโปะประกันภัย"
+                        ><em>SJNK</em></span
+                      >
+                      <span
+                        class="badge meta-product"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ประกันภัย ประเภท 1"
+                        ><em>ป.1</em></span
+                      >
                     </div>
                   </td>
                 </tr>
@@ -480,59 +780,118 @@
                 <tr class="is-parent is-open">
                   <td>
                     <div class="dropdown">
-                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                      <a
+                        class="btn btn-ellipsis dropdown-toggle"
+                        href="#"
+                        role="button"
+                        title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#" title="รายละเอียดกรมธรรม์"><span
-                              class="icon-policy">รายละเอียดกรมธรรม์</span></a></li>
-                        <li><a class="dropdown-item" href="#" title="ดาวน์โหลดกรมธรรม์"><span
-                              class="icon-download-file">ดาวน์โหลดกรมธรรม์</span></a></li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="รายละเอียดกรมธรรม์"
+                            ><span class="icon-policy">รายละเอียดกรมธรรม์</span></a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ดาวน์โหลดกรมธรรม์"
+                            ><span class="icon-download-file">ดาวน์โหลดกรมธรรม์</span></a
+                          >
+                        </li>
                       </ul>
                     </div>
                   </td>
                   <td class="has-child"></td>
-                  <td class="order">#210700947101<time datetime="2023-03-25 10:23">2023-04-12 11:06</time></td>
+                  <td class="order">
+                    #210700947101<time datetime="2023-03-25 10:23">2023-04-12 11:06</time>
+                  </td>
                   <td class="subject">4กท-4720<span>TOYOTA INNOVA ปี 2015</span></td>
                   <td class="amount">1,899.25<span>ส่วนลด 245.07</span></td>
                   <td class="name">พัชราภรณ์ โภชนะวนิชย์<span>089-xxx-x077</span></td>
                   <td class="status">
-                    <div class="badge-dot badge-success">สำเร็จ</div><span><a class="attached" href="#"
-                        title="ดาวน์โหลดกรมธรรม์">กรมธรรม์ TR-4635-453-32-1</a></span>
+                    <div class="badge-dot badge-success">สำเร็จ</div>
+                    <span
+                      ><a class="attached" href="#" title="ดาวน์โหลดกรมธรรม์"
+                        >กรมธรรม์ TR-4635-453-32-1</a
+                      ></span
+                    >
                   </td>
                   <td>
                     <div class="meta">
-                      <span class="badge meta-offline" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทำรายการแบบ offline"><em>Off</em></span>
-                      <span class="badge meta-renew" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="งานต่ออายุ"><em>R</em></span>
-                      <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทิพยประกันภัย"><em>TIP</em></span>
-                      <span class="badge meta-product meta-include" data-bs-toggle="tooltip"
-                        data-bs-custom-class="meta-tooltip" data-bs-title="ประกันภัย ประเภท 1"><em>ป.1</em></span>
-                      <span class="badge meta-pledge" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ชำระด้วย วงเงินมัดจำ"><em>วงเงินมัดจำ</em></span>
-                      <span class="badge meta-fulldiscount" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="หักส่วนลดเต็มจำนวน"><em>หักเต็ม</em></span>
+                      <span
+                        class="badge meta-offline"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทำรายการแบบ offline"
+                        ><em>Off</em></span
+                      >
+                      <span
+                        class="badge meta-renew"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="งานต่ออายุ"
+                        ><em>R</em></span
+                      >
+                      <span
+                        class="badge meta-company"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทิพยประกันภัย"
+                        ><em>TIP</em></span
+                      >
+                      <span
+                        class="badge meta-product meta-include"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ประกันภัย ประเภท 1"
+                        ><em>ป.1</em></span
+                      >
+                      <span
+                        class="badge meta-pledge"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย วงเงินมัดจำ"
+                        ><em>วงเงินมัดจำ</em></span
+                      >
+                      <span
+                        class="badge meta-fulldiscount"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="หักส่วนลดเต็มจำนวน"
+                        ><em>หักเต็ม</em></span
+                      >
                     </div>
                   </td>
                 </tr>
                 <tr class="is-child">
                   <td>
                     <div class="dropdown">
-                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                      <a
+                        class="btn btn-ellipsis dropdown-toggle"
+                        href="#"
+                        role="button"
+                        title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#" title="ติดตามสถานะ"><span
-                              class="icon-tracking">ติดตามสถานะ</span></a></li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ติดตามสถานะ"
+                            ><span class="icon-tracking">ติดตามสถานะ</span></a
+                          >
+                        </li>
                       </ul>
                     </div>
                   </td>
                   <td class="the-child"></td>
-                  <td class="order">#210700947102<time datetime="2023-03-25 10:23">2023-04-12 11:06</time></td>
+                  <td class="order">
+                    #210700947102<time datetime="2023-03-25 10:23">2023-04-12 11:06</time>
+                  </td>
                   <td class="subject">4กท-4720<span>TOYOTA INNOVA ปี 2015</span></td>
                   <td class="amount">645.21<span>ส่วนลด 34.87</span></td>
                   <td class="name">พัชราภรณ์ โภชนะวนิชย์<span>089-xxx-x077</span></td>
@@ -541,18 +900,48 @@
                   </td>
                   <td>
                     <div class="meta">
-                      <span class="badge meta-offline" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทำรายการแบบ offline"><em>Off</em></span>
-                      <span class="badge meta-renew" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="งานต่ออายุ"><em>R</em></span>
-                      <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทิพยประกันภัย"><em>TIP</em></span>
-                      <span class="badge meta-product meta-include" data-bs-toggle="tooltip"
-                        data-bs-custom-class="meta-tooltip" data-bs-title="พ.ร.บ."><em>พรบ</em></span>
-                      <span class="badge meta-pledge" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ชำระด้วย วงเงินมัดจำ"><em>วงเงินมัดจำ</em></span>
-                      <span class="badge meta-fulldiscount" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="หักส่วนลดเต็มจำนวน"><em>หักเต็ม</em></span>
+                      <span
+                        class="badge meta-offline"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทำรายการแบบ offline"
+                        ><em>Off</em></span
+                      >
+                      <span
+                        class="badge meta-renew"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="งานต่ออายุ"
+                        ><em>R</em></span
+                      >
+                      <span
+                        class="badge meta-company"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทิพยประกันภัย"
+                        ><em>TIP</em></span
+                      >
+                      <span
+                        class="badge meta-product meta-include"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="พ.ร.บ."
+                        ><em>พรบ</em></span
+                      >
+                      <span
+                        class="badge meta-pledge"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย วงเงินมัดจำ"
+                        ><em>วงเงินมัดจำ</em></span
+                      >
+                      <span
+                        class="badge meta-fulldiscount"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="หักส่วนลดเต็มจำนวน"
+                        ><em>หักเต็ม</em></span
+                      >
                     </div>
                   </td>
                 </tr>
@@ -560,18 +949,29 @@
                 <tr class="is-parent is-open">
                   <td>
                     <div class="dropdown">
-                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                      <a
+                        class="btn btn-ellipsis dropdown-toggle"
+                        href="#"
+                        role="button"
+                        title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#" title="ติดตามสถานะ"><span
-                              class="icon-tracking">ติดตามสถานะ</span></a></li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ติดตามสถานะ"
+                            ><span class="icon-tracking">ติดตามสถานะ</span></a
+                          >
+                        </li>
                       </ul>
                     </div>
                   </td>
                   <td class="has-child"></td>
-                  <td class="order">#210700947108<time datetime="2023-03-25 10:23">2023-04-12 11:06</time></td>
+                  <td class="order">
+                    #210700947108<time datetime="2023-03-25 10:23">2023-04-12 11:06</time>
+                  </td>
                   <td class="subject">4กท-4720<span>TOYOTA INNOVA ปี 2015</span></td>
                   <td class="amount">645.21<span>ส่วนลด 34.87</span></td>
                   <td class="name">พัชราภรณ์ โภชนะวนิชย์<span>089-xxx-x077</span></td>
@@ -580,141 +980,385 @@
                   </td>
                   <td>
                     <div class="meta">
-                      <span class="badge meta-offline" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทำรายการแบบ offline"><em>Off</em></span>
-                      <span class="badge meta-renew" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="งานต่ออายุ"><em>R</em></span>
-                      <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทิพยประกันภัย"><em>TIP</em></span>
-                      <span class="badge meta-product meta-include" data-bs-toggle="tooltip"
-                        data-bs-custom-class="meta-tooltip" data-bs-title="พ.ร.บ."><em>พรบ</em></span>
-                      <span class="badge meta-pledge" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ชำระด้วย วงเงินมัดจำ"><em>วงเงินมัดจำ</em></span>
-                      <span class="badge meta-fulldiscount" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="หักส่วนลดเต็มจำนวน"><em>หักเต็ม</em></span>
+                      <span
+                        class="badge meta-offline"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทำรายการแบบ offline"
+                        ><em>Off</em></span
+                      >
+                      <span
+                        class="badge meta-renew"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="งานต่ออายุ"
+                        ><em>R</em></span
+                      >
+                      <span
+                        class="badge meta-company"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทิพยประกันภัย"
+                        ><em>TIP</em></span
+                      >
+                      <span
+                        class="badge meta-product meta-include"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="พ.ร.บ."
+                        ><em>พรบ</em></span
+                      >
+                      <span
+                        class="badge meta-pledge"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย วงเงินมัดจำ"
+                        ><em>วงเงินมัดจำ</em></span
+                      >
+                      <span
+                        class="badge meta-fulldiscount"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="หักส่วนลดเต็มจำนวน"
+                        ><em>หักเต็ม</em></span
+                      >
                     </div>
                   </td>
                 </tr>
                 <tr class="is-child">
                   <td>
                     <div class="dropdown">
-                      <a class="btn btn-ellipsis dropdown-toggle" href="#" role="button" title="เครื่องมือจัดการเพิ่มเติม"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                      <a
+                        class="btn btn-ellipsis dropdown-toggle"
+                        href="#"
+                        role="button"
+                        title="เครื่องมือจัดการเพิ่มเติม"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#" title="รายละเอียดกรมธรรม์"><span
-                              class="icon-policy">รายละเอียดกรมธรรม์</span></a></li>
-                        <li><a class="dropdown-item" href="#" title="ดาวน์โหลดกรมธรรม์"><span
-                              class="icon-download-file">ดาวน์โหลดกรมธรรม์</span></a></li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="รายละเอียดกรมธรรม์"
+                            ><span class="icon-policy">รายละเอียดกรมธรรม์</span></a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" title="ดาวน์โหลดกรมธรรม์"
+                            ><span class="icon-download-file">ดาวน์โหลดกรมธรรม์</span></a
+                          >
+                        </li>
                       </ul>
                     </div>
                   </td>
                   <td class="the-child"></td>
-                  <td class="order">#210700947109<time datetime="2023-03-25 10:23">2023-04-12 11:06</time></td>
+                  <td class="order">
+                    #210700947109<time datetime="2023-03-25 10:23">2023-04-12 11:06</time>
+                  </td>
                   <td class="subject">4กท-4720<span>TOYOTA INNOVA ปี 2015</span></td>
                   <td class="amount">1,899.25<span>ส่วนลด 245.07</span></td>
                   <td class="name">พัชราภรณ์ โภชนะวนิชย์<span>089-xxx-x077</span></td>
                   <td class="status">
-                    <div class="badge-dot badge-success">สำเร็จ</div><span><a class="attached" href="#"
-                        title="ดาวน์โหลดกรมธรรม์">กรมธรรม์ TR-4635-453-32-1</a></span>
+                    <div class="badge-dot badge-success">สำเร็จ</div>
+                    <span
+                      ><a class="attached" href="#" title="ดาวน์โหลดกรมธรรม์"
+                        >กรมธรรม์ TR-4635-453-32-1</a
+                      ></span
+                    >
                   </td>
                   <td>
                     <div class="meta">
-                      <span class="badge meta-offline" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทำรายการแบบ offline"><em>Off</em></span>
-                      <span class="badge meta-renew" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="งานต่ออายุ"><em>R</em></span>
-                      <span class="badge meta-company" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ทิพยประกันภัย"><em>TIP</em></span>
-                      <span class="badge meta-product meta-include" data-bs-toggle="tooltip"
-                        data-bs-custom-class="meta-tooltip" data-bs-title="ประกันภัย ประเภท 1"><em>ป.1</em></span>
-                      <span class="badge meta-pledge" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="ชำระด้วย วงเงินมัดจำ"><em>วงเงินมัดจำ</em></span>
-                      <span class="badge meta-fulldiscount" data-bs-toggle="tooltip" data-bs-custom-class="meta-tooltip"
-                        data-bs-title="หักส่วนลดเต็มจำนวน"><em>หักเต็ม</em></span>
+                      <span
+                        class="badge meta-offline"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทำรายการแบบ offline"
+                        ><em>Off</em></span
+                      >
+                      <span
+                        class="badge meta-renew"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="งานต่ออายุ"
+                        ><em>R</em></span
+                      >
+                      <span
+                        class="badge meta-company"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ทิพยประกันภัย"
+                        ><em>TIP</em></span
+                      >
+                      <span
+                        class="badge meta-product meta-include"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ประกันภัย ประเภท 1"
+                        ><em>ป.1</em></span
+                      >
+                      <span
+                        class="badge meta-pledge"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="ชำระด้วย วงเงินมัดจำ"
+                        ><em>วงเงินมัดจำ</em></span
+                      >
+                      <span
+                        class="badge meta-fulldiscount"
+                        data-bs-toggle="tooltip"
+                        data-bs-custom-class="meta-tooltip"
+                        data-bs-title="หักส่วนลดเต็มจำนวน"
+                        ><em>หักเต็ม</em></span
+                      >
                     </div>
                   </td>
                 </tr>
-
-              </tbody>
-
+              </tbody> -->
             </DataTable>
-
           </div>
         </div>
-
       </div>
     </div>
-
+    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
-// Define import
-import DataTable from 'datatables.net-vue3'
-import DataTablesCore from 'datatables.net-bs5'
+import {
+  PlaceOrderRequest
+} from "~/shared/entities/placeorder-entity";
+import {
+  OrderDetailRequest,
+  StatusGroupResponse,
+  SubHistoryRequest,
+  HistoryResponse,
+  HistorySearch,
+} from "~/shared/entities/order-entity";
 
+import { storeToRefs } from "pinia";
+import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
+import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
+// Define import
+import DataTable from "datatables.net-vue3";
+import DataTablesCore from "datatables.net-bs5";
+import OrderHistoryGridMenu from "~/components/order/history/grid/menu.vue";
+import OrderHistoryGridColumn from "~/components/order/history/grid/column.vue";
+import { renderToString } from "@vue/server-renderer";
 // Define Variables
 // Loading state after form submiting
-const isLoading = ref(false)
+const isLoading = ref(false);
+const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
+const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
+var statusSearch = ref("");
+var statusSelect = ref("");
 
-// Submitted state after submit
-const submitted = ref(false)
+let values = reactive({});
+const storeAuth = useStoreUserAuth();
+const { AuthenInfo } = storeToRefs(storeAuth);
 
-let values = reactive({})
+const router = useRouter();
 
 // Submit form event
 const submitSearch = async (formData: any) => {
-
   // Add waiting time for debug
-  await new Promise((r) => setTimeout(r, 1000))
+  await new Promise((r) => setTimeout(r, 1000));
+};
 
-}
+const onLoad = onMounted(async () => {
+  if (AuthenInfo.value) {
+    var statusRes = await useRepository().order.statusGroup();
+    if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
+      if (statusRes.apiResponse.Data) {
+        statusGroup.value = statusRes.apiResponse.Data;
+        console.log("statusGroup.value", statusGroup.value);
+      }
+    }
+  } else {
+    router.push("/login");
+  }
+});
 
-onMounted(() => {
-  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-})
+const onSearch = async () => {
+  let search = {
+    status: statusSelect.value,
+    SearchCategory: historySearch.value?.SearchCategory,
+    SearchText: historySearch.value?.SearchText,
+  };
+  console.log("search", search);
+};
+
+const handleChangeStatus = async (status: string) => {
+  // console.log('handleChangeStatus', status)
+  statusSelect.value = status;
+  await onSearch();
+};
+
+const handleSearch = async (searchValue: HistorySearch) => {
+  // console.log('handleSearch', searchValue)
+  statusSearch.value = "clear";
+  historySearch.value = searchValue;
+  await onSearch();
+};
 
 // DataTable
-DataTable.use(DataTablesCore)
 
+DataTable.use(DataTablesCore);
+// Column options in datatable
+const columns = [
+  {
+    targets: 0,
+    data: "OrderNo",
+    title: "",
+    // render:async function (data, type,row) {
+    //   console.log('type=',type)
+    //   if (type === "display") {
+    //     console.log(row)
+    //     const html = await renderToString(h(OrderHistorySearch))
+    //     console.log(html)
+    //     return html
+    //   }
+
+    //   return data;
+    // },
+  },
+  { data: "OrderNo", title: "", targets: 1 },
+  { data: "OrderNo", title: "เลขที่คำสั่งซื้อ", targets: 2, className: "order" },
+  { data: "OrderGroupType", title: "ผลิตภัณฑ์", targets: 3, className: "subject" },
+  { data: "GrandAmount", title: "จำนวนเงิน (บาท)", targets: 4, className: "amount" },
+  { data: "FirstName", title: "ผู้เอาประกัน", targets: 5, className: "name" },
+  { data: "FirstName", title: "สถานะ", targets: 6, className: "status" },
+  { data: "CreateType", title: "รูปแบบการทำรายการ", targets: 7 },
+
+  // { data: 'office', title: 'Office' },
+  // { data: 'extn', title: 'Extension' },
+  // { data: 'start_date', title: 'Start date' },
+  // { data: 'salary', title: 'Salary' },
+];
+
+// DataTable ajax options
+const token = await useUtility().getToken();
+const datatableAjax = {
+  url: "/api/grid",
+  method: "post",
+  data: (d: any) => {
+    return {
+      ...d,
+      URL: "/Order/grid/history/list",
+      Token: token,
+    };
+  },
+};
 // DataTable options
 const datatableOptions = {
+  columnDefs: columns,
+
+  processing: true,
+  serverSide: true,
+  ajax: datatableAjax,
   filter: false,
+  searchCols: [{}, {}, { search: "My filter" }, { search: "^[0-9]", regex: true }],
   language: {
     paginate: {
-      previous: 'ก่อนหน้า',
-      next: 'ถัดไป'
+      previous: "ก่อนหน้า",
+      next: "ถัดไป",
     },
-    info: 'แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ',
-    infoEmpty: 'ไม่มีรายการ',
-    infoFiltered: '(จากทั้งหมด _MAX_ รายการ)',
-    lengthMenu: 'แสดง _MENU_ รายการ',
-    search: 'ค้นหา',
-    emptyTable: 'ไม่มีรายการ',
-    zeroRecords: 'ไม่มีรายการ'
-  }
-}
+    info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+    infoEmpty: "ไม่มีรายการ",
+    infoFiltered: "(จากทั้งหมด _MAX_ รายการ)",
+    lengthMenu: "แสดง _MENU_ รายการ",
+    search: "ค้นหา",
+    emptyTable: "ไม่มีรายการ",
+    zeroRecords: "ไม่มีรายการ",
+  },
+  initComplete: function (settings, json) {
 
+  },
+  createdRow: async function (row: any, data: any) {
+    console.log("createdRow [data]=", data);
+    const menu = await renderToString(h(OrderHistoryGridMenu));
+    const order = await renderToString(
+      h(OrderHistoryGridColumn, {
+        row: data,
+        field: "order",
+      })
+    );
+    const subject = await renderToString(
+      h(OrderHistoryGridColumn, {
+        row: data,
+        field: "subject",
+      })
+    );
+    const amount = await renderToString(
+      h(OrderHistoryGridColumn, {
+        row: data,
+        field: "amount",
+      })
+    );
+    const name = await renderToString(
+      h(OrderHistoryGridColumn, {
+        row: data,
+        field: "name",
+      })
+    );
+    const status = await renderToString(
+      h(OrderHistoryGridColumn, {
+        row: data,
+        field: "status",
+      })
+    );
+    const meta = await renderToString(
+      h(OrderHistoryGridColumn, {
+        row: data,
+        field: "meta",
+      })
+    );
+
+    var tds = row.getElementsByTagName("td");
+    var TdId1 = tds[0];
+    var TdId2 = tds[1];
+    var TdId3 = tds[2]; // order
+    var TdId4 = tds[3]; // subject
+    var TdId5 = tds[4]; // amount
+    var TdId6 = tds[5]; // name
+    var TdId7 = tds[6]; // status
+    var TdId8 = tds[7]; // meta
+    TdId1.innerHTML = menu;
+    TdId2.className = data.OrderGroupNo!='' ? "has-child" : '';
+    TdId2.innerHTML = "";
+    TdId3.innerHTML = order;
+    TdId4.innerHTML = subject;
+    TdId5.innerHTML = amount;
+    TdId6.innerHTML = name;
+    TdId7.innerHTML = status;
+    TdId8.innerHTML = meta;
+
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(
+      (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+    );
+  },
+};
+const continute = () => {
+  alert("ทำรายการต่อ");
+};
 // Define layout
-const layout = 'monito'
-const layoutClass = 'page-monito'
-const showPageSteps = false
-const showPageHeader = true
+const layout = "monito";
+const layoutClass = "page-monito";
+const showPageSteps = false;
+const showPageHeader = true;
 
 // Define page meta
-const pageTitle = 'ประวัติการทำรายการ'
-const pageCategory = 'ข้อมูลประวัติ'
-const pageDescription = ''
+const pageTitle = "ประวัติการทำรายการ";
+const pageCategory = "ข้อมูลประวัติ";
+const pageDescription = "";
 
 // Define meta seo
 useHead({
   title: pageTitle,
-  meta: [{ name: 'description', content: pageDescription }],
+  meta: [{ name: "description", content: pageDescription }],
   bodyAttrs: {
-    class: 'page-history category-datatable single-transaction',
+    class: "page-history category-datatable single-transaction",
   },
-})
+});
 </script>

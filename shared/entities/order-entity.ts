@@ -441,3 +441,103 @@ export interface CreditError {
   Message: string,
   Amount: number
 }
+
+export interface HistorySearch {
+  SearchCategory: string
+  SearchText: string
+}
+export interface StatusGroupResponse {
+  Draft: number
+  Pending: number
+  Process: number
+  Delivery: number
+  Success: number
+  CancelComplete: number
+  CancelPending: number
+}
+export interface SubHistoryRequest {
+  OrderGroupNo: string
+}
+export interface HistoryResponse {
+  Ind?: string
+  ID: string
+  OwnerID: string
+  OrderNo: string
+  OrderGroupNo: string
+  OrderGroupType: string
+  OrderType: string
+  OrderSubType: string
+  OrderClassType: string
+  JobType: string
+  CreateType: string
+  PaymentID: string
+  PaymentTransactionNo: string
+  CreateDate: string
+  CreateUser: string
+  UpdateDate: string
+  UpdateUser: string
+  StaffUpdateDate: string
+  StaffUpdateUser: string
+  CancelStatus: string
+  CancelType: string
+  IsCancel: boolean
+  IsCancelComplete: boolean
+  IsComplete: boolean
+  IsPolicyFile: boolean
+  PolicyURL: string
+  AgentID: string
+  AgentType: string
+  AgentCode: string
+  Policy: string
+  CompanyName: string
+  CompanyCode: string
+  CarCategory: string
+  UseCarName: string
+  UseCarCode: string
+  ActiveStartDate: string
+  ActiveEndDate: string
+  CarLicense: string
+  RedLicense: string
+  CarBrand: string
+  CarModel: string
+  SubCarModel: string
+  CarColor: string
+  Total: number
+  Net: number
+  Vat: number
+  Rate: number
+  PaymentNo: string
+  PaymentType: string
+  PayType: string
+  DiscountType: string
+  CouponCode: string
+  NumCredit: number
+  DeliveryAmount: number
+  DiscountAmount: number
+  PaperAmount: number
+  CreditAmount: number
+  OrderAmount: number
+  GrandAmount: number
+  PaymentStatus: string
+  Status: string
+  PaymentDate: string
+  AssuredFullName: string
+  AssuredFullNameEn: string
+  PaymentUser: string
+  Prefix: string
+  Gender: string
+  PrefixEn: string
+  FirstName: string
+  LastName: string
+  MidName: string
+  FirstNameEn: string
+  LastNameEn: string
+  MidNameEn: string
+  IDCard: string
+  Passport: string
+  Email: string
+  PhoneNumber: string
+  DeliveryDocument: string
+  IsDelivery: number
+  IsReceive: number
+}

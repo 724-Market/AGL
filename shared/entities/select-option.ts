@@ -2,6 +2,7 @@ export interface SelectOption {
     label: string
     value: string
     option?:string
+    attrs?: any
 }
 
 export interface RadioOption {

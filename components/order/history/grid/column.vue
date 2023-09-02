@@ -94,16 +94,16 @@
       class="badge meta-product"
       data-bs-toggle="tooltip"
       data-bs-custom-class="meta-tooltip"
-      :data-bs-title="OrderClassType[props.row.OrderClassType].text"
-      ><em>{{ OrderClassType[props.row.OrderClassType].title }}</em></span
+      :data-bs-title="OrderClassType[props.row.OrderClassType] ? OrderClassType[props.row.OrderClassType].text : ''"
+      ><em>{{ OrderClassType[props.row.OrderClassType] ? OrderClassType[props.row.OrderClassType].title : '' }}</em></span
     >
     <span
       v-else
       class="badge meta-product"
       data-bs-toggle="tooltip"
       data-bs-custom-class="meta-tooltip"
-      :data-bs-title="OrderType[props.row.OrderSubType].text"
-      ><em>{{ OrderType[props.row.OrderSubType].title }}</em></span
+      :data-bs-title="OrderType[props.row.OrderSubType] ? OrderType[props.row.OrderSubType].text : ''"
+      ><em>{{ OrderType[props.row.OrderSubType] ? OrderType[props.row.OrderSubType].title:'' }}</em></span
     >
 
     <!-- <span

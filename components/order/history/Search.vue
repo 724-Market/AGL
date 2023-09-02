@@ -1,6 +1,6 @@
 <template>
     <FormKit type="form" @submit="submitSearch" :actions="false" id="form-search" form-class="form-search form-theme"
-        #default="{ value }" v-model="values" :incomplete-message="false">
+        :incomplete-message="false">
         <div class="card">
           <div class="card-body">
             <div class="search-box">

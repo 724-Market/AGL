@@ -9,7 +9,6 @@
   >
     <div class="row">
       <div class="col">
-
         <!-- <FormKit type="form" @submit="submitSearch" :actions="false" id="form-search" form-class="form-search form-theme"
           #default="{ value }" v-model="values" :incomplete-message="false">
 
@@ -237,10 +236,10 @@
                   <th data-orderable="false"></th>
                   <th>เลขที่คำสั่งซื้อ</th>
                   <th data-orderable="false">รายการ</th>
-                  <!--<th>จำนวนเงิน (บาท)</th>
+                  <th>จำนวนเงิน (บาท)</th>
                   <th data-orderable="false">ผู้เอาประกัน</th>
                   <th>สถานะ</th>
-                  <th class="meta-head" data-orderable="false">รูปแบบการทำรายการ</th> -->
+                  <th class="meta-head" data-orderable="false">รูปแบบการทำรายการ</th>
                 </tr>
               </thead>
 
@@ -1121,45 +1120,86 @@
         </div>
       </div>
     </div>
+    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
-import { 
-  StatusGroupResponse, 
-  SubHistoryRequest, 
+import {
+  PlaceOrderRequest
+} from "~/shared/entities/placeorder-entity";
+import {
+  OrderDetailRequest,
+  StatusGroupResponse,
+  SubHistoryRequest,
   HistoryResponse,
-  HistorySearch
+  HistorySearch,
 } from "~/shared/entities/order-entity";
 
 import { storeToRefs } from "pinia";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
+import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 // Define import
 import DataTable from "datatables.net-vue3";
 import DataTablesCore from "datatables.net-bs5";
 import OrderHistoryGridMenu from "~/components/order/history/grid/menu.vue";
+import OrderHistoryGridColumn from "~/components/order/history/grid/column.vue";
 import { renderToString } from "@vue/server-renderer";
 // Define Variables
 // Loading state after form submiting
 const isLoading = ref(false);
-
-// Submitted state after submit
-const submitted = ref(false);
+const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
+const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
+var statusSearch = ref("");
+var statusSelect = ref("");
 
 let values = reactive({});
+const storeAuth = useStoreUserAuth();
+const { AuthenInfo } = storeToRefs(storeAuth);
+
+const router = useRouter();
 
 // Submit form event
 const submitSearch = async (formData: any) => {
-
   // Add waiting time for debug
-  await new Promise((r) => setTimeout(r, 1000))
+  await new Promise((r) => setTimeout(r, 1000));
+};
 
-}
+const onLoad = onMounted(async () => {
+  if (AuthenInfo.value) {
+    var statusRes = await useRepository().order.statusGroup();
+    if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
+      if (statusRes.apiResponse.Data) {
+        statusGroup.value = statusRes.apiResponse.Data;
+        console.log("statusGroup.value", statusGroup.value);
+      }
+    }
+  } else {
+    router.push("/login");
+  }
+});
 
-onMounted(() => {
-  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-})
+const onSearch = async () => {
+  let search = {
+    status: statusSelect.value,
+    SearchCategory: historySearch.value?.SearchCategory,
+    SearchText: historySearch.value?.SearchText,
+  };
+  console.log("search", search);
+};
+
+const handleChangeStatus = async (status: string) => {
+  // console.log('handleChangeStatus', status)
+  statusSelect.value = status;
+  await onSearch();
+};
+
+const handleSearch = async (searchValue: HistorySearch) => {
+  // console.log('handleSearch', searchValue)
+  statusSearch.value = "clear";
+  historySearch.value = searchValue;
+  await onSearch();
+};
 
 // DataTable
 
@@ -1183,8 +1223,13 @@ const columns = [
     // },
   },
   { data: "OrderNo", title: "", targets: 1 },
-  { data: "OrderNo", title: "เลขที่คำสั่งซื้อ", targets: 2,  },
-  { data: "OrderGroupType", title: "รายการ", targets: 3, },
+  { data: "OrderNo", title: "เลขที่คำสั่งซื้อ", targets: 2, className: "order" },
+  { data: "CarBrand", title: "ข้อมูลรถ", targets: 3, className: "subject" },
+  { data: "GrandAmount", title: "จำนวนเงิน (บาท)", targets: 4, className: "amount" },
+  { data: "FirstName", title: "ผู้เอาประกัน", targets: 5, className: "name" },
+  { data: "FirstName", title: "สถานะ", targets: 6, className: "status" },
+  { data: "CreateType", title: "รูปแบบการทำรายการ", targets: 7 },
+
   // { data: 'office', title: 'Office' },
   // { data: 'extn', title: 'Extension' },
   // { data: 'start_date', title: 'Start date' },
@@ -1196,7 +1241,7 @@ const token = await useUtility().getToken();
 const datatableAjax = {
   url: "/api/grid",
   method: "post",
-  data: (d) => {
+  data: (d: any) => {
     return {
       ...d,
       URL: "/Order/grid/history/list",
@@ -1212,7 +1257,7 @@ const datatableOptions = {
   serverSide: true,
   ajax: datatableAjax,
   filter: false,
-  searchCols: [{},{}, { search: "My filter" }, { search: "^[0-9]", regex: true }],
+  searchCols: [{}, {}, { search: "My filter" }, { search: "^[0-9]", regex: true }],
   language: {
     paginate: {
       previous: "ก่อนหน้า",
@@ -1226,15 +1271,72 @@ const datatableOptions = {
     emptyTable: "ไม่มีรายการ",
     zeroRecords: "ไม่มีรายการ",
   },
-  rowCallback: async function (row, data) {
-    console.log("rowCallback [data]=", data);
+  initComplete: function (settings, json) {
+
+  },
+  createdRow: async function (row: any, data: any) {
+    console.log("createdRow [data]=", data);
     const menu = await renderToString(h(OrderHistoryGridMenu));
+    const order = await renderToString(
+      h(OrderHistoryGridColumn, {
+        row: data,
+        field: "order",
+      })
+    );
+    const subject = await renderToString(
+      h(OrderHistoryGridColumn, {
+        row: data,
+        field: "subject",
+      })
+    );
+    const amount = await renderToString(
+      h(OrderHistoryGridColumn, {
+        row: data,
+        field: "amount",
+      })
+    );
+    const name = await renderToString(
+      h(OrderHistoryGridColumn, {
+        row: data,
+        field: "name",
+      })
+    );
+    const status = await renderToString(
+      h(OrderHistoryGridColumn, {
+        row: data,
+        field: "status",
+      })
+    );
+    const meta = await renderToString(
+      h(OrderHistoryGridColumn, {
+        row: data,
+        field: "meta",
+      })
+    );
+
     var tds = row.getElementsByTagName("td");
     var TdId1 = tds[0];
     var TdId2 = tds[1];
+    var TdId3 = tds[2]; // order
+    var TdId4 = tds[3]; // subject
+    var TdId5 = tds[4]; // amount
+    var TdId6 = tds[5]; // name
+    var TdId7 = tds[6]; // status
+    var TdId8 = tds[7]; // meta
     TdId1.innerHTML = menu;
-    TdId2.className = "has-child";
+    TdId2.className = data.OrderGroupNo!='' ? "has-child" : '';
     TdId2.innerHTML = "";
+    TdId3.innerHTML = order;
+    TdId4.innerHTML = subject;
+    TdId5.innerHTML = amount;
+    TdId6.innerHTML = name;
+    TdId7.innerHTML = status;
+    TdId8.innerHTML = meta;
+
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(
+      (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+    );
   },
 };
 const continute = () => {

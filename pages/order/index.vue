@@ -765,6 +765,10 @@ const onPayment = async (OrderNo: string) => { //ชำระเงิน
   router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
 }
 
+const onCheckStatus = async (OrderNo: string) => { //ติดตามสถานะ
+  console.log('check status order : ', OrderNo)
+}
+
 const onSearch = async () => {
   let search = {
     status: statusSelect.value,

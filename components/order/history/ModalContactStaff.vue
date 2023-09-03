@@ -1,11 +1,11 @@
 <template>
     <dialog id="staff-dialog" v-show="_show">
-        <div class="dialog-card"><!-- Add class 'is-info', 'is-success', 'is-warning', 'is-danger' for color styling -->
+        <div class="dialog-card">
             <div class="card-header">
                 <button class="btn btn-close btn-close-modal" @click="closeModal(false)">ปิด</button>
             </div>
             <div class="card-body">
-                <PaymentQrMethod></PaymentQrMethod>
+                <OrderCompulsoryThanksContact></OrderCompulsoryThanksContact>
             </div>
             <div class="card-footer">
                 <button class="btn-primary" @click="closeModal(false)">ตกลง</button>
@@ -23,9 +23,16 @@ const props = defineProps({
 
 const _show = ref(false);
 
+const onLoad = onMounted(async () => {
+  if (props.show) {
+    openModal();
+  }
+});
+
 function openModal() {
-  //modal.show()
   _show.value = props.show;
+  const dialogLoading = document.getElementById("staff-dialog");
+  if (dialogLoading) dialogLoading.showModal();
 }
 
 async function closeModal(refresh: boolean) {

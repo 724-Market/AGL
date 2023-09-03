@@ -53,8 +53,7 @@
     </ul>
   </div>
   <OrderHistoryModalContactStaff
-    @cloas-modal="handleCloasModal"
-    v-if="showModalStaff"
+    @close-modal="handleCloasModal"
     :show="showModalStaff"
   ></OrderHistoryModalContactStaff>
   <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>

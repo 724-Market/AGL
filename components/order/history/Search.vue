@@ -89,7 +89,7 @@ import {
   HistorySearch
 } from "~/shared/entities/order-entity";
 
-const emit = defineEmits(['searchHistory'])
+const emit = defineEmits(['searchHistory','clearSearchHistory'])
 
 var searchOption: globalThis.Ref<SelectOption[]> = ref([
   { label: 'หมวดหมู่การค้นหา', value: '', attrs: { disabled: true }  },
@@ -118,6 +118,9 @@ watch(SearchCategory, async (newCategory) => {
 const clearSearch = async () => {
   SearchCategory.value = ''
   searchText.value = ''
+
+  emit('clearSearchHistory', true)
+
 }
 
 const submitSearch = async (formData: any) => {

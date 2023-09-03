@@ -9,7 +9,10 @@
   >
     <div class="row">
       <div class="col">
-        <OrderHistorySearch @search-history="handleSearch"></OrderHistorySearch>
+        <OrderHistorySearch
+          @search-history="handleSearch"
+          @clear-search-history="handleClearSearch"
+        ></OrderHistorySearch>
 
         <OrderHistoryStatus
           v-if="statusGroup"
@@ -255,7 +258,10 @@ const handleSearch = async (searchValue: HistorySearch) => {
     await onSearch();
   }
 };
-
+const handleClearSearch = async (status: boolean) => {
+  filterOption.value = [{ field: "Status", type: "MATCH", value: "Pending" }];
+  await onSearch();
+};
 // DataTable
 
 table.value = DataTable.use(DataTablesCore);

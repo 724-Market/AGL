@@ -1,4 +1,5 @@
 import { LegalPersonProfile } from "./placeorder-entity"
+import { SelectOption } from "./select-option"
 
 export interface OrderDetailRequest {
   OrderNo: string
@@ -443,8 +444,9 @@ export interface CreditError {
 }
 
 export interface HistorySearch {
-  SearchCategory: string
+  SearchCategory: SelectOption|undefined
   SearchText: string
+  
 }
 export interface StatusGroupResponse {
   Draft: number

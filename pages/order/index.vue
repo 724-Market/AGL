@@ -9,9 +9,7 @@
   >
     <div class="row">
       <div class="col">
-        <OrderHistorySearch
-          @search-history="handleSearch"
-        ></OrderHistorySearch>
+        <OrderHistorySearch @search-history="handleSearch"></OrderHistorySearch>
 
         <OrderHistoryStatus
           v-if="statusGroup"
@@ -69,6 +67,7 @@ import DataTablesCore from "datatables.net-bs5";
 import OrderHistoryGridMenu from "~/components/order/history/grid/menu.vue";
 import OrderHistoryGridColumn from "~/components/order/history/grid/column.vue";
 import { renderToString } from "@vue/server-renderer";
+import { Filter } from "~/shared/entities/table-option";
 
 // Define Variables
 // Loading state after form submiting
@@ -79,6 +78,9 @@ let values = reactive({});
 
 const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
 const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
+const filterOption: globalThis.Ref<Filter[]> = ref([
+  { field: "Status", type: "MATCH", value: "Pending" },
+]);
 var statusSearch = ref("");
 var statusSelect = ref("");
 
@@ -225,6 +227,11 @@ const onSearch = async () => {
 const handleChangeStatus = async (status: string) => {
   // console.log('handleChangeStatus', status)
   statusSelect.value = status;
+  const filter = useMapData().getFilterSearchHistory("Status", status);
+  if (filter.length > 0) {
+    filterOption.value[0] = filter[0];
+  }
+  console.log("handleChangeStatus filterOption", filterOption.value);
   await onSearch();
 };
 
@@ -232,7 +239,21 @@ const handleSearch = async (searchValue: HistorySearch) => {
   // console.log('handleSearch', searchValue)
   statusSearch.value = "clear";
   historySearch.value = searchValue;
-  await onSearch();
+  if (searchValue.SearchCategory) {
+    const filter = useMapData().getFilterSearchHistory(
+      searchValue.SearchCategory.value,
+      searchValue.SearchText
+    );
+    if (filter.length > 0) {
+      if (filterOption.value.length > 1) {
+        filterOption.value[1] = filter[0];
+      } else {
+        filterOption.value = [...filterOption.value, filter[0]];
+      }
+    }
+    console.log("handleSearch filterOption", filterOption.value);
+    await onSearch();
+  }
 };
 
 // DataTable
@@ -280,6 +301,7 @@ const datatableAjax = {
       ...d,
       URL: "/Order/grid/history/list",
       Token: token,
+      Filter: filterOption.value,
     };
   },
 };

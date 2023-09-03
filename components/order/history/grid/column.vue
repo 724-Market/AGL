@@ -97,16 +97,16 @@
       class="badge meta-product"
       data-bs-toggle="tooltip"
       data-bs-custom-class="meta-tooltip"
-      :data-bs-title="OrderClassType[props.row.OrderClassType] ? OrderClassType[props.row.OrderClassType].text : ''"
-      ><em>{{ OrderClassType[props.row.OrderClassType] ? OrderClassType[props.row.OrderClassType].title : '' }}</em></span
+      :data-bs-title="useMapData().getOrderClassType(props.row.OrderClassType) ? useMapData().getOrderClassType(props.row.OrderClassType).text : ''"
+      ><em>{{ useMapData().getOrderClassType(props.row.OrderClassType) ? useMapData().getOrderClassType(props.row.OrderClassType).title : '' }}</em></span
     >
     <span
       v-else
       class="badge meta-product"
       data-bs-toggle="tooltip"
       data-bs-custom-class="meta-tooltip"
-      :data-bs-title="OrderType[props.row.OrderSubType] ? OrderType[props.row.OrderSubType].text : ''"
-      ><em>{{ OrderType[props.row.OrderSubType] ? OrderType[props.row.OrderSubType].title:'' }}</em></span
+      :data-bs-title="useMapData().getOrderType(props.row.OrderSubType)  ? useMapData().getOrderType(props.row.OrderSubType).text : ''"
+      ><em>{{ useMapData().getOrderType(props.row.OrderSubType) ? useMapData().getOrderType(props.row.OrderSubType).title:'' }}</em></span
     >
 
     <!-- <span
@@ -177,126 +177,7 @@
 <script lang="ts" setup>
 import { HistoryResponse } from "~/shared/entities/order-entity";
 
-const OrderType = {
-  C1: {
-    title: "ประเภท 3 Campaign",
-    text: "ประเภท 3 Campaign",
-  },
-  C2: {
-    title: "ประเภท 3 รถใหญ่",
-    text: "ประเภท 3 รถใหญ่",
-  },
-  M1: {
-    title: "ประเภท 1",
-    text: "ประเภท 1",
-  },
-  M2: {
-    title: "ประเภท 2",
-    text: "ประเภท 2",
-  },
-  M3: {
-    title: "ประเภท 3",
-    text: "ประเภท 3",
-  },
-  M4: {
-    title: "ประเภท 4",
-    text: "ประเภท 4",
-  },
-  M5: {
-    title: "ประเภท 5",
-    text: "ประเภท 5",
-  },
-  M9: {
-    title: "ประเภท 9",
-    text: "ประเภท 9",
-  },
-  MOTC: {
-    title: "จักรยานยนต์ (Motor)",
-    text: "จักรยานยนต์ (Motor)",
-  },
-  MPE0: {
-    title: "เรตพิเศษ  0",
-    text: "เรตพิเศษ  0",
-  },
-  MPE1: {
-    title: "เรตพิเศษ 1",
-    text: "เรตพิเศษ 1",
-  },
-  MPE2: {
-    title: "เรตพิเศษ 2",
-    text: "เรตพิเศษ 2",
-  },
-  MPE3: {
-    title: "เรตพิเศษ 3",
-    text: "เรตพิเศษ 3",
-  },
-  P: {
-    title: "พรบ",
-    text: "พรบ",
-  },
-  P0: {
-    title: "พรบ.เรตพิเศษ 0",
-    text: "พรบ.เรตพิเศษ 0",
-  },
-  P1: {
-    title: "พรบ.พิเศษ1 (Taxi)",
-    text: "พรบ.พิเศษ1 (Taxi)",
-  },
-  P2: {
-    title: "พรบ.มอเตอร์ไซต์",
-    text: "พรบ.มอเตอร์ไซต์",
-  },
-  P3: {
-    title: "พรบ.เรตพิเศษ",
-    text: "พรบ.เรตพิเศษ",
-  },
-  P4: {
-    title: "พรบ.รถใหญ่",
-    text: "พรบ.รถใหญ่",
-  },
-};
-const OrderClassType = {
-  M1C1: {
-    title: "ป. 1",
-    text: "ประกันชั้น 1",
-  },
-  M2C1: {
-    title: "ป. 2",
-    text: "ประกันชั้น 2",
-  },
-  M3C1: {
-    title: "ป. 3",
-    text: "ประกันชั้น 3",
-  },
-  M4C1: {
-    title: "ป. 4",
-    text: "ประกันชั้น 4",
-  },
-  M5C1: {
-    title: "ป. 5",
-    text: "ประกันชั้น 5",
-  },
-  M5C2: {
-    title: "ป. 2+ ต.",
-    text: "ประกันชั้น 5 2+ เต็มทุน",
-  },
-  M5C3: {
-    title: "ป. 2+ ธ",
-    text: "ประกันชั้น 5 2+ ธรรมดา",
-  },
-  M5C4: {
-    title: "ป. 3+ ต.",
-    text: "ประกันชั้น 5 3+ เต็มทุน",
-  },
-  M5C5: {
-    title: "ป. 3+ ธ.",
-    text: "ประกันชั้น 5 3+ ธรรมดา",
-  },
-  M2C2: {
-    title: "ป. 2",
-    text: "ประกันชั้น 2",
-  },
-};
+
 const props = defineProps({
   row: {
     type: Object as () => HistoryResponse,

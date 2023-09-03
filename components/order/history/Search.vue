@@ -89,18 +89,20 @@ import {
   HistorySearch
 } from "~/shared/entities/order-entity";
 
-const emit = defineEmits(['searchHistory'])
+const emit = defineEmits(['searchHistory','clearSearchHistory'])
 
 var searchOption: globalThis.Ref<SelectOption[]> = ref([
   { label: 'หมวดหมู่การค้นหา', value: '', attrs: { disabled: true }  },
-  { label: 'เลขที่คำสั่งซื้อ', value: 'OrderNo' },
-  { label: 'ผลิตภัณฑ์', value: 'OrderGroupType' },
-  { label: 'จำนวนเงิน', value: 'OrderAmount' },
-  { label: 'หมายเลขโทรศัพท์', value: 'PhoneNumber' },
-  { label: 'ผู้เอาประกัน', value: 'AssuredFullName' },
-  { label: 'สถานะ', value: 'Status' },
-  { label: 'ประเภทการคีย์งาน', value: 'CreateType' },
-  { label: 'ประเภทงาน', value: 'JobType' },
+  { label: 'เลขที่คำสั่งซื้อ', value: 'OrderNo',options:'LIKE' },
+  { label: 'วันที่สร้าง', value: 'CreateDate',options:'DATE_EQ' },
+  { label: 'ผลิตภัณฑ์', value: 'OrderGroupType',options:'MATCH' },
+  { label: 'ประเภทผลิตภัณฑ์', value: 'OrderType',options:'MATCH' },
+  { label: 'จำนวนเงิน', value: 'OrderAmount' ,options:'NUM_EQ'},
+  { label: 'หมายเลขโทรศัพท์', value: 'PhoneNumber' ,options:'LIKE' },
+  { label: 'ผู้เอาประกัน', value: 'AssuredFullName',options:'LIKE' },
+  //{ label: 'สถานะ', value: 'Status' },
+  { label: 'ประเภทการคีย์งาน', value: 'CreateType',options:'MATCH' },
+  { label: 'ประเภทงาน', value: 'JobType',options:'MATCH' },
 ]);
 var SearchCategory = ref('')
 var searchText = ref('')
@@ -116,11 +118,14 @@ watch(SearchCategory, async (newCategory) => {
 const clearSearch = async () => {
   SearchCategory.value = ''
   searchText.value = ''
+
+  emit('clearSearchHistory', true)
+
 }
 
 const submitSearch = async (formData: any) => {
   let historySearch: HistorySearch = {
-    SearchCategory: formData.SearchCategory,
+    SearchCategory:searchOption.value.find(x=>x.value==SearchCategory.value)  ,
     SearchText: formData.SearchText
   }
   emit('searchHistory', historySearch)

@@ -466,7 +466,8 @@ async function closeModal(refresh: boolean) {
   _show.value = false;
   const dialogLoading = document.getElementById("wallet-dialog");
   if (dialogLoading) dialogLoading.close();
-  paymentService.disconnect();
+  if (props.walletPaymentGateway) paymentService.disconnect();
+  // paymentService.disconnect();
   emit("closeWallet", false, refresh);
 }
 </script>

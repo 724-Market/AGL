@@ -225,7 +225,7 @@ const onSearch = async () => {
 
   console.log(table.value);
   table.value.dt.draw();
-  console.log("search", search);
+  // console.log("search", search);
 };
 
 const handleChangeStatus = async (status: string) => {

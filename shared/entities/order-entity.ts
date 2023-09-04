@@ -446,7 +446,7 @@ export interface CreditError {
 export interface HistorySearch {
   SearchCategory: SelectOption|undefined
   SearchText: string
-  
+  orderType: SelectOption|undefined
 }
 export interface StatusGroupResponse {
   Draft: number

@@ -220,6 +220,7 @@ const onSearch = async () => {
     status: statusSelect.value,
     SearchCategory: historySearch.value?.SearchCategory,
     SearchText: historySearch.value?.SearchText,
+    orderType: historySearch.value?.orderType,
   };
 
   console.log(table.value);
@@ -229,6 +230,7 @@ const onSearch = async () => {
 
 const handleChangeStatus = async (status: string) => {
   // console.log('handleChangeStatus', status)
+  statusSearch.value = '';
   statusSelect.value = status;
   const filter = useMapData().getFilterSearchHistory("Status", status);
   if (filter.length > 0) {
@@ -239,8 +241,8 @@ const handleChangeStatus = async (status: string) => {
 };
 
 const handleSearch = async (searchValue: HistorySearch) => {
-  // console.log('handleSearch', searchValue)
-  statusSearch.value = "clear";
+  console.log('handleSearch', searchValue)
+  statusSearch.value = 'clear';
   historySearch.value = searchValue;
   if (searchValue.SearchCategory) {
     const filter = useMapData().getFilterSearchHistory(

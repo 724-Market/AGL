@@ -4,11 +4,8 @@
         <div class="card">
           <div class="card-body">
             <div class="search-box">
-              <!-- <FormKit type="select" label="ค้นหาจาก" name="SearchCategory" placeholder="หมวดหมู่การค้นหา" 
-                :options="searchOption" v-model="SearchCategory"
-                validation="required" :validation-messages="{ required: 'กรุณาเลือกหมวดหมู่' }" /> -->
               <FormKit type="select" label="ค้นหาจาก" name="SearchCategory" placeholder="หมวดหมู่การค้นหา" 
-                :options="searchOption" v-model="SearchCategory"
+                :options="searchOption" v-model="searchCategory"
                 :validation="[['required'],
                               ['matches', /^$|/]
                               ]" :validation-messages="{
@@ -36,36 +33,39 @@
                     <div id="panel-search-advance" class="accordion-collapse collapse">
                         <div class="accordion-body">
                             <div class="advance-section">
-                            <div class="section">
-                                <FormKit type="checkbox" label="หัวข้อการกรองข้อมูล" name="" :options="{
-                                1: '1',
-                                2: '2',
-                                3: '3',
-                                }" />
-                            </div>
+                              <div class="section">
+                                  <FormKit type="select" label="ประเภทผลิตภัณฑ์" name="OrderType" placeholder="ระบุคำค้นหา" 
+                                    v-model="orderTypeText" :options="orderTypeOption" />
+                              </div>
+                              <!-- <div class="section">
+                                  <FormKit type="checkbox" label="หัวข้อการกรองข้อมูล" name="" :options="{
+                                  1: '1',
+                                  2: '2',
+                                  3: '3',
+                                  }" />
+                              </div>
 
-                            <div class="section">
-                                <FormKit type="radio" label="หัวข้อการกรองข้อมูล" name="" :options="{
-                                1: '1',
-                                2: '2',
-                                3: '3',
-                                }" />
-                            </div>
+                              <div class="section">
+                                  <FormKit type="radio" label="หัวข้อการกรองข้อมูล" name="" :options="{
+                                  1: '1',
+                                  2: '2',
+                                  3: '3',
+                                  }" />
+                              </div>
 
-                            <div class="section">
-                                <FormKit type="select" label="จังหวัด" name="" placeholder="ระบุคำค้นหา" :options="{
-                                1: '1',
-                                2: '2',
-                                3: '3'
-                                }" />
-                                <FormKit type="text" label="รหัสไปรษณีย์" name="" placeholder="ระบุคำค้นหา"
-                                autocomplete="off" />
-                            </div>
+                              <div class="section">
+                                  <FormKit type="select" label="จังหวัด" name="" placeholder="ระบุคำค้นหา" :options="{
+                                  1: '1',
+                                  2: '2',
+                                  3: '3'
+                                  }" />
+                                  <FormKit type="text" label="รหัสไปรษณีย์" name="" placeholder="ระบุคำค้นหา"
+                                  autocomplete="off" />
+                              </div>
 
-                            <div class="section">
-                                <FormKit type="text" label="สถานะ" name="" placeholder="ระบุคำค้นหา" autocomplete="off" />
-                            </div>
-
+                              <div class="section">
+                                  <FormKit type="text" label="สถานะ" name="" placeholder="ระบุคำค้นหา" autocomplete="off" />
+                              </div> -->
                             </div>
                         </div>
                     </div>
@@ -104,19 +104,26 @@ var searchOption: globalThis.Ref<SelectOption[]> = ref([
   { label: 'ประเภทการคีย์งาน', value: 'CreateType',options:'MATCH' },
   { label: 'ประเภทงาน', value: 'JobType',options:'MATCH' },
 ]);
-var SearchCategory = ref('')
+
+var orderTypeOption: globalThis.Ref<SelectOption[]> = ref([
+  { label: 'หมวดหมู่การค้นหา', value: '', attrs: { disabled: true }  },
+  { label: 'ภาคบังคับ', value: 'COMPULSORY' },
+  { label: 'ภาคสมัครใจ', value: 'VOLUNTARY' },
+]);
+var searchCategory = ref('')
 var searchText = ref('')
+var orderTypeText = ref('')
 const historySearch: globalThis.Ref<HistorySearch | undefined> = ref()
 
 var SearchCategoryShow= ref('')
 
-watch(SearchCategory, async (newCategory) => {
+watch(searchCategory, async (newCategory) => {
   let category = searchOption.value.find(w => w.value == newCategory);
   SearchCategoryShow.value = category?.label ?? ''
 });
 
 const clearSearch = async () => {
-  SearchCategory.value = ''
+  searchCategory.value = ''
   searchText.value = ''
 
   emit('clearSearchHistory', true)
@@ -125,8 +132,9 @@ const clearSearch = async () => {
 
 const submitSearch = async (formData: any) => {
   let historySearch: HistorySearch = {
-    SearchCategory:searchOption.value.find(x=>x.value==SearchCategory.value)  ,
-    SearchText: formData.SearchText
+    SearchCategory:searchOption.value.find(x=>x.value==searchCategory.value),
+    SearchText: formData.SearchText,
+    orderType: orderTypeOption.value.find(x=>x.value==orderTypeText.value)
   }
   emit('searchHistory', historySearch)
 }

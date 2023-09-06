@@ -63,11 +63,17 @@ import {
   SubHistoryRequest,
   HistoryResponse,
   HistorySearch,
+  OrderResponse,
+  OrderDetails,
+  OptionsResponse,
+  PaymentDetails,
 } from "~/shared/entities/order-entity";
 
 import { storeToRefs } from "pinia";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
+import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
+import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 // Define import
 import DataTable from "datatables.net-vue3";
 import DataTablesCore from "datatables.net-bs5";
@@ -75,6 +81,7 @@ import OrderHistoryGridMenu from "~/components/order/history/grid/menu.vue";
 import OrderHistoryGridColumn from "~/components/order/history/grid/column.vue";
 import { renderToString } from "@vue/server-renderer";
 import { Filter } from "~/shared/entities/table-option";
+import { IInformation } from "~/shared/entities/information-entity";
 
 // Define Variables
 // Loading state after form submiting
@@ -83,6 +90,10 @@ let dt;
 const isLoading = ref(false);
 let values = reactive({});
 const router = useRouter();
+
+const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
+const paymentDetail: globalThis.Ref<PaymentDetails | undefined> = ref();
+const optionDetail: globalThis.Ref<OptionsResponse | undefined> = ref();
 
 const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
 const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
@@ -97,7 +108,9 @@ var statusSelect = ref("");
 const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
 
-const storeOrder = useStorePlaceorder();
+const infomation = useStoreInformation();
+const placeorder = useStorePlaceorder();
+const storeSummary = useStoreOrderSummary();
 
 const showModalStaff = ref(false);
 
@@ -105,125 +118,168 @@ const onLoad = onMounted(async () => {
   dt = table.value;
   console.log(dt);
   if (AuthenInfo.value) {
-    await loadHistoryStatus();
-
-    const menuEdit = document.querySelector('.icon-edit')
-    menuEdit.addEventListener('click',async () => {
-      // await onTest(menuEdit.dataset.id)
-      await resume(menuEdit.dataset.id)
-    })
-
-    const menuPayment = document.querySelector('.icon-payment')
-    menuPayment.addEventListener('click',async () => {
-      await pay(menuPayment.dataset.id)
-    })
-
-    const menuTracking = document.querySelector('.icon-tracking')
-    menuTracking.addEventListener('click',async () => {
-      await trackStatus(menuTracking.dataset.id)
-    })
-
-    const menuPolicy = document.querySelector('.icon-policy')
-    menuPolicy.addEventListener('click',async () => {
-      await policyDetail(menuPolicy.dataset.id)
-    })
-
-    const menuDownload = document.querySelector('.icon-policy')
-    menuDownload.addEventListener('click',async () => {
-      await download(menuDownload.dataset.PolicyURL)
-    })
-
-    const menuStaff = document.querySelector('.icon-help')
-    menuStaff.addEventListener('click',async () => {
-      await contactStaff(true)
-    })
-
-    const menuDelete = document.querySelector('.icon-trash')
-    menuDelete.addEventListener('click',async () => {
-      await deleteDraft(menuDelete.dataset.id)
-    })
-
+    await loadHistoryStatus()
+    await triggerEvent()
   } else {
     router.push("/login");
   }
 });
 
-// const onTest = async (OrderNo: string) => {
-//   //ชำระเงิน
-//   alert('Test : ' + OrderNo)
-// }
+const triggerEvent = async () => {
+  const menuEdit = document.querySelector('.icon-edit')
+  menuEdit.addEventListener('click',async () => {
+    // await onTest(menuEdit.dataset.id)
+    await resume(menuEdit.dataset.id)
+  })
+
+  const menuPayment = document.querySelector('.icon-payment')
+  menuPayment.addEventListener('click',async () => {
+    await pay(menuPayment.dataset.id)
+  })
+
+  const menuTracking = document.querySelector('.icon-tracking')
+  menuTracking.addEventListener('click',async () => {
+    await trackStatus(menuTracking.dataset.id)
+  })
+
+  const menuPolicy = document.querySelector('.icon-policy')
+  menuPolicy.addEventListener('click',async () => {
+    await policyDetail(menuPolicy.dataset.id)
+  })
+
+  const menuDownload = document.querySelector('.icon-policy')
+  menuDownload.addEventListener('click',async () => {
+    await download(menuDownload.dataset.PolicyURL)
+  })
+
+  const menuStaff = document.querySelector('.icon-help')
+  menuStaff.addEventListener('click',async () => {
+    await contactStaff(true)
+  })
+
+  const menuDelete = document.querySelector('.icon-trash')
+  menuDelete.addEventListener('click',async () => {
+    await deleteDraft(menuDelete.dataset.id)
+  })
+};
 
 const resume = async (OrderNo: string) => {
   //ทำรายการต่อ
   isLoading.value = true;
-  let req: OrderDetailRequest = {
-    OrderNo: OrderNo,
-  };
-  let order: PlaceOrderRequest = {};
-  var getData = await useRepository().order.summary(req);
-  if (
-    getData.apiResponse.Status &&
-    getData.apiResponse.Status == "200" &&
-    getData.apiResponse.Data &&
-    getData.apiResponse.Data.length > 0
-  ) {
-    if (
-      order.Customer &&
-      order.Customer.LegalPersonProfile &&
-      getData.apiResponse.Data[0].Order
-    ) {
-      order.Customer.LegalPersonProfile.CustomerID =
-        getData.apiResponse.Data[0].Order.Customer.LegalPersonProfile.CustomerID;
-    }
-    if (
-      order.Customer &&
-      order.Customer.PersonProfile &&
-      getData.apiResponse.Data[0].Order
-    ) {
-      order.Customer.PersonProfile.CustomerID =
-        getData.apiResponse.Data[0].Order.Customer.PersonProfile.CustomerID;
-    }
-    if (
-      order.Customer &&
-      order.Customer.DefaultAddress &&
-      getData.apiResponse.Data[0].Order
-    ) {
-      order.Customer.DefaultAddress.AddressID =
-        getData.apiResponse.Data[0].Order.Customer.DefaultAddress.AddressID;
-    }
-    if (
-      order.Customer &&
-      order.Customer.DeliveryAddress &&
-      getData.apiResponse.Data[0].Order &&
-      getData.apiResponse.Data[0].Order.Customer.DeliveryAddress
-    ) {
-      order.Customer.DeliveryAddress.AddressID =
-        getData.apiResponse.Data[0].Order.Customer.DeliveryAddress.AddressID;
-    }
-    if (
-      order.Customer &&
-      order.Customer.TaxInvoiceAddress &&
-      getData.apiResponse.Data[0].Order &&
-      getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress
-    ) {
-      order.Customer.TaxInvoiceAddress.AddressID =
-        getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress.AddressID;
-    }
-    if (
-      order.Customer &&
-      order.Customer.TaxInvoiceDeliveryAddress &&
-      getData.apiResponse.Data[0].Order &&
-      getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress
-    ) {
-      order.Customer.TaxInvoiceDeliveryAddress.AddressID =
-        getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
-    }
 
-    storeOrder.setOrder(order);
-  }
+  await loadOrderDetail(OrderNo); 
+  await loadOrderSummary(OrderNo);
   router.push("/order/compulsory/payment");
+
   isLoading.value = false;
 }
+
+const setStoretoStep = (data: OrderResponse, orderNo: string) => {
+  if (data && data.Order) {
+    const order = data.Order;
+
+    const req: PlaceOrderRequest = {
+      OrderNo: orderNo,
+      Package: order.Package,
+      CarDetailsExtension: order.CarDetailsExtension,
+      Customer: order.Customer,
+      DeliveryMethod1: order.DeliveryMethod1,
+      DeliveryMethod2: order.DeliveryMethod2,
+      IsTaxInvoice: order.IsTaxInvoice,
+    };
+    console.log(req);
+    if (req.Customer && req.Customer.DefaultAddress) {
+      req.Customer.DefaultAddress.ZipCode = orderDetail.value?.AssuredDetails.ZipCode;
+    }
+    if (req.Customer && req.Customer.DeliveryAddress) {
+      req.Customer.DeliveryAddress.ZipCode =
+        orderDetail.value?.DeliveryPolicyDetails.ZipCode;
+    }
+    if (req.Customer && req.Customer.TaxInvoiceAddress) {
+      req.Customer.TaxInvoiceAddress.ZipCode =
+        orderDetail.value?.TaxInvoiceDetails.ZipCode;
+    }
+    if (req.Customer && req.Customer.TaxInvoiceDeliveryAddress) {
+      req.Customer.TaxInvoiceDeliveryAddress.ZipCode =
+        orderDetail.value?.DeliveryTaxInvoiceDetails.ZipCode;
+    }
+    placeorder.setOrder(req);
+
+    const reqInfo: IInformation = {
+      CarBrand: order.Package.CarBrandID,
+      CarCC: orderDetail.value?.CarDetails.CarCC.toFixed(0) ?? "",
+      CarDetail: getCarDetail(),
+      CarModel: order.Package.CarModelID,
+      CarSize: order.Package.CarCategoryID,
+      CarType: order.Package.CarTypeCode,
+      CarUse: order.Package.UseCarCode,
+      CarYear: order.CarDetails.CarSalesYear.toFixed(0),
+      customSubCarModel: "",
+      EffectiveDate: order.Package.EffectiveDate,
+      EffectiveType: order.Package.EffectiveType,
+      ExpireDate: order.Package.ExpireDate,
+      SubCarModel: order.Package.CarModelID,
+      InsuranceDay: getDayOfYear(order.Package.EffectiveDate, order.Package.ExpireDate),
+    };
+    infomation.setInformation(reqInfo);
+  }
+};
+
+const loadOrderDetail = async (orderNo: string) => {
+  const req: OrderDetailRequest = {
+    OrderNo: orderNo,
+  };
+
+  const response = await useRepository().order.details(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
+      orderDetail.value = response.apiResponse.Data[0].OrderDetails;
+      paymentDetail.value = response.apiResponse.Data[0].PaymentDetails;
+      optionDetail.value = response.apiResponse.Options as OptionsResponse;
+    } else {
+      // data not found
+    }
+  } else {
+  }
+};
+
+const loadOrderSummary = async (orderNo: string) => {
+  const req: OrderDetailRequest = {
+    OrderNo: orderNo,
+  };
+  const response = await useRepository().order.summary(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
+      // save to store
+      const data = response.apiResponse.Data[0];
+      if (data.Order != undefined) {
+        data.Order.OrderNo = orderNo;
+      }
+      storeSummary.setOrderSummary(data);
+      setStoretoStep(data, orderNo);
+    }
+  }
+};
+
+const getDayOfYear = (EffectiveDate: string, ExpireDate: string): number => {
+  let days = 0;
+
+  const startDate = new Date(EffectiveDate);
+  const endDate = new Date(ExpireDate);
+  const diff = Math.abs(startDate.getTime() - endDate.getTime());
+  const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+  days = diffDays - 1;
+
+  return days;
+};
+
+const getCarDetail = (): string => {
+  let carDetail = "";
+  if (orderDetail.value) {
+    carDetail = `${orderDetail.value.CarDetails.CarBrand} ${orderDetail.value.CarDetails.CarModel} ${orderDetail.value.CarDetails.SubCarModel}  ${orderDetail.value.CarDetails.CarYear}`;
+  }
+  return carDetail;
+};
 
 const pay = async (OrderNo: string) => {
   //ชำระเงิน
@@ -290,6 +346,7 @@ const onSearch = async () => {
 
   console.log(table.value);
   table.value.dt.draw();
+  await triggerEvent()
   // console.log("search", search);
 };
 

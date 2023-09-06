@@ -47,6 +47,10 @@
         </div>
       </div>
     </div>
+    <OrderHistoryModalContactStaff
+      @close-modal="handleCloasModal"
+      :show="showModalStaff"
+    ></OrderHistoryModalContactStaff>
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   </NuxtLayout>
 </template>
@@ -78,6 +82,7 @@ const table = ref();
 let dt;
 const isLoading = ref(false);
 let values = reactive({});
+const router = useRouter();
 
 const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
 const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
@@ -94,7 +99,7 @@ const { AuthenInfo } = storeToRefs(storeAuth);
 
 const storeOrder = useStorePlaceorder();
 
-const router = useRouter();
+const showModalStaff = ref(false);
 
 const onLoad = onMounted(async () => {
   dt = table.value;
@@ -102,15 +107,169 @@ const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
     await loadHistoryStatus();
 
-    const openDialogModal = document.querySelector('.icon-edit')
-    openDialogModal.addEventListener('click', function(){
-      alert('Test')
+    const menuEdit = document.querySelector('.icon-edit')
+    menuEdit.addEventListener('click',async () => {
+      // await onTest(menuEdit.dataset.id)
+      await resume(menuEdit.dataset.id)
     })
-    
+
+    const menuPayment = document.querySelector('.icon-payment')
+    menuPayment.addEventListener('click',async () => {
+      await pay(menuPayment.dataset.id)
+    })
+
+    const menuTracking = document.querySelector('.icon-tracking')
+    menuTracking.addEventListener('click',async () => {
+      await trackStatus(menuTracking.dataset.id)
+    })
+
+    const menuPolicy = document.querySelector('.icon-policy')
+    menuPolicy.addEventListener('click',async () => {
+      await policyDetail(menuPolicy.dataset.id)
+    })
+
+    const menuDownload = document.querySelector('.icon-policy')
+    menuDownload.addEventListener('click',async () => {
+      await download(menuDownload.dataset.PolicyURL)
+    })
+
+    const menuStaff = document.querySelector('.icon-help')
+    menuStaff.addEventListener('click',async () => {
+      await contactStaff(true)
+    })
+
+    const menuDelete = document.querySelector('.icon-trash')
+    menuDelete.addEventListener('click',async () => {
+      await deleteDraft(menuDelete.dataset.id)
+    })
+
   } else {
     router.push("/login");
   }
 });
+
+// const onTest = async (OrderNo: string) => {
+//   //ชำระเงิน
+//   alert('Test : ' + OrderNo)
+// }
+
+const resume = async (OrderNo: string) => {
+  //ทำรายการต่อ
+  isLoading.value = true;
+  let req: OrderDetailRequest = {
+    OrderNo: OrderNo,
+  };
+  let order: PlaceOrderRequest = {};
+  var getData = await useRepository().order.summary(req);
+  if (
+    getData.apiResponse.Status &&
+    getData.apiResponse.Status == "200" &&
+    getData.apiResponse.Data &&
+    getData.apiResponse.Data.length > 0
+  ) {
+    if (
+      order.Customer &&
+      order.Customer.LegalPersonProfile &&
+      getData.apiResponse.Data[0].Order
+    ) {
+      order.Customer.LegalPersonProfile.CustomerID =
+        getData.apiResponse.Data[0].Order.Customer.LegalPersonProfile.CustomerID;
+    }
+    if (
+      order.Customer &&
+      order.Customer.PersonProfile &&
+      getData.apiResponse.Data[0].Order
+    ) {
+      order.Customer.PersonProfile.CustomerID =
+        getData.apiResponse.Data[0].Order.Customer.PersonProfile.CustomerID;
+    }
+    if (
+      order.Customer &&
+      order.Customer.DefaultAddress &&
+      getData.apiResponse.Data[0].Order
+    ) {
+      order.Customer.DefaultAddress.AddressID =
+        getData.apiResponse.Data[0].Order.Customer.DefaultAddress.AddressID;
+    }
+    if (
+      order.Customer &&
+      order.Customer.DeliveryAddress &&
+      getData.apiResponse.Data[0].Order &&
+      getData.apiResponse.Data[0].Order.Customer.DeliveryAddress
+    ) {
+      order.Customer.DeliveryAddress.AddressID =
+        getData.apiResponse.Data[0].Order.Customer.DeliveryAddress.AddressID;
+    }
+    if (
+      order.Customer &&
+      order.Customer.TaxInvoiceAddress &&
+      getData.apiResponse.Data[0].Order &&
+      getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress
+    ) {
+      order.Customer.TaxInvoiceAddress.AddressID =
+        getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress.AddressID;
+    }
+    if (
+      order.Customer &&
+      order.Customer.TaxInvoiceDeliveryAddress &&
+      getData.apiResponse.Data[0].Order &&
+      getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress
+    ) {
+      order.Customer.TaxInvoiceDeliveryAddress.AddressID =
+        getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
+    }
+
+    storeOrder.setOrder(order);
+  }
+  router.push("/order/compulsory/payment");
+  isLoading.value = false;
+}
+
+const pay = async (OrderNo: string) => {
+  //ชำระเงิน
+  router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
+}
+
+const trackStatus = async (OrderNo: string) => {
+  //ติดตามสถานะ
+  alert("trackStatus " + OrderNo);
+}
+
+const policyDetail = async (OrderNo: string) => {
+  //รายละเอียดกรมธรรม์
+  alert("policyDetail : " + OrderNo);
+}
+
+const download = async (url: string) => {
+  //ดาวโหลดกรมธรรม์
+  if(url != '') window.open(url, "_blank");
+}
+
+const contactStaff = async () => {
+  //ติดต่อเจ้าหน้าที่
+  showModalStaff.value = false;
+  showModalStaff.value = true;
+}
+
+const deleteDraft = async (OrderNo: string) => {
+  //ลบแบบร่างนี้
+  isLoading.value = true;
+  let req: OrderDetailRequest = {
+    OrderNo: OrderNo,
+  };
+  var response = await useRepository().order.delete(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data) {
+      await onSearch()
+    }
+  }
+  isLoading.value = false;
+}
+
+const handleCloasModal = async (refresh: Boolean) => {
+  showModalStaff.value = false;
+}
+
 const loadHistoryStatus = async (filter?: Filter[]) => {
   var statusRes = await useRepository().order.statusGroup(filter);
   if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {

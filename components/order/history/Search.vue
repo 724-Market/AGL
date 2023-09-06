@@ -1,43 +1,83 @@
 <template>
-    <FormKit type="form" @submit="submitSearch" :actions="false" id="form-search" form-class="form-search form-theme"
-        :incomplete-message="false">
-        <div class="card">
-          <div class="card-body">
-            <div class="search-box">
-              <FormKit type="select" label="ค้นหาจาก" name="SearchCategory" placeholder="หมวดหมู่การค้นหา" 
-                :options="searchOption" v-model="searchCategory"
-                :validation="[['required'],
-                              ['matches', /^$|/]
-                              ]" :validation-messages="{
-                              required: 'กรุณาเลือกหมวดหมู่', matches: 'กรุณาเลือกหมวดหมู่2'
-              }"/>
+  <FormKit
+    type="form"
+    @submit="submitSearch"
+    :actions="false"
+    id="form-search"
+    form-class="form-search form-theme"
+    :incomplete-message="false"
+  >
+    <div class="card">
+      <div class="card-body">
+        <div class="search-box">
+          <FormKit
+            type="select"
+            label="ค้นหาจาก"
+            name="SearchCategory"
+            placeholder="หมวดหมู่การค้นหา"
+            :options="searchOption"
+            v-model="searchCategory"
 
-              <FormKit type="text" label="คำค้นหา" name="SearchText" placeholder="ระบุคำค้นหา" v-model="searchText"
-                validation="required" :validation-messages="{ required: 'กรุณาใส่คำค้นหา'}" autocomplete="off" />
+          />
+          <!-- :validation="[['required'], ['matches', /^$|/]]"
+            :validation-messages="{
+              required: 'กรุณาเลือกหมวดหมู่',
+              matches: 'กรุณาเลือกหมวดหมู่2',
+            }" -->
+          <FormKit
+            type="text"
+            label="คำค้นหา"
+            name="SearchText"
+            placeholder="ระบุคำค้นหา"
+            v-model="searchText"
+           
+            autocomplete="off"
+          />
+          <!-- validation="required"
+            :validation-messages="{ required: 'กรุณาใส่คำค้นหา' }" -->
+          <FormKit
+            type="submit"
+            label="ค้นหา"
+            name="search-submit"
+            id="search-submit"
+            :classes="{
+              input: 'btn-primary btn-search',
+              outer: 'form-actions',
+            }"
+            :disabled="submitted"
+            :loading="isLoading"
+          />
+        </div>
 
-              <FormKit type="submit" label="ค้นหา" name="search-submit" id="search-submit" :classes="{
-                input: 'btn-primary btn-search',
-                outer: 'form-actions',
-              }" :disabled="submitted" :loading="isLoading" />
-            </div>
+        <div class="accordion search-advance-box" id="accordion-search-advance">
+          <div class="accordion-item">
+            <h5 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panel-search-advance"
+                aria-expanded="false"
+                aria-controls="panel-search-advance"
+              >
+                ค้นหาขั้นสูง
+              </button>
+            </h5>
 
-            <div class="accordion search-advance-box" id="accordion-search-advance">
-              <div class="accordion-item">
-                    <h5 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#panel-search-advance" aria-expanded="false" aria-controls="panel-search-advance">
-                        ค้นหาขั้นสูง
-                    </button>
-                    </h5>
-
-                    <div id="panel-search-advance" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <div class="advance-section">
-                              <div class="section">
-                                  <FormKit type="select" label="ประเภทผลิตภัณฑ์" name="OrderType" placeholder="ระบุคำค้นหา" 
-                                    v-model="orderTypeText" :options="orderTypeOption" />
-                              </div>
-                              <!-- <div class="section">
+            <div id="panel-search-advance" class="accordion-collapse collapse">
+              <div class="accordion-body">
+                <div class="advance-section">
+                  <div class="section">
+                    <FormKit
+                      type="select"
+                      label="ประเภทผลิตภัณฑ์"
+                      name="OrderType"
+                      placeholder="ระบุคำค้นหา"
+                      v-model="orderTypeText"
+                      :options="orderTypeOption"
+                    />
+                  </div>
+                  <!-- <div class="section">
                                   <FormKit type="checkbox" label="หัวข้อการกรองข้อมูล" name="" :options="{
                                   1: '1',
                                   2: '2',
@@ -66,76 +106,82 @@
                               <div class="section">
                                   <FormKit type="text" label="สถานะ" name="" placeholder="ระบุคำค้นหา" autocomplete="off" />
                               </div> -->
-                            </div>
-                        </div>
-                    </div>
                 </div>
+              </div>
             </div>
           </div>
         </div>
-    </FormKit>
+      </div>
+    </div>
+  </FormKit>
 
-    <aside class="search-result">
-        <div class="notice-info">
-            แสดงรายการจากผลการค้นหา "{{searchText}}" จาก {{SearchCategoryShow}}
-            <button type="button" class="btn-info" @click="clearSearch()"><i class="fa-solid fa-eraser"></i>ล้างค่าการค้นหา</button>
-        </div>
-    </aside>
+  <aside
+    class="search-result"
+    v-if="(searchText != '' && SearchCategoryShow != '') || orderTypeText != ''"
+  >
+    <div class="notice-info">
+      แสดงรายการจากผลการค้นหา "{{ searchText }}" จาก {{ SearchCategoryShow }}
+      <button type="button" class="btn-info" @click="clearSearch()">
+        <i class="fa-solid fa-eraser"></i>ล้างค่าการค้นหา
+      </button>
+    </div>
+  </aside>
 </template>
 
 <script setup lang="ts">
 import { SelectOption } from "~/shared/entities/select-option";
-import { 
-  HistorySearch
-} from "~/shared/entities/order-entity";
+import { HistorySearch } from "~/shared/entities/order-entity";
 
-const emit = defineEmits(['searchHistory','clearSearchHistory'])
+const emit = defineEmits(["searchHistory", "clearSearchHistory"]);
 
 var searchOption: globalThis.Ref<SelectOption[]> = ref([
-  { label: 'หมวดหมู่การค้นหา', value: '', attrs: { disabled: true }  },
-  { label: 'เลขที่คำสั่งซื้อ', value: 'OrderNo',options:'LIKE' },
-  { label: 'วันที่สร้าง', value: 'CreateDate',options:'DATE_EQ' },
-  { label: 'ผลิตภัณฑ์', value: 'OrderGroupType',options:'MATCH' },
-  { label: 'ประเภทผลิตภัณฑ์', value: 'OrderType',options:'MATCH' },
-  { label: 'จำนวนเงิน', value: 'OrderAmount' ,options:'NUM_EQ'},
-  { label: 'หมายเลขโทรศัพท์', value: 'PhoneNumber' ,options:'LIKE' },
-  { label: 'ผู้เอาประกัน', value: 'AssuredFullName',options:'LIKE' },
+  { label: "หมวดหมู่การค้นหา", value: "", attrs: { disabled: true } },
+  { label: "เลขที่คำสั่งซื้อ", value: "OrderNo", option: "LIKE" },
+  { label: "วันที่สร้าง", value: "CreateDate", option: "DATE_EQ" },
+  // { label: 'ผลิตภัณฑ์', value: 'OrderGroupType',options:'MATCH' },
+  { label: "ประเภทผลิตภัณฑ์", value: "OrderType", option: "MATCH" },
+  { label: "จำนวนเงิน", value: "OrderAmount", option: "NUM_EQ" },
+  { label: "หมายเลขโทรศัพท์", value: "PhoneNumber", option: "LIKE" },
+  { label: "ผู้เอาประกัน", value: "AssuredFullName", option: "LIKE" },
   //{ label: 'สถานะ', value: 'Status' },
-  { label: 'ประเภทการคีย์งาน', value: 'CreateType',options:'MATCH' },
-  { label: 'ประเภทงาน', value: 'JobType',options:'MATCH' },
+  { label: "ประเภทการคีย์งาน", value: "CreateType", option: "MATCH" },
+  { label: "ประเภทงาน", value: "JobType", option: "MATCH" },
 ]);
 
 var orderTypeOption: globalThis.Ref<SelectOption[]> = ref([
-  { label: 'หมวดหมู่การค้นหา', value: '', attrs: { disabled: true }  },
-  { label: 'ภาคบังคับ', value: 'COMPULSORY' },
-  { label: 'ภาคสมัครใจ', value: 'VOLUNTARY' },
+  { label: "ทั้งหมด", value: "" },
+  { label: "ภาคบังคับ", value: "COMPULSORY",option: "OrderGroupType" },
+  { label: "ภาคสมัครใจ", value: "VOLUNTARY", option: "OrderGroupType" },
 ]);
-var searchCategory = ref('')
-var searchText = ref('')
-var orderTypeText = ref('')
-const historySearch: globalThis.Ref<HistorySearch | undefined> = ref()
+var searchCategory = ref("");
+var searchText = ref("");
+var orderTypeText = ref("");
+const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
 
-var SearchCategoryShow= ref('')
+var SearchCategoryShow = ref("");
 
 watch(searchCategory, async (newCategory) => {
-  let category = searchOption.value.find(w => w.value == newCategory);
-  SearchCategoryShow.value = category?.label ?? ''
+  let category = searchOption.value.find((w) => w.value == newCategory);
+  SearchCategoryShow.value = category?.label ?? "";
 });
 
 const clearSearch = async () => {
-  searchCategory.value = ''
-  searchText.value = ''
-
-  emit('clearSearchHistory', true)
-
-}
+  searchCategory.value = "";
+  searchText.value = "";
+  orderTypeText.value="";
+  emit("clearSearchHistory", true);
+};
 
 const submitSearch = async (formData: any) => {
   let historySearch: HistorySearch = {
-    SearchCategory:searchOption.value.find(x=>x.value==searchCategory.value),
+    SearchCategory: searchOption.value.find((x) => x.value == searchCategory.value),
     SearchText: formData.SearchText,
-    orderType: orderTypeOption.value.find(x=>x.value==orderTypeText.value)
-  }
-  emit('searchHistory', historySearch)
-}
+    orderType:
+      orderTypeText.value != ""
+        ? orderTypeOption.value.find((x) => x.value == orderTypeText.value)
+        : undefined,
+  };
+  
+  emit("searchHistory", historySearch);
+};
 </script>

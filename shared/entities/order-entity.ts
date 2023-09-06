@@ -1,5 +1,6 @@
 import { LegalPersonProfile } from "./placeorder-entity"
 import { SelectOption } from "./select-option"
+import { Filter } from "./table-option"
 
 export interface OrderDetailRequest {
   OrderNo: string
@@ -457,6 +458,10 @@ export interface StatusGroupResponse {
   CancelComplete: number
   CancelPending: number
 }
+export interface StatusGroupRequest {
+  filter?:Filter[]
+}
+
 export interface SubHistoryRequest {
   OrderGroupNo: string
 }

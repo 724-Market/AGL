@@ -101,6 +101,12 @@ const onLoad = onMounted(async () => {
   console.log(dt);
   if (AuthenInfo.value) {
     await loadHistoryStatus();
+
+    const openDialogModal = document.querySelector('.icon-edit')
+    openDialogModal.addEventListener('click', function(){
+      alert('Test')
+    })
+    
   } else {
     router.push("/login");
   }
@@ -114,110 +120,6 @@ const loadHistoryStatus = async (filter?: Filter[]) => {
     }
   }
 };
-// const onResume = async (OrderNo: string) => {
-//   //ทำรายการต่อ
-//   isLoading.value = true;
-//   let req: OrderDetailRequest = {
-//     OrderNo: OrderNo,
-//   };
-//   let order: PlaceOrderRequest = {};
-//   var getData = await useRepository().order.summary(req);
-//   if (
-//     getData.apiResponse.Status &&
-//     getData.apiResponse.Status == "200" &&
-//     getData.apiResponse.Data &&
-//     getData.apiResponse.Data.length > 0
-//   ) {
-//     if (
-//       order.Customer &&
-//       order.Customer.LegalPersonProfile &&
-//       getData.apiResponse.Data[0].Order
-//     ) {
-//       order.Customer.LegalPersonProfile.CustomerID =
-//         getData.apiResponse.Data[0].Order.Customer.LegalPersonProfile.CustomerID;
-//     }
-//     if (
-//       order.Customer &&
-//       order.Customer.PersonProfile &&
-//       getData.apiResponse.Data[0].Order
-//     ) {
-//       order.Customer.PersonProfile.CustomerID =
-//         getData.apiResponse.Data[0].Order.Customer.PersonProfile.CustomerID;
-//     }
-//     if (
-//       order.Customer &&
-//       order.Customer.DefaultAddress &&
-//       getData.apiResponse.Data[0].Order
-//     ) {
-//       order.Customer.DefaultAddress.AddressID =
-//         getData.apiResponse.Data[0].Order.Customer.DefaultAddress.AddressID;
-//     }
-//     if (
-//       order.Customer &&
-//       order.Customer.DeliveryAddress &&
-//       getData.apiResponse.Data[0].Order &&
-//       getData.apiResponse.Data[0].Order.Customer.DeliveryAddress
-//     ) {
-//       order.Customer.DeliveryAddress.AddressID =
-//         getData.apiResponse.Data[0].Order.Customer.DeliveryAddress.AddressID;
-//     }
-//     if (
-//       order.Customer &&
-//       order.Customer.TaxInvoiceAddress &&
-//       getData.apiResponse.Data[0].Order &&
-//       getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress
-//     ) {
-//       order.Customer.TaxInvoiceAddress.AddressID =
-//         getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress.AddressID;
-//     }
-//     if (
-//       order.Customer &&
-//       order.Customer.TaxInvoiceDeliveryAddress &&
-//       getData.apiResponse.Data[0].Order &&
-//       getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress
-//     ) {
-//       order.Customer.TaxInvoiceDeliveryAddress.AddressID =
-//         getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
-//     }
-
-//     storeOrder.setOrder(order);
-//   }
-//   router.push("/order/compulsory/payment");
-//   isLoading.value = false;
-// };
-
-// const onDelete = async (OrderNo: string) => {
-//   //ลบแบบร่างนี้
-//   isLoading.value = true;
-//   let req: OrderDetailRequest = {
-//     OrderNo: OrderNo,
-//   };
-//   var response = await useRepository().order.delete(req);
-//   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-//     if (response.apiResponse.Data) {
-//       console.log("Delete Msg", response.apiResponse.Data);
-//       // await onSearch()
-//     }
-//   }
-//   isLoading.value = false;
-// };
-
-// const onPayment = async (OrderNo: string) => {
-//   //ชำระเงิน
-//   router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
-// };
-
-// const onCheckStatus = async (OrderNo: string) => {
-//   //ติดตามสถานะ
-//   console.log("check status order : ", OrderNo);
-// };
-
-// const onDowloadPolicy = async (url: string) => { //ดาวโหลดกรมธรรม์
-//   window.open(url, "_blank");
-// }
-
-// const onContactCustomerService = async (url: string) => { //ติดต่อเจ้าหน้าที่
-// }
 
 const onSearch = async () => {
   let search = {

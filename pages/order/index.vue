@@ -82,6 +82,8 @@ let values = reactive({});
 const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
 const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
 const filterOption: globalThis.Ref<Filter[]> = ref([
+]);
+const filterOptionTable: globalThis.Ref<Filter[]> = ref([
   { field: "Status", type: "MATCH", value: "Pending" },
 ]);
 var statusSearch = ref("");
@@ -98,18 +100,20 @@ const onLoad = onMounted(async () => {
   dt = table.value;
   console.log(dt);
   if (AuthenInfo.value) {
-    var statusRes = await useRepository().order.statusGroup();
-    if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
-      if (statusRes.apiResponse.Data) {
-        statusGroup.value = statusRes.apiResponse.Data;
-        console.log("statusGroup.value", statusGroup.value);
-      }
-    }
+    await loadHistoryStatus();
   } else {
     router.push("/login");
   }
 });
-
+const loadHistoryStatus = async (filter?: Filter[]) => {
+  var statusRes = await useRepository().order.statusGroup(filter);
+  if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
+    if (statusRes.apiResponse.Data) {
+      statusGroup.value = statusRes.apiResponse.Data;
+      console.log("statusGroup.value", statusGroup.value);
+    }
+  }
+};
 // const onResume = async (OrderNo: string) => {
 //   //ทำรายการต่อ
 //   isLoading.value = true;
@@ -220,47 +224,65 @@ const onSearch = async () => {
     status: statusSelect.value,
     SearchCategory: historySearch.value?.SearchCategory,
     SearchText: historySearch.value?.SearchText,
+    orderType: historySearch.value?.orderType,
   };
 
   console.log(table.value);
   table.value.dt.draw();
-  console.log("search", search);
+  // console.log("search", search);
 };
 
 const handleChangeStatus = async (status: string) => {
   // console.log('handleChangeStatus', status)
+  filterOptionTable.value = [];
+  statusSearch.value = "";
   statusSelect.value = status;
   const filter = useMapData().getFilterSearchHistory("Status", status);
   if (filter.length > 0) {
-    filterOption.value[0] = filter[0];
+    filterOptionTable.value[0] = filter[0];
+    filterOption.value.forEach((value, index) => {
+      filterOptionTable.value = [...filterOptionTable.value, value];
+    });
+    // let arrFilter =  filterOptionTable.value;
+    // arrFilter.concat(filterOption.value);
+    // filterOptionTable.value = arrFilter
   }
   console.log("handleChangeStatus filterOption", filterOption.value);
   await onSearch();
 };
 
 const handleSearch = async (searchValue: HistorySearch) => {
-  // console.log('handleSearch', searchValue)
+  filterOption.value = [];
+  console.log("handleSearch", searchValue);
   statusSearch.value = "clear";
   historySearch.value = searchValue;
+  // ค้นหาทั่วไป
   if (searchValue.SearchCategory) {
     const filter = useMapData().getFilterSearchHistory(
       searchValue.SearchCategory.value,
       searchValue.SearchText
     );
     if (filter.length > 0) {
-      if (filterOption.value.length > 1) {
-        filterOption.value[1] = filter[0];
-      } else {
-        filterOption.value = [...filterOption.value, filter[0]];
-      }
+      filterOption.value = [...filterOption.value, filter[0]];
     }
-    console.log("handleSearch filterOption", filterOption.value);
-    await onSearch();
   }
+  // ค้นหาขั้นสูงผลิตภัณฑ์
+  if (searchValue.orderType) {
+    const filter = useMapData().getFilterSearchHistory(
+      searchValue.orderType.option ?? "",
+      searchValue.orderType.value
+    );
+    if (filter.length > 0) {
+      filterOption.value = [...filterOption.value, filter[0]];
+    }
+  }
+  //await loadHistoryStatus(filterOption.value);
+
+  console.log("handleSearch filterOption", filterOption.value);
 };
 const handleClearSearch = async (status: boolean) => {
-  filterOption.value = [{ field: "Status", type: "MATCH", value: "Pending" }];
-  await onSearch();
+  //filterOption.value = [{ field: "Status", type: "MATCH", value: "Pending" }];
+  //await onSearch();
 };
 // DataTable
 
@@ -307,7 +329,7 @@ const datatableAjax = {
       ...d,
       URL: "/Order/grid/history/list",
       Token: token,
-      Filter: filterOption.value,
+      Filter: filterOptionTable.value, //filterOption.value,
     };
   },
 };
@@ -319,7 +341,7 @@ const datatableOptions = {
   serverSide: true,
   ajax: datatableAjax,
   filter: false,
-  searchCols: [{}, {}, { search: "My filter" }, { search: "^[0-9]", regex: true }],
+  //searchCols: [{}, {}, { search: "My filter" }, { search: "^[0-9]", regex: true }],
   language: {
     paginate: {
       previous: "ก่อนหน้า",
@@ -337,6 +359,13 @@ const datatableOptions = {
   createdRow: async function (row: any, data: any) {
     console.log("createdRow [data]=", data);
     const menu = await renderToString(h(OrderHistoryGridMenu, { row: data }));
+    const has_child = await renderToString(
+      h(OrderHistoryGridColumn, {
+        row: data,
+        field: "has-child",
+        click:continute
+      })
+    ); 
     const order = await renderToString(
       h(OrderHistoryGridColumn, {
         row: data,
@@ -376,7 +405,7 @@ const datatableOptions = {
 
     var tds = row.getElementsByTagName("td");
     var TdId1 = tds[0];
-    var TdId2 = tds[1];
+    var TdId2 = tds[1]; // has-child
     var TdId3 = tds[2]; // order
     var TdId4 = tds[3]; // subject
     var TdId5 = tds[4]; // amount
@@ -384,8 +413,8 @@ const datatableOptions = {
     var TdId7 = tds[6]; // status
     var TdId8 = tds[7]; // meta
     TdId1.innerHTML = menu;
-    TdId2.className = data.OrderGroupNo != "" ? "has-child" : "";
-    TdId2.innerHTML = "";
+    TdId2.innerHTML = data.OrderGroupNo != "" ? has_child : "";
+    //TdId2.innerHTML = "";
     TdId3.innerHTML = order;
     TdId4.innerHTML = subject;
     TdId5.innerHTML = amount;
@@ -401,6 +430,7 @@ const datatableOptions = {
 };
 const continute = () => {
   alert("ทำรายการต่อ");
+  console.log('ทำรายการต่อ')
 };
 // Define layout
 const layout = "monito";

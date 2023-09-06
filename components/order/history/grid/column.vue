@@ -1,4 +1,7 @@
 <template>
+   <div v-if="props.field && props.field == 'has-child' && props.row">
+   <div class="has-child" @click="props.click"></div>
+  </div>
   <div v-if="props.field && props.field == 'order' && props.row">
     #{{ props.row.OrderNo
     }}<time datetime="2023-05-05 08:08">{{ props.row.CreateDate }}</time>
@@ -183,5 +186,10 @@ const props = defineProps({
     type: Object as () => HistoryResponse,
   },
   field: String,
+  click:Function
 });
+
+const openChild = ()=>{
+  alert('opened')
+}
 </script>

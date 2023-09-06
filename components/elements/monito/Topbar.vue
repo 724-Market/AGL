@@ -4,24 +4,29 @@
     </div> -->
     <div class="col d-flex justify-content-end">
         <div class="mt-4">
-            <h3 class="text-success">ยอดเงินคงเหลือ {{remaining}} บาท</h3>
+            <h3>
+              ยอดเงินคงเหลือ 
+              <span :class="{ 'text-danger' : remaining <= 0, 'text-success' : remaining > 0 }">{{remaining}}</span> 
+              บาท
+            </h3>
         </div>
         <div class="m-2">
             <button class="btn btn-primary" @click="handlerOpenWallet(true)">เติมเงิน</button>
         </div>
     </div>
-    <!-- <OrderHistoryModalContactStaff
-        @close-modal="handleCloasModal"
-        :show="showModalStaff"
-    ></OrderHistoryModalContactStaff> -->
-    <PaymentWalletModalWallet
-        v-if="showWallet"
-        :show="showWallet"
-        :payment-list="creditPaymenyAddList"
-        @close-wallet="handleCloseWallet"
-        @topup-confirm="handleTopupConfirm"
-        :wallet-payment-gateway="walletPaymentGateway"
-    ></PaymentWalletModalWallet>
+    
+    <div class="container">
+      <PaymentWalletModalWallet
+          v-if="showWallet"
+          :show="showWallet"
+          :payment-list="creditPaymenyAddList"
+          @close-wallet="handleCloseWallet"
+          @topup-confirm="handleTopupConfirm"
+          :wallet-payment-gateway="walletPaymentGateway"
+      ></PaymentWalletModalWallet>
+    </div>
+    
+
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
 </template>
 
@@ -48,16 +53,9 @@ const messageError = ref("");
 var remaining = ref(0)
 const showWallet = ref(false);
 
-// const showModalStaff = ref(false);
-// const contactStaff = async (show: boolean) => {
-//   showModalStaff.value = show;
-// }
-// const handleCloasModal = async (refresh: boolean) => {
-//   showModalStaff.value = false;
-// }
-
 const onLoad = onMounted(async () => {
-    // await loadPledgeCreditBalance()
+  await loadPledgeHistoryPaymentAddList()
+  await loadPledgeCreditBalance()
 });
 
 const handlerOpenWallet = (open: boolean) => {

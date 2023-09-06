@@ -1,5 +1,6 @@
 import { LegalPersonProfile } from "./placeorder-entity"
 import { SelectOption } from "./select-option"
+import { Filter } from "./table-option"
 
 export interface OrderDetailRequest {
   OrderNo: string
@@ -446,7 +447,7 @@ export interface CreditError {
 export interface HistorySearch {
   SearchCategory: SelectOption|undefined
   SearchText: string
-  
+  orderType: SelectOption|undefined
 }
 export interface StatusGroupResponse {
   Draft: number
@@ -457,6 +458,10 @@ export interface StatusGroupResponse {
   CancelComplete: number
   CancelPending: number
 }
+export interface StatusGroupRequest {
+  filter?:Filter[]
+}
+
 export interface SubHistoryRequest {
   OrderGroupNo: string
 }

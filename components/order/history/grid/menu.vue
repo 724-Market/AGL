@@ -79,7 +79,14 @@ const isLoading = ref(false);
 const storeOrder = useStorePlaceorder();
 const router = useRouter();
 
-// const showModalStaff = ref(false);
+const showModalStaff = ref(false);
+
+// const onLoad = onMounted(async () => {
+//   const menuEdit = document.querySelector('.icon-edit')
+//   menuEdit.addEventListener('click',async () => {
+//     alert('test')
+//   })
+// });
 
 // const resume = async (OrderNo: string) => {
 //   //ทำรายการต่อ

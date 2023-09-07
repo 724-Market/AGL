@@ -37,15 +37,15 @@ class OrderModule {
 
   async statusGroup(filter?: Filter[]): Promise<IAPIResponse<StatusGroupResponse>> {
     const req: StatusGroupRequest = {
-      filter: filter
+      Filter: filter
     }
     return await useCallApi().apiRepository<StatusGroupResponse>(`${this.RESOURCE_Order}/status/group/get`, req)
   }
   async getHistoryList(req: TableRequest): Promise<IDataTableResponse<HistoryResponse>> {
     return await useCallApi().postDataTable<HistoryResponse>(`${this.RESOURCE_Order}/grid/history/list`, req)
   }
-  async getSubHistoryList(req: SubHistoryRequest): Promise<IAPIResponse<HistoryResponse>> {
-    return await useCallApi().apiRepository<HistoryResponse>(`${this.RESOURCE_Order}/history/sub/order/list`, req)
+  async getSubHistoryList(req: SubHistoryRequest): Promise<IAPIResponse<HistoryResponse[]>> {
+    return await useCallApi().apiRepository<HistoryResponse[]>(`${this.RESOURCE_Order}/history/sub/order/list`, req)
   }
 }
 

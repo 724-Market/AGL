@@ -302,6 +302,7 @@ const handleCloasModal = async (refresh: Boolean) => {
 }
 
 const loadHistoryStatus = async (filter?: Filter[]) => {
+  isLoading.value = true;
   var statusRes = await useRepository().order.statusGroup(filter);
   if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
     if (statusRes.apiResponse.Data) {
@@ -309,6 +310,7 @@ const loadHistoryStatus = async (filter?: Filter[]) => {
       console.log("statusGroup.value", statusGroup.value);
     }
   }
+  isLoading.value = false;
 };
 
 const onSearch = async () => {
@@ -345,6 +347,7 @@ const handleChangeStatus = async (status: string) => {
 
 const handleSearch = async (searchValue: HistorySearch) => {
   filterOption.value = [];
+  filterOptionTable.value = [];
   console.log("handleSearch", searchValue);
   statusSearch.value = "clear";
   historySearch.value = searchValue;
@@ -367,8 +370,13 @@ const handleSearch = async (searchValue: HistorySearch) => {
     if (filter.length > 0) {
       filterOption.value = [...filterOption.value, filter[0]];
     }
+
+    
   }
-  //await loadHistoryStatus(filterOption.value);
+  filterOptionTable.value = filterOption.value;
+  await loadHistoryStatus(filterOption.value);
+
+  await onSearch();
 
   console.log("handleSearch filterOption", filterOption.value);
 };

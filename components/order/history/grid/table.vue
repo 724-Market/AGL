@@ -31,8 +31,10 @@ import DataTable from "datatables.net-vue3";
 import DataTablesCore from "datatables.net-bs5";
 import OrderHistoryGridMenu from "~/components/order/history/grid/menu.vue";
 import OrderHistoryGridColumn from "~/components/order/history/grid/column.vue";
+import OrderHistoryGridSub from "~/components/order/history/grid/sub.vue";
 import { renderToString } from "@vue/server-renderer";
 import { Filter } from "~/shared/entities/table-option";
+import { SubHistoryRequest } from "~/shared/entities/order-entity";
 
 const props = defineProps({
     filters: {
@@ -129,13 +131,13 @@ const datatableOptions = {
   createdRow: async function (row: any, data: any) {
     //console.log("createdRow [data]=", data);
     const menu = await renderToString(h(OrderHistoryGridMenu, { row: data }));
-    const has_child = await renderToString(
-      h(OrderHistoryGridColumn, {
-        row: data,
-        field: "has-child",
-        //click: continute,
-      })
-    );
+    // const has_child = await renderToString(
+    //   h(OrderHistoryGridColumn, {
+    //     row: data,
+    //     field: "has-child",
+    //     //click: continute,
+    //   })
+    // );
     const order = await renderToString(
       h(OrderHistoryGridColumn, {
         row: data,
@@ -184,8 +186,8 @@ const datatableOptions = {
     var TdId8 = tds[7]; // meta
     TdId1.innerHTML = menu;
     //TdId2.innerHTML = data.OrderGroupNo != "" ? has_child : "";
-    //TdId2.className = data.OrderGroupNo != "" ? "has-child" : "";
-    TdId2.className="has-child"
+    TdId2.className = data.OrderGroupNo != "" ? "has-child" : "";
+    //TdId2.className="has-child"
     TdId2.innerHTML = "";
     TdId3.innerHTML = order;
     TdId4.innerHTML = subject;
@@ -257,6 +259,12 @@ const datatableOptions = {
     // })
 
     TdId2.addEventListener('click',async function() {
+        if(data.OrderGroupNo!='')
+        {
+            const req: SubHistoryRequest = {
+            OrderGroupNo:data.OrderGroupNo
+        }
+
             // Get the parent tr element
             var tr = this.parentNode
 
@@ -265,18 +273,29 @@ const datatableOptions = {
 
             // Check if the class "is-open" is present after toggling
             if (tr.classList.contains('is-open')) {
-                // Create the HTML content for the new tr element
-                var newTrHtml = '<tr><td colspan="8" style="background-color: #faefce"><strong>New HTML Here</strong></td></tr>'
+                const subdata = await useRepository().order.getSubHistoryList(req)
 
+                const sub_group = await renderToString(
+                    h(OrderHistoryGridSub, {
+                        row: subdata.apiResponse.Data,
+                    })
+                    );
+                console.log(sub_group)
+                // Create the HTML content for the new tr element
+                //var newTrHtml = '<tr><td colspan="8" style="background-color: #faefce"><strong>New HTML Here</strong></td></tr>'
+                var newTrHtml = sub_group;
                 // Insert the new tr element after the current tr
                 tr.insertAdjacentHTML('afterend', newTrHtml)
             } else {
+                console.log(tr,tr.nextSibling)
                 // Check if the next sibling is a tr element
                 if (tr.nextSibling.tagName === 'TR') {
                     // Remove the next sibling tr element
                     tr.parentNode.removeChild(tr.nextSibling)
                 }
             }
+        }
+
         })
   },
 };

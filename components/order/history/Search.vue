@@ -150,8 +150,8 @@ var searchOption: globalThis.Ref<SelectOption[]> = ref([
 
 var orderTypeOption: globalThis.Ref<SelectOption[]> = ref([
   { label: "ทั้งหมด", value: "" },
-  { label: "ภาคบังคับ", value: "COMPULSORY",option: "OrderGroupType" },
-  { label: "ภาคสมัครใจ", value: "VOLUNTARY", option: "OrderGroupType" },
+  { label: "ภาคบังคับ", value: "COMPULSORY",option: "OrderType" },
+  { label: "ภาคสมัครใจ", value: "VOLUNTARY", option: "OrderType" },
 ]);
 var searchCategory = ref("");
 var searchText = ref("");

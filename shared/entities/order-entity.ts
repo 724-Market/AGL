@@ -459,7 +459,7 @@ export interface StatusGroupResponse {
   CancelPending: number
 }
 export interface StatusGroupRequest {
-  filter?:Filter[]
+  Filter?:Filter[]
 }
 
 export interface SubHistoryRequest {

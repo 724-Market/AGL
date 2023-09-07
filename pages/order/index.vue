@@ -21,32 +21,24 @@
           :status-search="statusSearch"
         ></OrderHistoryStatus>
 
-        <div class="card">
-          <div class="card-body card-table">
-            <DataTable
-              id="datatables"
-              class="table table-transaction nowrap"
-              data-order='[[ 2, "asc" ]]'
-              :options="datatableOptions"
-              ref="table"
-            >
-              <thead>
-                <tr>
-                  <th data-orderable="false"></th>
-                  <th data-orderable="false"></th>
-                  <th>เลขที่คำสั่งซื้อ</th>
-                  <th data-orderable="false">รายการ</th>
-                  <th>จำนวนเงิน (บาท)</th>
-                  <th data-orderable="false">ผู้เอาประกัน</th>
-                  <th>สถานะ</th>
-                  <th class="meta-head" data-orderable="false">รูปแบบการทำรายการ</th>
-                </tr>
-              </thead>
-            </DataTable>
-          </div>
-        </div>
+        <OrderHistoryGridTable 
+          :filters="filterOptionTable"
+          v-if="filterOptionTable.length>0" 
+          @change-table="handlerChangeTable"
+          @on-resume="resume"
+          @on-pay="pay"
+          @on-tracking="trackStatus"
+          @on-policy="policyDetail"
+          @on-dowload="download"
+          @on-help="contactStaff"
+          @on-delete="deleteDraft"
+        ></OrderHistoryGridTable>
       </div>
     </div>
+    <OrderHistoryModalContactStaff
+      @close-modal="handleCloasModal"
+      :show="showModalStaff"
+    ></OrderHistoryModalContactStaff>
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   </NuxtLayout>
 </template>
@@ -59,25 +51,32 @@ import {
   SubHistoryRequest,
   HistoryResponse,
   HistorySearch,
+  OrderResponse,
+  OrderDetails,
+  OptionsResponse,
+  PaymentDetails,
 } from "~/shared/entities/order-entity";
 
 import { storeToRefs } from "pinia";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
+import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
-// Define import
-import DataTable from "datatables.net-vue3";
-import DataTablesCore from "datatables.net-bs5";
-import OrderHistoryGridMenu from "~/components/order/history/grid/menu.vue";
-import OrderHistoryGridColumn from "~/components/order/history/grid/column.vue";
-import { renderToString } from "@vue/server-renderer";
+import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { Filter } from "~/shared/entities/table-option";
+import { IInformation } from "~/shared/entities/information-entity";
+
 
 // Define Variables
 // Loading state after form submiting
-const table = ref();
-let dt;
+
 const isLoading = ref(false);
+const table = ref();
 let values = reactive({});
+const router = useRouter();
+
+const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
+const paymentDetail: globalThis.Ref<PaymentDetails | undefined> = ref();
+const optionDetail: globalThis.Ref<OptionsResponse | undefined> = ref();
 
 const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
 const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
@@ -92,20 +91,218 @@ var statusSelect = ref("");
 const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
 
-const storeOrder = useStorePlaceorder();
+const infomation = useStoreInformation();
+const placeorder = useStorePlaceorder();
+const storeSummary = useStoreOrderSummary();
 
-const router = useRouter();
+const showModalStaff = ref(false);
 
 const onLoad = onMounted(async () => {
-  dt = table.value;
-  console.log(dt);
+  
   if (AuthenInfo.value) {
-    await loadHistoryStatus();
+    await loadHistoryStatus()
+    // await triggerEvent()
   } else {
     router.push("/login");
   }
 });
+
+// const triggerEvent = async () => {
+//   const menuEdit = document.querySelector('.icon-edit')
+//   menuEdit.addEventListener('click',async () => {
+//     await resume(menuEdit.dataset.id)
+//   })
+//   const menuPayment = document.querySelector('.icon-payment')
+//   menuPayment.addEventListener('click',async () => {
+//     await pay(menuPayment.dataset.id)
+//   })
+//   const menuTracking = document.querySelector('.icon-tracking')
+//   menuTracking.addEventListener('click',async () => {
+//     await trackStatus(menuTracking.dataset.id)
+//   })
+//   const menuPolicy = document.querySelector('.icon-policy')
+//   menuPolicy.addEventListener('click',async () => {
+//     await policyDetail(menuPolicy.dataset.id)
+//   })
+//   const menuDownload = document.querySelector('.icon-policy')
+//   menuDownload.addEventListener('click',async () => {
+//     await download(menuDownload.dataset.PolicyURL)
+//   })
+//   const menuStaff = document.querySelector('.icon-help')
+//   menuStaff.addEventListener('click',async () => {
+//     await contactStaff(true)
+//   })
+//   const menuDelete = document.querySelector('.icon-trash')
+//   menuDelete.addEventListener('click',async () => {
+//     await deleteDraft(menuDelete.dataset.id)
+//   })
+// };
+
+const resume = async (OrderNo: string) => {
+  //ทำรายการต่อ
+  isLoading.value = true;
+
+  await loadOrderDetail(OrderNo); 
+  await loadOrderSummary(OrderNo);
+  router.push("/order/compulsory/payment");
+
+  isLoading.value = false;
+}
+
+const setStoretoStep = (data: OrderResponse, orderNo: string) => {
+  if (data && data.Order) {
+    const order = data.Order;
+
+    const req: PlaceOrderRequest = {
+      OrderNo: orderNo,
+      Package: order.Package,
+      CarDetailsExtension: order.CarDetailsExtension,
+      Customer: order.Customer,
+      DeliveryMethod1: order.DeliveryMethod1,
+      DeliveryMethod2: order.DeliveryMethod2,
+      IsTaxInvoice: order.IsTaxInvoice,
+    };
+    console.log(req);
+    if (req.Customer && req.Customer.DefaultAddress) {
+      req.Customer.DefaultAddress.ZipCode = orderDetail.value?.AssuredDetails.ZipCode;
+    }
+    if (req.Customer && req.Customer.DeliveryAddress) {
+      req.Customer.DeliveryAddress.ZipCode =
+        orderDetail.value?.DeliveryPolicyDetails.ZipCode;
+    }
+    if (req.Customer && req.Customer.TaxInvoiceAddress) {
+      req.Customer.TaxInvoiceAddress.ZipCode =
+        orderDetail.value?.TaxInvoiceDetails.ZipCode;
+    }
+    if (req.Customer && req.Customer.TaxInvoiceDeliveryAddress) {
+      req.Customer.TaxInvoiceDeliveryAddress.ZipCode =
+        orderDetail.value?.DeliveryTaxInvoiceDetails.ZipCode;
+    }
+    placeorder.setOrder(req);
+
+    const reqInfo: IInformation = {
+      CarBrand: order.Package.CarBrandID,
+      CarCC: orderDetail.value?.CarDetails.CarCC.toFixed(0) ?? "",
+      CarDetail: getCarDetail(),
+      CarModel: order.Package.CarModelID,
+      CarSize: order.Package.CarCategoryID,
+      CarType: order.Package.CarTypeCode,
+      CarUse: order.Package.UseCarCode,
+      CarYear: order.CarDetails.CarSalesYear.toFixed(0),
+      customSubCarModel: "",
+      EffectiveDate: order.Package.EffectiveDate,
+      EffectiveType: order.Package.EffectiveType,
+      ExpireDate: order.Package.ExpireDate,
+      SubCarModel: order.Package.CarModelID,
+      InsuranceDay: getDayOfYear(order.Package.EffectiveDate, order.Package.ExpireDate),
+    };
+    infomation.setInformation(reqInfo);
+  }
+};
+
+const loadOrderDetail = async (orderNo: string) => {
+  const req: OrderDetailRequest = {
+    OrderNo: orderNo,
+  };
+
+  const response = await useRepository().order.details(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
+      orderDetail.value = response.apiResponse.Data[0].OrderDetails;
+      paymentDetail.value = response.apiResponse.Data[0].PaymentDetails;
+      optionDetail.value = response.apiResponse.Options as OptionsResponse;
+    } else {
+      // data not found
+    }
+  } else {
+  }
+};
+
+const loadOrderSummary = async (orderNo: string) => {
+  const req: OrderDetailRequest = {
+    OrderNo: orderNo,
+  };
+  const response = await useRepository().order.summary(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
+      // save to store
+      const data = response.apiResponse.Data[0];
+      if (data.Order != undefined) {
+        data.Order.OrderNo = orderNo;
+      }
+      storeSummary.setOrderSummary(data);
+      setStoretoStep(data, orderNo);
+    }
+  }
+};
+
+const getDayOfYear = (EffectiveDate: string, ExpireDate: string): number => {
+  let days = 0;
+
+  const startDate = new Date(EffectiveDate);
+  const endDate = new Date(ExpireDate);
+  const diff = Math.abs(startDate.getTime() - endDate.getTime());
+  const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+  days = diffDays - 1;
+
+  return days;
+};
+
+const getCarDetail = (): string => {
+  let carDetail = "";
+  if (orderDetail.value) {
+    carDetail = `${orderDetail.value.CarDetails.CarBrand} ${orderDetail.value.CarDetails.CarModel} ${orderDetail.value.CarDetails.SubCarModel}  ${orderDetail.value.CarDetails.CarYear}`;
+  }
+  return carDetail;
+};
+
+const pay = async (OrderNo: string) => {
+  //ชำระเงิน
+  router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
+}
+
+const trackStatus = async (OrderNo: string) => {
+  //ติดตามสถานะ
+  alert("trackStatus " + OrderNo);
+}
+
+const policyDetail = async (OrderNo: string) => {
+  //รายละเอียดกรมธรรม์
+  alert("policyDetail : " + OrderNo);
+}
+
+const download = async (url: string) => {
+  //ดาวโหลดกรมธรรม์
+  if(url != '') window.open(url, "_blank");
+}
+
+const contactStaff = async () => {
+  //ติดต่อเจ้าหน้าที่
+  showModalStaff.value = false;
+  showModalStaff.value = true;
+}
+
+const deleteDraft = async (OrderNo: string) => {
+  //ลบแบบร่างนี้
+  isLoading.value = true;
+  let req: OrderDetailRequest = {
+    OrderNo: OrderNo,
+  };
+  var response = await useRepository().order.delete(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data) {
+      await onSearch()
+    }
+  }
+  isLoading.value = false;
+}
+
+const handleCloasModal = async (refresh: Boolean) => {
+  showModalStaff.value = false;
+}
+
 const loadHistoryStatus = async (filter?: Filter[]) => {
+  isLoading.value = true;
   var statusRes = await useRepository().order.statusGroup(filter);
   if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
     if (statusRes.apiResponse.Data) {
@@ -113,111 +310,8 @@ const loadHistoryStatus = async (filter?: Filter[]) => {
       console.log("statusGroup.value", statusGroup.value);
     }
   }
+  isLoading.value = false;
 };
-// const onResume = async (OrderNo: string) => {
-//   //ทำรายการต่อ
-//   isLoading.value = true;
-//   let req: OrderDetailRequest = {
-//     OrderNo: OrderNo,
-//   };
-//   let order: PlaceOrderRequest = {};
-//   var getData = await useRepository().order.summary(req);
-//   if (
-//     getData.apiResponse.Status &&
-//     getData.apiResponse.Status == "200" &&
-//     getData.apiResponse.Data &&
-//     getData.apiResponse.Data.length > 0
-//   ) {
-//     if (
-//       order.Customer &&
-//       order.Customer.LegalPersonProfile &&
-//       getData.apiResponse.Data[0].Order
-//     ) {
-//       order.Customer.LegalPersonProfile.CustomerID =
-//         getData.apiResponse.Data[0].Order.Customer.LegalPersonProfile.CustomerID;
-//     }
-//     if (
-//       order.Customer &&
-//       order.Customer.PersonProfile &&
-//       getData.apiResponse.Data[0].Order
-//     ) {
-//       order.Customer.PersonProfile.CustomerID =
-//         getData.apiResponse.Data[0].Order.Customer.PersonProfile.CustomerID;
-//     }
-//     if (
-//       order.Customer &&
-//       order.Customer.DefaultAddress &&
-//       getData.apiResponse.Data[0].Order
-//     ) {
-//       order.Customer.DefaultAddress.AddressID =
-//         getData.apiResponse.Data[0].Order.Customer.DefaultAddress.AddressID;
-//     }
-//     if (
-//       order.Customer &&
-//       order.Customer.DeliveryAddress &&
-//       getData.apiResponse.Data[0].Order &&
-//       getData.apiResponse.Data[0].Order.Customer.DeliveryAddress
-//     ) {
-//       order.Customer.DeliveryAddress.AddressID =
-//         getData.apiResponse.Data[0].Order.Customer.DeliveryAddress.AddressID;
-//     }
-//     if (
-//       order.Customer &&
-//       order.Customer.TaxInvoiceAddress &&
-//       getData.apiResponse.Data[0].Order &&
-//       getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress
-//     ) {
-//       order.Customer.TaxInvoiceAddress.AddressID =
-//         getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress.AddressID;
-//     }
-//     if (
-//       order.Customer &&
-//       order.Customer.TaxInvoiceDeliveryAddress &&
-//       getData.apiResponse.Data[0].Order &&
-//       getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress
-//     ) {
-//       order.Customer.TaxInvoiceDeliveryAddress.AddressID =
-//         getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
-//     }
-
-//     storeOrder.setOrder(order);
-//   }
-//   router.push("/order/compulsory/payment");
-//   isLoading.value = false;
-// };
-
-// const onDelete = async (OrderNo: string) => {
-//   //ลบแบบร่างนี้
-//   isLoading.value = true;
-//   let req: OrderDetailRequest = {
-//     OrderNo: OrderNo,
-//   };
-//   var response = await useRepository().order.delete(req);
-//   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-//     if (response.apiResponse.Data) {
-//       console.log("Delete Msg", response.apiResponse.Data);
-//       // await onSearch()
-//     }
-//   }
-//   isLoading.value = false;
-// };
-
-// const onPayment = async (OrderNo: string) => {
-//   //ชำระเงิน
-//   router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
-// };
-
-// const onCheckStatus = async (OrderNo: string) => {
-//   //ติดตามสถานะ
-//   console.log("check status order : ", OrderNo);
-// };
-
-// const onDowloadPolicy = async (url: string) => { //ดาวโหลดกรมธรรม์
-//   window.open(url, "_blank");
-// }
-
-// const onContactCustomerService = async (url: string) => { //ติดต่อเจ้าหน้าที่
-// }
 
 const onSearch = async () => {
   let search = {
@@ -227,8 +321,8 @@ const onSearch = async () => {
     orderType: historySearch.value?.orderType,
   };
 
-  console.log(table.value);
-  table.value.dt.draw();
+  //console.log(table.value);
+  //table.value.dt.draw();
   // console.log("search", search);
 };
 
@@ -253,6 +347,7 @@ const handleChangeStatus = async (status: string) => {
 
 const handleSearch = async (searchValue: HistorySearch) => {
   filterOption.value = [];
+  filterOptionTable.value = [];
   console.log("handleSearch", searchValue);
   statusSearch.value = "clear";
   historySearch.value = searchValue;
@@ -275,8 +370,13 @@ const handleSearch = async (searchValue: HistorySearch) => {
     if (filter.length > 0) {
       filterOption.value = [...filterOption.value, filter[0]];
     }
+
+    
   }
-  //await loadHistoryStatus(filterOption.value);
+  filterOptionTable.value = filterOption.value;
+  await loadHistoryStatus(filterOption.value);
+
+  await onSearch();
 
   console.log("handleSearch filterOption", filterOption.value);
 };
@@ -284,150 +384,14 @@ const handleClearSearch = async (status: boolean) => {
   //filterOption.value = [{ field: "Status", type: "MATCH", value: "Pending" }];
   //await onSearch();
 };
-// DataTable
+const handlerChangeTable = async(datatable:any)=>{
+  table.value = datatable
 
-table.value = DataTable.use(DataTablesCore);
-// Column options in datatable
-const columns = [
-  {
-    targets: 0,
-    data: "OrderNo",
-    title: "",
-    // render:async function (data, type,row) {
-    //   console.log('type=',type)
-    //   if (type === "display") {
-    //     console.log(row)
-    //     const html = await renderToString(h(OrderHistorySearch))
-    //     console.log(html)
-    //     return html
-    //   }
+  console.log('datatable',table.value)
+}
 
-    //   return data;
-    // },
-  },
-  { data: "OrderNo", title: "", targets: 1 },
-  { data: "OrderNo", title: "เลขที่คำสั่งซื้อ", targets: 2, className: "order" },
-  { data: "OrderGroupType", title: "ผลิตภัณฑ์", targets: 3, className: "subject" },
-  { data: "GrandAmount", title: "จำนวนเงิน (บาท)", targets: 4, className: "amount" },
-  { data: "FirstName", title: "ผู้เอาประกัน", targets: 5, className: "name" },
-  { data: "FirstName", title: "สถานะ", targets: 6, className: "status" },
-  { data: "CreateType", title: "รูปแบบการทำรายการ", targets: 7 },
 
-  // { data: 'office', title: 'Office' },
-  // { data: 'extn', title: 'Extension' },
-  // { data: 'start_date', title: 'Start date' },
-  // { data: 'salary', title: 'Salary' },
-];
 
-// DataTable ajax options
-const token = await useUtility().getToken();
-const datatableAjax = {
-  url: "/api/grid",
-  method: "post",
-  data: (d: any) => {
-    return {
-      ...d,
-      URL: "/Order/grid/history/list",
-      Token: token,
-      Filter: filterOptionTable.value, //filterOption.value,
-    };
-  },
-};
-// DataTable options
-const datatableOptions = {
-  columnDefs: columns,
-
-  processing: true,
-  serverSide: true,
-  ajax: datatableAjax,
-  filter: false,
-  //searchCols: [{}, {}, { search: "My filter" }, { search: "^[0-9]", regex: true }],
-  language: {
-    paginate: {
-      previous: "ก่อนหน้า",
-      next: "ถัดไป",
-    },
-    info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
-    infoEmpty: "ไม่มีรายการ",
-    infoFiltered: "(จากทั้งหมด _MAX_ รายการ)",
-    lengthMenu: "แสดง _MENU_ รายการ",
-    search: "ค้นหา",
-    emptyTable: "ไม่มีรายการ",
-    zeroRecords: "ไม่มีรายการ",
-  },
-  initComplete: function (settings, json) {},
-  createdRow: async function (row: any, data: any) {
-    console.log("createdRow [data]=", data);
-    const menu = await renderToString(h(OrderHistoryGridMenu, { row: data }));
-    const has_child = await renderToString(
-      h(OrderHistoryGridColumn, {
-        row: data,
-        field: "has-child",
-        click:continute
-      })
-    ); 
-    const order = await renderToString(
-      h(OrderHistoryGridColumn, {
-        row: data,
-        field: "order",
-      })
-    );
-    const subject = await renderToString(
-      h(OrderHistoryGridColumn, {
-        row: data,
-        field: "subject",
-      })
-    );
-    const amount = await renderToString(
-      h(OrderHistoryGridColumn, {
-        row: data,
-        field: "amount",
-      })
-    );
-    const name = await renderToString(
-      h(OrderHistoryGridColumn, {
-        row: data,
-        field: "name",
-      })
-    );
-    const status = await renderToString(
-      h(OrderHistoryGridColumn, {
-        row: data,
-        field: "status",
-      })
-    );
-    const meta = await renderToString(
-      h(OrderHistoryGridColumn, {
-        row: data,
-        field: "meta",
-      })
-    );
-
-    var tds = row.getElementsByTagName("td");
-    var TdId1 = tds[0];
-    var TdId2 = tds[1]; // has-child
-    var TdId3 = tds[2]; // order
-    var TdId4 = tds[3]; // subject
-    var TdId5 = tds[4]; // amount
-    var TdId6 = tds[5]; // name
-    var TdId7 = tds[6]; // status
-    var TdId8 = tds[7]; // meta
-    TdId1.innerHTML = menu;
-    TdId2.innerHTML = data.OrderGroupNo != "" ? has_child : "";
-    //TdId2.innerHTML = "";
-    TdId3.innerHTML = order;
-    TdId4.innerHTML = subject;
-    TdId5.innerHTML = amount;
-    TdId6.innerHTML = name;
-    TdId7.innerHTML = status;
-    TdId8.innerHTML = meta;
-
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = [...tooltipTriggerList].map(
-      (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
-    );
-  },
-};
 const continute = () => {
   alert("ทำรายการต่อ");
   console.log('ทำรายการต่อ')

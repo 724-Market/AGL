@@ -100,9 +100,8 @@ const triggerEvent = async () => {
   const menuEdit = document.querySelector('.icon-edit')
   if(menuEdit){
     menuEdit.addEventListener('click',async () => {
-    // await onTest(menuEdit.dataset.id)
-    await resume(menuEdit.dataset.id)
-  })
+      await resume(menuEdit.dataset.id)
+    })
   }
  
   const menuPayment = document.querySelector('.icon-payment')

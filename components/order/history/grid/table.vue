@@ -127,7 +127,7 @@ const datatableOptions = {
 
   },
   createdRow: async function (row: any, data: any) {
-    console.log("createdRow [data]=", data);
+    //console.log("createdRow [data]=", data);
     const menu = await renderToString(h(OrderHistoryGridMenu, { row: data }));
     const has_child = await renderToString(
       h(OrderHistoryGridColumn, {
@@ -184,7 +184,8 @@ const datatableOptions = {
     var TdId8 = tds[7]; // meta
     TdId1.innerHTML = menu;
     //TdId2.innerHTML = data.OrderGroupNo != "" ? has_child : "";
-    TdId2.className = data.OrderGroupNo != "" ? "has-child" : "";
+    //TdId2.className = data.OrderGroupNo != "" ? "has-child" : "";
+    TdId2.className="has-child"
     TdId2.innerHTML = "";
     TdId3.innerHTML = order;
     TdId4.innerHTML = subject;
@@ -198,11 +199,7 @@ const datatableOptions = {
       (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
     );
 
-     // Get all the td elements with the class "has-child"
-     const tdHasChildren = document.querySelectorAll('.has-child')
-    // Add a click event listener to each td element
-    tdHasChildren.forEach(function(td) {
-        td.addEventListener('click', function() {
+    TdId2.addEventListener('click',async function() {
             // Get the parent tr element
             var tr = this.parentNode
 
@@ -224,7 +221,6 @@ const datatableOptions = {
                 }
             }
         })
-    })
   },
 };
 

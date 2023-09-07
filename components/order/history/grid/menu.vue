@@ -14,27 +14,27 @@
     <ul class="dropdown-menu">
       <li @click="resume()">
         <a class="dropdown-item"  title="ทำรายการต่อ"
-          ><span class="icon-edit">ทำรายการต่อ</span></a
+          ><span class="icon-edit" :data-id="$props.row.OrderNo">ทำรายการต่อ</span></a
         >
       </li>
       <li @click="pay()">
         <a class="dropdown-item"  title="ชำระเงิน"
-          ><span class="icon-payment">ชำระเงิน</span></a
+          ><span class="icon-payment" :data-id="$props.row.OrderNo">ชำระเงิน</span></a
         >
       </li>
       <li @click="trackStatus()">
         <a class="dropdown-item"  title="ติดตามสถานะ"
-          ><span class="icon-tracking">ติดตามสถานะ</span></a
+          ><span class="icon-tracking" :data-id="$props.row.OrderNo">ติดตามสถานะ</span></a
         >
       </li>
       <li @click="policyDetail()">
-        <a class="dropdown-item"   title="รายละเอียดกรมธรรม์"
-          ><span class="icon-policy">รายละเอียดกรมธรรม์</span></a
+        <a class="dropdown-item" title="รายละเอียดกรมธรรม์"
+          ><span class="icon-policy" :data-id="$props.row.OrderNo">รายละเอียดกรมธรรม์</span></a
         >
       </li>
       <li @click="download()">
         <a class="dropdown-item"  title="ดาวน์โหลดกรมธรรม์"
-          ><span class="icon-download-file">ดาวน์โหลดกรมธรรม์</span></a
+          ><span class="icon-download-file" :data-url="$props.row.PolicyURL">ดาวน์โหลดกรมธรรม์</span></a
         >
       </li>
       <li>
@@ -47,15 +47,15 @@
       </li>
       <li @click="deleteDraft()">
         <a class="dropdown-item"  title="ลบแบบร่างนี้"
-          ><span class="icon-trash">ลบแบบร่างนี้</span></a
+          ><span class="icon-trash" :data-id="$props.row.OrderNo">ลบแบบร่างนี้</span></a
         >
       </li>
     </ul>
   </div>
-  <OrderHistoryModalContactStaff
+  <!-- <OrderHistoryModalContactStaff
     @close-modal="handleCloasModal"
     :show="showModalStaff"
-  ></OrderHistoryModalContactStaff>
+  ></OrderHistoryModalContactStaff> -->
   <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
 </template>
 <script setup lang="ts">
@@ -79,128 +79,128 @@ const isLoading = ref(false);
 const storeOrder = useStorePlaceorder();
 const router = useRouter();
 
-const showModalStaff = ref(false);
+// const showModalStaff = ref(false);
 
-const resume = async (OrderNo: string) => {
-  //ทำรายการต่อ
-  alert("resume");
-  isLoading.value = true;
-  let req: OrderDetailRequest = {
-    OrderNo: OrderNo,
-  };
-  let order: PlaceOrderRequest = {};
-  var getData = await useRepository().order.summary(req);
-  if (
-    getData.apiResponse.Status &&
-    getData.apiResponse.Status == "200" &&
-    getData.apiResponse.Data &&
-    getData.apiResponse.Data.length > 0
-  ) {
-    if (
-      order.Customer &&
-      order.Customer.LegalPersonProfile &&
-      getData.apiResponse.Data[0].Order
-    ) {
-      order.Customer.LegalPersonProfile.CustomerID =
-        getData.apiResponse.Data[0].Order.Customer.LegalPersonProfile.CustomerID;
-    }
-    if (
-      order.Customer &&
-      order.Customer.PersonProfile &&
-      getData.apiResponse.Data[0].Order
-    ) {
-      order.Customer.PersonProfile.CustomerID =
-        getData.apiResponse.Data[0].Order.Customer.PersonProfile.CustomerID;
-    }
-    if (
-      order.Customer &&
-      order.Customer.DefaultAddress &&
-      getData.apiResponse.Data[0].Order
-    ) {
-      order.Customer.DefaultAddress.AddressID =
-        getData.apiResponse.Data[0].Order.Customer.DefaultAddress.AddressID;
-    }
-    if (
-      order.Customer &&
-      order.Customer.DeliveryAddress &&
-      getData.apiResponse.Data[0].Order &&
-      getData.apiResponse.Data[0].Order.Customer.DeliveryAddress
-    ) {
-      order.Customer.DeliveryAddress.AddressID =
-        getData.apiResponse.Data[0].Order.Customer.DeliveryAddress.AddressID;
-    }
-    if (
-      order.Customer &&
-      order.Customer.TaxInvoiceAddress &&
-      getData.apiResponse.Data[0].Order &&
-      getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress
-    ) {
-      order.Customer.TaxInvoiceAddress.AddressID =
-        getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress.AddressID;
-    }
-    if (
-      order.Customer &&
-      order.Customer.TaxInvoiceDeliveryAddress &&
-      getData.apiResponse.Data[0].Order &&
-      getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress
-    ) {
-      order.Customer.TaxInvoiceDeliveryAddress.AddressID =
-        getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
-    }
+// const resume = async (OrderNo: string) => {
+//   //ทำรายการต่อ
+//   alert("resume");
+//   isLoading.value = true;
+//   let req: OrderDetailRequest = {
+//     OrderNo: OrderNo,
+//   };
+//   let order: PlaceOrderRequest = {};
+//   var getData = await useRepository().order.summary(req);
+//   if (
+//     getData.apiResponse.Status &&
+//     getData.apiResponse.Status == "200" &&
+//     getData.apiResponse.Data &&
+//     getData.apiResponse.Data.length > 0
+//   ) {
+//     if (
+//       order.Customer &&
+//       order.Customer.LegalPersonProfile &&
+//       getData.apiResponse.Data[0].Order
+//     ) {
+//       order.Customer.LegalPersonProfile.CustomerID =
+//         getData.apiResponse.Data[0].Order.Customer.LegalPersonProfile.CustomerID;
+//     }
+//     if (
+//       order.Customer &&
+//       order.Customer.PersonProfile &&
+//       getData.apiResponse.Data[0].Order
+//     ) {
+//       order.Customer.PersonProfile.CustomerID =
+//         getData.apiResponse.Data[0].Order.Customer.PersonProfile.CustomerID;
+//     }
+//     if (
+//       order.Customer &&
+//       order.Customer.DefaultAddress &&
+//       getData.apiResponse.Data[0].Order
+//     ) {
+//       order.Customer.DefaultAddress.AddressID =
+//         getData.apiResponse.Data[0].Order.Customer.DefaultAddress.AddressID;
+//     }
+//     if (
+//       order.Customer &&
+//       order.Customer.DeliveryAddress &&
+//       getData.apiResponse.Data[0].Order &&
+//       getData.apiResponse.Data[0].Order.Customer.DeliveryAddress
+//     ) {
+//       order.Customer.DeliveryAddress.AddressID =
+//         getData.apiResponse.Data[0].Order.Customer.DeliveryAddress.AddressID;
+//     }
+//     if (
+//       order.Customer &&
+//       order.Customer.TaxInvoiceAddress &&
+//       getData.apiResponse.Data[0].Order &&
+//       getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress
+//     ) {
+//       order.Customer.TaxInvoiceAddress.AddressID =
+//         getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress.AddressID;
+//     }
+//     if (
+//       order.Customer &&
+//       order.Customer.TaxInvoiceDeliveryAddress &&
+//       getData.apiResponse.Data[0].Order &&
+//       getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress
+//     ) {
+//       order.Customer.TaxInvoiceDeliveryAddress.AddressID =
+//         getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
+//     }
 
-    storeOrder.setOrder(order);
-  }
-  router.push("/order/compulsory/payment");
-  isLoading.value = false;
-}
+//     storeOrder.setOrder(order);
+//   }
+//   router.push("/order/compulsory/payment");
+//   isLoading.value = false;
+// }
 
-const pay = async (OrderNo: string) => {
-  //ชำระเงิน
-  alert("pay");
-  router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
-}
+// const pay = async (OrderNo: string) => {
+//   //ชำระเงิน
+//   alert("pay");
+//   router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
+// }
 
-const trackStatus = async (OrderNo: string) => {
-  //ติดตามสถานะ
-  alert("trackStatus " + OrderNo);
-}
+// const trackStatus = async (OrderNo: string) => {
+//   //ติดตามสถานะ
+//   alert("trackStatus " + OrderNo);
+// }
 
-const policyDetail = async () => {
-  //รายละเอียดกรมธรรม์
-  alert("policyDetail");
-}
+// const policyDetail = async () => {
+//   //รายละเอียดกรมธรรม์
+//   alert("policyDetail");
+// }
 
-const download = async (url: string) => {
-  //ดาวโหลดกรมธรรม์
-  alert("download");
-  window.open(url, "_blank");
-}
+// const download = async (url: string) => {
+//   //ดาวโหลดกรมธรรม์
+//   alert("download");
+//   window.open(url, "_blank");
+// }
 
-const contactStaff = async () => {
-  //ติดต่อเจ้าหน้าที่
-  alert("contactStaff");
-  showModalStaff.value = false;
-  showModalStaff.value = true;
-}
+// const contactStaff = async () => {
+//   //ติดต่อเจ้าหน้าที่
+//   alert("contactStaff");
+//   showModalStaff.value = false;
+//   showModalStaff.value = true;
+// }
 
-const deleteDraft = async (OrderNo: string) => {
-  //ลบแบบร่างนี้
-  alert("deleteDraft");
-  isLoading.value = true;
-  let req: OrderDetailRequest = {
-    OrderNo: OrderNo,
-  };
-  var response = await useRepository().order.delete(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      console.log("Delete Msg", response.apiResponse.Data);
-      // await onSearch()
-    }
-  }
-  isLoading.value = false;
-}
+// const deleteDraft = async (OrderNo: string) => {
+//   //ลบแบบร่างนี้
+//   alert("deleteDraft");
+//   isLoading.value = true;
+//   let req: OrderDetailRequest = {
+//     OrderNo: OrderNo,
+//   };
+//   var response = await useRepository().order.delete(req);
+//   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+//     if (response.apiResponse.Data) {
+//       console.log("Delete Msg", response.apiResponse.Data);
+//       // await onSearch()
+//     }
+//   }
+//   isLoading.value = false;
+// }
 
-const handleCloasModal = async (refresh: Boolean) => {
-  showModalStaff.value = false;
-}
+// const handleCloasModal = async (refresh: Boolean) => {
+//   showModalStaff.value = false;
+// }
 </script>

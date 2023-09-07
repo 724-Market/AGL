@@ -41,7 +41,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["changeTable"])
+const emit = defineEmits(["changeTable", "onResume", "onPay", "onTracking", "onPolicy", "onDownload", "onHelp", "onDelete"])
 const table = ref();
 let dt;
 
@@ -198,6 +198,63 @@ const datatableOptions = {
     const tooltipList = [...tooltipTriggerList].map(
       (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
     );
+
+    const menuEdit = TdId1.querySelector('.icon-edit');
+    menuEdit.addEventListener('click', async () => {
+      // alert('resume ' + menuEdit.dataset.id)
+      emit('onResume', menuEdit.dataset.id)
+    })
+
+    const menuPayment = TdId1.querySelector('.icon-payment');
+    menuPayment.addEventListener('click', async () => {
+      // alert('pay ' + menuPayment.dataset.id)
+      emit('onPay', menuPayment.dataset.id)
+    })
+
+    const menuTracking = TdId1.querySelector('.icon-tracking')
+    menuTracking.addEventListener('click',async () => {
+      // alert('trackStatus ' + menuTracking.dataset.id)
+      emit('onTracking', menuTracking.dataset.id)
+    })
+
+    const menuPolicy = TdId1.querySelector('.icon-policy')
+    menuPolicy.addEventListener('click',async () => {
+      // alert('policyDetail ' + menuPolicy.dataset.id)
+      emit('onPolicy', menuPolicy.dataset.id)
+    })
+
+    const menuDownload = TdId1.querySelector('.icon-policy')
+    menuDownload.addEventListener('click',async () => {
+      // alert('download ' + menuDownload.dataset.PolicyURL)
+      emit('onDownload', menuDownload.dataset.PolicyURL)
+    })
+
+    const menuStaff = TdId1.querySelector('.icon-help')
+    menuStaff.addEventListener('click',async () => {
+      // alert('contactStaff ' + menuStaff.dataset.id)
+      emit('onHelp', menuStaff.dataset.PolicyURL)
+    })
+
+    const menuDelete = TdId1.querySelector('.icon-trash')
+    menuDelete.addEventListener('click',async () => {
+      // alert('deleteDraft ' + menuDelete.dataset.id)
+      emit('onDelete', menuDelete.dataset.id)
+    })
+
+    // TdId1.addEventListener('click', async function() {
+    //   // Get the parent tr element
+    //   var tr = this.parentNode
+    //   // console.log(tr)
+    //   // const menuEdit = tr.querySelector('.icon-edit')
+    //   // menuEdit.addEventListener('click',async () => {
+    //   //   console.log('menuEdit', menuEdit.dataset.id)
+    //   // })
+
+    //   // const menuPayment = tr.querySelector('.icon-payment');
+    //   // menuPayment.addEventListener('click',async () => {
+    //   //   console.log('menuPayment', menuPayment.dataset.id)
+    //   // })
+    // })
 
     TdId2.addEventListener('click',async function() {
             // Get the parent tr element

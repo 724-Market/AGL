@@ -21,7 +21,18 @@
           :status-search="statusSearch"
         ></OrderHistoryStatus>
 
-        <OrderHistoryGridTable :filters="filterOptionTable" v-if="filterOptionTable.length>0" @change-table="handlerChangeTable"></OrderHistoryGridTable>
+        <OrderHistoryGridTable 
+          :filters="filterOptionTable"
+          v-if="filterOptionTable.length>0" 
+          @change-table="handlerChangeTable"
+          @on-resume="resume"
+          @on-pay="pay"
+          @on-tracking="trackStatus"
+          @on-policy="policyDetail"
+          @on-dowload="download"
+          @on-help="contactStaff"
+          @on-delete="deleteDraft"
+        ></OrderHistoryGridTable>
       </div>
     </div>
     <OrderHistoryModalContactStaff
@@ -90,50 +101,42 @@ const onLoad = onMounted(async () => {
   
   if (AuthenInfo.value) {
     await loadHistoryStatus()
-    await triggerEvent()
+    // await triggerEvent()
   } else {
     router.push("/login");
   }
 });
 
-const triggerEvent = async () => {
-  const menuEdit = document.querySelector('.icon-edit')
-  if(menuEdit){
-    menuEdit.addEventListener('click',async () => {
-      await resume(menuEdit.dataset.id)
-    })
-  }
- 
-  const menuPayment = document.querySelector('.icon-payment')
-  menuPayment.addEventListener('click',async () => {
-    await pay(menuPayment.dataset.id)
-  })
-
-  const menuTracking = document.querySelector('.icon-tracking')
-  menuTracking.addEventListener('click',async () => {
-    await trackStatus(menuTracking.dataset.id)
-  })
-
-  const menuPolicy = document.querySelector('.icon-policy')
-  menuPolicy.addEventListener('click',async () => {
-    await policyDetail(menuPolicy.dataset.id)
-  })
-
-  const menuDownload = document.querySelector('.icon-policy')
-  menuDownload.addEventListener('click',async () => {
-    await download(menuDownload.dataset.PolicyURL)
-  })
-
-  const menuStaff = document.querySelector('.icon-help')
-  menuStaff.addEventListener('click',async () => {
-    await contactStaff(true)
-  })
-
-  const menuDelete = document.querySelector('.icon-trash')
-  menuDelete.addEventListener('click',async () => {
-    await deleteDraft(menuDelete.dataset.id)
-  })
-};
+// const triggerEvent = async () => {
+//   const menuEdit = document.querySelector('.icon-edit')
+//   menuEdit.addEventListener('click',async () => {
+//     await resume(menuEdit.dataset.id)
+//   })
+//   const menuPayment = document.querySelector('.icon-payment')
+//   menuPayment.addEventListener('click',async () => {
+//     await pay(menuPayment.dataset.id)
+//   })
+//   const menuTracking = document.querySelector('.icon-tracking')
+//   menuTracking.addEventListener('click',async () => {
+//     await trackStatus(menuTracking.dataset.id)
+//   })
+//   const menuPolicy = document.querySelector('.icon-policy')
+//   menuPolicy.addEventListener('click',async () => {
+//     await policyDetail(menuPolicy.dataset.id)
+//   })
+//   const menuDownload = document.querySelector('.icon-policy')
+//   menuDownload.addEventListener('click',async () => {
+//     await download(menuDownload.dataset.PolicyURL)
+//   })
+//   const menuStaff = document.querySelector('.icon-help')
+//   menuStaff.addEventListener('click',async () => {
+//     await contactStaff(true)
+//   })
+//   const menuDelete = document.querySelector('.icon-trash')
+//   menuDelete.addEventListener('click',async () => {
+//     await deleteDraft(menuDelete.dataset.id)
+//   })
+// };
 
 const resume = async (OrderNo: string) => {
   //ทำรายการต่อ
@@ -318,7 +321,6 @@ const onSearch = async () => {
 
   //console.log(table.value);
   //table.value.dt.draw();
-  await triggerEvent()
   // console.log("search", search);
 };
 

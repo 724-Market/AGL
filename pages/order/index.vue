@@ -98,11 +98,13 @@ const onLoad = onMounted(async () => {
 
 const triggerEvent = async () => {
   const menuEdit = document.querySelector('.icon-edit')
-  menuEdit.addEventListener('click',async () => {
+  if(menuEdit){
+    menuEdit.addEventListener('click',async () => {
     // await onTest(menuEdit.dataset.id)
     await resume(menuEdit.dataset.id)
   })
-
+  }
+ 
   const menuPayment = document.querySelector('.icon-payment')
   menuPayment.addEventListener('click',async () => {
     await pay(menuPayment.dataset.id)
@@ -315,8 +317,8 @@ const onSearch = async () => {
     orderType: historySearch.value?.orderType,
   };
 
-  console.log(table.value);
-  table.value.dt.draw();
+  //console.log(table.value);
+  //table.value.dt.draw();
   await triggerEvent()
   // console.log("search", search);
 };

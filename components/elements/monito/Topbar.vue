@@ -6,7 +6,7 @@
         <div class="mt-4">
             <h3>
               ยอดเงินคงเหลือ 
-              <span :class="{ 'text-danger' : remaining <= 0, 'text-success' : remaining > 0 }">{{remaining}}</span> 
+              <span :class="{ 'text-danger' : remaining <= 0, 'text-success' : remaining > 0 }">{{useUtility().getCurrency(remaining,2)}}</span> 
               บาท
             </h3>
         </div>

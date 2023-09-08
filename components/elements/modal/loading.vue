@@ -1,5 +1,5 @@
 <template>
-    <dialog id="loading-dialog"  v-show="_loading">
+    <dialog id="loading-dialog" >
         <div class="dialog-card loading-card no-icon no-text">
             <div class="loading-icon">
                 <div class="logo"></div>
@@ -41,7 +41,7 @@ const _loading = ref(false)
 watch(
     () => props.loading,
     () => {
-        //console.log('prop value changed', props.loading)
+        console.log('prop value changed', props.loading)
         if (props.loading) {
             openModal()
         }

@@ -1,5 +1,5 @@
 <template>
-    <dialog id="loading-dialog"  v-show="_loading">
+    <dialog id="loading-dialog" >
         <div class="dialog-card loading-card no-icon no-text">
             <div class="loading-icon">
                 <div class="logo"></div>

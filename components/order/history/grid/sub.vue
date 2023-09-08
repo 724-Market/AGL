@@ -1,6 +1,6 @@
 
 <template>
-    <tr class="is-child"  v-for="item in props.row" :key="item.OrderNo">
+    <tr class="is-child"  v-for="item in props.row" :key="item.OrderNo" :group-data="item.OrderGroupNo">
             <td>
               <OrderHistoryGridMenu :row="item"></OrderHistoryGridMenu>
             </td>

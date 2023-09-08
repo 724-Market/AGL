@@ -15,7 +15,8 @@ export const useStoreInformation = defineStore('useStoreInformation', {
             EffectiveType: "",
             EffectiveDate: "",
             ExpireDate: "",
-            CarDetail: ""
+            CarDetail: "",
+            InsuranceDay: 0
         }
     },
     getters: {

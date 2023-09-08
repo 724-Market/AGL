@@ -270,12 +270,11 @@ const datatableOptions = {
 
             // Toggle the class "is-open" on the parent tr element
             tr.classList.toggle('is-open')
-
             // Check if the class "is-open" is present after toggling
             if (tr.classList.contains('is-open')) {
                 const subdata = await useRepository().order.getSubHistoryList(req)
 
-                const sub_group = await renderToString(
+                let sub_group = await renderToString(
                     h(OrderHistoryGridSub, {
                         row: subdata.apiResponse.Data,
                     })
@@ -287,12 +286,16 @@ const datatableOptions = {
                 // Insert the new tr element after the current tr
                 tr.insertAdjacentHTML('afterend', newTrHtml)
             } else {
-                console.log(tr,tr.nextSibling)
-                // Check if the next sibling is a tr element
-                if (tr.nextSibling.tagName === 'TR') {
-                    // Remove the next sibling tr element
-                    tr.parentNode.removeChild(tr.nextSibling)
-                }
+              const sub_group = document.querySelectorAll(`tr[group-data="${data.OrderGroupNo}"]`);
+                console.log(sub_group)
+                sub_group.forEach(function(value,key){
+                  tr.parentNode.removeChild(value)
+                })
+                // // Check if the next sibling is a tr element
+                // if (tr.nextSibling.tagName === 'TR') {
+                //     // Remove the next sibling tr element
+                //     tr.parentNode.removeChild(tr.nextSibling)
+                // }
             }
         }
 

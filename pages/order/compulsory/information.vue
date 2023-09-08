@@ -110,21 +110,7 @@
               <h3 class="card-title">รายการที่เลือก</h3>
             </div>
 
-            <!-- <div class="card-body">
-              <OrderCartCar 
-                :carDetail="carDetailForCart" 
-                :insuranceDay="insuranceDayForCart"
-                :effectiveDate="effectiveDateForCart"
-                :expireDate="expireDateForCart"
-                :carUse="carUseForCart"
-                :carLabel="carLabelForCart">
-              </OrderCartCar>
-            </div> -->
-            <OrderCartCar v-if="InformationInfo" :car-detail="InformationInfo.CarDetail" :car-use="InformationInfo.CarUse"
-              :is-car-red="false" :effective-date="InformationInfo.EffectiveDate"
-              :expire-date="InformationInfo.ExpireDate" :insurance-day="InformationInfo.InsuranceDay"></OrderCartCar>
-
-            <OrderChecklist :list="checklist" v-if="checklist && checklist.length > 0" />
+            <OrderChecklist :list="checklist" />
 
           </aside>
 
@@ -154,6 +140,7 @@ import { defineEventHandler } from "~/server/api/setting.post";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { storeToRefs } from "pinia";
 import { IChecklist } from "~/shared/entities/checklist-entity";
+import { info } from "console";
 
 // Define Store
 const store = useStoreInformation();
@@ -169,7 +156,6 @@ const submitted = ref(false);
 // Response status for notice user
 const statusMessage = ref()
 const statusMessageType = ref()
-
 
 const CoverageExpireDateFullYearMaxDay: number = defineEventHandler.compulsory.CoverageExpireDateFullYearMaxDay
 const coverageExpireDateNotFullYearMinDay: number = defineEventHandler.compulsory.CoverageExpireDateNotFullYearMinDay
@@ -229,15 +215,14 @@ let values = reactive({})
 
 // Page Load Event Load CarYear, CarUse, Call Api Default CarType And Check Data In Store
 const onLoad = onMounted(async () => {
-  // isLoading.value = true
   await loadcarYesr('')
   await loadCarUse()
   await handleRadioCarUseChange('PERSONAL', '')
 
-  const info = sessionStorage.getItem("useStoreInformation") ?
-    JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as IInformation : undefined
-  //console.log('information', info)
-  if (info) {
+  // const info = sessionStorage.getItem("useStoreInformation") ?
+  //   JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as IInformation : undefined
+  const info = CarInfo.value
+  if (info.CarUse != '') {
     carUseText.value = info.CarUse
     await handleRadioCarUseChange(info.CarUse, info.CarType)
     await loadCarSize(info.CarType, info.CarSize)
@@ -253,13 +238,11 @@ const onLoad = onMounted(async () => {
     effectiveType.value = info.EffectiveType
     effectiveDateText.value = info.EffectiveDate
     expireDateText.value = info.ExpireDate
+    insuranceDay.value = info.InsuranceDay ?? 0
 
     checklist.value[0].className = 'current'
     checklist.value[1].className = 'current'
-
   }
-  // isLoading.value = false
-  // console.log("Loading = ",isLoading.value)
 });
 
 // Define watch For Radio CarUse Change
@@ -288,11 +271,11 @@ const handleRadioCarUseChange = async (event: String, optionText: String) => {
     carCC.value = "";
 
     let carTypeList: SelectOption[] = [];
-    const response = await useCallApi().post<ICarTypeResponse[]>({
-      URL: "/Master/cartype/list",
+    let req = {
       UseCarCode: carUse.value.find((e) => e.value == event)?.value,
-      UseCarName: carUse.value.find((e) => e.value == event)?.label,
-    });
+      UseCarName: carUse.value.find((e) => e.value == event)?.label
+    }
+    const response = await useRepository().master.cartype(req)
     response.apiResponse.Data?.forEach((obj: ICarTypeResponse) => {
       let car: SelectOption = {
         label: obj.Name,
@@ -300,11 +283,11 @@ const handleRadioCarUseChange = async (event: String, optionText: String) => {
       };
       carTypeList.push(car);
     });
+
     carType.value = carTypeList;
     if (optionText != "") carTypeText = optionText;
     // console.log("carType", carType.value)
     isLoading.value = false
-    //console.log("Loading = ",isLoading.value)
   }
 };
 
@@ -370,12 +353,10 @@ const handleEffectiveTypeChange = async (event: any) => {
   switch (event) {
     case "FULLYEAR":
       if (selectDate != undefined) await setExpireDate(CoverageExpireDateFullYearMaxDay);
-      // insuranceDay.value = CoverageExpireDateFullYearMaxDay;
       setInsuranceDay(CoverageExpireDateFullYearMaxDay)
       break;
     case "NOTFULLYEAR":
       if (selectDate != undefined) {
-        // await setExpireDate(coverageExpireDateNotFullYearMinDay); // TODO Bug ExpireDate Here
         let expireMinDateText = new Date(selectDate);
         expireMinDateText.setDate(expireMinDateText.getDate() + coverageExpireDateNotFullYearMinDay);
         expireMinDate = expireMinDateText.toLocaleDateString("en-CA");
@@ -384,11 +365,10 @@ const handleEffectiveTypeChange = async (event: any) => {
         expireMaxDateText.setDate(expireMaxDateText.getDate() + coverageExpireDateNotFullYearMaxDay);
         expireMaxDate = expireMaxDateText.toLocaleDateString("en-CA");
 
-        // insuranceDay.value = CoverageExpireDateFullYearMaxDay;
-        setInsuranceDay(CoverageExpireDateFullYearMaxDay)
+        if(CarInfo.value.InsuranceDay) setInsuranceDay(CarInfo.value.InsuranceDay ?? 0)
+        else setInsuranceDay(CoverageExpireDateFullYearMaxDay)
       }
       else {
-        // insuranceDay.value = 0;
         setInsuranceDay(0)
       }
   }
@@ -414,7 +394,6 @@ const handleEffectiveDateChange = async (event: any) => {
       expireMaxDateText.setDate(expireMaxDateText.getDate() + coverageExpireDateNotFullYearMaxDay)
       expireMaxDate = expireMaxDateText.toLocaleDateString("en-CA")
 
-      // insuranceDay.value = coverageExpireDateNotFullYearMinDay;
       setInsuranceDay(coverageExpireDateNotFullYearMinDay)
   }
   await checkFromDate()
@@ -428,7 +407,6 @@ const handleExpireDateChange = async (event: any) => {
   let exDate = new Date(event.target.value)
   let differenceMs = exDate.getTime() - efDate.getTime()
   let differenceDays = Math.floor(differenceMs / (1000 * 60 * 60 * 24))
-  // insuranceDay.value = differenceDays
   setInsuranceDay(differenceDays)
 
   await checkFromDate()
@@ -440,12 +418,6 @@ const setExpireDate = async (dateCount: number) => {
   if (dateCount < 365) expireDate.setDate(expireDate.getDate() + dateCount)
   else expireDate.setFullYear(expireDate.getFullYear() + 1)
   expireDateText.value = expireDate.toLocaleDateString("en-CA")
-
-  // expireDate = expireDate.toLocaleDateString("en-US", { // yyyy/MM/dd
-  //   year: "numeric",
-  //   month: "2-digit",
-  //   day: "2-digit",
-  // })
 };
 
 const setInsuranceDay = async (dateCount: number) => {
@@ -471,9 +443,7 @@ const loadcarYesr = async (optionText: String) => {
 const loadCarUse = async () => {
   isLoading.value = true
   let carUseList: SelectOption[] = []
-  const response = await useCallApi().post<IUseCarResponse[]>({
-    URL: "/Master/usecar/list",
-  });
+  const response = await useRepository().master.usecar()
   response.apiResponse.Data?.forEach((obj: IUseCarResponse, index: number) => {
     let car: SelectOption = {
       label: obj.UseCarName,
@@ -504,11 +474,11 @@ const loadCarSize = async (params: String, optionText: String) => {
   carCC.value = ''
 
   let carSizeList: SelectOption[] = []
-  const response = await useCallApi().post<ICarCategoryResponse[]>({
-    URL: "/Master/carcategory/list",
+  let req = {
     UseCarCode: carUseText,
-    CarTypeCode: params,
-  });
+    CarTypeCode: params
+  }
+  const response = await useRepository().master.carcategory(req)
   response.apiResponse.Data?.forEach((obj: ICarCategoryResponse) => {
     let car: SelectOption = {
       label: obj.CarSize,
@@ -537,12 +507,12 @@ const loadCarBrand = async (params: String, optionText: String) => {
   carCC.value = ''
 
   let carBrandList: SelectOption[] = [];
-  const response = await useCallApi().post<ICarBrandResponse[]>({
-    URL: "/Master/carbrand/list",
+  let req = {
     CarTypeCode: carTypeText,
     CarCategoryID: carSizeText,
-    CarSalesYear: `${Number(params) - 543}`,
-  });
+    CarSalesYear: `${Number(params) - 543}`
+  }
+  const response = await useRepository().master.carbrand(req)
   response.apiResponse.Data?.forEach((obj: ICarBrandResponse) => {
     let car: SelectOption = {
       label: obj.Name,
@@ -572,12 +542,12 @@ const loadCarModel = async (params: String, optionText: String) => {
   carCC.value = ''
 
   let carModelList: SelectOption[] = [];
-  const response = await useCallApi().post<ICarModelResponse[]>({
-    URL: "/Master/carmodel/list",
+  let req = {
     CarBrandID: params,
     CarCategoryID: carSizeText,
-    CarSalesYear: `${Number(carYesrsText) - 543}`,
-  });
+    CarSalesYear: `${Number(carYesrsText) - 543}`
+  }
+  const response = await useRepository().master.carmodel(req)
   response.apiResponse.Data?.forEach((obj: ICarModelResponse) => {
     let car: SelectOption = {
       label: obj.Name,
@@ -606,12 +576,12 @@ const loadSubcarModel = async (params: String, optionText: String) => {
     { label: 'อื่นๆ', value: 'other' },
     { label: 'ไม่ทราบรุ่นย่อย', value: 'unknown' }
   ]
-  const response = await useCallApi().post<ISubCarModelResponse[]>({
-    URL: "/Master/subcarmodel/list",
+  let req = {
     CarBrandID: carBrandText,
     CarModelID: params,
-    CarSalesYear: `${Number(carYesrsText) - 543}`,
-  });
+    CarSalesYear: `${Number(carYesrsText) - 543}`
+  }
+  const response = await useRepository().master.subcarmodel(req)
   response.apiResponse.Data?.forEach((obj: ISubCarModelResponse) => {
     let car: SelectOption = {
       label: obj.Name,
@@ -637,8 +607,6 @@ const checkFromCar = async () => {
 
 // Function For Check Form CoverageDate Data For CheckList
 const checkFromDate = async () => {
-  // console.log('check effectiveDateText', effectiveDateText.value)
-  // console.log('check expireDateText', expireDateText.value)
   if (effectiveDateText.value != '' && expireDateText.value != '') {
     checklist.value[1].className = 'current'
   }
@@ -649,13 +617,10 @@ const checkFromDate = async () => {
 
 // Submit form event
 const submitOrder = async (formData: any) => {
-  //store.clearInformation();
-
   let informationData = formData as IInformation;
   informationData.InsuranceDay = insuranceDay.value
   informationData.CarDetail = `${carDetail} ${Number(informationData.CarYear) - 543}`;
   store.setInformation(informationData);
-  // console.log("infarmationData", infarmationData)
 
   const router = useRouter();
   router.push("/order/compulsory/packages");

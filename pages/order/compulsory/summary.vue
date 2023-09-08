@@ -129,20 +129,29 @@ import {
   PaymentFeeLimitRequest,
   PaymentFeeLimitResponse,
 } from "~/shared/entities/pledge-entity";
+import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStoreInformation } from "~/stores/order/storeInformation";
+import { useStorePackageList } from "~/stores/order/storePackageList";
+import { useStorePackage } from "~/stores/order/storePackage";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
 import { useStoreFeeLimit } from "~/stores/plege/storeFeeLimit";
 import { defineEventHandler } from "~/server/api/setting.post";
+import { IPackageRequest } from "~/shared/entities/packageList-entity";
 
 //define store
+const storeAuth = useStoreUserAuth();
+const { AuthenInfo } = storeToRefs(storeAuth);
+
 const store = useStoreOrderSummary();
 // define getter in store
 const { OrderSummaryInfo } = storeToRefs(store);
 
 const infomation = useStoreInformation();
+
+const storePackage = useStorePackage(); 
 
 const placeorder = useStorePlaceorder();
 const { OrderInfo } = storeToRefs(placeorder);
@@ -159,6 +168,13 @@ const isLoading = ref(false);
 // Response status for notice user
 const statusMessage = ref();
 const statusMessageType = ref();
+
+const paging: globalThis.Ref<Paging> = ref({
+  Length: 5,
+  Page: 1,
+  TotalRecord: 0,
+  RedirectUrl: "/order/compulsory/packages",
+});
 
 const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
 const paymentDetail: globalThis.Ref<PaymentDetails | undefined> = ref();
@@ -208,7 +224,7 @@ const getDayOfYear = (EffectiveDate: string, ExpireDate: string): number => {
 
   return days;
 };
-const setStoretoStep = (data: OrderResponse, orderNo: string) => {
+const setStoretoStep = async (data: OrderResponse, orderNo: string) => {
   if (data && data.Order) {
     const order = data.Order;
 
@@ -256,6 +272,24 @@ const setStoretoStep = (data: OrderResponse, orderNo: string) => {
       InsuranceDay: getDayOfYear(order.Package.EffectiveDate, order.Package.ExpireDate),
     };
     infomation.setInformation(reqInfo);
+
+    const store = useStorePackageList();
+    const request: IPackageRequest = {
+      AgentCode: AuthenInfo.value.userName,
+      CarBrandID: reqInfo.CarBrand,
+      CarCategoryID: reqInfo.CarSize,
+      CarModelID: reqInfo.CarModel,
+      CarSalesYear: reqInfo.CarYear,
+      CarTypeCode: reqInfo.CarType,
+      EffectiveDate: reqInfo.EffectiveDate,
+      EffectiveType: reqInfo.EffectiveType,
+      ExpireDate: reqInfo.ExpireDate.split("/").reverse().join("-"),
+      SubCarModelID: reqInfo.SubCarModel.split("|")[0],
+      UseCarCode: reqInfo.CarUse,
+      Paging: paging.value,
+    };
+    const data2 = await store.getPackageList(request);
+    console.log('packageList', data2)
   }
 };
 const loadOrderSummary = async (orderNo: string) => {

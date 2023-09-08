@@ -60,10 +60,13 @@ import {
 import { storeToRefs } from "pinia";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStoreInformation } from "~/stores/order/storeInformation";
+import { useStorePackageList } from "~/stores/order/storePackageList";
+import { useStorePackage } from "~/stores/order/storePackage";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { Filter } from "~/shared/entities/table-option";
 import { IInformation } from "~/shared/entities/information-entity";
+import { IPackageRequest, Paging } from "~/shared/entities/packageList-entity";
 
 
 // Define Variables
@@ -73,6 +76,13 @@ const isLoading = ref(false);
 const table = ref();
 let values = reactive({});
 const router = useRouter();
+
+const paging: globalThis.Ref<Paging> = ref({
+  Length: 5,
+  Page: 1,
+  TotalRecord: 0,
+  RedirectUrl: "/order/compulsory/packages",
+});
 
 const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
 const paymentDetail: globalThis.Ref<PaymentDetails | undefined> = ref();
@@ -92,6 +102,7 @@ const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
 
 const infomation = useStoreInformation();
+const storePackage = useStorePackage(); 
 const placeorder = useStorePlaceorder();
 const storeSummary = useStoreOrderSummary();
 
@@ -107,37 +118,6 @@ const onLoad = onMounted(async () => {
   }
 });
 
-// const triggerEvent = async () => {
-//   const menuEdit = document.querySelector('.icon-edit')
-//   menuEdit.addEventListener('click',async () => {
-//     await resume(menuEdit.dataset.id)
-//   })
-//   const menuPayment = document.querySelector('.icon-payment')
-//   menuPayment.addEventListener('click',async () => {
-//     await pay(menuPayment.dataset.id)
-//   })
-//   const menuTracking = document.querySelector('.icon-tracking')
-//   menuTracking.addEventListener('click',async () => {
-//     await trackStatus(menuTracking.dataset.id)
-//   })
-//   const menuPolicy = document.querySelector('.icon-policy')
-//   menuPolicy.addEventListener('click',async () => {
-//     await policyDetail(menuPolicy.dataset.id)
-//   })
-//   const menuDownload = document.querySelector('.icon-policy')
-//   menuDownload.addEventListener('click',async () => {
-//     await download(menuDownload.dataset.PolicyURL)
-//   })
-//   const menuStaff = document.querySelector('.icon-help')
-//   menuStaff.addEventListener('click',async () => {
-//     await contactStaff(true)
-//   })
-//   const menuDelete = document.querySelector('.icon-trash')
-//   menuDelete.addEventListener('click',async () => {
-//     await deleteDraft(menuDelete.dataset.id)
-//   })
-// };
-
 const resume = async (OrderNo: string) => {
   //ทำรายการต่อ
   isLoading.value = true;
@@ -149,7 +129,7 @@ const resume = async (OrderNo: string) => {
   isLoading.value = false;
 }
 
-const setStoretoStep = (data: OrderResponse, orderNo: string) => {
+const setStoretoStep = async (data: OrderResponse, orderNo: string) => {
   if (data && data.Order) {
     const order = data.Order;
 
@@ -197,6 +177,23 @@ const setStoretoStep = (data: OrderResponse, orderNo: string) => {
       InsuranceDay: getDayOfYear(order.Package.EffectiveDate, order.Package.ExpireDate),
     };
     infomation.setInformation(reqInfo);
+
+    const store = useStorePackageList();
+    const request: IPackageRequest = {
+      AgentCode: AuthenInfo.value.userName,
+      CarBrandID: reqInfo.CarBrand,
+      CarCategoryID: reqInfo.CarSize,
+      CarModelID: reqInfo.CarModel,
+      CarSalesYear: reqInfo.CarYear,
+      CarTypeCode: reqInfo.CarType,
+      EffectiveDate: reqInfo.EffectiveDate,
+      EffectiveType: reqInfo.EffectiveType,
+      ExpireDate: reqInfo.ExpireDate.split("/").reverse().join("-"),
+      SubCarModelID: reqInfo.SubCarModel.split("|")[0],
+      UseCarCode: reqInfo.CarUse,
+      Paging: paging.value,
+    };
+    const data = await store.getPackageList(request);
   }
 };
 
@@ -290,9 +287,11 @@ const deleteDraft = async (OrderNo: string) => {
   };
   var response = await useRepository().order.delete(req);
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      await onSearch()
-    }
+    await loadHistoryStatus();
+    await onSearch()
+  }
+  else {
+    alert(response.apiResponse.ErrorMessage)
   }
   isLoading.value = false;
 }

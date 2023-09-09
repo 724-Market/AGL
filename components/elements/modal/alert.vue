@@ -8,6 +8,7 @@
             <div class="modal-body" style="height:150px">
               <div class="notice-warning"><i class="fa-thin fa-triangle-exclamation"></i>{{ message }}</div>
             </div>
+            <button class="btn-primary" @click="closeModal">ตกลง</button>
         </div>
     </div>
   

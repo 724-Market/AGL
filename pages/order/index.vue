@@ -281,19 +281,22 @@ const contactStaff = async () => {
 
 const deleteDraft = async (OrderNo: string) => {
   //ลบแบบร่างนี้
-  isLoading.value = true;
-  let req: OrderDetailRequest = {
-    OrderNo: OrderNo,
-  };
-  var response = await useRepository().order.delete(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    await loadHistoryStatus();
-    await onSearch()
-  }
-  else {
-    alert(response.apiResponse.ErrorMessage)
-  }
-  isLoading.value = false;
+  let confirmAction = confirm("ต้องการลบรายการหรือไม่?");
+  if (confirmAction) {
+    isLoading.value = true;
+    let req: OrderDetailRequest = {
+      OrderNo: OrderNo,
+    };
+    var response = await useRepository().order.delete(req);
+    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+      await loadHistoryStatus();
+      await onSearch()
+    }
+    else {
+      alert(response.apiResponse.ErrorMessage)
+    }
+    isLoading.value = false;
+  } 
 }
 
 const handleCloasModal = async (refresh: Boolean) => {

@@ -1,7 +1,6 @@
 <template>
   <FormKit
     type="form"
-    @submit="submitSearch"
     :actions="false"
     id="form-search"
     form-class="form-search form-theme"
@@ -17,7 +16,6 @@
             placeholder="หมวดหมู่การค้นหา"
             :options="searchOption"
             v-model="searchCategory"
-
           />
           <!-- :validation="[['required'], ['matches', /^$|/]]"
             :validation-messages="{
@@ -30,23 +28,19 @@
             name="SearchText"
             placeholder="ระบุคำค้นหา"
             v-model="searchText"
-           
             autocomplete="off"
           />
           <!-- validation="required"
             :validation-messages="{ required: 'กรุณาใส่คำค้นหา' }" -->
-          <FormKit
-            type="submit"
+          <button
+            type="button"
             label="ค้นหา"
             name="search-submit"
             id="search-submit"
-            :classes="{
-              input: 'btn-primary btn-search',
-              outer: 'form-actions',
-            }"
-            :disabled="submitted"
-            :loading="isLoading"
-          />
+            class="btn btn-primary btn-search-fix"
+           
+            @click="submitSearch"
+          >ค้นหา</button>
         </div>
 
         <div class="accordion search-advance-box" id="accordion-search-advance">
@@ -126,6 +120,7 @@
       </button>
     </div>
   </aside>
+  <ElementsModalAlert v-if="isError" :is-error="isError" :message="messageError" />
 </template>
 
 <script setup lang="ts">
@@ -150,9 +145,11 @@ var searchOption: globalThis.Ref<SelectOption[]> = ref([
 
 var orderTypeOption: globalThis.Ref<SelectOption[]> = ref([
   { label: "ทั้งหมด", value: "" },
-  { label: "ภาคบังคับ", value: "COMPULSORY",option: "OrderType" },
+  { label: "ภาคบังคับ", value: "COMPULSORY", option: "OrderType" },
   { label: "ภาคสมัครใจ", value: "VOLUNTARY", option: "OrderType" },
 ]);
+const isError = ref(false);
+const messageError = ref("");
 var searchCategory = ref("");
 var searchText = ref("");
 var orderTypeText = ref("");
@@ -168,20 +165,43 @@ watch(searchCategory, async (newCategory) => {
 const clearSearch = async () => {
   searchCategory.value = "";
   searchText.value = "";
-  orderTypeText.value="";
+  orderTypeText.value = "";
   emit("clearSearchHistory", true);
 };
 
 const submitSearch = async (formData: any) => {
-  let historySearch: HistorySearch = {
-    SearchCategory: searchOption.value.find((x) => x.value == searchCategory.value),
-    SearchText: formData.SearchText,
-    orderType:
-      orderTypeText.value != ""
-        ? orderTypeOption.value.find((x) => x.value == orderTypeText.value)
-        : undefined,
-  };
-  
-  emit("searchHistory", historySearch);
+  isError.value = false;
+  messageError.value = "";
+  if (formData.SearchText != "" && orderTypeText.value && orderTypeText.value != "") {
+    let historySearch: HistorySearch = {
+      SearchCategory: searchOption.value.find((x) => x.value == searchCategory.value),
+      SearchText: formData.SearchText,
+      orderType:
+        orderTypeText.value != ""
+          ? orderTypeOption.value.find((x) => x.value == orderTypeText.value)
+          : undefined,
+    };
+
+    emit("searchHistory", historySearch);
+  } else {
+    isError.value = true;
+    messageError.value = "กรุณากรอกช่องในการค้นหาให้ครบ";
+  }
 };
 </script>
+<style scoped>
+.btn-primary a.btn-primary {
+    background-color: #138543!important;
+    border-color: #138543!important;
+    color: #fff!important;
+}
+.btn:disabled{
+  background: var(--fk-color-border) !important;
+    color: var(--fk-color-button) !important;
+    cursor: not-allowed;
+}
+.btn-search-fix{
+  margin-top: 15px!important;
+ 
+}
+</style>

@@ -16,7 +16,8 @@
 <script setup>
 const props = defineProps({
   message: String,
-  isError:Boolean
+  isError:Boolean,
+  reload:Boolean
 });
 const _loading = ref(false)
 watch(

@@ -175,7 +175,7 @@ const submitSearch = async (formData: any) => {
   if ((searchCategory.value!='' && formData.SearchText != "") || orderTypeText.value && orderTypeText.value != "") {
     let historySearch: HistorySearch = {
       SearchCategory: searchOption.value.find((x) => x.value == searchCategory.value),
-      SearchText: formData.SearchText,
+      SearchText: searchText.value,
       orderType:
         orderTypeText.value != ""
           ? orderTypeOption.value.find((x) => x.value == orderTypeText.value)

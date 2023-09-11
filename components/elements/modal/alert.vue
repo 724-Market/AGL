@@ -8,6 +8,7 @@
             <div class="modal-body" style="height:150px">
               <div class="notice-warning"><i class="fa-thin fa-triangle-exclamation"></i>{{ message }}</div>
             </div>
+            <button class="btn-primary" @click="closeModal">ตกลง</button>
         </div>
     </div>
   
@@ -15,7 +16,8 @@
 <script setup>
 const props = defineProps({
   message: String,
-  isError:Boolean
+  isError:Boolean,
+  reload:Boolean
 });
 const _loading = ref(false)
 watch(

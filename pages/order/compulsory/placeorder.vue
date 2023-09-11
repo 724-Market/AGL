@@ -9,12 +9,10 @@
   >
     <FormKit
       type="form"
-      @submit="submitOrder"
       :actions="false"
       id="form-order"
       form-class="form-order form-theme"
       :incomplete-message="false"
-      #default="{ value }"
       v-model="values"
     >
       <div class="row">
@@ -136,7 +134,7 @@
             <OrderChecklist :list="checklist" @change-check-save="handlerCheckSave" />
           </aside>
 
-          <FormKit
+          <!-- <FormKit
             type="submit"
             label="ไปเลือกวิธีชำระเงิน"
             name="order-submit"
@@ -148,9 +146,21 @@
 
             :disabled="!checkSave"
             :loading="isLoading"
-          />
+          /> -->
 
-          <NuxtLink to="packages" class="btn btn-back">ย้อนกลับ</NuxtLink>
+          <button 
+            type="button"
+            class="formkit-input btn btn-primary form-actions"
+            @click="submitOrder"
+            label="ไปเลือกวิธีชำระเงิน"
+            name="order-submit"
+            id="order-submit"
+            :disabled="!checkSave"
+            :loading="isLoading"
+            >ไปเลือกวิธีชำระเงิน
+          </button>
+
+          <NuxtLink to="packages" class="btn btn-back mt-3">ย้อนกลับ</NuxtLink>
         </div>
       </div>
     </FormKit>
@@ -851,7 +861,7 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
   }
 };
 const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
-  // console.log('handleCheckCarDetail', objectCarDetail)
+  console.log('handleCheckCarDetail', objectCarDetail)
   if (
     objectCarDetail.License.length > 0 &&
     objectCarDetail.LicenseProvinceID.length > 0 &&

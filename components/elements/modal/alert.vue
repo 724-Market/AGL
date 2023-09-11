@@ -48,11 +48,11 @@ function openModal() {
 }
 
 function closeModal() {
-    if(reload)
+    if(props.reload)
     {
         window.location.reload();
     }
-    //modal.hide()
+    
 
     _loading.value = false
 }

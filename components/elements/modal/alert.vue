@@ -48,8 +48,12 @@ function openModal() {
 }
 
 function closeModal() {
+    if(reload)
+    {
+        window.location.reload();
+    }
     //modal.hide()
-    window.location.reload();
+
     _loading.value = false
 }
 

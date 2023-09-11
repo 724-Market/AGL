@@ -120,7 +120,7 @@
       </button>
     </div>
   </aside>
-  <ElementsModalAlert v-if="isError" :is-error="isError" :message="messageError" />
+  <ElementsModalAlert v-if="isError" :is-error="isError" :message="messageError" :reload="false" />
 </template>
 
 <script setup lang="ts">
@@ -172,7 +172,7 @@ const clearSearch = async () => {
 const submitSearch = async (formData: any) => {
   isError.value = false;
   messageError.value = "";
-  if (formData.SearchText != "" && orderTypeText.value && orderTypeText.value != "") {
+  if ((searchCategory.value!='' && formData.SearchText != "") || orderTypeText.value && orderTypeText.value != "") {
     let historySearch: HistorySearch = {
       SearchCategory: searchOption.value.find((x) => x.value == searchCategory.value),
       SearchText: formData.SearchText,

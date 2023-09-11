@@ -169,10 +169,10 @@ const clearSearch = async () => {
   emit("clearSearchHistory", true);
 };
 
-const submitSearch = async (formData: any) => {
+const submitSearch = async () => {
   isError.value = false;
   messageError.value = "";
-  if ((searchCategory.value!='' && formData.SearchText != "") || orderTypeText.value && orderTypeText.value != "") {
+  if ((searchCategory.value!='' && searchText.value != "") || orderTypeText.value && orderTypeText.value != "") {
     let historySearch: HistorySearch = {
       SearchCategory: searchOption.value.find((x) => x.value == searchCategory.value),
       SearchText: searchText.value,

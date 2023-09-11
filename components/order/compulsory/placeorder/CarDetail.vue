@@ -157,6 +157,7 @@
       </div>
     </div>
   </div>
+  <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   <!-- <ElementsDialogModal /> -->
 </template>
 
@@ -179,6 +180,8 @@ const props = defineProps({
     type: Object as () => CarDetailsExtension,
   },
 });
+
+const isLoading = ref(false);
 
 // const SubCarModel: globalThis.Ref<String> = ref("")
 var SubCarModel: string = ""
@@ -266,6 +269,7 @@ const handleCarEngineNumberChange = async (event: any) => {
 }
 
 const handleFileChange = async (event: any) => {
+  isLoading.value = true;
   let file = event.target.files[0]
   let base64FileString = await convertFileToBase64(file)
   let uploadFileReq: UploadFileRequest = {
@@ -274,11 +278,14 @@ const handleFileChange = async (event: any) => {
   }
   const response = await useRepository().file.upload(uploadFileReq)
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    LicenseFileID = response.apiResponse.Data?.ID ?? ''
+    if(response.apiResponse.Data){
+      LicenseFileID = response.apiResponse.Data[0]?.ID ?? ''
+    }
   } else {
     // messageError.value = response.apiResponse.ErrorMessage ?? "";
   }
   await handleCheckCarDetail()
+  isLoading.value = false;
 }
 
 const convertFileToBase64 = async (file: File): Promise<string> => {
@@ -300,6 +307,7 @@ const convertFileToBase64 = async (file: File): Promise<string> => {
 }
 
 const handleCheckCarDetail = async () => {
+  console.log('LicenseFileID', LicenseFileID)
   let carDetail: CarDetailsExtension = {
     License: carLicenseValue,
     BodyNo: carBodyNumberValue,

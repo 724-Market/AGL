@@ -77,8 +77,13 @@ const table = ref();
 let values = reactive({});
 const router = useRouter();
 
+const d = new Date()
+const getMonth = d.getMonth() + 1
+const EffectiveDate = `${d.getFullYear()}-${getMonth > 9 ? getMonth : '0' + getMonth}-${d.getDate() > 9 ? d.getDate() : '0' + d.getDate()}`
+const ExpireDate = `${d.getFullYear() + 1}-${getMonth > 9 ? getMonth : '0' + getMonth}-${d.getDate() > 9 ? d.getDate() : '0' + d.getDate()}`
+
 const paging: globalThis.Ref<Paging> = ref({
-  Length: 5,
+  Length: 100,
   Page: 1,
   TotalRecord: 0,
   RedirectUrl: "/order/compulsory/packages",
@@ -122,7 +127,7 @@ const resume = async (OrderNo: string) => {
   //ทำรายการต่อ
   isLoading.value = true;
 
-  await loadOrderDetail(OrderNo); 
+  // await loadOrderDetail(OrderNo); 
   await loadOrderSummary(OrderNo);
   router.push("/order/compulsory/payment");
 
@@ -186,34 +191,36 @@ const setStoretoStep = async (data: OrderResponse, orderNo: string) => {
       CarModelID: reqInfo.CarModel,
       CarSalesYear: reqInfo.CarYear,
       CarTypeCode: reqInfo.CarType,
-      EffectiveDate: reqInfo.EffectiveDate,
+      EffectiveDate: EffectiveDate,
       EffectiveType: reqInfo.EffectiveType,
-      ExpireDate: reqInfo.ExpireDate.split("/").reverse().join("-"),
+      ExpireDate: ExpireDate,
       SubCarModelID: reqInfo.SubCarModel.split("|")[0],
       UseCarCode: reqInfo.CarUse,
       Paging: paging.value,
     };
-    const data = await store.getPackageList(request);
+    const packageList = await store.getPackageList(request);
+    const packageSelect = packageList.Data?.find(o => o.CompanyCode == order.Package.CompanyCode) as IPackageResponse 
+    storePackage.setPackage(packageSelect);
   }
 };
 
-const loadOrderDetail = async (orderNo: string) => {
-  const req: OrderDetailRequest = {
-    OrderNo: orderNo,
-  };
+// const loadOrderDetail = async (orderNo: string) => {
+//   const req: OrderDetailRequest = {
+//     OrderNo: orderNo,
+//   };
 
-  const response = await useRepository().order.details(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
-      orderDetail.value = response.apiResponse.Data[0].OrderDetails;
-      paymentDetail.value = response.apiResponse.Data[0].PaymentDetails;
-      optionDetail.value = response.apiResponse.Options as OptionsResponse;
-    } else {
-      // data not found
-    }
-  } else {
-  }
-};
+//   const response = await useRepository().order.details(req);
+//   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+//     if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
+//       orderDetail.value = response.apiResponse.Data[0].OrderDetails;
+//       paymentDetail.value = response.apiResponse.Data[0].PaymentDetails;
+//       optionDetail.value = response.apiResponse.Options as OptionsResponse;
+//     } else {
+//       // data not found
+//     }
+//   } else {
+//   }
+// };
 
 const loadOrderSummary = async (orderNo: string) => {
   const req: OrderDetailRequest = {
@@ -228,7 +235,7 @@ const loadOrderSummary = async (orderNo: string) => {
         data.Order.OrderNo = orderNo;
       }
       storeSummary.setOrderSummary(data);
-      setStoretoStep(data, orderNo);
+      await setStoretoStep(data, orderNo);
     }
   }
 };
@@ -281,19 +288,22 @@ const contactStaff = async () => {
 
 const deleteDraft = async (OrderNo: string) => {
   //ลบแบบร่างนี้
-  isLoading.value = true;
-  let req: OrderDetailRequest = {
-    OrderNo: OrderNo,
-  };
-  var response = await useRepository().order.delete(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    await loadHistoryStatus();
-    await onSearch()
-  }
-  else {
-    alert(response.apiResponse.ErrorMessage)
-  }
-  isLoading.value = false;
+  let confirmAction = confirm("ต้องการลบรายการหรือไม่?");
+  if (confirmAction) {
+    isLoading.value = true;
+    let req: OrderDetailRequest = {
+      OrderNo: OrderNo,
+    };
+    var response = await useRepository().order.delete(req);
+    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+      await loadHistoryStatus();
+      await onSearch()
+    }
+    else {
+      alert(response.apiResponse.ErrorMessage)
+    }
+    isLoading.value = false;
+  } 
 }
 
 const handleCloasModal = async (refresh: Boolean) => {
@@ -345,6 +355,7 @@ const handleChangeStatus = async (status: string) => {
 };
 
 const handleSearch = async (searchValue: HistorySearch) => {
+  console.log('handleSearch', searchValue)
   filterOption.value = [];
   filterOptionTable.value = [];
   console.log("handleSearch", searchValue);
@@ -369,8 +380,6 @@ const handleSearch = async (searchValue: HistorySearch) => {
     if (filter.length > 0) {
       filterOption.value = [...filterOption.value, filter[0]];
     }
-
-    
   }
   filterOptionTable.value = filterOption.value;
   await loadHistoryStatus(filterOption.value);
@@ -381,7 +390,12 @@ const handleSearch = async (searchValue: HistorySearch) => {
 };
 const handleClearSearch = async (status: boolean) => {
   //filterOption.value = [{ field: "Status", type: "MATCH", value: "Pending" }];
-  //await onSearch();
+  // var clear: HistorySearch = {
+  //   SearchCategory: undefined,
+  //   SearchText: '',
+  //   orderType: undefined
+  // }
+  // await handleSearch(clear)
 };
 const handlerChangeTable = async(datatable:any)=>{
   table.value = datatable

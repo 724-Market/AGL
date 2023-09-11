@@ -33,8 +33,9 @@
 
       <div class="prefix">0 บาท</div>
 
-      <FormKit type="slider" label="ใช้ส่วนลด" value="0" min="0" :max="someDiscountMax" step="1" show-input
-        tooltip="true" v-model="someDiscount"/>
+      <!-- :show-input="true" -->
+      <FormKit type="slider" label="ใช้ส่วนลด" min="0" :max="someDiscountMax" step="1" 
+        :tooltip="true" v-model="someDiscount"/>
 
       <div class="suffix">{{someDiscountMax}} บาท</div>
 

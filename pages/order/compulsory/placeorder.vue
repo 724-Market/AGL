@@ -95,6 +95,7 @@
             v-if="isError"
             :is-error="isError"
             :message="messageError"
+            :reload="true"
           />
         </div>
 

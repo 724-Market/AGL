@@ -99,7 +99,7 @@
       @close-warning="handleCloseWarning"
     ></PaymentWalletModalWarningWallet>
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
-    <ElementsModalAlert v-if="isError" :is-error="isError" :message="messageError" />
+    <ElementsModalAlert v-if="isError" :is-error="isError" :message="messageError" :reload="true" />
   </NuxtLayout>
 </template>
 

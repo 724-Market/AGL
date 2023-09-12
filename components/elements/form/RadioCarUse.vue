@@ -3,7 +3,7 @@
     PERSONAL: 'ส่วนบุคคล',
     HIRE: 'รับจ้าง',
     RENT: 'ให้เช่า',
-  }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block" />
+  }" options-class="option-block" />
 </template>
 
 <style scoped>

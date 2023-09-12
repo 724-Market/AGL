@@ -63,7 +63,7 @@ export default () => {
             result.respOptions = undefined
 
         }
-        console.log(result)
+        
         return result
     }
     const get = async <T>(params: any): Promise<IAPIResponse<T>> => {
@@ -127,7 +127,7 @@ export default () => {
 
             }
         })
-
+        console.log('post',result)
         return result
 
     }
@@ -219,7 +219,7 @@ export default () => {
 
             }
         })
-
+        console.log('apiRepository',result)
         return result
 
     }

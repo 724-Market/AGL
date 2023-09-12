@@ -13,7 +13,7 @@
 
       <div
         :class="isStep1 ? 'card-body pledge-step-1 is-active' : 'card-body pledge-step-1'"
-        v-if="props.paymentList"
+        v-if="paymentList"
       >
         <FormKit
           type="form"
@@ -29,7 +29,7 @@
               type="number"
               label="จำนวนเงินที่ต้องการเติม"
               name="amount"
-              :validation="`required|number|min:${props.paymentList.Min}|max:${props.paymentList.Max}`"
+              :validation="`required|number|min:${paymentList.Min}|max:${paymentList.Max}`"
               :validation-messages="{
                 required: 'กรุณากรอกจำนวนเงิน',
                 number: 'กรุณากรอกเป็นตัวเลขเท่านั้น',
@@ -71,68 +71,26 @@
               v-model="isConsent"
             />
           </div>
-          <button type="button"
-          class="formkit-input btn btn-primary btn-accept pledge-action"
-            @click="submitPledge"
-            label="ยืนยันการเติมเงิน"
-            name="pledge-submit"
-            id="pledge-submit"
-            :disabled="
-              !isConsent ||
-              !(Amount >= props.paymentList.Min && Amount <= props.paymentList.Max)
-            "
-            :loading="isLoading"
-            >ยืนยันการเติมเงิน</button>
-          <!-- <FormKit
+          <button
             type="button"
+            class="formkit-input btn btn-primary btn-accept pledge-action"
             @click="submitPledge"
             label="ยืนยันการเติมเงิน"
             name="pledge-submit"
             id="pledge-submit"
-            class="btn btn-primary btn-accept"
-            :classes="{
-             // input: 'btn btn-primary btn-accept',
-              outer: 'pledge-action',
-            }"
             :disabled="
-              !isConsent ||
-              !(Amount >= props.paymentList.Min && Amount <= props.paymentList.Max)
+              !isConsent || !(Amount >= paymentList.Min && Amount <= paymentList.Max)
             "
             :loading="isLoading"
-          /> -->
+          >
+            ยืนยันการเติมเงิน
+          </button>
         </FormKit>
       </div>
 
       <div
         :class="isStep2 ? 'card-body pledge-step-2 is-active' : 'card-body pledge-step-2'"
       >
-        <!-- <div class="qr-payment">
-          <div class="status-list">
-            <div class="logo">724 Payment</div>
-            <div class="status-item">
-              <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
-              <p>7B2303094767564</p>
-            </div>
-            <div class="status-item">
-              <h5 class="topic">จำนวนเงิน</h5>
-              <p>123.45 บาท</p>
-            </div>
-            <div class="status-item text-warning">
-              <h5 class="topic">กรุณาชำระภายใน</h5>
-              <p>14 มี.ค. 2566 17:34 น.</p>
-            </div>
-          </div>
-          <div class="qr-info">
-            <figure class="qr-code">
-              <img src="/uploads/qr.png" alt="" />
-            </figure>
-            <small>0543FRE3GDTEY094767</small>
-            <p>หรือคลิกปุ่มเพื่อบันทึก QR ด้านล่าง</p>
-            <a class="btn btn-secondary" href="#" title="บันทึก QR"
-              ><i class="fa-solid fa-download"></i>บันทึก QR</a
-            >
-          </div>
-        </div> -->
         <PaymentQrDetail
           v-if="isStep2"
           :paymen-gateway-info="props.walletPaymentGateway"
@@ -220,6 +178,13 @@
       </div>
     </div>
     <!-- <ElementsModalLoading :loading="isLoading"></ElementsModalLoading> -->
+    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+    <ElementsModalAlert
+      v-if="isError"
+      :is-error="isError"
+      :message="messageError"
+      :reload="false"
+    />
   </dialog>
 </template>
 <script setup lang="ts">
@@ -244,14 +209,15 @@ const emit = defineEmits(["closeWallet", "topupConfirm"]);
 
 const props = defineProps({
   show: Boolean,
-  paymentList: {
-    type: Object as () => CreditHistoryPaymentAdd,
-  },
+  // paymentList: {
+  //   type: Object as () => CreditHistoryPaymentAdd,
+  // },
   walletPaymentGateway: {
     type: Object as () => PaymentGatewayResponse,
   },
 });
-
+const isError = ref(false);
+const messageError = ref("");
 const _show = ref(false);
 const historyPaymentList: globalThis.Ref<number[]> = ref([]);
 const paymentResponse: globalThis.Ref<PaymentGetResponse | undefined> = ref();
@@ -269,16 +235,15 @@ let paymentService: PaymentNoticeService;
 const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
 const noticePayment = useStoreNoticePayment();
-const { NoticePaymentInfo } = storeToRefs(noticePayment);
 
 const feeLimit = useStoreFeeLimit();
-const { FeeLimitInfo } = storeToRefs(feeLimit);
 const router = useRouter();
 const route = useRoute();
 
 const feeAmount = ref(0);
 const feeMessage = ref("");
 const topupMessage = ref("");
+const paymentList: globalThis.Ref<CreditHistoryPaymentAdd | undefined> = ref();
 // Submit form event
 const submitPledge = async (formData: any) => {
   // Add waiting time for debug
@@ -287,12 +252,11 @@ const submitPledge = async (formData: any) => {
 const AddAmount = (credit: number) => {
   const amount = parseInt(Amount.value.toString());
   let total = amount + credit;
-  if (props.paymentList) {
-    if (total >= props.paymentList.Min && total <= props.paymentList.Max) {
+  if (paymentList.value) {
+    if (total >= paymentList.value.Min && total <= paymentList.value.Max) {
       Amount.value = total;
-    }
-    else{
-      Amount.value  =props.paymentList.Max
+    } else {
+      Amount.value = paymentList.value.Max;
     }
   }
   //getMessageWallet();
@@ -354,15 +318,40 @@ watch(
     }
   }
 );
+const loadPledgeHistoryPaymentAddList = async () => {
+  isError.value = false;
+  messageError.value = "";
+  isLoading.value = true;
+  const response = await useRepository().pledge.creditHistoryPaymentAddList();
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data) {
+      paymentList.value = response.apiResponse.Data;
+    } else {
+      // data not found
+    }
+  } else {
+    isError.value = true;
+    messageError.value = response.apiResponse.ErrorMessage ?? "";
+  }
+  isLoading.value = false;
+};
 const onLoad = onMounted(async () => {
-  paymentService = await useService().paymentNotice;
-  getMessageWallet()
-  // const myModal = document.getElementById("modal_demo") as Element
-  // modal = new $bootstrap.Modal(myModal);
   if (props.show) {
     openModal();
   }
+
+  const values = await Promise.all([
+    loadPledgeHistoryPaymentAddList(),
+    useService().paymentNotice,
+    getMessageWallet(),
+  ]);
+  if (values.length > 0) {
+    paymentService = values[1];
+  }
+  // const myModal = document.getElementById("modal_demo") as Element
+  // modal = new $bootstrap.Modal(myModal);
 });
+
 const getMessageWallet = async () => {
   const req: PaymentFeeLimitRequest = {
     PaymentType: "BILL_PAYMENT",
@@ -370,7 +359,6 @@ const getMessageWallet = async () => {
   const response = await feeLimit.getFeeLimit(req);
   if (response.Status && response.Status == "200") {
     if (response.Data) {
-      
       let filter = response.Data.filter((x) => x.Amount > 0);
       if (filter.length > 0) {
         feeMessage.value = `ค่าธรรมเนียม ${useUtility().getCurrency(
@@ -453,11 +441,11 @@ function openModal() {
   isStep3.value = false;
   const dialogLoading = document.getElementById("wallet-dialog");
   if (dialogLoading) dialogLoading.showModal();
-  if (props.paymentList) {
-    props.paymentList.List.sort((a, b) => a - b);
-    historyPaymentList.value = props.paymentList.List;
-    minVolumn.value = useUtility().getCurrency(props.paymentList.Min, 0);
-    maxVolumn.value = useUtility().getCurrency(props.paymentList.Max, 0);
+  if (paymentList.value) {
+    paymentList.value.List.sort((a, b) => a - b);
+    historyPaymentList.value = paymentList.value.List;
+    minVolumn.value = useUtility().getCurrency(paymentList.value.Min, 0);
+    maxVolumn.value = useUtility().getCurrency(paymentList.value.Max, 0);
   }
 }
 
@@ -473,14 +461,13 @@ async function closeModal(refresh: boolean) {
 </script>
 <style scoped>
 .btn-primary a.btn-primary {
-    background-color: #138543!important;
-    border-color: #138543!important;
-    color: #fff!important;
+  background-color: #138543 !important;
+  border-color: #138543 !important;
+  color: #fff !important;
 }
-.btn:disabled{
+.btn:disabled {
   background: var(--fk-color-border) !important;
-    color: var(--fk-color-button) !important;
-    cursor: not-allowed;
+  color: var(--fk-color-button) !important;
+  cursor: not-allowed;
 }
-
 </style>

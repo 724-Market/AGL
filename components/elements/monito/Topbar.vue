@@ -19,7 +19,6 @@
       <PaymentWalletModalWallet
           v-if="showWallet"
           :show="showWallet"
-          :payment-list="creditPaymenyAddList"
           @close-wallet="handleCloseWallet"
           @topup-confirm="handleTopupConfirm"
           :wallet-payment-gateway="walletPaymentGateway"
@@ -54,7 +53,6 @@ var remaining = ref(0)
 const showWallet = ref(false);
 
 const onLoad = onMounted(async () => {
-  await loadPledgeHistoryPaymentAddList()
   await loadPledgeCreditBalance()
 });
 

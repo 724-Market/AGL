@@ -89,7 +89,6 @@
     <PaymentWalletModalWallet
     v-if="showWallet"
       :show="showWallet"
-      :payment-list="creditPaymenyAddList"
       @close-wallet="handleCloseWallet"
       @topup-confirm="handleTopupConfirm"
       :wallet-payment-gateway="walletPaymentGateway"
@@ -139,7 +138,7 @@ import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
 import { useStoreFeeLimit } from "~/stores/plege/storeFeeLimit";
 import { defineEventHandler } from "~/server/api/setting.post";
-import { IPackageRequest } from "~/shared/entities/packageList-entity";
+import { IPackageRequest, Paging } from "~/shared/entities/packageList-entity";
 
 //define store
 const storeAuth = useStoreUserAuth();
@@ -380,7 +379,7 @@ const onLoad = onMounted(async () => {
     if (paymentDetail.value && paymentDetail.value.PaymentType == "PLEDGE") {
       isLoading.value = true;
       Promise.all([
-        loadPledgeHistoryPaymentAddList(),
+        //loadPledgeHistoryPaymentAddList(),
         loadPledgeCreditBalance(),
         loadPledgeFeeLimit(),
       ]).then((values) => {

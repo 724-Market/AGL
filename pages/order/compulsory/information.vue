@@ -20,8 +20,10 @@
               </div>
 
               <div class="form-inline">
-                <ElementsFormSelectCarType :options="carType" :value="carType.value" v-model="carTypeText"
-                  @change="handleCarTypeChange" />
+                <FormKit type="select" label="ประเภทรถยนต์" name="CarType" placeholder="เลือกข้อมูล"  :options="carType" :value="carType.value" v-model="carTypeText"
+                  @change="handleCarTypeChange()" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                <!-- <ElementsFormSelectCarType :options="carType" :value="carType.value" v-model="carTypeText"
+                  @change="handleCarTypeChange" /> -->
               </div>
 
               <div class="form-inline">
@@ -168,7 +170,7 @@ var carDetail: String = ""
 var carUse: globalThis.Ref<SelectOption[]> = ref([])
 var carUseText: globalThis.Ref<String> = ref("PERSONAL")
 var carType: globalThis.Ref<SelectOption[]> = ref([])
-var carTypeText: String = ""
+var carTypeText= ref("")
 var carSize: globalThis.Ref<SelectOption[]> = ref([])
 var carSizeText: String = ""
 var carYesrs: globalThis.Ref<SelectOption[]> = ref([])
@@ -251,7 +253,7 @@ watch(carUseText, async (newCarUse) => {
 });
 
 // Event Handle CarUse Change Call Api Cartype
-const handleRadioCarUseChange = async (event: String, optionText: String) => {
+const handleRadioCarUseChange = async (event: String, optionText: string) => {
   if (event != undefined && (event == "PERSONAL" || event == "HIRE" || event == "RENT")) {
     isLoading.value = true
     checklist.value[0].className = ''
@@ -263,7 +265,7 @@ const handleRadioCarUseChange = async (event: String, optionText: String) => {
     subcarModel.value = [];
 
     carYesrsText = "";
-    carTypeText = "";
+    carTypeText.value = "";
     carSizeText = "";
     carBrandText = "";
     carModelText = "";
@@ -285,15 +287,15 @@ const handleRadioCarUseChange = async (event: String, optionText: String) => {
     });
 
     carType.value = carTypeList;
-    if (optionText != "") carTypeText = optionText;
+    if (optionText != "") carTypeText.value = optionText;
     // console.log("carType", carType.value)
     isLoading.value = false
   }
 };
 
 // Event Handle CarType Change Call function loadCarSize
-const handleCarTypeChange = async (event: any) => {
-  await loadCarSize(event.target.value, "");
+const handleCarTypeChange = async () => {
+  await loadCarSize(carTypeText.value, "");
 };
 
 // Event Handle CarSize Change Clear Data Under Self
@@ -475,7 +477,7 @@ const loadCarSize = async (params: String, optionText: String) => {
 
   let carSizeList: SelectOption[] = []
   let req = {
-    UseCarCode: carUseText,
+    UseCarCode: carUseText.value,
     CarTypeCode: params
   }
   const response = await useRepository().master.carcategory(req)
@@ -597,7 +599,7 @@ const loadSubcarModel = async (params: String, optionText: String) => {
 
 // Function For Check Form Car Data For CheckList
 const checkFromCar = async () => {
-  if (carTypeText != '' && carSizeText != '' && carYesrsText != '' && carBrandText != '' && carModelText != '') {
+  if (carTypeText.value != '' && carSizeText != '' && carYesrsText != '' && carBrandText != '' && carModelText != '') {
     checklist.value[0].className = 'current'
   }
   else {

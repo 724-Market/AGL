@@ -118,15 +118,10 @@
 								<div class="action">
 									<div class="quantity">
 										<div class="form-hide-label">
-											<div class="formkit-outer" data-type="number">
-												<div class="formkit-wrapper">
-													<label class="formkit-label" for="input_cc2qq">จำนวน</label>
-													<div class="formkit-inner">
-														<input autocomplete="false" class="formkit-input" type="number" name="input-name"
-															id="input_cc2qq" min="0" max="30" step="1" value="1" inputmode="numeric">
-													</div>
-												</div>
-											</div>
+											<FormKit type="number" label="จำนวน" validation="required|max:30|between:1,30" value="1" min="1"
+												max="30"
+												:validation-messages="{ required: 'ระบุจำนวน', between: 'จำนวนไม่ถูกต้อง', max: 'จำนวนไม่เพียงพอ' }"
+												inputmode="numeric" />
 										</div>
 										<span class="remain">มีอยู่ 30 แผ่น</span>
 									</div>
@@ -162,94 +157,15 @@
 								<div class="action">
 									<div class="quantity">
 										<div class="form-hide-label">
-											<div class="formkit-outer" data-type="number">
-												<div class="formkit-wrapper">
-													<label class="formkit-label" for="input_cc2qq">จำนวน</label>
-													<div class="formkit-inner">
-														<input autocomplete="false" class="formkit-input" type="number" name="input-name"
-															id="input_cc2qq" min="0" max="30" step="1" value="1" inputmode="numeric">
-													</div>
-												</div>
-											</div>
+											<FormKit type="number" label="จำนวน" validation="required|max:30000|between:1,30000" value="1"
+												min="1" max="30000"
+												:validation-messages="{ required: 'ระบุจำนวน', between: 'จำนวนไม่ถูกต้อง', max: 'จำนวนไม่เพียงพอ' }"
+												inputmode="numeric" />
 										</div>
 										<span class="remain">มีอยู่ 30,000 แผ่น</span>
 									</div>
 
 									<button class="btn-primary" type="button">ใส่ตระกร้า</button>
-								</div>
-							</div>
-
-						</div>
-					</div>
-
-					<div class="card">
-						<div class="card-body">
-
-							<div class="package-item-new">
-								<div class="detail">
-									<figure class="brand">
-										<img src="" alt="">
-									</figure>
-
-									<div class="topic">
-										<h4 class="title">พ.ร.บ. สำหรับรถยนต์นั่งส่วนบุคคล</h4>
-										<div class="more">
-											<a href="#">คลิกดูรายละเอียด</a>
-										</div>
-									</div>
-								</div>
-
-								<div class="tags">
-									<span class="badge">บริษัท นำสินประกันภัย จำกัด (มหาชน)</span>
-									<span class="badge-bg-orange"><i class="fa-solid fa-clock-four"></i>ได้กรมธรรม์ 1-3
-										วันทำการ</span>
-									<span class="badge-secondary"><i class="fa-regular fa-memo-circle-check"></i>พร้อมใบกำกับภาษี</span>
-								</div>
-
-								<div class="action">
-									<div class="price">
-										<span class="actual-price">645.21</span>
-										<span class="promotion">ค่าส่งเสริมการขาย 15.25 บาท</span>
-									</div>
-
-									<button class="btn-primary" type="button">เลือกแพ็กเกจนี้</button>
-								</div>
-							</div>
-
-						</div>
-					</div>
-
-					<div class="card">
-						<div class="card-body">
-
-							<div class="package-item-new">
-								<div class="detail">
-									<figure class="brand">
-										<img src="https://724.co.th/image/logo_insurance_company/logo_TIP.png" alt="">
-									</figure>
-
-									<div class="topic">
-										<h4 class="title">พ.ร.บ. สำหรับรถยนต์นั่งส่วนบุคคล</h4>
-										<div class="more">
-											<a href="#">คลิกดูรายละเอียด</a>
-										</div>
-									</div>
-								</div>
-
-								<div class="tags">
-									<span class="badge">ทิพยประกันภัย</span>
-									<span class="badge-bg-success"><i class="fa-solid fa-bolt"></i>ได้กรมธรรม์ทันที</span>
-									<span class="badge-secondary"><i class="fa-regular fa-memo-circle-check"></i>พร้อมใบกำกับภาษี</span>
-								</div>
-
-								<div class="action">
-									<div class="price">
-										<span class="actual-price">645.21</span>
-										<span class="promotion">ค่าส่งเสริมการขาย 1,135.49 บาท</span>
-									</div>
-
-									<button class="btn-primary" type="button">เลือกแพ็กเกจนี้</button>
-									<a class="btn-light" href="#">เปรียบเทียบ</a>
 								</div>
 							</div>
 

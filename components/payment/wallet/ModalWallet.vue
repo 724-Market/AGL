@@ -347,6 +347,13 @@ const onLoad = onMounted(async () => {
   ]);
   if (values.length > 0) {
     paymentService = values[1];
+
+    if (paymentList.value) {
+      paymentList.value.List.sort((a, b) => a - b);
+      historyPaymentList.value = paymentList.value.List;
+      minVolumn.value = useUtility().getCurrency(paymentList.value.Min, 0);
+      maxVolumn.value = useUtility().getCurrency(paymentList.value.Max, 0);
+    }
   }
   // const myModal = document.getElementById("modal_demo") as Element
   // modal = new $bootstrap.Modal(myModal);
@@ -441,12 +448,6 @@ function openModal() {
   isStep3.value = false;
   const dialogLoading = document.getElementById("wallet-dialog");
   if (dialogLoading) dialogLoading.showModal();
-  if (paymentList.value) {
-    paymentList.value.List.sort((a, b) => a - b);
-    historyPaymentList.value = paymentList.value.List;
-    minVolumn.value = useUtility().getCurrency(paymentList.value.Min, 0);
-    maxVolumn.value = useUtility().getCurrency(paymentList.value.Max, 0);
-  }
 }
 
 async function closeModal(refresh: boolean) {

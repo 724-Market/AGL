@@ -133,12 +133,15 @@
 
                     </div>
                 </div>
+
             </div>
         </div>
         <OrderHistoryModalContactStaff @close-modal="handleCloasModal" :show="showModalStaff">
         </OrderHistoryModalContactStaff>
         <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+
         <ElementsDialogPaperstock />
+
     </NuxtLayout>
 </template>
 
@@ -523,7 +526,7 @@ useHead({
     title: pageTitle,
     meta: [{ name: "description", content: pageDescription }],
     bodyAttrs: {
-        class: "page-history category-datatable category-papers single-transaction",
+        class: "page-history category-datatable category-papers single-transaction single-papers",
     },
 })
 </script>

@@ -170,18 +170,18 @@ var carDetail: String = ""
 var carUse: globalThis.Ref<SelectOption[]> = ref([])
 var carUseText: globalThis.Ref<String> = ref("PERSONAL")
 var carType: globalThis.Ref<SelectOption[]> = ref([])
-var carTypeText= ref("")
+var carTypeText = ref("")
 var carSize: globalThis.Ref<SelectOption[]> = ref([])
-var carSizeText: String = ""
+var carSizeText = ref("")
 var carYesrs: globalThis.Ref<SelectOption[]> = ref([])
-var carYesrsText: String = ""
+var carYesrsText = ref("")
 var carBrand: globalThis.Ref<SelectOption[]> = ref([])
-var carBrandText: String = ""
+var carBrandText = ref("")
 var carModel: globalThis.Ref<SelectOption[]> = ref([])
-var carModelText: String = ""
+var carModelText = ref("")
 const otherSubcarModel: String[] = ['other', 'unknown']
 var subcarModel: globalThis.Ref<SelectOption[]> = ref([])
-var subcarModelText: String = ""
+var subcarModelText = ref("")
 var customSubCarModel: globalThis.Ref<String> = ref("")
 var carCC: globalThis.Ref<String> = ref("")
 
@@ -264,12 +264,12 @@ const handleRadioCarUseChange = async (event: String, optionText: string) => {
     carModel.value = [];
     subcarModel.value = [];
 
-    carYesrsText = "";
+    carYesrsText.value = "";
     carTypeText.value = "";
-    carSizeText = "";
-    carBrandText = "";
-    carModelText = "";
-    subcarModelText = "";
+    carSizeText.value = "";
+    carBrandText.value = "";
+    carModelText.value = "";
+    subcarModelText.value = "";
     carCC.value = "";
 
     let carTypeList: SelectOption[] = [];
@@ -301,17 +301,17 @@ const handleCarTypeChange = async () => {
 // Event Handle CarSize Change Clear Data Under Self
 const handleCarSizeChange = async (event: any) => {
   isLoading.value = true
-  carSizeText = event.target.value
+  carSizeText.value = event.target.value
   checklist.value[0].className = ''
 
   carBrand.value = []
   carModel.value = []
   subcarModel.value = []
 
-  carYesrsText = ''
-  carBrandText = ''
-  carModelText = ''
-  subcarModelText = ''
+  carYesrsText.value = ''
+  carBrandText.value = ''
+  carModelText.value = ''
+  subcarModelText.value = ''
   customSubCarModel.value = ''
   carCC.value = ''
   isLoading.value = false
@@ -340,7 +340,7 @@ const handleSubcarModelChange = async (event: any) => {
     carCC.value = event.target.value.toString().split("|")[1]
   }
   else if (event.target.value == 'unknown') {
-    carDetail = `${carDetail} ${carModel.value.find((e) => e.value == carModelText)?.label}`
+    carDetail = `${carDetail} ${carModel.value.find((e) => e.value == carModelText.value)?.label}`
   }
   await checkFromCar()
 }
@@ -438,7 +438,7 @@ const loadcarYesr = async (optionText: String) => {
     carYesrsList.push(year);
   }
   carYesrs.value = carYesrsList;
-  if (optionText != "") carYesrsText = optionText;
+  if (optionText != "") carYesrsText.value = optionText.toString();
 };
 
 // Function For Call Api Get usecar
@@ -467,11 +467,11 @@ const loadCarSize = async (params: String, optionText: String) => {
   carModel.value = []
   subcarModel.value = []
 
-  carSizeText = ''
-  carYesrsText = ''
-  carBrandText = ''
-  carModelText = ''
-  subcarModelText = ''
+  carSizeText.value = ''
+  carYesrsText.value = ''
+  carBrandText.value = ''
+  carModelText.value = ''
+  subcarModelText.value = ''
   customSubCarModel.value = ''
   carCC.value = ''
 
@@ -488,7 +488,7 @@ const loadCarSize = async (params: String, optionText: String) => {
     };
     carSizeList.push(car);
   });
-  if (optionText != "") carSizeText = optionText;
+  if (optionText != "") carSizeText.value = optionText.toString();
   carSize.value = carSizeList;
   isLoading.value = false
 };
@@ -502,16 +502,16 @@ const loadCarBrand = async (params: String, optionText: String) => {
   carModel.value = []
   subcarModel.value = []
 
-  carBrandText = ''
-  carModelText = ''
-  subcarModelText = ''
+  carBrandText.value = ''
+  carModelText.value = ''
+  subcarModelText.value = ''
   customSubCarModel.value = ''
   carCC.value = ''
 
   let carBrandList: SelectOption[] = [];
   let req = {
     CarTypeCode: carTypeText,
-    CarCategoryID: carSizeText,
+    CarCategoryID: carSizeText.value,
     CarSalesYear: `${Number(params) - 543}`
   }
   const response = await useRepository().master.carbrand(req)
@@ -523,7 +523,7 @@ const loadCarBrand = async (params: String, optionText: String) => {
     carBrandList.push(car);
   });
   carBrand.value = carBrandList;
-  if (optionText != "") carBrandText = optionText;
+  if (optionText != "") carBrandText.value = optionText.toString();
   // console.log("carBrand", carBrand.value)
   isLoading.value = false
 };
@@ -538,16 +538,16 @@ const loadCarModel = async (params: String, optionText: String) => {
   carModel.value = [];
   subcarModel.value = [];
 
-  carModelText = ''
-  subcarModelText = ''
+  carModelText.value = ''
+  subcarModelText.value = ''
   customSubCarModel.value = ''
   carCC.value = ''
 
   let carModelList: SelectOption[] = [];
   let req = {
     CarBrandID: params,
-    CarCategoryID: carSizeText,
-    CarSalesYear: `${Number(carYesrsText) - 543}`
+    CarCategoryID: carSizeText.value,
+    CarSalesYear: `${Number(carYesrsText.value) - 543}`
   }
   const response = await useRepository().master.carmodel(req)
   response.apiResponse.Data?.forEach((obj: ICarModelResponse) => {
@@ -558,7 +558,7 @@ const loadCarModel = async (params: String, optionText: String) => {
     carModelList.push(car);
   });
   carModel.value = carModelList;
-  if (optionText != "") carModelText = optionText;
+  if (optionText != "") carModelText.value = optionText.toString();
   // console.log("carModel", carModel.value)
   isLoading.value = false
 };
@@ -570,7 +570,7 @@ const loadSubcarModel = async (params: String, optionText: String) => {
 
   subcarModel.value = []
 
-  subcarModelText = ''
+  subcarModelText.value = ''
   customSubCarModel.value = ''
   carCC.value = ''
 
@@ -579,9 +579,9 @@ const loadSubcarModel = async (params: String, optionText: String) => {
     { label: 'ไม่ทราบรุ่นย่อย', value: 'unknown' }
   ]
   let req = {
-    CarBrandID: carBrandText,
+    CarBrandID: carBrandText.value,
     CarModelID: params,
-    CarSalesYear: `${Number(carYesrsText) - 543}`
+    CarSalesYear: `${Number(carYesrsText.value) - 543}`
   }
   const response = await useRepository().master.subcarmodel(req)
   response.apiResponse.Data?.forEach((obj: ISubCarModelResponse) => {
@@ -592,14 +592,14 @@ const loadSubcarModel = async (params: String, optionText: String) => {
     subCarModelList.push(car);
   });
   subcarModel.value = subCarModelList;
-  if (optionText != "") subcarModelText = optionText;
+  if (optionText != "") subcarModelText.value = optionText.toString();
   // console.log("subcarModel", subcarModel.value)
   isLoading.value = false
 };
 
 // Function For Check Form Car Data For CheckList
 const checkFromCar = async () => {
-  if (carTypeText.value != '' && carSizeText != '' && carYesrsText != '' && carBrandText != '' && carModelText != '') {
+  if (carTypeText.value != '' && carSizeText.value != '' && carYesrsText.value != '' && carBrandText.value != '' && carModelText.value != '') {
     checklist.value[0].className = 'current'
   }
   else {

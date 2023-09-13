@@ -35,7 +35,7 @@
                       :validation="[['required'], ['length', 0, 7]]"
                       :validation-messages="{
                         required: 'กรุณาใส่ข้อมูล',
-                        length: 'ทะเบียนรถควรมีม่เกิน 7 ตัว',
+                        length: 'ทะเบียนรถควรมีไม่เกิน 7 ตัว',
                       }"
                       autocomplete="false"
                     />

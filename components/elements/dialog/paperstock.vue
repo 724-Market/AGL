@@ -42,7 +42,7 @@
                                                 </figure>
                                                 <div class="info">
                                                     <h6>ทิพยประกันภัย</h6>
-                                                    <p>ราคามัดจำ<big>200</big></p>
+                                                    <p>ราคามัดจำ<span class="big">200</span></p>
                                                 </div>
                                             </div>
                                         </td>
@@ -57,7 +57,7 @@
                                                 </figure>
                                                 <div class="info">
                                                     <h6>กรุงเทพประกันภัย</h6>
-                                                    <p>ราคามัดจำ<big>300</big></p>
+                                                    <p>ราคามัดจำ<span class="big">300</span></p>
                                                 </div>
                                             </div>
                                         </td>
@@ -72,7 +72,7 @@
                                                 </figure>
                                                 <div class="info">
                                                     <h6>เทเวศประกันภัย</h6>
-                                                    <p>ราคามัดจำ<big>500</big></p>
+                                                    <p>ราคามัดจำ<span class="big">500</span></p>
                                                 </div>
                                             </div>
                                         </td>

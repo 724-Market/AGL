@@ -289,25 +289,9 @@
 														title="ลบรายการนี้"><i class="fa-regular fa-trash-can"></i>ลบรายการนี้</a></th>
 												<td class="text-end price">5,000.00
 
-													<div class="formkit-outer" data-type="stepNumber" data-invalid="true">
-														<div class="formkit-wrapper">
-															<div class="formkit-inner">
-																<button class="formkit-step-input">
-																	<span>-</span>
-																</button>
-																<input placeholder="10" min="1" id="input_0" type="number" class="formkit-input" readonly>
-																<button class="formkit-step-input">
-																	<span>+</span>
-																</button>
-															</div>
-														</div>
-														<ul class="formkit-messages">
-															<li class="formkit-message" id="input_0-rule_between" data-message-type="validation">
-																จำนวนควรอยู่ระหว่าง 1 และ
-																30,000
-															</li>
-														</ul>
-													</div>
+													<FormKit type="stepNumber" label="ราคามัดจำ" validation="required|between:1,3000"
+														validation-label="Number" value="10" min="1" max="3000" step="1"
+														:validation-messages="{ between: 'จำนวนไม่ถูกต้อง' }" readonly />
 
 												</td>
 											</tr>
@@ -316,20 +300,9 @@
 														title="ลบรายการนี้"><i class="fa-regular fa-trash-can"></i>ลบรายการนี้</a></th>
 												<td class="text-end price">2,000.00
 
-													<div class="formkit-outer" data-type="stepNumber" data-complete="true">
-														<div class="formkit-wrapper">
-															<div class="formkit-inner">
-																<button class="formkit-step-input">
-																	<span>-</span>
-																</button>
-																<input placeholder="5678" min="1" id="input_1" type="number" class="formkit-input"
-																	readonly>
-																<button class="formkit-step-input">
-																	<span>+</span>
-																</button>
-															</div>
-														</div>
-													</div>
+													<FormKit type="stepNumber" label="ราคามัดจำ" validation="required|between:1,10"
+														validation-label="Number" value="5" min="1" max="10" step="1"
+														:validation-messages="{ between: 'จำนวนไม่ถูกต้อง' }" readonly />
 
 												</td>
 											</tr>
@@ -347,10 +320,6 @@
 											<tr class="discount">
 												<th scope="row">หักส่วนลดค่าจัดส่ง<span>แลกกระดาษเกิน 5,000 บาท</span></th>
 												<td class="text-end price">-50.00</td>
-											</tr>
-											<tr class="coupon">
-												<th scope="row">ใช้คูปองส่วนลด</th>
-												<td class="text-end price">-1,000.00</td>
 											</tr>
 											<tr class="spacer">
 												<td colspan="2"></td>

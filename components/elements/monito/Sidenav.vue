@@ -65,16 +65,23 @@
                                 <a class="nav-link" href="#" title="ประวัติการเติมเงิน">ประวัติการเติมเงิน</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#" title="ประวัติการใช้กระดาษ">ประวัติการใช้กระดาษ</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" href="#" title="เติมเงิน">เติมเงิน</a>
                             </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#menu-papers" title="กระดาษ" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="menu-papers">
+                        <i class="fa-duotone fa-scroll fa-swap-opacity"></i><span class="nav-link-text">กระดาษ</span>
+                    </a>
+                    <div class="collapse" id="menu-papers" data-bs-parent="#sidenav-collapse-main">
+                        <ul class="nav">
                             <li class="nav-item">
-                                <a class="nav-link" href="#" title="คลังกระดาษ">คลังกระดาษ</a>
+                                <a class="nav-link" href="/order/papers" title="ประวัติการแลกกระดาษ">ประวัติการแลกกระดาษ</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#" title="คลังกระดาษ 2">คลังกระดาษ 2</a>
+                                <a class="nav-link" href="/order/papers/exchange" title="แลกกระดาษ">แลกกระดาษ</a>
                             </li>
                         </ul>
                     </div>

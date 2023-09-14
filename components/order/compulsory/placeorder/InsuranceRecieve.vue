@@ -128,14 +128,24 @@
                     </div>
 
                     <!-- <button class="btn-primary btn-save" @click.prevent="handleButtonSaveClick" :disabled="insureFullNewAddress == ''">บันทึกข้อมูล</button> -->
-                    <FormKit
+                    <!-- <FormKit
                       type="submit"
                       label="บันทึกข้อมูล"
                       @click.prevent="handleButtonSaveClick"
                       :classes="{ input: 'btn-primary', outer: 'form-actions' }"
                       :disabled="insureFullNewAddress == ''"
                       :loading="isLoading"
-                    />
+                    /> -->
+
+                    <button 
+                      type="button"
+                      class="formkit-input btn btn-primary form-actions"
+                      @click.prevent="handleButtonSaveClick"
+                      label="บันทึกข้อมูล"
+                      :disabled="insureFullNewAddress == ''"
+                      :loading="isLoading"
+                      >บันทึกข้อมูล
+                    </button>
                   </aside>
                 </section>
               </div>

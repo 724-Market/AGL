@@ -397,7 +397,7 @@ const submitOrder = async (formData: any) => {
   {
     DeliveryMethod2 = DeliveryMethod[1]
   }
-  let orderReq: PlaceOrderRequest = {
+  const orderReq: PlaceOrderRequest = {
     OrderNo: orderNo ?? undefined,
     Package: {
       UseCarCode: infomation.value?.CarUse ?? "",
@@ -464,17 +464,28 @@ const submitOrder = async (formData: any) => {
       getData.apiResponse.Data &&
       getData.apiResponse.Data.length > 0
     ) {
+      const summaryOrder = getData.apiResponse.Data[0].Order as Order 
       const orderSetStore: PlaceOrderRequest = {
         OrderNo: orderReq.OrderNo,
-        Package: orderReq.Package,
-        CarDetailsExtension: orderReq.CarDetailsExtension,
-        Customer: orderReq.Customer,
-        DeliveryMethod1: orderReq.DeliveryMethod1,
-        DeliveryMethod2: orderReq.DeliveryMethod2,
-        IsTaxInvoice: orderReq.IsTaxInvoice
-      }
-      const summaryOrder = getData.apiResponse.Data[0].Order
-      await setId(orderSetStore, summaryOrder as Order)
+        Package: summaryOrder.Package,
+        CarDetailsExtension: summaryOrder.CarDetailsExtension,
+        Customer: summaryOrder.Customer,
+        DeliveryMethod1: summaryOrder.DeliveryMethod1,
+        DeliveryMethod2: summaryOrder.DeliveryMethod2,
+        IsTaxInvoice: summaryOrder.IsTaxInvoice,
+      };
+      console.log('orderSetStore', orderSetStore);
+      console.log('orderReq', orderReq)
+      
+      // const orderSetStore: PlaceOrderRequest = {
+      //   OrderNo: orderReq.OrderNo,
+      //   Package: orderReq.Package,
+      //   CarDetailsExtension: orderReq.CarDetailsExtension,
+      //   Customer: orderReq.Customer,
+      //   DeliveryMethod1: orderReq.DeliveryMethod1,
+      //   DeliveryMethod2: orderReq.DeliveryMethod2,
+      //   IsTaxInvoice: orderReq.IsTaxInvoice
+      // }
       // if(orderSetStore.Customer && summaryOrder) {
       //   if(orderSetStore.Customer.LegalPersonProfile) {
       //     orderSetStore.Customer.LegalPersonProfile.CustomerID = summaryOrder.Customer.LegalPersonProfile.CustomerID
@@ -495,7 +506,6 @@ const submitOrder = async (formData: any) => {
       //     orderSetStore.Customer.TaxInvoiceDeliveryAddress.AddressID = summaryOrder.Customer.TaxInvoiceDeliveryAddress.AddressID;
       //   }
       // }
-      console.log('orderSetStore', orderSetStore)
 
       // if(orderSetStore.Customer && orderSetStore.Customer.LegalPersonProfile && getData.apiResponse.Data[0].Order){
       //   orderSetStore.Customer.LegalPersonProfile.CustomerID =  getData.apiResponse.Data[0].Order.Customer.LegalPersonProfile.CustomerID;
@@ -534,35 +544,11 @@ const submitOrder = async (formData: any) => {
       //   orderSetStore.Customer.TaxInvoiceDeliveryAddress.AddressID =
       //     getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
       // }
-      // storeOrder.setOrder(orderSetStore);
+      storeOrder.setOrder(orderSetStore);
     }
   }
-  // router.push("/order/compulsory/payment");
+  router.push("/order/compulsory/payment");
   isLoading.value = false;
-};
-
-const setId = async (orderSetStore: PlaceOrderRequest, summaryOrder: Order) => {
-  if(orderSetStore.Customer && summaryOrder) {
-    if(orderSetStore.Customer.LegalPersonProfile) {
-      orderSetStore.Customer.LegalPersonProfile.CustomerID = summaryOrder.Customer.LegalPersonProfile.CustomerID
-    }
-    if(orderSetStore.Customer.PersonProfile && summaryOrder.Customer.PersonProfile) {
-      orderSetStore.Customer.PersonProfile.CustomerID = summaryOrder.Customer.PersonProfile.CustomerID;
-    }
-    if(orderSetStore.Customer.DefaultAddress && summaryOrder.Customer.DefaultAddress) {
-      orderSetStore.Customer.DefaultAddress.AddressID = summaryOrder.Customer.DefaultAddress.AddressID;
-    }
-    if(orderSetStore.Customer.DeliveryAddress && summaryOrder.Customer.DeliveryAddress) {
-      orderSetStore.Customer.DeliveryAddress.AddressID = summaryOrder.Customer.DeliveryAddress.AddressID;
-    }
-    if(orderSetStore.Customer.TaxInvoiceAddress && summaryOrder.Customer.TaxInvoiceAddress) {
-      orderSetStore.Customer.TaxInvoiceAddress.AddressID = summaryOrder.Customer.TaxInvoiceAddress.AddressID;
-    }
-    if(orderSetStore.Customer.TaxInvoiceDeliveryAddress && summaryOrder.Customer.TaxInvoiceDeliveryAddress) {
-      orderSetStore.Customer.TaxInvoiceDeliveryAddress.AddressID = summaryOrder.Customer.TaxInvoiceDeliveryAddress.AddressID;
-    }
-  }
-  console.log('orderSetStore')
 };
 
 const getDeliveryMethod = (): DeliveryMethod[] => {

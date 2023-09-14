@@ -21,7 +21,7 @@
                     </tr> -->
                     <tr class="shipping">
                       <th scope="row">ค่าจัดส่ง<span>{{deliveryText}}</span></th>
-                      <td class="text-end price">{{shipopingCost}}</td>
+                      <td class="text-end price">{{shippingCost}}</td>
                     </tr>
                     <tr class="fee">
                       <th scope="row">ค่าธรรมเนียม<span>{{paymentMethodText}}</span></th>
@@ -60,7 +60,7 @@
 import { SelectOption } from "~/shared/entities/select-option";
 import { IPackageResponse } from "~~/shared/entities/packageList-entity";
 import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
-import { SummaryDiscountObject } from "~/shared/entities/payment-entity";
+import { CalculateResponse, SummaryDiscountObject } from "~/shared/entities/payment-entity";
 
 type StringArray = {
   [key: string]: string;
@@ -75,17 +75,21 @@ const props = defineProps({
   },
   summary: {
     type: Object as () => SummaryDiscountObject,
+  },
+  calculate: {
+    type: Object as () => CalculateResponse,
   }
 })
 
 const order: globalThis.Ref<PlaceOrderRequest | undefined> = ref()
 const packages: globalThis.Ref<IPackageResponse | undefined> = ref()
 const summary: globalThis.Ref<SummaryDiscountObject | undefined> = ref()
+const calculate: globalThis.Ref<CalculateResponse | undefined> = ref()
 
 const delivery: globalThis.Ref<SelectOption[]> = ref([]);
 
 const packagePrice: globalThis.Ref<number> = ref(0)
-const shipopingCost: globalThis.Ref<number> = ref(0)
+const shippingCost: globalThis.Ref<number> = ref(0)
 const feeCost: globalThis.Ref<number> = ref(0)
 const totalPrice: globalThis.Ref<number> = ref(0)
 const disPrice: globalThis.Ref<number> = ref(0)
@@ -115,37 +119,51 @@ const onLoad = onMounted(async () => {
   if(props.summary){
     summary.value = props.summary
   }
+  if(props.calculate){
+    calculate.value = props.calculate
+  }
 
-  await loadDelivery()
+  // await loadDelivery()
 })
 
-const loadDelivery = async () => {
-  const response = await useRepository().delivery.channel();
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      delivery.value = response.apiResponse.Data.map((x) => {
-        const options: SelectOption = {
-          label: x.Name,
-          value: x.Type,
-          option: x.Cost.toString(),
-        };
-        return options;
-      });
-    } else {
-      // data not found
-    }
-  } else {
-  }
-}
+// const loadDelivery = async () => {
+//   const response = await useRepository().delivery.channel();
+//   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+//     if (response.apiResponse.Data) {
+//       delivery.value = response.apiResponse.Data.map((x) => {
+//         const options: SelectOption = {
+//           label: x.Name,
+//           value: x.Type,
+//           option: x.Cost.toString(),
+//         };
+//         return options;
+//       });
+//     } else {
+//       // data not found
+//     }
+//   } else {
+//   }
+// }
 
 const setSummaryText = async () => {
   let tax: string = packages.value?.IsTaxInclude ? '+ ใบกำกับภาษี' : ''
   let indexShipping: string = order.value?.DeliveryMethod1?.DeliveryType ?? ''
-  let shippingChanel: string = deliveryTypes[indexShipping] == 'postal' ? 
-    delivery.value.find(w => w.value == order.value?.DeliveryMethod1?.DeliveryChannelType)?.value ?? ''
-    : deliveryTypes[indexShipping]
+  let chanel = ''
 
-  shipopingCost.value = order.value?.DeliveryMethod1?.DeliveryType == 'DELIVERY' ? 50 : 0
+  if(calculate.value) {
+    if(calculate.value.DeliveryFee) {
+      const DeliveryFee = calculate.value.DeliveryFee
+      if(DeliveryFee.length > 0) {
+        shippingCost.value = DeliveryFee[0].Price
+        chanel = DeliveryFee[0].DeliveryChannelType
+      }
+    }
+  }
+  else {
+    shippingCost.value = 0
+  }
+
+  let shippingChanel: string = deliveryTypes[indexShipping] == 'postal' ? chanel : deliveryTypes[indexShipping]
 
   companyName.value = packages.value?.CompanyName ?? ''
   deliveryText.value = `กรมธรรม์ ${tax} • โดย ${shippingChanel}`
@@ -164,12 +182,13 @@ const setSummaryText = async () => {
 watch(order, async (newOrder) => {
   await setSummaryText()
 })
-
 watch(packages, async (newPackages) => {
   await setSummaryText()
 })
-
 watch(summary, async (newSummary) => {
+  await setSummaryText()
+})
+watch(calculate, async (newCalculate) => {
   await setSummaryText()
 })
 
@@ -194,6 +213,14 @@ watch(
   async () => {
     if (props.summary) {
       summary.value = props.summary
+    }
+  }
+)
+watch(
+  () => props.calculate,
+  async () => {
+    if (props.calculate) {
+      calculate.value = props.calculate
     }
   }
 )

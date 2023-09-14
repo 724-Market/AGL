@@ -73,6 +73,7 @@
                 :order="orderInfo"
                 :packages="packageSelect"
                 :summary="summaryDiscountObject"
+                :calculate="calculate"
               >
               </OrderCompulsoryPaymentSummaryDiscount>
 

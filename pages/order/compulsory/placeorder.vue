@@ -208,7 +208,7 @@ import {
   TaxInvoiceDeliveryAddress,
   DeliveryMethod,
 } from "~/shared/entities/placeorder-entity";
-import { OrderDetailRequest } from "~/shared/entities/order-entity";
+import { Order, OrderDetailRequest, OrderResponse } from "~/shared/entities/order-entity";
 
 // Define Variables
 // Loading state after form submiting
@@ -381,6 +381,7 @@ const submitOrder = async (formData: any) => {
 
   isLoading.value = true;
 
+  let orderNo = OrderInfo.value?.OrderNo
   if (insuranceRecieve.value?.ShippingPolicy == "postal") {
     if (!insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
       insureDetail.value.DeliveryAddress =
@@ -396,8 +397,8 @@ const submitOrder = async (formData: any) => {
   {
     DeliveryMethod2 = DeliveryMethod[1]
   }
-  let orderReq: PlaceOrderRequest = {
-    OrderNo: OrderInfo.value?.OrderNo ?? undefined,
+  const orderReq: PlaceOrderRequest = {
+    OrderNo: orderNo ?? undefined,
     Package: {
       UseCarCode: infomation.value?.CarUse ?? "",
       CarTypeCode: infomation.value?.CarType ?? "",
@@ -451,7 +452,7 @@ const submitOrder = async (formData: any) => {
       messageError.value = response.apiResponse.ErrorMessage ?? "";
     }
   }
-  if (!isError.value) {
+  if (!isError.value && orderNo == '') {
     // get order after save or create
     const req: OrderDetailRequest = {
       OrderNo: orderReq.OrderNo ?? "",
@@ -463,49 +464,90 @@ const submitOrder = async (formData: any) => {
       getData.apiResponse.Data &&
       getData.apiResponse.Data.length > 0
     ) {
-      if(orderReq.Customer && orderReq.Customer.LegalPersonProfile && getData.apiResponse.Data[0].Order){
-        orderReq.Customer.LegalPersonProfile.CustomerID =  getData.apiResponse.Data[0].Order.Customer.LegalPersonProfile.CustomerID;
-      }
-      if(orderReq.Customer && orderReq.Customer.PersonProfile && getData.apiResponse.Data[0].Order){
-        orderReq.Customer.PersonProfile.CustomerID =  getData.apiResponse.Data[0].Order.Customer.PersonProfile.CustomerID;
-      }
-      if (orderReq.Customer && orderReq.Customer.DefaultAddress && getData.apiResponse.Data[0].Order) {
-        orderReq.Customer.DefaultAddress.AddressID =
-          getData.apiResponse.Data[0].Order.Customer.DefaultAddress.AddressID;
-      }
-      if (
-        orderReq.Customer &&
-        orderReq.Customer.DeliveryAddress &&
-        getData.apiResponse.Data[0].Order &&
-        getData.apiResponse.Data[0].Order.Customer.DeliveryAddress
-      ) {
-        orderReq.Customer.DeliveryAddress.AddressID =
-          getData.apiResponse.Data[0].Order.Customer.DeliveryAddress.AddressID;
-      }
-      if (
-        orderReq.Customer &&
-        orderReq.Customer.TaxInvoiceAddress &&
-        getData.apiResponse.Data[0].Order &&
-        getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress
-      ) {
-        orderReq.Customer.TaxInvoiceAddress.AddressID =
-          getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress.AddressID;
-      }
-      if (
-        orderReq.Customer &&
-        orderReq.Customer.TaxInvoiceDeliveryAddress &&
-        getData.apiResponse.Data[0].Order &&
-        getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress
-      ) {
-        orderReq.Customer.TaxInvoiceDeliveryAddress.AddressID =
-          getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
-      }
+      const summaryOrder = getData.apiResponse.Data[0].Order as Order 
+      const orderSetStore: PlaceOrderRequest = {
+        OrderNo: orderReq.OrderNo,
+        Package: summaryOrder.Package,
+        CarDetailsExtension: summaryOrder.CarDetailsExtension,
+        Customer: summaryOrder.Customer,
+        DeliveryMethod1: summaryOrder.DeliveryMethod1,
+        DeliveryMethod2: summaryOrder.DeliveryMethod2,
+        IsTaxInvoice: summaryOrder.IsTaxInvoice,
+      };
+      console.log('orderSetStore', orderSetStore);
+      console.log('orderReq', orderReq)
+      
+      // const orderSetStore: PlaceOrderRequest = {
+      //   OrderNo: orderReq.OrderNo,
+      //   Package: orderReq.Package,
+      //   CarDetailsExtension: orderReq.CarDetailsExtension,
+      //   Customer: orderReq.Customer,
+      //   DeliveryMethod1: orderReq.DeliveryMethod1,
+      //   DeliveryMethod2: orderReq.DeliveryMethod2,
+      //   IsTaxInvoice: orderReq.IsTaxInvoice
+      // }
+      // if(orderSetStore.Customer && summaryOrder) {
+      //   if(orderSetStore.Customer.LegalPersonProfile) {
+      //     orderSetStore.Customer.LegalPersonProfile.CustomerID = summaryOrder.Customer.LegalPersonProfile.CustomerID
+      //   }
+      //   if(orderSetStore.Customer.PersonProfile && summaryOrder.Customer.PersonProfile) {
+      //     orderSetStore.Customer.PersonProfile.CustomerID = summaryOrder.Customer.PersonProfile.CustomerID;
+      //   }
+      //   if(orderSetStore.Customer.DefaultAddress && summaryOrder.Customer.DefaultAddress) {
+      //     orderSetStore.Customer.DefaultAddress.AddressID = summaryOrder.Customer.DefaultAddress.AddressID;
+      //   }
+      //   if(orderSetStore.Customer.DeliveryAddress && summaryOrder.Customer.DeliveryAddress) {
+      //     orderSetStore.Customer.DeliveryAddress.AddressID = summaryOrder.Customer.DeliveryAddress.AddressID;
+      //   }
+      //   if(orderSetStore.Customer.TaxInvoiceAddress && summaryOrder.Customer.TaxInvoiceAddress) {
+      //     orderSetStore.Customer.TaxInvoiceAddress.AddressID = summaryOrder.Customer.TaxInvoiceAddress.AddressID;
+      //   }
+      //   if(orderSetStore.Customer.TaxInvoiceDeliveryAddress && summaryOrder.Customer.TaxInvoiceDeliveryAddress) {
+      //     orderSetStore.Customer.TaxInvoiceDeliveryAddress.AddressID = summaryOrder.Customer.TaxInvoiceDeliveryAddress.AddressID;
+      //   }
+      // }
 
-      storeOrder.setOrder(orderReq);
+      // if(orderSetStore.Customer && orderSetStore.Customer.LegalPersonProfile && getData.apiResponse.Data[0].Order){
+      //   orderSetStore.Customer.LegalPersonProfile.CustomerID =  getData.apiResponse.Data[0].Order.Customer.LegalPersonProfile.CustomerID;
+      // }
+      // if(orderSetStore.Customer && orderSetStore.Customer.PersonProfile && getData.apiResponse.Data[0].Order){
+      //   orderSetStore.Customer.PersonProfile.CustomerID =  getData.apiResponse.Data[0].Order.Customer.PersonProfile.CustomerID;
+      // }
+      // if (orderSetStore.Customer && orderSetStore.Customer.DefaultAddress && getData.apiResponse.Data[0].Order) {
+      //   orderSetStore.Customer.DefaultAddress.AddressID =
+      //     getData.apiResponse.Data[0].Order.Customer.DefaultAddress.AddressID;
+      // }
+      // if (
+      //   orderSetStore.Customer &&
+      //   orderSetStore.Customer.DeliveryAddress &&
+      //   getData.apiResponse.Data[0].Order &&
+      //   getData.apiResponse.Data[0].Order.Customer.DeliveryAddress
+      // ) {
+      //   orderSetStore.Customer.DeliveryAddress.AddressID =
+      //     getData.apiResponse.Data[0].Order.Customer.DeliveryAddress.AddressID;
+      // }
+      // if (
+      //   orderSetStore.Customer &&
+      //   orderSetStore.Customer.TaxInvoiceAddress &&
+      //   getData.apiResponse.Data[0].Order &&
+      //   getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress
+      // ) {
+      //   orderSetStore.Customer.TaxInvoiceAddress.AddressID =
+      //     getData.apiResponse.Data[0].Order.Customer.TaxInvoiceAddress.AddressID;
+      // }
+      // if (
+      //   orderSetStore.Customer &&
+      //   orderSetStore.Customer.TaxInvoiceDeliveryAddress &&
+      //   getData.apiResponse.Data[0].Order &&
+      //   getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress
+      // ) {
+      //   orderSetStore.Customer.TaxInvoiceDeliveryAddress.AddressID =
+      //     getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
+      // }
+      storeOrder.setOrder(orderSetStore);
     }
-
-    router.push("/order/compulsory/payment");
   }
+  router.push("/order/compulsory/payment");
   isLoading.value = false;
 };
 

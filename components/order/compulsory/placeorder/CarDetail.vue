@@ -35,7 +35,7 @@
                       :validation="[['required'], ['length', 0, 7]]"
                       :validation-messages="{
                         required: 'กรุณาใส่ข้อมูล',
-                        length: 'ทะเบียนรถควรมีม่เกิน 7 ตัว',
+                        length: 'ทะเบียนรถควรมีไม่เกิน 7 ตัว',
                       }"
                       autocomplete="false"
                     />
@@ -187,25 +187,25 @@ const isLoading = ref(false);
 var SubCarModel: string = ""
 const carDetailCache: globalThis.Ref<CarDetailsExtension | undefined> = ref()
 
-var carLicenseText: string = ""
+var carLicenseText = ref("");
 var carLicenseValue: string = ""
 
 const carProvince: globalThis.Ref<SelectOption[]> = ref([])
-var carProvinceText: string = ""
+var carProvinceText = ref("");
 
 var carLicenseClassifierText: globalThis.Ref<boolean> = ref(false)
 var carLicenseClassifierValue: boolean = false
 
 const carColor: globalThis.Ref<SelectOption[]> = ref([])
-var carColorText: string = ""
+var carColorText = ref("");
 
-var carBodyNumberText: string = ""
+var carBodyNumberText = ref("");
 var carBodyNumberValue: string = ""
 
-var carEngineNumberText: string = ""
+var carEngineNumberText = ref("");
 var carEngineNumberValue: string = ""
 
-var CarLicenseFileText: string = ""
+var CarLicenseFileText = ref("");
 var LicenseFileID: string = ""
 
 const onLoad = onMounted(async () => {
@@ -224,13 +224,13 @@ const onLoad = onMounted(async () => {
   }
 
   if(carDetailCache.value){
-    carLicenseText = carDetailCache.value.License
-    carProvinceText = carDetailCache.value.LicenseProvinceID
+    carLicenseText.value = carDetailCache.value.License
+    carProvinceText.value = carDetailCache.value.LicenseProvinceID
     carLicenseClassifierText.value = carDetailCache.value.IsRedLicense 
-    carColorText = carDetailCache.value.ColorID
-    carBodyNumberText = carDetailCache.value.BodyNo
-    carEngineNumberText = carDetailCache.value.EngineNo
-    CarLicenseFileText = ''
+    carColorText.value = carDetailCache.value.ColorID
+    carBodyNumberText.value = carDetailCache.value.BodyNo
+    carEngineNumberText.value = carDetailCache.value.EngineNo
+    CarLicenseFileText.value = ''
     LicenseFileID = carDetailCache.value.LicenseFileID
   }
 })
@@ -312,8 +312,8 @@ const handleCheckCarDetail = async () => {
     License: carLicenseValue,
     BodyNo: carBodyNumberValue,
     EngineNo: carEngineNumberValue,
-    ColorID: carColorText,
-    LicenseProvinceID: carProvinceText,
+    ColorID: carColorText.value,
+    LicenseProvinceID: carProvinceText.value,
     LicenseFileID: LicenseFileID,
     IsRedLicense: carLicenseClassifierValue
   }
@@ -342,23 +342,23 @@ watch(
   ()=>{
     if(props.carDetailCache){
       carDetailCache.value = props.carDetailCache
-      carLicenseText = carDetailCache.value.License
+      carLicenseText.value = carDetailCache.value.License
       carLicenseValue = carDetailCache.value.License
 
-      carProvinceText = carDetailCache.value.LicenseProvinceID
+      carProvinceText.value = carDetailCache.value.LicenseProvinceID
 
       carLicenseClassifierText.value = carDetailCache.value.IsRedLicense 
       carLicenseClassifierValue = carDetailCache.value.IsRedLicense
 
-      carColorText = carDetailCache.value.ColorID
+      carColorText.value = carDetailCache.value.ColorID
 
-      carBodyNumberText = carDetailCache.value.BodyNo
+      carBodyNumberText.value = carDetailCache.value.BodyNo
       carBodyNumberValue = carDetailCache.value.BodyNo
 
-      carEngineNumberText = carDetailCache.value.EngineNo
+      carEngineNumberText.value = carDetailCache.value.EngineNo
       carEngineNumberValue = carDetailCache.value.EngineNo
 
-      CarLicenseFileText = ''
+      CarLicenseFileText.value = ''
       LicenseFileID = carDetailCache.value.LicenseFileID
 
       handleCheckCarDetail()

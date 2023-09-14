@@ -52,7 +52,7 @@
             @change-sub-district="handlerChangeSubDistrictForRecieve"
             @check-insurance-recieve="handleCheckInsuranceRecieve"
             :insure-full-address="insureFullAddress"
-            :prefix="prefix"
+            :prefix="prefixRecieve"
             :delivery="delivery"
             :addr-province="addrProvince"
             :addr-district="addrDistrict"
@@ -228,6 +228,7 @@ const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
 const carProvince: globalThis.Ref<SelectOption[]> = ref([]);
 const carColor: globalThis.Ref<SelectOption[]> = ref([]);
 const prefix: globalThis.Ref<SelectOption[]> = ref([]);
+const prefixRecieve: globalThis.Ref<SelectOption[]> = ref([]);
 const nationality: globalThis.Ref<SelectOption[]> = ref([]);
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([]);
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([]);
@@ -321,6 +322,7 @@ const onLoad = onMounted(async () => {
       await loadProvince();
       await loadCarColor();
       await loadPrefix(true);
+      await loadPrefixRecieve();
       await loadNationality();
       await loadDelivery();
       isLoading.value = false;
@@ -328,7 +330,7 @@ const onLoad = onMounted(async () => {
       router.push("/order/compulsory/packages");
     }
 
-    if (OrderInfo.value) {
+    if (OrderInfo.value && OrderInfo.value.OrderNo != '') {
 
       let insuranceRecieve: InsuranceRecieveObject = {
         ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? "",
@@ -659,6 +661,26 @@ const loadPrefix = async (isPerson: boolean) => {
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if (response.apiResponse.Data) {
       prefix.value = response.apiResponse.Data.map((x) => {
+        const options: SelectOption = {
+          label: x.Name,
+          value: x.ID,
+        };
+        return options;
+      });
+    } else {
+      // data not found
+    }
+  } else {
+  }
+};
+const loadPrefixRecieve = async () => {
+  const req: PrefixReq = {
+    IsPerson: true,
+  };
+  const response = await useRepository().master.prefix(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data) {
+      prefixRecieve.value = response.apiResponse.Data.map((x) => {
         const options: SelectOption = {
           label: x.Name,
           value: x.ID,

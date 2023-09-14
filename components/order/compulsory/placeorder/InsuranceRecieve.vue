@@ -74,7 +74,7 @@
                         label="ช่องทางการจัดส่ง"
                         name="ShippingMethod"
                         placeholder="ช่องทางการจัดส่ง"
-                        v-model="ShippingMethodText"
+                        v-model="RecieveShippingMethodText"
                         @change="handleShippingMethodChange"
                         :options="delivery"
                         validation="required"
@@ -200,17 +200,17 @@ var postalAddressPolicyText: globalThis.Ref<String> = ref("insured")
 var isInsured: globalThis.Ref<boolean> = ref(false)
 var isAddnew: globalThis.Ref<boolean> = ref(false)
 
-var emailText: string = ""
+var emailText = ref("")
 var emailValue: string = ""
-var ShippingMethodText: string = ""
-var ShippingFeeText = ref('')
+var RecieveShippingMethodText = ref("")
+var ShippingFeeText = ref("")
 
 const prefix: globalThis.Ref<SelectOption[]> = ref([])
 const delivery: globalThis.Ref<SelectOption[]> = ref([])
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
-const addrZipCode = ref('')
+const addrZipCode = ref("")
 
 const newAddressObject: globalThis.Ref<DefaultAddress | undefined> = ref()
 const insureFullAddress: globalThis.Ref<String> = ref('')
@@ -258,12 +258,12 @@ const onLoad = onMounted(async () => {
           shippingPolicyText.value = 'postal'
         }
       
-        emailText = insuranceRecieveCache.value.Email
+        emailText.value = insuranceRecieveCache.value.Email
         emailValue = insuranceRecieveCache.value.Email
         // await handleRadioShippingPolicyChange(insuranceRecieveCache.value.ShippingPolicy)
 
         if(shippingPolicyText.value == 'postal') {
-          ShippingMethodText = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
+          RecieveShippingMethodText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
           ShippingFeeText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
           postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
           // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')
@@ -430,7 +430,7 @@ const handleCheckInsuranceRecieve = async () => {
     Email: emailValue,
     PostalDelivary: {
       IsDeliveryAddressSameAsDefault: postalAddressPolicyText.value == 'insured' ? true : false,
-      ShippingMethod: ShippingMethodText,
+      ShippingMethod: RecieveShippingMethodText.value,
       ShippingFee: ShippingFeeText.value,
       DeliveryAddress: {
         AddressID: newAddressObject.value?.AddressID ?? '',
@@ -539,12 +539,12 @@ watch(
           else{
             shippingPolicyText.value = 'postal'
           }
-          emailText = insuranceRecieveCache.value.Email
+          emailText.value = insuranceRecieveCache.value.Email
           emailValue = insuranceRecieveCache.value.Email
           // await handleRadioShippingPolicyChange(insuranceRecieveCache.value.ShippingPolicy)
 
           if(shippingPolicyText.value == 'postal') {
-            ShippingMethodText = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
+            RecieveShippingMethodText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingMethod ?? ""
             ShippingFeeText.value = insuranceRecieveCache.value.PostalDelivary?.ShippingFee ?? ""
             postalAddressPolicyText.value = insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew'
             // await handleRadioPostalAddressPolicyChange(insuranceRecieveCache.value.PostalDelivary?.IsDeliveryAddressSameAsDefault ? 'insured' : 'addnew')

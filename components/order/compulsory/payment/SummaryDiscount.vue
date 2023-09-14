@@ -152,8 +152,11 @@ const setSummaryText = async () => {
 
   if(calculate.value) {
     if(calculate.value.DeliveryFee) {
-      shippingCost.value = calculate.value.DeliveryFee.length > 0 ? calculate.value.DeliveryFee[0].Price : 0
-      chanel = calculate.value.DeliveryFee[0].DeliveryChannelType
+      const DeliveryFee = calculate.value.DeliveryFee
+      if(DeliveryFee.length > 0) {
+        shippingCost.value = DeliveryFee[0].Price
+        chanel = DeliveryFee[0].DeliveryChannelType
+      }
     }
   }
   else {

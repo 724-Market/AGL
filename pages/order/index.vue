@@ -29,7 +29,7 @@
           @on-pay="pay"
           @on-tracking="trackStatus"
           @on-policy="policyDetail"
-          @on-dowload="download"
+          @on-download="download"
           @on-help="contactStaff"
           @on-delete="deleteDraft"
         ></OrderHistoryGridTable>
@@ -281,6 +281,7 @@ const download = async (url: string) => {
 }
 
 const contactStaff = async () => {
+  console.log('staff')
   //ติดต่อเจ้าหน้าที่
   showModalStaff.value = false;
   showModalStaff.value = true;

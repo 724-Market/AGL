@@ -204,48 +204,46 @@ const datatableOptions = {
     if(data.Status == 'Draft') {
       const menuEdit = TdId1.querySelector('.icon-edit');
       menuEdit.addEventListener('click', async () => {
-        // alert('resume ' + menuEdit.dataset.id)
         emit('onResume', menuEdit.dataset.id)
       })
 
       const menuDelete = TdId1.querySelector('.icon-trash')
       menuDelete.addEventListener('click',async () => {
-        // alert('deleteDraft ' + menuDelete.dataset.id)
         emit('onDelete', menuDelete.dataset.id)
       })
     }
-    else if(data.Status == 'Pending') {
+    if(data.Status == 'Pending') {
       const menuPayment = TdId1.querySelector('.icon-payment');
       menuPayment.addEventListener('click', async () => {
-        // alert('pay ' + menuPayment.dataset.id)
         emit('onPay', menuPayment.dataset.id)
       })
     }
-    else if(data.Status == 'Delivery' || data.Status == 'Process') {
+    if(data.Status == 'Delivery' || data.Status == 'Process') {
       const menuTracking = TdId1.querySelector('.icon-tracking')
       menuTracking.addEventListener('click',async () => {
-        // alert('trackStatus ' + menuTracking.dataset.id)
         emit('onTracking', menuTracking.dataset.id)
       })
     }
-    else if(data.Status == 'Success') {
+    if(data.Status == 'Success') {
       const menuPolicy = TdId1.querySelector('.icon-policy')
       menuPolicy.addEventListener('click',async () => {
-        // alert('policyDetail ' + menuPolicy.dataset.id)
         emit('onPolicy', menuPolicy.dataset.id)
       })
 
-      const menuDownload = TdId1.querySelector('.icon-policy')
+      const menuDownload = TdId1.querySelector('.icon-download-file')
       menuDownload.addEventListener('click',async () => {
-        // alert('download ' + menuDownload.dataset.PolicyURL)
-        emit('onDownload', menuDownload.dataset.PolicyURL)
+        emit('onDownload', menuDownload.dataset.url)
       })
     }
-    else if(data.Status == 'Cancel') {
+    if(data.Status == 'Cancel' && data.IsCancel && data.IsCancelComplete) {
+      const menuTracking = TdId1.querySelector('.icon-tracking')
+      menuTracking.addEventListener('click', async () => {
+        emit('onTracking', menuTracking.dataset.id)
+      })
+
       const menuStaff = TdId1.querySelector('.icon-help')
-      menuStaff.addEventListener('click',async () => {
-        // alert('contactStaff ' + menuStaff.dataset.id)
-        emit('onHelp', menuStaff.dataset.PolicyURL)
+      menuStaff.addEventListener('click', async () => {
+        emit('onHelp')
       })
     }
 

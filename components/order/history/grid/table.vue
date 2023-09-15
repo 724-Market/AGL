@@ -21,6 +21,7 @@
           </tr>
         </thead>
       </DataTable>
+      <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
     </div>
   </div>
 </template>
@@ -46,7 +47,7 @@ const props = defineProps({
 const emit = defineEmits(["changeTable", "onResume", "onPay", "onTracking", "onPolicy", "onDownload", "onHelp", "onDelete"])
 const table = ref();
 let dt;
-
+const isLoading = ref(false)
 const onLoad = onMounted(async () => {
   dt = table.value;
   console.log(dt);
@@ -94,6 +95,7 @@ const datatableAjax = {
   url: "/api/grid",
   method: "post",
   data: (d: any) => {
+    isLoading.value = true
     return {
       ...d,
       URL: "/Order/grid/history/list",
@@ -101,6 +103,11 @@ const datatableAjax = {
       Filter: props.filters, //filterOption.value,
     };
   },
+  dataSrc: function ( json ) {
+   //Make your callback here.
+  isLoading.value = false
+  return json.data;
+            }
 };
 
 // DataTable options
@@ -125,9 +132,9 @@ const datatableOptions = {
     emptyTable: "ไม่มีรายการ",
     zeroRecords: "ไม่มีรายการ",
   },
-  initComplete: function (settings, json) {
+  // initComplete: function (settings, json) {
 
-  },
+  // },
   createdRow: async function (row: any, data: any) {
     //console.log("createdRow [data]=", data);
     const menu = await renderToString(h(OrderHistoryGridMenu, { row: data }));

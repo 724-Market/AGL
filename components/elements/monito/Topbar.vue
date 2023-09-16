@@ -15,7 +15,7 @@
         </div>
     </div>
     
-    <div class="container">
+    <div class="container" :class="{ 'd-none' : isLoading }">
       <PaymentWalletModalWallet
           v-if="showWallet"
           :show="showWallet"
@@ -25,7 +25,6 @@
       ></PaymentWalletModalWallet>
     </div>
     
-
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
 </template>
 

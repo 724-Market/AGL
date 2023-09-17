@@ -66,7 +66,7 @@ import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { Filter } from "~/shared/entities/table-option";
 import { IInformation } from "~/shared/entities/information-entity";
-import { IPackageRequest, Paging } from "~/shared/entities/packageList-entity";
+import { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity";
 
 
 // Define Variables
@@ -200,6 +200,9 @@ const setStoretoStep = async (data: OrderResponse, orderNo: string) => {
     };
     const packageList = await store.getPackageList(request);
     const packageSelect = packageList.Data?.find(o => o.CompanyCode == order.Package.CompanyCode) as IPackageResponse 
+    packageSelect.Price = order.InsureDetails.Total
+    packageSelect.PackageResult[0].PriceACT = order.InsureDetails.Total
+    if(order.InsureDetails.PriceACTDiscount) packageSelect.PackageResult[0].PriceACTDiscount = order.InsureDetails.PriceACTDiscount
     storePackage.setPackage(packageSelect);
   }
 };
@@ -208,7 +211,6 @@ const setStoretoStep = async (data: OrderResponse, orderNo: string) => {
 //   const req: OrderDetailRequest = {
 //     OrderNo: orderNo,
 //   };
-
 //   const response = await useRepository().order.details(req);
 //   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
 //     if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {

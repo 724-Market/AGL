@@ -86,17 +86,17 @@ export interface CarDetails {
   CarColorEn: string
 }
 
-export interface InsureDetails {
-  OrderNo: string
-  InsureType: string
-  CompanyName: string
-  CompanyCode: string
-  CarCategory: string
-  UseCarName: string
-  UseCarCode: string
-  ActiveStartDate: string
-  ActiveEndDate: string
-}
+// export interface InsureDetails {
+//   OrderNo: string
+//   InsureType: string
+//   CompanyName: string
+//   CompanyCode: string
+//   CarCategory: string
+//   UseCarName: string
+//   UseCarCode: string
+//   ActiveStartDate: string
+//   ActiveEndDate: string
+// }
 
 export interface DeliveryPolicyDetails {
   OrderNo: string
@@ -228,6 +228,7 @@ export interface Order {
   Customer: Customer
   DeliveryMethod1: DeliveryMethod1
   DeliveryMethod2: DeliveryMethod2
+  InsureDetails: InsureDetails
   ProductID: string
   IsTaxInvoice: boolean
 }
@@ -414,6 +415,25 @@ export interface DeliveryMethod2 {
   DeliveryType: string
   DeliveryChannelType: string
   DeliveryEmail: string
+}
+
+export interface InsureDetails {
+  OrderNo: string
+  OrderType: string
+  OrderSubType: string
+  OrderClassType: string
+  CompanyName: string
+  CompanyCode: string
+  CarCategory: string
+  UseCarName: string
+  UseCarCode: string
+  ActiveStartDate: string
+  ActiveEndDate: string
+  EffectiveType: string
+  IsOnline: boolean
+  Total: number
+  PriceACTDiscount: number
+  ComValue: number
 }
 
 export interface Payment {

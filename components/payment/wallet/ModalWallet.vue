@@ -13,7 +13,7 @@
 
       <div
         :class="isStep1 ? 'card-body pledge-step-1 is-active' : 'card-body pledge-step-1'"
-        v-if="paymentList"
+        
       >
         <FormKit
           type="form"
@@ -21,6 +21,7 @@
           id="form-pledge"
           form-class="form-pledge form-theme"
           :incomplete-message="false"
+          v-if="paymentList"
         >
           <figure class="dialog-icon"><i class="fa-regular fa-wallet"></i></figure>
           <h5>กรอกจำนวนเงินที่ต้องการเติม</h5>
@@ -86,6 +87,9 @@
             ยืนยันการเติมเงิน
           </button>
         </FormKit>
+        <div v-else>
+          <PaymentWalletModalLoading></PaymentWalletModalLoading>
+        </div>
       </div>
 
       <div
@@ -177,8 +181,8 @@
         </div>
       </div>
     </div>
-    <!-- <ElementsModalLoading :loading="isLoading"></ElementsModalLoading> -->
-    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+    <!-- <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading> -->
     <ElementsModalAlert
       v-if="isError"
       :is-error="isError"

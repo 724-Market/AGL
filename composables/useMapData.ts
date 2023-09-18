@@ -144,6 +144,8 @@ export default () => {
             { field: 'Status', type: 'MATCH' },
             { field: 'CreateType', type: 'MATCH' },
             { field: 'JobType', type: 'MATCH' },
+            { field: 'CreateDate', type: 'DATE_LTE' },
+            { field: 'CreateDate', type: 'DATE_GTE' },
         ]
         const filter = filterMap.filter(x => x.field == searchKey)
         if(filter.length>0)

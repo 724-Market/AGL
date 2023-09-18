@@ -101,6 +101,16 @@
                                   <FormKit type="text" label="สถานะ" name="" placeholder="ระบุคำค้นหา" autocomplete="off" />
                               </div> -->
                 </div>
+                <div class="advance-section">
+                  <div class="section">
+                    <FormKit type="date" label="เริ่มต้น" name="EffectiveDate" placeholder="dd/mm/yyyy" :min="expireMinDate"
+                      v-model="effectiveDateText"/>
+                  </div>
+                  <div class="section">
+                    <FormKit type="date" label="สิ้นสุด" name="ExpireDate" placeholder="dd/mm/yyyy" :min="expireMinDate"
+                      v-model="expireDateText"/>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -153,6 +163,8 @@ const messageError = ref("");
 var searchCategory = ref("");
 var searchText = ref("");
 var orderTypeText = ref("");
+var effectiveDateText = ref("");
+var expireDateText = ref("")
 const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
 
 var SearchCategoryShow = ref("");
@@ -176,12 +188,14 @@ const submitSearch = async () => {
     let historySearch: HistorySearch = {
       SearchCategory: searchOption.value.find((x) => x.value == searchCategory.value),
       SearchText: searchText.value,
+      EffectiveDate: effectiveDateText.value,
+      ExpireDate: expireDateText.value,
       orderType:
         orderTypeText.value != ""
           ? orderTypeOption.value.find((x) => x.value == orderTypeText.value)
           : undefined,
     };
-
+    // console.log('historySearch', historySearch)
     emit("searchHistory", historySearch);
   } else {
     isError.value = true;

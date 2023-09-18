@@ -467,6 +467,8 @@ export interface CreditError {
 export interface HistorySearch {
   SearchCategory: SelectOption|undefined
   SearchText: string
+  EffectiveDate: string
+  ExpireDate: string
   orderType: SelectOption|undefined
 }
 export interface StatusGroupResponse {

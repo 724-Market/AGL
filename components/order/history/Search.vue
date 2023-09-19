@@ -121,7 +121,7 @@
 
   <aside
     class="search-result"
-    v-if="(searchText != '' && SearchCategoryShow != '') || orderTypeText != ''"
+    v-if="(searchText != '' && SearchCategoryShow != '') || orderTypeText != '' || effectiveDateText!='' || expireDateText!=''"
   >
     <div class="notice-info">
       แสดงรายการจากผลการค้นหา "{{ searchText }}" จาก {{ SearchCategoryShow }}
@@ -178,13 +178,20 @@ const clearSearch = async () => {
   searchCategory.value = "";
   searchText.value = "";
   orderTypeText.value = "";
+  effectiveDateText.value="";
+  expireDateText.value="";
   emit("clearSearchHistory", true);
 };
-
+const validateSubmit = ():boolean=>{
+  let validate = false
+  validate = Boolean((searchCategory.value!='' && searchText.value != "") || (orderTypeText.value && orderTypeText.value != "") || (effectiveDateText.value && expireDateText.value))
+  
+  return validate
+}
 const submitSearch = async () => {
   isError.value = false;
   messageError.value = "";
-  if ((searchCategory.value!='' && searchText.value != "") || orderTypeText.value && orderTypeText.value != "") {
+  if (validateSubmit()) {
     let historySearch: HistorySearch = {
       SearchCategory: searchOption.value.find((x) => x.value == searchCategory.value),
       SearchText: searchText.value,

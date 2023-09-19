@@ -384,6 +384,26 @@ const handleSearch = async (searchValue: HistorySearch) => {
       filterOption.value = [...filterOption.value, filter[0]];
     }
   }
+  // ค้นหาขั้นสูง ช่วงวันที่
+  if(searchValue.EffectiveDate && searchValue.ExpireDate)
+  {
+    const filterStart = useMapData().getFilterSearchHistory(
+      "CreateDate",
+      useUtility().formatDate(searchValue.EffectiveDate,"YYYY-MM-DD") ,
+      "DATE_GTE"
+    );
+    if (filterStart.length > 0) {
+      filterOption.value = [...filterOption.value, filterStart[0]];
+    }
+    const filterStop = useMapData().getFilterSearchHistory(
+      "CreateDate",
+     useUtility().formatDate(searchValue.ExpireDate,"YYYY-MM-DD") ,
+      "DATE_LTE"
+    );
+    if (filterStop.length > 0) {
+      filterOption.value = [...filterOption.value, filterStop[0]];
+    }
+  }
   filterOptionTable.value = filterOption.value;
   await loadHistoryStatus(filterOption.value);
 

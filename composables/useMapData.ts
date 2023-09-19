@@ -131,7 +131,7 @@ export default () => {
 
         return OrderClassType[id]
     }
-    const getFilterSearchHistory = (searchKey: string,searchValue:string): Filter[] => {
+    const getFilterSearchHistory = (searchKey: string,searchValue:string,searchType?:string): Filter[] => {
         const data:Filter[] = [];
         const filterMap = [
             { field: 'OrderNo', type: 'LIKE' },
@@ -147,7 +147,11 @@ export default () => {
             { field: 'CreateDate', type: 'DATE_LTE' },
             { field: 'CreateDate', type: 'DATE_GTE' },
         ]
-        const filter = filterMap.filter(x => x.field == searchKey)
+        let filter = filterMap.filter(x => x.field == searchKey)
+        if(searchType && searchType!="")
+        {
+            filter =  filterMap.filter(x => x.type == searchType)
+        }
         if(filter.length>0)
         {
             

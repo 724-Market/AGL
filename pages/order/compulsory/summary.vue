@@ -92,6 +92,7 @@
       @close-wallet="handleCloseWallet"
       @topup-confirm="handleTopupConfirm"
       :wallet-payment-gateway="walletPaymentGateway"
+      :credit-order="paymentConfirm"
     ></PaymentWalletModalWallet>
     <PaymentWalletModalWarningWallet
       :show="showWarningWallet"
@@ -125,6 +126,7 @@ import {
   CreditBalanceResponse,
   CreditHistoryPaymentAdd,
   CreditOrderPaymentCreateRequest,
+  CreditOrderPaymentCreateResponse,
   PaymentFeeLimitRequest,
   PaymentFeeLimitResponse,
 } from "~/shared/entities/pledge-entity";
@@ -182,6 +184,7 @@ const creditPaymenyAddList: globalThis.Ref<CreditHistoryPaymentAdd | undefined> 
 const walletPaymentGateway: globalThis.Ref<PaymentGatewayResponse | undefined> = ref();
 const creditBalance: globalThis.Ref<CreditBalanceResponse | undefined> = ref();
 const paymentFeeLimmitInfo: globalThis.Ref<PaymentFeeLimitResponse[]> = ref([]);
+const paymentConfirm: globalThis.Ref<CreditOrderPaymentCreateResponse | undefined> = ref();
 const isConsent = ref();
 const showWallet = ref(false);
 const showWarningWallet = ref(false);
@@ -519,16 +522,16 @@ const handleTopupConfirm = async (
     response.apiResponse.Status == "200" &&
     response.apiResponse.Data
   ) {
-    let paymentConfirmRes = response.apiResponse.Data[0];
+    paymentConfirm.value = response.apiResponse.Data[0];
 
     const reqGateway: PaymentGatewayRequest = {
       payment_type: "bill_payment",
       endpoint_code: "credit_payment",
-      orderid: paymentConfirmRes.CreditOrderNo,
-      refno: paymentConfirmRes.CreditPaymentNo,
+      orderid: paymentConfirm.value.CreditOrderNo,
+      refno: paymentConfirm.value.CreditPaymentNo,
       expire_type: defineEventHandler.paymentGateWayExpireType,
       expire_value: defineEventHandler.paymentGateWayExpireValue,
-      amount: paymentConfirmRes.OrderAmount,
+      amount: paymentConfirm.value.OrderAmount,
     };
 
     const responseGateway = await useRepository().payment.gateway(reqGateway);

@@ -201,6 +201,7 @@ import {
 } from "~/shared/entities/payment-entity";
 import {
   CreditHistoryPaymentAdd,
+  CreditOrderPaymentCreateResponse,
   PaymentFeeLimitRequest,
 } from "~/shared/entities/pledge-entity";
 import { UserResponse } from "~/shared/entities/user-entity";
@@ -214,10 +215,13 @@ const emit = defineEmits(["closeWallet", "topupConfirm"]);
 const props = defineProps({
   show: Boolean,
   // paymentList: {
-  //   type: Object as () => CreditHistoryPaymentAdd,
+  //   type: Object as () => CreditHistoryPaymentAdd, CreditOrderPaymentCreateResponse
   // },
   walletPaymentGateway: {
     type: Object as () => PaymentGatewayResponse,
+  },
+  creditOrder: {
+    type: Object as () => CreditOrderPaymentCreateResponse,
   },
 });
 const isError = ref(false);
@@ -287,6 +291,14 @@ watch(
 
       // init signalr in wallet
       await signalRPaymentService();
+    }
+  }
+);
+watch(
+  () => props.creditOrder,
+  async () => {
+    if (props.creditOrder) {
+      feeAmount.value = props.creditOrder.FeeAmount
     }
   }
 );

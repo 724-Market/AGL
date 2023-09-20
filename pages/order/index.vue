@@ -358,10 +358,9 @@ const handleChangeStatus = async (status: string) => {
 };
 
 const handleSearch = async (searchValue: HistorySearch) => {
-  console.log('handleSearch', searchValue)
+  // console.log('handleSearch', searchValue)
   filterOption.value = [];
   filterOptionTable.value = [];
-  console.log("handleSearch", searchValue);
   statusSearch.value = "clear";
   historySearch.value = searchValue;
   // ค้นหาทั่วไป

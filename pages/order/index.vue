@@ -21,9 +21,9 @@
           :status-search="statusSearch"
         ></OrderHistoryStatus>
 
-        <OrderHistoryGridTable 
+        <OrderHistoryGridTable
           :filters="filterOptionTable"
-          v-if="filterOptionTable.length>0" 
+          v-if="filterOptionTable.length > 0"
           @change-table="handlerChangeTable"
           @on-resume="resume"
           @on-pay="pay"
@@ -66,8 +66,11 @@ import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { Filter } from "~/shared/entities/table-option";
 import { IInformation } from "~/shared/entities/information-entity";
-import { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity";
-
+import {
+  IPackageRequest,
+  IPackageResponse,
+  Paging,
+} from "~/shared/entities/packageList-entity";
 
 // Define Variables
 // Loading state after form submiting
@@ -77,10 +80,14 @@ const table = ref();
 let values = reactive({});
 const router = useRouter();
 
-const d = new Date()
-const getMonth = d.getMonth() + 1
-const EffectiveDate = `${d.getFullYear()}-${getMonth > 9 ? getMonth : '0' + getMonth}-${d.getDate() > 9 ? d.getDate() : '0' + d.getDate()}`
-const ExpireDate = `${d.getFullYear() + 1}-${getMonth > 9 ? getMonth : '0' + getMonth}-${d.getDate() > 9 ? d.getDate() : '0' + d.getDate()}`
+const d = new Date();
+const getMonth = d.getMonth() + 1;
+const EffectiveDate = `${d.getFullYear()}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
+  d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
+}`;
+const ExpireDate = `${d.getFullYear() + 1}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
+  d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
+}`;
 
 const paging: globalThis.Ref<Paging> = ref({
   Length: 100,
@@ -95,8 +102,7 @@ const optionDetail: globalThis.Ref<OptionsResponse | undefined> = ref();
 
 const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
 const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
-const filterOption: globalThis.Ref<Filter[]> = ref([
-]);
+const filterOption: globalThis.Ref<Filter[]> = ref([]);
 const filterOptionTable: globalThis.Ref<Filter[]> = ref([
   { field: "Status", type: "MATCH", value: "Pending" },
 ]);
@@ -107,16 +113,15 @@ const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
 
 const infomation = useStoreInformation();
-const storePackage = useStorePackage(); 
+const storePackage = useStorePackage();
 const placeorder = useStorePlaceorder();
 const storeSummary = useStoreOrderSummary();
 
 const showModalStaff = ref(false);
 
 const onLoad = onMounted(async () => {
-  
   if (AuthenInfo.value) {
-    await loadHistoryStatus()
+    await loadHistoryStatus();
     // await triggerEvent()
   } else {
     router.push("/login");
@@ -127,12 +132,12 @@ const resume = async (OrderNo: string) => {
   //ทำรายการต่อ
   isLoading.value = true;
 
-  // await loadOrderDetail(OrderNo); 
+  // await loadOrderDetail(OrderNo);
   await loadOrderSummary(OrderNo);
   router.push("/order/compulsory/payment");
 
   isLoading.value = false;
-}
+};
 
 const setStoretoStep = async (data: OrderResponse, orderNo: string) => {
   if (data && data.Order) {
@@ -199,10 +204,14 @@ const setStoretoStep = async (data: OrderResponse, orderNo: string) => {
       Paging: paging.value,
     };
     const packageList = await store.getPackageList(request);
-    const packageSelect = packageList.Data?.find(o => o.CompanyCode == order.Package.CompanyCode) as IPackageResponse 
-    packageSelect.Price = order.InsureDetails.Total
-    packageSelect.PackageResult[0].PriceACT = order.InsureDetails.Total
-    if(order.InsureDetails.PriceACTDiscount) packageSelect.PackageResult[0].PriceACTDiscount = order.InsureDetails.PriceACTDiscount
+    const packageSelect = packageList.Data?.find(
+      (o) => o.CompanyCode == order.Package.CompanyCode
+    ) as IPackageResponse;
+    packageSelect.Price = order.InsureDetails.Total;
+    packageSelect.PackageResult[0].PriceACT = order.InsureDetails.Total;
+    if (order.InsureDetails.PriceACTDiscount)
+      packageSelect.PackageResult[0].PriceACTDiscount =
+        order.InsureDetails.PriceACTDiscount;
     storePackage.setPackage(packageSelect);
   }
 };
@@ -265,29 +274,29 @@ const getCarDetail = (): string => {
 const pay = async (OrderNo: string) => {
   //ชำระเงิน
   router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
-}
+};
 
 const trackStatus = async (OrderNo: string) => {
   //ติดตามสถานะ
   alert("trackStatus " + OrderNo);
-}
+};
 
 const policyDetail = async (OrderNo: string) => {
   //รายละเอียดกรมธรรม์
   alert("policyDetail : " + OrderNo);
-}
+};
 
 const download = async (url: string) => {
   //ดาวโหลดกรมธรรม์
-  if(url != '') window.open(url, "_blank");
-}
+  if (url != "") window.open(url, "_blank");
+};
 
 const contactStaff = async () => {
-  console.log('staff')
+  console.log("staff");
   //ติดต่อเจ้าหน้าที่
   showModalStaff.value = false;
   showModalStaff.value = true;
-}
+};
 
 const deleteDraft = async (OrderNo: string) => {
   //ลบแบบร่างนี้
@@ -300,18 +309,17 @@ const deleteDraft = async (OrderNo: string) => {
     var response = await useRepository().order.delete(req);
     if (response.apiResponse.Status && response.apiResponse.Status == "200") {
       await loadHistoryStatus();
-      await onSearch()
-    }
-    else {
-      alert(response.apiResponse.ErrorMessage)
+      await onSearch();
+    } else {
+      alert(response.apiResponse.ErrorMessage);
     }
     isLoading.value = false;
-  } 
-}
+  }
+};
 
 const handleCloasModal = async (refresh: Boolean) => {
   showModalStaff.value = false;
-}
+};
 
 const loadHistoryStatus = async (filter?: Filter[]) => {
   isLoading.value = true;
@@ -343,16 +351,27 @@ const handleChangeStatus = async (status: string) => {
   filterOptionTable.value = [];
   statusSearch.value = "";
   statusSelect.value = status;
-  const filter = useMapData().getFilterSearchHistory("Status", status);
-  if (filter.length > 0) {
-    filterOptionTable.value[0] = filter[0];
-    filterOption.value.forEach((value, index) => {
-      filterOptionTable.value = [...filterOptionTable.value, value];
-    });
-    // let arrFilter =  filterOptionTable.value;
-    // arrFilter.concat(filterOption.value);
-    // filterOptionTable.value = arrFilter
+  if (status == "Delivery") {
+    let filter = useMapData().getFilterSearchHistory("Status", "Success", "LIKE");
+    if (filter.length > 0) {
+      console.log(filter)
+      filterOptionTable.value = [...filterOptionTable.value, filter[0]];
+
+    }
+    filter = useMapData().getFilterSearchHistory("IsDelivery", "1", "LIKE");
+    if (filter.length > 0) {
+      filterOptionTable.value = [...filterOptionTable.value, filter[0]];
+    }
+  } else {
+    const filter = useMapData().getFilterSearchHistory("Status", status);
+    if (filter.length > 0) {
+      filterOptionTable.value[0] = filter[0];
+    }
   }
+  filterOption.value.forEach((value, index) => {
+        filterOptionTable.value = [...filterOptionTable.value, value];
+      });
+
   console.log("handleChangeStatus filterOption", filterOption.value);
   await onSearch();
 };
@@ -384,11 +403,10 @@ const handleSearch = async (searchValue: HistorySearch) => {
     }
   }
   // ค้นหาขั้นสูง ช่วงวันที่
-  if(searchValue.EffectiveDate && searchValue.ExpireDate)
-  {
+  if (searchValue.EffectiveDate && searchValue.ExpireDate) {
     const filterStart = useMapData().getFilterSearchHistory(
       "CreateDate",
-      useUtility().formatDate(searchValue.EffectiveDate,"YYYY-MM-DD") ,
+      useUtility().formatDate(searchValue.EffectiveDate, "YYYY-MM-DD"),
       "DATE_GTE"
     );
     if (filterStart.length > 0) {
@@ -396,7 +414,7 @@ const handleSearch = async (searchValue: HistorySearch) => {
     }
     const filterStop = useMapData().getFilterSearchHistory(
       "CreateDate",
-     useUtility().formatDate(searchValue.ExpireDate,"YYYY-MM-DD") ,
+      useUtility().formatDate(searchValue.ExpireDate, "YYYY-MM-DD"),
       "DATE_LTE"
     );
     if (filterStop.length > 0) {
@@ -419,17 +437,15 @@ const handleClearSearch = async (status: boolean) => {
   // }
   // await handleSearch(clear)
 };
-const handlerChangeTable = async(datatable:any)=>{
-  table.value = datatable
+const handlerChangeTable = async (datatable: any) => {
+  table.value = datatable;
 
-  console.log('datatable',table.value)
-}
-
-
+  console.log("datatable", table.value);
+};
 
 const continute = () => {
   alert("ทำรายการต่อ");
-  console.log('ทำรายการต่อ')
+  console.log("ทำรายการต่อ");
 };
 // Define layout
 const layout = "monito";

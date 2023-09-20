@@ -142,6 +142,8 @@ export default () => {
             { field: 'PhoneNumber', type: 'LIKE' },
             { field: 'AssuredFullName', type: 'LIKE' },
             { field: 'Status', type: 'MATCH' },
+            { field: 'Status', type: 'LIKE' },
+            { field: 'IsDelivery', type: 'LIKE' },
             { field: 'CreateType', type: 'MATCH' },
             { field: 'JobType', type: 'MATCH' },
             { field: 'CreateDate', type: 'DATE_LTE' },
@@ -150,7 +152,7 @@ export default () => {
         let filter = filterMap.filter(x => x.field == searchKey)
         if(searchType && searchType!="")
         {
-            filter =  filterMap.filter(x => x.type == searchType)
+            filter =  filter.filter(x => x.type == searchType)
         }
         if(filter.length>0)
         {

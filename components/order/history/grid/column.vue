@@ -4,7 +4,7 @@
   </div>
   <div v-if="props.field && props.field == 'order' && props.row">
     #{{ props.row.OrderNo
-    }}<time datetime="2023-05-05 08:08">{{ useUtility().formatDate(props.row.CreateDate,"D MMMM BBBB") }}</time>
+    }}<time datetime="2023-05-05 08:08">{{ useUtility().formatDate(props.row.CreateDate,"D MMM BBBB HH:mm") }}</time>
   </div>
   <div v-if="props.field && props.field == 'subject' && props.row">
     <span v-if="props.row.OrderGroupType=='INSURANCE'">ประกันภัย</span>

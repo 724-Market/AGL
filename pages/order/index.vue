@@ -309,7 +309,6 @@ const deleteDraft = async (OrderNo: string) => {
     var response = await useRepository().order.delete(req);
     if (response.apiResponse.Status && response.apiResponse.Status == "200") {
       await loadHistoryStatus();
-      await onSearch();
     } else {
       alert(response.apiResponse.ErrorMessage);
     }
@@ -373,7 +372,6 @@ const handleChangeStatus = async (status: string) => {
       });
 
   console.log("handleChangeStatus filterOption", filterOption.value);
-  await onSearch();
 };
 
 const handleSearch = async (searchValue: HistorySearch) => {
@@ -424,10 +422,9 @@ const handleSearch = async (searchValue: HistorySearch) => {
   filterOptionTable.value = filterOption.value;
   await loadHistoryStatus(filterOption.value);
 
-  await onSearch();
-
   console.log("handleSearch filterOption", filterOption.value);
-};
+}
+
 const handleClearSearch = async (status: boolean) => {
   //filterOption.value = [{ field: "Status", type: "MATCH", value: "Pending" }];
   // var clear: HistorySearch = {
@@ -436,17 +433,19 @@ const handleClearSearch = async (status: boolean) => {
   //   orderType: undefined
   // }
   // await handleSearch(clear)
-};
+}
+
 const handlerChangeTable = async (datatable: any) => {
   table.value = datatable;
 
   console.log("datatable", table.value);
-};
+}
 
 const continute = () => {
   alert("ทำรายการต่อ");
   console.log("ทำรายการต่อ");
 };
+
 // Define layout
 const layout = "monito";
 const layoutClass = "page-monito";

@@ -258,15 +258,6 @@ const datatableOptions = {
     //   // Get the parent tr element
     //   var tr = this.parentNode
     //   // console.log(tr)
-    //   // const menuEdit = tr.querySelector('.icon-edit')
-    //   // menuEdit.addEventListener('click',async () => {
-    //   //   console.log('menuEdit', menuEdit.dataset.id)
-    //   // })
-
-    //   // const menuPayment = tr.querySelector('.icon-payment');
-    //   // menuPayment.addEventListener('click',async () => {
-    //   //   console.log('menuPayment', menuPayment.dataset.id)
-    //   // })
     // })
 
     TdId2.addEventListener('click',async function() {
@@ -313,8 +304,6 @@ const datatableOptions = {
         })
   },
 };
-
-
 
 watch(()=>props.filters,()=>{
 console.log('filter in table ',props.filters)

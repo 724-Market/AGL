@@ -8,7 +8,7 @@
       <h4 class="topic">พ.ร.บ. สำหรับรถยนต์นั่ง{{ packageSelect.PackageResult[0].UseCarName }}</h4>
       <div class="info">
         <span class="price">{{ getCurrency(packageSelect.PackageResult[0].PriceACT) }}</span>
-        <p class="description">ค่าส่งเสริมการขาย {{ getCurrency(packageSelect.PackageResult[0].PriceACTDiscount) }} บาท</p>
+        <p class="description">ค่าส่งเสริมการขาย {{ getCurrency(packageSelect.PackageResult[0].AgentComDiscount) }} บาท</p>
       </div>
     </div>
 

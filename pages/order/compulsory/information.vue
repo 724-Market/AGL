@@ -139,12 +139,16 @@ import {
   IInformation,
 } from "~/shared/entities/information-entity";
 import { defineEventHandler } from "~/server/api/setting.post";
+import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { storeToRefs } from "pinia";
 import { IChecklist } from "~/shared/entities/checklist-entity";
 import { info } from "console";
 
 // Define Store
+const storeAuth = useStoreUserAuth();
+const { AuthenInfo } = storeToRefs(storeAuth);
+
 const store = useStoreInformation();
 const { CarInfo } = storeToRefs(store);
 
@@ -154,6 +158,8 @@ const isLoading = ref(true);
 
 // Submitted state after submit
 const submitted = ref(false);
+
+const router = useRouter();
 
 // Response status for notice user
 const statusMessage = ref()
@@ -217,33 +223,42 @@ let values = reactive({})
 
 // Page Load Event Load CarYear, CarUse, Call Api Default CarType And Check Data In Store
 const onLoad = onMounted(async () => {
-  await loadcarYesr('')
-  await loadCarUse()
-  await handleRadioCarUseChange('PERSONAL', '')
+  if (AuthenInfo.value) {
+    await loadcarYesr('')
+    await loadCarUse()
+    await handleRadioCarUseChange('PERSONAL', '')
 
-  // const info = sessionStorage.getItem("useStoreInformation") ?
-  //   JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as IInformation : undefined
-  const info = CarInfo.value
-  if (info.CarUse != '') {
-    carUseText.value = info.CarUse
-    await handleRadioCarUseChange(info.CarUse, info.CarType)
-    await loadCarSize(info.CarType, info.CarSize)
-    await loadcarYesr(info.CarYear)
-    await loadCarBrand(info.CarYear, info.CarBrand)
-    await loadCarModel(info.CarBrand, info.CarModel)
-    await loadSubcarModel(info.CarModel, info.SubCarModel)
+    // const info = sessionStorage.getItem("useStoreInformation") ?
+    //   JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as IInformation : undefined
+    const info = CarInfo.value
+    if (info.CarUse != '') {
+      carUseText.value = info.CarUse
+      await handleRadioCarUseChange(info.CarUse, info.CarType)
+      await loadCarSize(info.CarType, info.CarSize)
+      await loadcarYesr(info.CarYear)
+      await loadCarBrand(info.CarYear, info.CarBrand)
+      await loadCarModel(info.CarBrand, info.CarModel)
+      await loadSubcarModel(info.CarModel, info.SubCarModel)
 
-    if (info.customSubCarModel != '') customSubCarModel.value = info.customSubCarModel
-    carCC.value = info.CarCC
+      if (info.customSubCarModel != '') customSubCarModel.value = info.customSubCarModel
+      carCC.value = info.CarCC
+      checklist.value[0].className = 'current'
 
-    selectDate = new Date(info.EffectiveDate)
-    effectiveType.value = info.EffectiveType
-    effectiveDateText.value = info.EffectiveDate
-    expireDateText.value = info.ExpireDate
-    insuranceDay.value = info.InsuranceDay ?? 0
-
-    checklist.value[0].className = 'current'
-    checklist.value[1].className = 'current'
+      let today = new Date()
+      let effectiveDateCheck = new Date(info.EffectiveDate)
+      console.log('check EffectiveDate', effectiveDateCheck > today)
+      if(effectiveDateCheck > today) {
+        selectDate = new Date(info.EffectiveDate)
+        effectiveType.value = info.EffectiveType
+        effectiveDateText.value = info.EffectiveDate
+        expireDateText.value = info.ExpireDate
+        insuranceDay.value = info.InsuranceDay ?? 0
+        checklist.value[1].className = 'current'
+      }
+    }
+  } else {
+    isLoading.value = false;
+    router.push("/login");
   }
 });
 
@@ -379,24 +394,26 @@ const handleEffectiveTypeChange = async (event: any) => {
 /* Event Handle EffectiveDate Change Set Value To EffectiveDate, ExpireDate 
 And Calculate Min, Max ExpireDate And Call Function checkFromDate */
 const handleEffectiveDateChange = async (event: any) => {
-  selectDate = new Date(event.target.value)
-  effectiveDateText.value = selectDate.toLocaleDateString("en-CA")
-  switch (effectiveType.value) {
-    case "FULLYEAR":
-      await setExpireDate(CoverageExpireDateFullYearMaxDay);
-      break;
-    case "NOTFULLYEAR":
-      await setExpireDate(coverageExpireDateNotFullYearMinDay)
+  if(event.target.value && event.target.value != '') {
+    selectDate = new Date(event.target.value)
+    effectiveDateText.value = selectDate.toLocaleDateString("en-CA")
+    switch (effectiveType.value) {
+      case "FULLYEAR":
+        await setExpireDate(CoverageExpireDateFullYearMaxDay);
+        break;
+      case "NOTFULLYEAR":
+        await setExpireDate(coverageExpireDateNotFullYearMinDay)
 
-      let expireMinDateText = new Date(selectDate)
-      expireMinDateText.setDate(expireMinDateText.getDate() + coverageExpireDateNotFullYearMinDay)
-      expireMinDate = expireMinDateText.toLocaleDateString("en-CA")
+        let expireMinDateText = new Date(selectDate)
+        expireMinDateText.setDate(expireMinDateText.getDate() + coverageExpireDateNotFullYearMinDay)
+        expireMinDate = expireMinDateText.toLocaleDateString("en-CA")
 
-      let expireMaxDateText = new Date(selectDate)
-      expireMaxDateText.setDate(expireMaxDateText.getDate() + coverageExpireDateNotFullYearMaxDay)
-      expireMaxDate = expireMaxDateText.toLocaleDateString("en-CA")
+        let expireMaxDateText = new Date(selectDate)
+        expireMaxDateText.setDate(expireMaxDateText.getDate() + coverageExpireDateNotFullYearMaxDay)
+        expireMaxDate = expireMaxDateText.toLocaleDateString("en-CA")
 
-      setInsuranceDay(coverageExpireDateNotFullYearMinDay)
+        setInsuranceDay(coverageExpireDateNotFullYearMinDay)
+    }
   }
   await checkFromDate()
 }

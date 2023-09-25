@@ -226,6 +226,7 @@ const showPackageList = async () => {
           isLoading.value = false;
           isError.value = true;
           messageError.value = data.ErrorMessage ? data.ErrorMessage : "";
+          if(data.ErrorMessage.split(' ')[0] == 'Effective') router.push("/order/compulsory/information");
         }
       } else {
         isLoading.value = false;

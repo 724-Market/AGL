@@ -415,19 +415,26 @@ const handleEffectiveDateChange = async (event: any) => {
         setInsuranceDay(coverageExpireDateNotFullYearMinDay)
     }
   }
+  else {
+    effectiveDateText.value = ''
+    expireDateText.value = ''
+  }
   await checkFromDate()
 }
 
 // Event Handle ExpireDate Change Set Value To ExpireDate And Call Function checkFromDate
 const handleExpireDateChange = async (event: any) => {
-  expireDateText.value = new Date(event.target.value).toLocaleDateString("en-CA")
-
-  let efDate = new Date(effectiveDateText.value.toString())
-  let exDate = new Date(event.target.value)
-  let differenceMs = exDate.getTime() - efDate.getTime()
-  let differenceDays = Math.floor(differenceMs / (1000 * 60 * 60 * 24))
-  setInsuranceDay(differenceDays)
-
+  if(event.target.value && event.target.value != '') {
+    expireDateText.value = new Date(event.target.value).toLocaleDateString("en-CA")
+    let efDate = new Date(effectiveDateText.value.toString())
+    let exDate = new Date(event.target.value)
+    let differenceMs = exDate.getTime() - efDate.getTime()
+    let differenceDays = Math.floor(differenceMs / (1000 * 60 * 60 * 24))
+    setInsuranceDay(differenceDays)
+  }
+  else {
+    expireDateText.value = ''
+  }
   await checkFromDate()
 }
 

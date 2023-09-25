@@ -1,8 +1,13 @@
 <template>
     <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
     :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
-    <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
-      #default="{ value }" v-model="values" :incomplete-message="false">
+    <FormKit 
+      type="form" 
+      :actions="false" 
+      id="form-order" 
+      form-class="form-order form-theme"
+      v-model="values" 
+      :incomplete-message="false">
 
       <div class="row">
         <div class="col-lg-7">
@@ -83,11 +88,24 @@
 
           </aside>
 
-          <FormKit type="submit" label="ไปต่อ" name="order-submit" 
+          <!-- <FormKit type="submit" label="ไปต่อ" name="order-submit" 
             id="order-submit" :disabled="!checkSave" :loading="isLoading"
-            :classes="{ input: 'btn-primary', outer: 'form-actions' }" />
+            :classes="{ input: 'btn-primary', outer: 'form-actions' }" /> -->
 
-          <NuxtLink to="placeorder" class="btn btn-back">ย้อนกลับ</NuxtLink>
+          <button 
+            type="button"
+            class="formkit-input btn btn-primary form-actions"
+            @click="submitOrder"
+            label="ไปต่อ"
+            name="order-submit"
+            id="order-submit"
+            :disabled="!checkSave"
+            :loading="isLoading"
+            style="display: block; margin-inline: auto; width: min(100%,420px);"
+            >ไปต่อ
+          </button>
+
+          <NuxtLink to="placeorder" class="btn btn-back mt-3">ย้อนกลับ</NuxtLink>
 
         </div>
       </div>

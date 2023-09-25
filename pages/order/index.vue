@@ -209,9 +209,10 @@ const setStoretoStep = async (data: OrderResponse, orderNo: string) => {
     ) as IPackageResponse;
     packageSelect.Price = order.InsureDetails.Total;
     packageSelect.PackageResult[0].PriceACT = order.InsureDetails.Total;
-    if (order.InsureDetails.PriceACTDiscount)
-      packageSelect.PackageResult[0].PriceACTDiscount =
-        order.InsureDetails.PriceACTDiscount;
+    packageSelect.PackageResult[0].AgentComDiscount = order.InsureDetails.ComValue;
+    // if (order.InsureDetails.PriceACTDiscount)
+    //   packageSelect.PackageResult[0].PriceACTDiscount =
+    //     order.InsureDetails.PriceACTDiscount;
     storePackage.setPackage(packageSelect);
   }
 };

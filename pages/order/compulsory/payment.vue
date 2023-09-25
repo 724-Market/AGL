@@ -227,7 +227,16 @@ const storePayment = useStorePayment()
 
 const router = useRouter();
 
+const getToken = async () => {
+    const token = await useUtility().getToken()
+    console.log('token,',token)
+    if(!token || token=='')
+    {
+      window.location.href='/login'
+    }
+}
 const onLoad = onMounted(async () => {
+  await getToken();
   if (AuthenInfo.value) {
     if(OrderInfo.value) {
       orderInfo.value = OrderInfo.value

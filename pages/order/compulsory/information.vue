@@ -220,9 +220,17 @@ const checklist: globalThis.Ref<IChecklist[]> = ref([
 ])
 
 let values = reactive({})
-
+const getToken = async () => {
+    const token = await useUtility().getToken()
+    console.log('token,',token)
+    if(!token || token=='')
+    {
+      window.location.href='/login'
+    }
+}
 // Page Load Event Load CarYear, CarUse, Call Api Default CarType And Check Data In Store
 const onLoad = onMounted(async () => {
+  await getToken();
   if (AuthenInfo.value) {
     await loadcarYesr('')
     await loadCarUse()

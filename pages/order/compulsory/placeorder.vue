@@ -308,8 +308,16 @@ const storeOrder = useStorePlaceorder();
 const { OrderInfo } = storeToRefs(storeOrder);
 
 const router = useRouter();
-
+const getToken = async () => {
+    const token = await useUtility().getToken()
+    console.log('token,',token)
+    if(!token || token=='')
+    {
+        window.location.href='/login'
+    }
+}
 const onLoad = onMounted(async () => {
+  await getToken();
   if (AuthenInfo.value) {
     if (PackageInfo.value && CarInfo.value) {
       infomation.value = CarInfo.value;

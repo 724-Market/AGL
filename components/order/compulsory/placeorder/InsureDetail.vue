@@ -126,6 +126,7 @@
                       <div class="col-6">
                         <ElementsFormIdCard
                           v-model="personProfile.PersonalID"
+                          maxlength="13"
                           validation="required|length:13,13|number"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
@@ -139,6 +140,7 @@
                           type="text"
                           label="หมายเลขโทรศัพท์"
                           name="PhoneNumber"
+                          maxlength="10"
                           placeholder="098765XXXX"
                           v-model="personProfile.PhoneNumber"
                           @change="handlerChangePersonalProfile"
@@ -237,6 +239,7 @@
                         <ElementsFormPassport
                           v-model="personProfile.PersonalID"
                           @change="handlerChangePersonalProfile"
+                          maxlength="13"
                           :validation-rules="{ special_characters }"
                           validation="required|special_characters"
                           :validation-messages="{
@@ -265,6 +268,7 @@
                           name="PhoneNumber"
                           placeholder="098765XXXX"
                           validation="required|+length:10|number"
+                          maxlength="10"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 10 ตัว',
@@ -350,6 +354,7 @@
                           name="CompanyTaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี"
                           validation="required|length:13|number"
+                          maxlength="13"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 13 ตัว',

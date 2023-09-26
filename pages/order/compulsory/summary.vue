@@ -369,16 +369,7 @@ const loadPledgeFeeLimit = async () => {
   } else {
   }
 };
-const getToken = async () => {
-    const token = await useUtility().getToken()
-    console.log('token,',token)
-    if(!token || token=='')
-    {
-      window.location.href='/login'
-    }
-}
 const onLoad = onMounted(async () => {
-  await getToken();
   const route = useRoute();
   console.log(route.query);
   if (route.query && isString(route.query.OrderNo)) {

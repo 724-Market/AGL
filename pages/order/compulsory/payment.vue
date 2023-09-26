@@ -252,7 +252,7 @@ const getToken = async () => {
   }
 };
 const onLoad = onMounted(async () => {
-  await getToken();
+  //await getToken();
   if (AuthenInfo.value) {
     if (OrderInfo.value) {
       orderInfo.value = OrderInfo.value;

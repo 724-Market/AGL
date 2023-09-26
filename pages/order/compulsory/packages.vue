@@ -240,17 +240,9 @@ const showPackageList = async () => {
     //isLoading.value = false
   }
 };
-const getToken = async () => {
-    const token = await useUtility().getToken()
-    console.log('token,',token)
-    if(!token || token=='')
-    {
-      window.location.href='/login'
-    }
-}
+
 // onmounted loading page
 const onLoad = onMounted(async () => {
-  await getToken();
   await onInit();
 });
 const handlerCheckList = (_checklist: IChecklist[]) => {

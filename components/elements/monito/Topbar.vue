@@ -41,6 +41,8 @@ import {
     PaymentGatewayRequest,
     PaymentGatewayResponse
 } from "~/shared/entities/payment-entity";
+import { useStoreCreditBalance } from "~/stores/plege/storeCreditBalance";
+import { storeToRefs } from "pinia";
 
 const creditPaymenyAddList: globalThis.Ref<CreditHistoryPaymentAdd | undefined> = ref();
 const walletPaymentGateway: globalThis.Ref<PaymentGatewayResponse | undefined> = ref();
@@ -53,6 +55,10 @@ const messageError = ref("");
 
 var remaining = ref(0)
 const showWallet = ref(false);
+
+//define store
+const storeCredit = useStoreCreditBalance()
+
 
 const onLoad = onMounted(async () => {
   await loadPledgeCreditBalance()
@@ -125,6 +131,7 @@ const loadPledgeHistoryPaymentAddList = async () => {
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if (response.apiResponse.Data) {
       creditPaymenyAddList.value = response.apiResponse.Data;
+      
       return creditPaymenyAddList.value
     } else {
       // data not found
@@ -139,6 +146,7 @@ const loadPledgeCreditBalance = async () => {
     if (response.apiResponse.Data) {
       creditBalance.value = response.apiResponse.Data[0];
       remaining.value = creditBalance.value.AvailableBalance
+      storeCredit.setCreditBalance(response.apiResponse.Data[0])
       return creditBalance.value
     } else {
       // data not found

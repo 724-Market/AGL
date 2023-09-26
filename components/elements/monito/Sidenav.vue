@@ -21,35 +21,45 @@
                     <div class="collapse show" id="menu-order" data-bs-parent="#sidenav-collapse-main">
                         <ul class="nav">
                             <li class="nav-item">
-                                <a class="nav-link" href="/order" title="ประวัติการทำรายการ">ประวัติการทำรายการ</a>
+                                <NuxtLink class="nav-link" to="/order" title="ประวัติการทำรายการ">ประวัติการทำรายการ</NuxtLink>
+                                <!-- <a class="nav-link" href="/order" title="ประวัติการทำรายการ">ประวัติการทำรายการ</a> -->
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/order/compulsory/information" title="กรอกข้อมูล">กรอกข้อมูล</a>
+                                <NuxtLink class="nav-link" to="/order/compulsory/information" title="กรอกข้อมูล">กรอกข้อมูล</NuxtLink>
+                                <!-- <a class="nav-link" href="/order/compulsory/information" title="กรอกข้อมูล">กรอกข้อมูล</a> -->
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/order/compulsory/packages" title="เลือกแพ็กเกจ">เลือกแพ็กเกจ</a>
+                                <NuxtLink class="nav-link" to="/order/compulsory/packages" title="เลือกแพ็กเกจ">เลือกแพ็กเกจ</NuxtLink>
+                                <!-- <a class="nav-link" href="/order/compulsory/packages" title="เลือกแพ็กเกจ">เลือกแพ็กเกจ</a> -->
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/order/compulsory/placeorder" title="คำสั่งซื้อ">คำสั่งซื้อ</a>
+                                <NuxtLink class="nav-link" to="/order/compulsory/placeorder" title="คำสั่งซื้อ">คำสั่งซื้อ</NuxtLink>
+                                <!-- <a class="nav-link" href="/order/compulsory/placeorder" title="คำสั่งซื้อ">คำสั่งซื้อ</a> -->
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/order/compulsory/payment" title="วิธีชำระเงิน">วิธีชำระเงิน</a>
+                                <NuxtLink class="nav-link" to="/order/compulsory/payment" title="วิธีชำระเงิน">วิธีชำระเงิน</NuxtLink>
+                                <!-- <a class="nav-link" href="/order/compulsory/payment" title="วิธีชำระเงิน">วิธีชำระเงิน</a> -->
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/order/compulsory/summary" title="สรุปรายการ">สรุปรายการ</a>
+                                <NuxtLink class="nav-link" to="/order/compulsory/summary" title="สรุปรายการ">สรุปรายการ</NuxtLink>
+                                <!-- <a class="nav-link" href="/order/compulsory/summary" title="สรุปรายการ">สรุปรายการ</a> -->
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/page/redirect" title="Redirect">Redirect</a>
+                                <NuxtLink class="nav-link" to="/page/redirect" title="Redirect">Redirect</NuxtLink>
+                                <!-- <a class="nav-link" href="/page/redirect" title="Redirect">Redirect</a> -->
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/payment/qr" title="QR Payment">QR Payment</a>
+                                <NuxtLink class="nav-link" to="/payment/qr" title="QR Payment">QR Payment</NuxtLink>
+                                <!-- <a class="nav-link" href="/payment/qr" title="QR Payment">QR Payment</a> -->
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/payment/cards"
-                                    title="บัตรเครดิต/บัตรเดบิต">บัตรเครดิต/บัตรเดบิต</a>
+                                <NuxtLink class="nav-link" to="/payment/cards" title="บัตรเครดิต/บัตรเดบิต">บัตรเครดิต/บัตรเดบิต</NuxtLink>
+                                <!-- <a class="nav-link" href="/payment/cards"
+                                    title="บัตรเครดิต/บัตรเดบิต">บัตรเครดิต/บัตรเดบิต</a> -->
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/order/compulsory/thanks" title="Thanks">Thanks</a>
+                                <NuxtLink class="nav-link" to="/order/compulsory/thanks" title="Thanks">Thanks</NuxtLink>
+                                <!-- <a class="nav-link" href="/order/compulsory/thanks" title="Thanks">Thanks</a> -->
                             </li>
                         </ul>
                     </div>
@@ -65,16 +75,25 @@
                                 <a class="nav-link" href="#" title="ประวัติการเติมเงิน">ประวัติการเติมเงิน</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#" title="ประวัติการใช้กระดาษ">ประวัติการใช้กระดาษ</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" href="#" title="เติมเงิน">เติมเงิน</a>
                             </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#menu-papers" title="กระดาษ" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="menu-papers">
+                        <i class="fa-duotone fa-scroll fa-swap-opacity"></i><span class="nav-link-text">กระดาษ</span>
+                    </a>
+                    <div class="collapse" id="menu-papers" data-bs-parent="#sidenav-collapse-main">
+                        <ul class="nav">
                             <li class="nav-item">
-                                <a class="nav-link" href="#" title="คลังกระดาษ">คลังกระดาษ</a>
+                                <NuxtLink class="nav-link" to="/order/papers" title="ประวัติการแลกกระดาษ">ประวัติการแลกกระดาษ</NuxtLink>
+                                <!-- <a class="nav-link" href="/order/papers" title="ประวัติการแลกกระดาษ">ประวัติการแลกกระดาษ</a> -->
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#" title="คลังกระดาษ 2">คลังกระดาษ 2</a>
+                                <NuxtLink class="nav-link" to="/order/papers/exchange" title="แลกกระดาษ">แลกกระดาษ</NuxtLink>
+                                <!-- <a class="nav-link" href="/order/papers/exchange" title="แลกกระดาษ">แลกกระดาษ</a> -->
                             </li>
                         </ul>
                     </div>

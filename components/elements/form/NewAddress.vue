@@ -1,5 +1,5 @@
 <template>
-  <div class="col-6">
+  <!-- <div class="col-6">
     <FormKit
       type="text"
       label="ตั้งชื่อเรียกรายการนี้"
@@ -11,22 +11,8 @@
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
       autocomplete="false"
     />
-  </div>
-  <div class="col-6">
-    <FormKit
-      type="text"
-      label="หมายเลขโทรศัพท์"
-      :name="'PhoneNumber' + props.elementKey"
-      placeholder="098765XXXX"
-      maxlength="10"
-      v-model="PhoneNumberText"
-      @change="handlePhoneNumberChange"
-      validation="required"
-      :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-      autocomplete="false"
-    />
-  </div>
-  <div class="col-sm-4 col-lg-3">
+  </div> -->
+  <div class="col-sm-3 col-lg-3">
     <FormKit
       type="select"
       label="คำนำหน้าผู้รับ"
@@ -39,7 +25,7 @@
       :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
     />
   </div>
-  <div class="col-sm-8 col-lg-4">
+  <div class="col-sm-4 col-lg-4">
     <FormKit
       type="text"
       label="ชื่อผู้รับ"
@@ -52,7 +38,7 @@
       autocomplete="false"
     />
   </div>
-  <div class="col-md-12 col-lg-5">
+  <div class="col-md-5 col-lg-5">
     <FormKit
       type="text"
       label="นามสกุลผู้รับ"
@@ -60,6 +46,21 @@
       placeholder="นามสกุล"
       v-model="LastNameText"
       @change="handleLastNameChange"
+      validation="required"
+      :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
+      autocomplete="false"
+    />
+  </div>
+
+  <div class="col-6">
+    <FormKit
+      type="text"
+      label="หมายเลขโทรศัพท์"
+      :name="'PhoneNumber' + props.elementKey"
+      placeholder="098765XXXX"
+      maxlength="10"
+      v-model="PhoneNumberText"
+      @change="handlePhoneNumberChange"
       validation="required"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
       autocomplete="false"

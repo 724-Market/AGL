@@ -12,7 +12,7 @@
             พ.ร.บ. สำหรับรถยนต์นั่ง{{ item.PackageResult[0].UseCarName }}
           </h4>
           <div class="tags">
-            <span class="badge">{{ item.CompanyName }}</span>
+            <span class="badge">{{ item.CompanyCode }}</span>
             <span class="badge-bg-success" v-if="item.IsOnlineActive"><i
                 class="fa-solid fa-bolt"></i>ได้กรมธรรม์ทันที</span>
             <span class="badge-bg-orange" v-else><i class="fa-solid fa-clock-four"></i>ได้กรมธรรม์ 1-3 วันทำการ</span>

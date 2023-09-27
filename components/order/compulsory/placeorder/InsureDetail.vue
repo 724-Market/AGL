@@ -591,7 +591,7 @@ const legalPersonProfile:globalThis.Ref<LegalPersonProfile> = ref({
 const defaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref()
 
 const InsuredTypeText:globalThis.Ref<String> = ref('person')
-const InsuredClassifierText:globalThis.Ref<String> = ref('')
+const InsuredClassifierText:globalThis.Ref<String> = ref('thai')
 const CompanyClassifierText:globalThis.Ref<String> = ref('')
 const Prefix:globalThis.Ref<SelectOption[]> = ref([])
 const Nationality:globalThis.Ref<SelectOption[]> = ref([])

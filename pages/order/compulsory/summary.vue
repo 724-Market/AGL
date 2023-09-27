@@ -75,10 +75,10 @@
             name="order-submit"
             id="order-submit"
             :classes="{ input: 'btn-primary', outer: 'form-actions' }"
-            :disabled="validatePaymment()"
+            :disabled="!isConsent"
             :loading="isLoading"
           />
-
+          <!-- validatePaymment() -->
           <!-- :to="'placeorder?orderNo=' + orderDetail.OrderNo" -->
           <NuxtLink v-if="orderDetail" to="payment" class="btn btn-back"
             >ย้อนกลับ</NuxtLink
@@ -208,6 +208,11 @@ const validatePaymment = ():boolean=>{
 
   return validate
 }
+
+// watch(isConsent, async (newConsent) => {
+//   await validatePaymment();
+// });
+
 const getCarDetail = (): string => {
   let carDetail = "";
   if (orderDetail.value) {

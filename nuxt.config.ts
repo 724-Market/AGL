@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+	ssr:false,
 	runtimeConfig: {
 		public: {
 			BaseUrl: process.env.BASE_API || "http://localhost:3000",

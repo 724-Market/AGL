@@ -167,10 +167,9 @@ const onInit = async () => {
   if (AuthenInfo.value) {
     await showPackageList();
    
-   
-    if(PackageInfo && PackageInfo.value){
-      handlerSelect(true,PackageInfo.value)
-    }
+  if(PackageInfo && PackageInfo.value && PackageInfo.value.CompanyCode != ''){
+    handlerSelect(true,PackageInfo.value)
+  }
     
 
   } else {

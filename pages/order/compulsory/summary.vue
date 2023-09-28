@@ -186,6 +186,7 @@ const creditBalance: globalThis.Ref<CreditBalanceResponse | undefined> = ref();
 const paymentFeeLimmitInfo: globalThis.Ref<PaymentFeeLimitResponse[]> = ref([]);
 const paymentConfirm: globalThis.Ref<CreditOrderPaymentCreateResponse | undefined> = ref();
 const isConsent = ref();
+const validatePayment = ref(false);
 const showWallet = ref(false);
 const showWarningWallet = ref(false);
 const isError = ref(false);
@@ -194,19 +195,19 @@ const messageError = ref("");
 let values = reactive({});
 
 const validatePaymment = ():boolean=>{
-  let validate = false
+  validatePayment.value = false
   if(isConsent)
   {
     if(paymentDetail.value && paymentDetail.value.PaymentType=="PLEDGE")
     {
       if(creditBalance.value && creditBalance.value.AvailableBalance<paymentDetail.value.OrderAmount){
-        validate = true
+        validatePayment.value = true
       }
     }
   }
-  else validate= true
+  else validatePayment.value = true
 
-  return validate
+  return validatePayment.value
 }
 
 // watch(isConsent, async (newConsent) => {

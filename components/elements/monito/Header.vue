@@ -18,8 +18,9 @@
                 <ol class="breadcrumb dot counter">
                     <li v-for="item in menus" :key="item.step" :class="getClassName(step, item)"
                         :aria-current="step == item.step ? 'page' : undefined">
-                        <NuxtLink :to="item.url" v-if="item.step <= step">{{ item.name }}</NuxtLink><em v-else>{{ item.name
-                        }}</em>
+                        <!-- <NuxtLink :to="item.url" v-if="item.step <= step">{{ item.name }}</NuxtLink> -->
+                        <NuxtLink :to="item.url" v-if="item.step <= step" @click="clickStep(item.step, item.url)">{{ item.name }}</NuxtLink>
+                        <em v-else>{{ item.name }}</em>
                     </li>
                 </ol>
             </nav>
@@ -36,7 +37,7 @@ const props = defineProps({
     showPageSteps: Boolean,
     showPageHeader: Boolean
 })
-
+const router = useRouter();
 const step = ref(0)
 const menus = ref([
     { step: 1, url: '/order/compulsory/information', name: 'กรอกข้อมูล' },
@@ -59,5 +60,9 @@ const getClassName = (step: number, item: any): string => {
         else className = "visited"
     }
     return className
+}
+const clickStep = async (step: number, url: string) => {
+    useStateMenu().setStateMenu(step);
+    router.push(url);
 }
 </script>

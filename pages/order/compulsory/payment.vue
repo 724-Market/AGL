@@ -306,6 +306,10 @@ const submitOrder = async (formData: any) => {
   ) {
     paymentSaveResponse.value = response.apiResponse.Data;
     storePayment.setPayment(paymentSaveResponse.value);
+
+    // set state menu
+    useStateMenu().setStateMenu(5);
+
     router.push("/order/compulsory/summary?OrderNo=" + paymentSaveResponse.value.OrderNo);
   } else {
     isError.value = true;
@@ -317,7 +321,6 @@ const submitOrder = async (formData: any) => {
 const getCalculate = async () => {
   //get credit balance
   isLoading.value = true;
- 
 
   //get calculate
   let calculateReq: CalculateRequest = {
@@ -336,10 +339,9 @@ const getCalculate = async () => {
     messageError.value = resCalculate.apiResponse.ErrorMessage ?? "";
   }
 
-  
-  if (CreditBalanceInfo.value && CreditBalanceInfo.value.UserID!="") {
+  if (CreditBalanceInfo.value && CreditBalanceInfo.value.UserID != "") {
     creditBalance.value = CreditBalanceInfo.value;
-    console.log(creditBalance.value)
+    console.log(creditBalance.value);
   } else {
     const resCRedit = await useRepository().pledge.creditBalance();
     console.log(resCRedit);

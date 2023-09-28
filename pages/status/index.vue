@@ -74,7 +74,7 @@
                                     </figure>
                                     <div class="detail">
                                         <h4 class="title">จัดส่งกรมธรรม์</h4>
-                                        <p>เกิดปัญหาระหว่างจัดส่ง กรุณา <a class="action" href="#">ติดต่อเจ้าหน้าที่</a></p>
+                                        <p>เกิดปัญหาระหว่างจัดส่ง กรุณา <a class="action btn-open-support" href="#" title="ติดต่อเจ้าหน้าที่">ติดต่อเจ้าหน้าที่</a></p>
                                     </div>
                                 </div>
 
@@ -127,7 +127,7 @@
                                         <h4 class="title">ข้อมูลคำสั่งซื้อ</h4>
                                         <h5 class="subtitle">พ.ร.บ.</h5>
                                         <p>MG รุ่น MG3 รุ่นย่อย D ปี 2018 (สีน้ำเงิน)
-                                            <a class="action" href="#">ติดต่อเจ้าหน้าที่</a>
+                                            <a class="action btn-open-support" href="#" title="ติดต่อเจ้าหน้าที่">ติดต่อเจ้าหน้าที่</a>
                                         </p>
                                     </div>
                                 </div>
@@ -613,6 +613,8 @@
         </div>
 
         <ElementsDialogPaperscancellation />
+
+        <ElementsDialogSupport />
 
     </NuxtLayout>
 </template>

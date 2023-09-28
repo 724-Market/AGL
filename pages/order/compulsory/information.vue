@@ -649,6 +649,9 @@ const submitOrder = async (formData: any) => {
   informationData.CarDetail = `${carDetail} ${Number(informationData.CarYear) - 543}`;
   store.setInformation(informationData);
 
+  // set state menu
+  useStateMenu().setStateMenu(2);
+  
   const router = useRouter();
   router.push("/order/compulsory/packages");
 };

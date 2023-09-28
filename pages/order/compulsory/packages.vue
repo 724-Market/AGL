@@ -283,6 +283,9 @@ const submitOrder = async (formData: any) => {
 
     submitted.value = false; // Form submitted status
     isLoading.value = false
+      // set state menu
+      useStateMenu().setStateMenu(3);
+
     router.push("/order/compulsory/placeorder");
   }
 };

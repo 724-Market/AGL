@@ -46,9 +46,11 @@ const menus = ref([
     { step: 5, url: '/order/compulsory/summary', name: 'สรุปรายการ' }
 ])
 const onLoad = onMounted(() => {
-    const menu_step = useUtility().getStepMenuFromUri()
+    const menu_step = useStateMenu().getStepMenuFromUri()
     step.value = menu_step
-
+    
+    // validate State 
+    //useStateMenu().checkStateMenu(menu_step)
 })
 const getClassName = (step: number, item: any): string => {
     let className = ""

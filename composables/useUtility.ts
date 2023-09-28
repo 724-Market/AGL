@@ -113,9 +113,9 @@ export default () => {
         URL.revokeObjectURL(link.href);
     }
     const getDeviceId = async () => {
-        var ua= navigator.userAgent;
-        var tem; 
-        var M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+        const ua= navigator.userAgent;
+        let tem; 
+        let M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
         if(/trident/i.test(M[1])){
             tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
             return 'IE '+(tem[1] || '');

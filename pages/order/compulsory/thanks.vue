@@ -44,6 +44,7 @@ import { useStorePayment } from "~/stores/order/storePayments";
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 import { useStorePackage } from "~/stores/order/storePackage";
 import { useStorePackageList } from "~/stores/order/storePackageList";
+import { useStoreStateOrder } from "~/stores/order/storeStateOrder";
 
 // Loading state after form submiting
 const isLoading = ref(false);
@@ -78,6 +79,8 @@ const paymentGateway = useStorePaymentGateway();
 const paymentGat = useStorePaymentGet();
 const { PaymentGetInfo } = storeToRefs(paymentGat);
 
+const state = useStoreStateOrder()
+
 const router = useRouter();
 
 const onLoad = onMounted(async () => {
@@ -105,6 +108,7 @@ const onLoad = onMounted(async () => {
         payment.clearPayment()
         paymentGateway.clearPaymenGateway()
         paymentGat.clearPaymentGet()
+        state.clearState();
       }
     } else if (route.query && isString(route.query.PaymentNo)) {
       const PaymentNo: string = route.query.PaymentNo;

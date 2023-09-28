@@ -71,6 +71,7 @@ import {
   IPackageResponse,
   Paging,
 } from "~/shared/entities/packageList-entity";
+import { useStoreStateOrder } from "~/stores/order/storeStateOrder";
 
 // Define Variables
 // Loading state after form submiting
@@ -116,10 +117,12 @@ const infomation = useStoreInformation();
 const storePackage = useStorePackage();
 const placeorder = useStorePlaceorder();
 const storeSummary = useStoreOrderSummary();
+const storeState = useStoreStateOrder();
 
 const showModalStaff = ref(false);
 
 const onLoad = onMounted(async () => {
+  storeState.clearState();
   if (AuthenInfo.value) {
     await loadHistoryStatus();
     // await triggerEvent()
@@ -274,6 +277,7 @@ const getCarDetail = (): string => {
 
 const pay = async (OrderNo: string) => {
   //ชำระเงิน
+  useStateMenu().setStateMenu(5)
   router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
 };
 

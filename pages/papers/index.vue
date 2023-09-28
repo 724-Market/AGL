@@ -14,6 +14,74 @@
                     @on-policy="policyDetail" @on-dowload="download" @on-help="contactStaff" @on-delete="deleteDraft">
                 </OrderHistoryGridTable>
 
+                <div id="transaction-stats-admin" class="card-stat-stack">
+
+                    <div class="card-stat is-active">
+                        <a href="#" title="รอดำเนินการ">
+                            <div class="stat-wrapper">
+                                <div class="stat-header">
+                                    <h5 class="topic">รอดำเนินการ</h5>
+                                    <span class="value">521</span>
+                                </div>
+                                <div class="stat-action">
+                                    <figure class="figure">
+                                        <i class="fa-duotone fa-hourglass-clock fa-swap-opacity"></i>
+                                    </figure>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-stat">
+                        <a href="#" title="จัดส่งแล้ว">
+                            <div class="stat-wrapper">
+                                <div class="stat-header">
+                                    <h5 class="topic">จัดส่งแล้ว</h5>
+                                    <span class="value">87</span>
+                                </div>
+                                <div class="stat-action">
+                                    <figure class="figure">
+                                        <i class="fa-duotone fa-truck-arrow-right"></i>
+                                    </figure>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-stat is-success">
+                        <a href="#" title="สำเร็จ">
+                            <div class="stat-wrapper">
+                                <div class="stat-header">
+                                    <h5 class="topic">สำเร็จ</h5>
+                                    <span class="value">128,439</span>
+                                </div>
+                                <div class="stat-action">
+                                    <figure class="figure">
+                                        <i class="fa-solid fa-check fa-lg"></i>
+                                    </figure>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-stat is-danger">
+                        <a href="#" title="ยกเลิกรายการ">
+                            <div class="stat-wrapper">
+                                <div class="stat-header">
+                                    <h5 class="topic">ยกเลิกรายการ</h5>
+                                    <span class="value">45</span>
+                                </div>
+                                <div class="stat-action">
+                                    <figure class="figure">
+                                        <i class="fa-solid fa-xmark-large"></i>
+                                    </figure>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+
                 <div id="transaction-stats" class="card-stat-stack">
                     <OrderHistoryCardsPledge />
                     <OrderHistoryCardsPaperUsage />
@@ -27,6 +95,7 @@
                                 <tr>
                                     <th data-orderable="false"></th>
                                     <th>เลขที่ทำรายการ</th>
+                                    <th>รหัสนายหน้า</th>
                                     <th>ช่องทางการรับกระดาษ</th>
                                     <th class="amount">ราคามัดจำ (บาท)</th>
                                     <th>สถานะ</th>
@@ -36,31 +105,34 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <a class="btn btn-actions" href="#" title="ดูรายละเอียด">
+                                        <a class="btn btn-actions" href="/status" title="ดูรายละเอียด">
                                             <i class="fa-regular fa-eye"></i>
                                         </a>
                                     </td>
                                     <td class="order">#7WP309765724<time datetime="2023-05-05 08:08">2023-05-05 08:08</time>
                                     </td>
+                                    <td class="agentcode">AM00125633</td>
                                     <td class="subject">จัดส่ง DHL</td>
                                     <td class="amount">2,000</td>
                                     <td class="status">
-                                        <div class="badge-dot badge-warning">รอดำเนินการ</div>
-                                        <div class="badge-dot badge-warning">เตรียมจัดส่ง</div>
+                                        <div class="badge-dot badge-warning">รอดำเนินการ</div><span><a class="cancel"
+                                                href="#" title="ยกเลิก">ยกเลิก</a></span>
                                         <div class="badge-dot badge-info">จัดส่งแล้ว</div>
-                                        <div class="badge-dot badge-success">สำเร็จ</div>
+                                        <div class="badge-dot badge-success">สำเร็จ
+                                        </div>
                                         <div class="badge-dot badge-danger">ยกเลิกรายการ</div>
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td>
-                                        <a class="btn btn-actions" href="#" title="ดูรายละเอียด">
+                                        <a class="btn btn-actions" href="/status" title="ดูรายละเอียด">
                                             <i class="fa-regular fa-eye"></i>
                                         </a>
                                     </td>
                                     <td class="order">#7WP309765725<time datetime="2022-02-05 02:08">2022-02-05 02:08</time>
                                     </td>
+                                    <td class="agentcode">AM00125633</td>
                                     <td class="subject">จัดส่ง DHL</td>
                                     <td class="amount">900</td>
                                     <td class="status">
@@ -70,12 +142,13 @@
 
                                 <tr>
                                     <td>
-                                        <a class="btn btn-actions" href="#" title="ดูรายละเอียด">
+                                        <a class="btn btn-actions" href="/status" title="ดูรายละเอียด">
                                             <i class="fa-regular fa-eye"></i>
                                         </a>
                                     </td>
                                     <td class="order">#7WP309765726<time datetime="2022-11-11 10:10">2022-11-11 10:10</time>
                                     </td>
+                                    <td class="agentcode">AM00167451</td>
                                     <td class="subject">จัดส่ง DHL</td>
                                     <td class="amount">1,500</td>
                                     <td class="status">
@@ -85,42 +158,46 @@
 
                                 <tr>
                                     <td>
-                                        <a class="btn btn-actions" href="#" title="ดูรายละเอียด">
+                                        <a class="btn btn-actions" href="/status" title="ดูรายละเอียด">
                                             <i class="fa-regular fa-eye"></i>
                                         </a>
                                     </td>
                                     <td class="order">#7WP309765750<time datetime="2023-03-15 03:08">2023-03-15 03:08</time>
                                     </td>
+                                    <td class="agentcode">AM00845366</td>
                                     <td class="subject">สาขาพระรามเก้า</td>
                                     <td class="amount">10,000</td>
                                     <td class="status">
-                                        <div class="badge-dot badge-warning">รอดำเนินการ</div>
+                                        <div class="badge-dot badge-warning">รอดำเนินการ</div><span><a class="cancel"
+                                                href="#" title="ยกเลิก">ยกเลิก</a></span>
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td>
-                                        <a class="btn btn-actions" href="#" title="ดูรายละเอียด">
+                                        <a class="btn btn-actions" href="/status" title="ดูรายละเอียด">
                                             <i class="fa-regular fa-eye"></i>
                                         </a>
                                     </td>
                                     <td class="order">#7WP309765760<time datetime="2023-03-15 03:08">2023-03-15 03:08</time>
                                     </td>
+                                    <td class="agentcode">AM00125633</td>
                                     <td class="subject">สาขาเชียงใหม่</td>
                                     <td class="amount">220,000</td>
                                     <td class="status">
-                                        <div class="badge-dot badge-warning">เตรียมจัดส่ง</div>
+                                        <div class="badge-dot badge-success">สำเร็จ</div>
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td>
-                                        <a class="btn btn-actions" href="#" title="ดูรายละเอียด">
+                                        <a class="btn btn-actions" href="/status" title="ดูรายละเอียด">
                                             <i class="fa-regular fa-eye"></i>
                                         </a>
                                     </td>
                                     <td class="order">#7WP309765911<time datetime="2022-02-05 02:08">2022-02-05 02:08</time>
                                     </td>
+                                    <td class="agentcode">AM00003421</td>
                                     <td class="subject">จัดส่ง DHL</td>
                                     <td class="amount">72,500</td>
                                     <td class="status">

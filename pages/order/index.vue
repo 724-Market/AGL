@@ -137,6 +137,8 @@ const resume = async (OrderNo: string) => {
 
   // await loadOrderDetail(OrderNo);
   await loadOrderSummary(OrderNo);
+  // set statte menu to store
+  useStateMenu().setStateMenu(4)
   router.push("/order/compulsory/payment");
 
   isLoading.value = false;
@@ -277,6 +279,7 @@ const getCarDetail = (): string => {
 
 const pay = async (OrderNo: string) => {
   //ชำระเงิน
+  // set statte menu to store
   useStateMenu().setStateMenu(5)
   router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
 };

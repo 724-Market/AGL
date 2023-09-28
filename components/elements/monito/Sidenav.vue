@@ -88,20 +88,18 @@
                     <div class="collapse" id="menu-papers" data-bs-parent="#sidenav-collapse-main">
                         <ul class="nav">
                             <li class="nav-item">
-                                <NuxtLink class="nav-link" to="/order/papers" title="ประวัติการแลกกระดาษ">ประวัติการแลกกระดาษ</NuxtLink>
-                                <!-- <a class="nav-link" href="/order/papers" title="ประวัติการแลกกระดาษ">ประวัติการแลกกระดาษ</a> -->
+                                <NuxtLink class="nav-link" to="/papers" title="ประวัติการแลกกระดาษ">ประวัติการแลกกระดาษ</NuxtLink>
                             </li>
                             <li class="nav-item">
-                                <NuxtLink class="nav-link" to="/order/papers/exchange" title="แลกกระดาษ">แลกกระดาษ</NuxtLink>
-                                <!-- <a class="nav-link" href="/order/papers/exchange" title="แลกกระดาษ">แลกกระดาษ</a> -->
+                                <NuxtLink class="nav-link" to="/papers/exchange" title="แลกกระดาษ">แลกกระดาษ</NuxtLink>
                             </li>
                         </ul>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" title="ติดตามสถานะ">
+                    <NuxtLink class="nav-link" to="/status" title="ติดตามสถานะ">
                         <i class="fa-duotone fa-timeline fa-rotate-90"></i><span class="nav-link-text">ติดตามสถานะ</span>
-                    </a>
+                    </NuxtLink>
                 </li>
             </ul>
         </div>

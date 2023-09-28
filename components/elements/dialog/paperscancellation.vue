@@ -14,7 +14,7 @@
                     <h5>เหตุผลในการยกเลิกรายการ</h5>
                     
                     <div class="form-hide-label">
-                        <ElementsFormPapersCancellation />
+                        <ElementsFormRadioPapersCancellation />
                     </div>
 
                     <FormKit type="textarea" label="หมายเหตุ" rows="3" />
@@ -35,7 +35,7 @@
 
 // Define Variables
 // Loading state after form submiting
-const isLoading = ref(true)
+const isLoading = ref(false)
 
 // Submitted state after submit
 const submitted = ref(false)

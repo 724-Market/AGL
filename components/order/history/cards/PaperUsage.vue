@@ -11,7 +11,7 @@
                 </figure>
             </div>
             <div class="stat-info">
-                <button type="button" class="btn-gray btn-open-papers" href="#"><i
+                <button type="button" class="btn-gray btn-open-papers"><i
                         class="fa-solid fa-layer-group"></i>คลังกระดาษ</button>
                 <NuxtLink class="btn-secondary" to="/papers/exchange"><i
                         class="fa-solid fa-file-circle-plus"></i>แลกกระดาษ

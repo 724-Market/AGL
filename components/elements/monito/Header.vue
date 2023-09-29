@@ -18,8 +18,8 @@
                 <ol class="breadcrumb dot counter">
                     <li v-for="item in menus" :key="item.step" :class="getClassName(step, item)"
                         :aria-current="step == item.step ? 'page' : undefined">
-                        <NuxtLink :to="item.url" v-if="item.step <= step">{{ item.name }}</NuxtLink>
-                        <!-- <NuxtLink :to="item.url" v-if="item.step <= step" @click="clickStep(item.step, item.url)">{{ item.name }}</NuxtLink> -->
+                        <!-- <NuxtLink :to="item.url" v-if="item.step <= step">{{ item.name }}</NuxtLink> -->
+                        <NuxtLink :to="item.url" v-if="item.step <= step" @click="clickStep(item.step, item.url)">{{ item.name }}</NuxtLink>
                         <em v-else>{{ item.name }}</em>
                     </li>
                 </ol>

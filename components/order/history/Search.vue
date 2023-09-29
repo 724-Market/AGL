@@ -151,7 +151,6 @@
     </div>
   </aside>
   <ElementsDialogModal
-    v-if="isError"
    :modal-show="isError"
    :modal-type="'warning'"
    :modal-title="'ข้อความแจ้งเตือน'"
@@ -221,8 +220,9 @@ const validateSubmit = (): boolean => {
 const submitSearch = async () => {
   isError.value = false;
   messageError.value = "";
+  await sleep(100)
   const validate = validateSubmit()
-  console.log(validate)
+  console.log(validate,isError.value)
   if (validate) {
     let historySearch: HistorySearch = {
       SearchCategory: searchOption.value.find((x) => x.value == searchCategory.value),
@@ -241,6 +241,10 @@ const submitSearch = async () => {
     messageError.value = "กรุณากรอกช่องในการค้นหาให้ครบ";
   }
 };
+
+function sleep(ms:any) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 </script>
 <style scoped>
 .btn-primary a.btn-primary {

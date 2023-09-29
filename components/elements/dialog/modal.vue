@@ -48,31 +48,31 @@ const props = defineProps({
 });
 
 onMounted(() => {
-  const dialogModal = document.getElementById("modal-dialog");
   const closeDialogModal = document.querySelector(".btn-close-modal");
-  const cancelDialogModal = document.querySelector('.btn-cancel-modal')
+  const cancelDialogModal = document.querySelector(".btn-cancel-modal");
   console.log(props.modalShow);
-  if (props.modalShow) {
-      showDialogModal();
-    } else {
-      hiddenDialogModal();
-    }
-
 
   closeDialogModal.addEventListener("click", hiddenDialogModal);
-  cancelDialogModal.addEventListener('click', hiddenDialogModal)
+  cancelDialogModal.addEventListener("click", hiddenDialogModal);
 
-  function showDialogModal() {
-    dialogModal.showModal();
-  }
-
-  function hiddenDialogModal() {
-    dialogModal.close();
+  if (props.modalShow) {
+    showDialogModal();
   }
 });
+
+function showDialogModal() {
+  const dialogModal = document.getElementById("modal-dialog");
+  if (dialogModal) dialogModal.showModal();
+}
+
+function hiddenDialogModal() {
+  const dialogModal = document.getElementById("modal-dialog");
+  if (dialogModal) dialogModal.close();
+}
 watch(
   () => props.modalShow,
   () => {
+    console.log('modal change values',props.modalShow)
     if (props.modalShow) {
       showDialogModal();
     } else {

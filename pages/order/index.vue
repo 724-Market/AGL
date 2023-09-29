@@ -10,6 +10,7 @@
     <div class="row">
       <div class="col">
         <OrderHistorySearch
+          v-if="statusGroup"
           @search-history="handleSearch"
           @clear-search-history="handleClearSearch"
         ></OrderHistorySearch>

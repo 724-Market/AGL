@@ -35,7 +35,7 @@
                       <td class="text-end price">{{ totalPrice }}</td>
                     </tr>
                     <tr class="discount">
-                      <th scope="row">หักส่วนลด</th>
+                      <th scope="row">ส่วนลดหลังหักค่าธรรมเนียม</th>
                       <td class="text-end price">-{{ useUtility().getCurrency(parseInt(disPrice)) }}</td>
                     </tr>
                     <!-- <tr class="coupon">

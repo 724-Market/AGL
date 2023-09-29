@@ -107,6 +107,7 @@
         </div>
 
     </div>
+    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
 </template>
 
 <script setup lang="ts">
@@ -127,15 +128,18 @@ const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref()
 var statusSearch = ref('')
 var cardStat = 'card-stat'
 var isActive = ref([false, true, false, false, false, false])
+const isLoading = ref(false);
 
 const onLoad = onMounted(async () => {
-  if(props.statusGroup){
-    statusGroup.value = props.statusGroup
-  }
-  if(props.statusSearch){
-    statusSearch.value = props.statusSearch
-    if(statusSearch.value == 'clear') isActive.value = [false, false, false, false, false, false]
-  }
+    isLoading.value = true;
+    if(props.statusGroup){
+        statusGroup.value = props.statusGroup
+    }
+    if(props.statusSearch){
+        statusSearch.value = props.statusSearch
+        if(statusSearch.value == 'clear') isActive.value = [false, false, false, false, false, false]
+    }
+    isLoading.value = false;
 })
 
 const onChangeFilter = async (status: string) => {

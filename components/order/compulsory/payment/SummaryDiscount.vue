@@ -13,7 +13,7 @@
                     </tr>
                     <tr class="product">
                       <th scope="row">พ.ร.บ. สำหรับรถยนต์นั่งส่วนบุคคล<span>พ.ร.บ. • {{companyName}}</span></th>
-                      <td class="text-end price">{{ useUtility().getCurrency(parseInt(packagePrice)) }}</td>
+                      <td class="text-end price">{{ packagePrice }}</td>
                     </tr>
                     <!-- <tr class="product">
                       <th scope="row">Family Man<span>ประกันภัยรถยนต์ ชั้น 1 • กรุงเทพประกันภัย</span></th>
@@ -32,7 +32,7 @@
                     </tr>
                     <tr class="subtotal">
                       <th scope="row">รวมราคา</th>
-                      <td class="text-end price">{{ useUtility().getCurrency(parseInt(totalPrice)) }}</td>
+                      <td class="text-end price">{{ totalPrice }}</td>
                     </tr>
                     <tr class="discount">
                       <th scope="row">หักส่วนลด</th>
@@ -49,7 +49,7 @@
                   <tfoot>
                     <tr>
                       <td scope="col">รวมยอดที่ต้องชำระ</td>
-                      <td scope="col" class="text-end price">{{ useUtility().getCurrency(parseInt(sumPrice)) }}</td>
+                      <td scope="col" class="text-end price">{{ sumPrice }}</td>
                     </tr>
                   </tfoot>
                 </table>

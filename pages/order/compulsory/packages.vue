@@ -96,6 +96,7 @@ import { IChecklist } from "~/shared/entities/checklist-entity";
 import {
   IPackageRequest,
   IPackageResponse,
+  PackageResult,
   Paging,
 } from "~/shared/entities/packageList-entity";
 // Import store
@@ -168,7 +169,7 @@ const onInit = async () => {
     await showPackageList();
    
   if(PackageInfo && PackageInfo.value && PackageInfo.value.CompanyCode != ''){
-    handlerSelect(true,PackageInfo.value)
+    await handlerSelect(true, PackageInfo.value)
   }
     
 
@@ -279,7 +280,28 @@ const submitOrder = async (formData: any) => {
       packageSelect.value.AgentCode = AuthenInfo.value.userName
     }
     
-    storePackage.setPackage(packageSelect.value);
+    let packageSelectT: IPackageResponse = {
+      RefCompanyID: packageSelect.value.RefCompanyID,
+      CompanyCode: packageSelect.value.CompanyCode,
+      CompanyName: packageSelect.value.CompanyName,
+      CarTypeName: packageSelect.value.CarTypeName,
+      DayPolicy: packageSelect.value.DayPolicy,
+      DayWholeYear: packageSelect.value.DayWholeYear,
+      Rate: packageSelect.value.Rate,
+      Cost: packageSelect.value.Cost,
+      Vat: packageSelect.value.Vat,
+      Duty: packageSelect.value.Duty,
+      IsOnlineActive: packageSelect.value.IsOnlineActive,
+      CountOfPolicy: packageSelect.value.CountOfPolicy,
+      Price: packageSelect.value.Price,
+      PackageResult: packageSelect.value.PackageResult,
+      IsTaxInclude: packageSelect.value.IsTaxInclude,
+      Paper: packageSelect.value.Paper,
+      PaperBalance: packageSelect.value.PaperBalance,
+      AgentCode: packageSelect.value.AgentCode
+    }
+    console.log('packageSelectT', packageSelectT)
+    storePackage.setPackage(packageSelectT);
 
     submitted.value = false; // Form submitted status
     isLoading.value = false

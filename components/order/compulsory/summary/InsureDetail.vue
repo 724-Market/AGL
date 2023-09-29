@@ -192,13 +192,13 @@
             </div>
             <div class="summary-item">
               <h4 class="topic">อีเมลรับกรมธรรม์</h4>
-              <p>{{ orderDetail.AssuredDetails.AddressEmail }}</p>
+              <p>{{ orderDetail.DeliveryPolicyDetails.AddressEmail }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ชื่อผู้รับ</h4>
               <p>
-                {{ orderDetail.AssuredDetails.FirstName }}
-                {{ orderDetail.AssuredDetails.LastName }}
+                {{ orderDetail.DeliveryPolicyDetails.AddressFirstName }}
+                {{ orderDetail.DeliveryPolicyDetails.AddressLastName }}
               </p>
             </div>
             <div class="summary-item">

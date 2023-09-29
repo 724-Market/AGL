@@ -140,7 +140,7 @@ import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
 import { useStoreFeeLimit } from "~/stores/plege/storeFeeLimit";
 import { defineEventHandler } from "~/server/api/setting.post";
-import { IPackageRequest, Paging } from "~/shared/entities/packageList-entity";
+import { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity";
 
 //define store
 const storeAuth = useStoreUserAuth();
@@ -176,6 +176,15 @@ const paging: globalThis.Ref<Paging> = ref({
   TotalRecord: 0,
   RedirectUrl: "/order/compulsory/packages",
 });
+
+const d = new Date();
+const getMonth = d.getMonth() + 1;
+const EffectiveDate = `${d.getFullYear()}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
+  d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
+}`;
+const ExpireDate = `${d.getFullYear() + 1}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
+  d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
+}`;
 
 const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
 const paymentDetail: globalThis.Ref<PaymentDetails | undefined> = ref();
@@ -289,15 +298,24 @@ const setStoretoStep = async (data: OrderResponse, orderNo: string) => {
       CarModelID: reqInfo.CarModel,
       CarSalesYear: reqInfo.CarYear,
       CarTypeCode: reqInfo.CarType,
-      EffectiveDate: reqInfo.EffectiveDate,
+      EffectiveDate: EffectiveDate,
       EffectiveType: reqInfo.EffectiveType,
-      ExpireDate: reqInfo.ExpireDate.split("/").reverse().join("-"),
+      ExpireDate: ExpireDate,
       SubCarModelID: reqInfo.SubCarModel.split("|")[0],
       UseCarCode: reqInfo.CarUse,
       Paging: paging.value,
     };
-    const data2 = await store.getPackageList(request);
-    console.log('packageList', data2)
+    // const data2 = await store.getPackageList(request);
+    // console.log('packageList', data2)
+    
+    const packageList = await store.getPackageList(request);
+    const packageSelect = packageList.Data?.find(
+      (o) => o.CompanyCode == order.Package.CompanyCode
+    ) as IPackageResponse;
+    packageSelect.Price = order.InsureDetails.Total;
+    packageSelect.PackageResult[0].PriceACT = order.InsureDetails.Total;
+    packageSelect.PackageResult[0].AgentComDiscount = order.InsureDetails.ComValue;
+    storePackage.setPackage(packageSelect);
   }
 };
 const loadOrderSummary = async (orderNo: string) => {

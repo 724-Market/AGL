@@ -1,5 +1,5 @@
 <template>
-   <div id="dialogModalAlert" class="dialog-modal-alert" v-show="_loading">
+   <div id="dialogModalAlert" class="dialog-modal-alert">
         <div class="dialog-content-alert modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalToggleLabel">แจ้งเตือน</h1>
@@ -23,7 +23,7 @@ const _loading = ref(false)
 watch(
     () => props.isError,
     () => {
-        //console.log('prop value changed', props.isError)
+        console.log('prop value changed', props.isError)
         if (props.isError) {
             openModal()
         }
@@ -37,6 +37,7 @@ const onLoad = onMounted((
 ) => {
     // const myModal = document.getElementById("modal_demo") as Element
     // modal = new $bootstrap.Modal(myModal);
+    console.log('prop value changed', props.isError)
     if (props.isError) {
         openModal()
     }
@@ -45,6 +46,9 @@ const onLoad = onMounted((
 function openModal() {
     //modal.show()
     _loading.value =true
+    const dialogLoading = document.getElementById("dialogModalAlert");
+    console.log(dialogLoading)
+  if (dialogLoading) dialogLoading.showModal();
 }
 
 function closeModal() {
@@ -55,6 +59,8 @@ function closeModal() {
     
 
     _loading.value = false
+    const dialogLoading = document.getElementById("dialogModalAlert");
+  if (dialogLoading) dialogLoading.close();
 }
 
 </script>

@@ -28,6 +28,7 @@
             name="SearchText"
             placeholder="ระบุคำค้นหา"
             v-model="searchText"
+            @keydown.enter.prevent="submitSearch"
             autocomplete="off"
           />
           <!-- validation="required"
@@ -38,9 +39,11 @@
             name="search-submit"
             id="search-submit"
             class="btn btn-primary btn-search-fix"
-           
+            
             @click="submitSearch"
-          >ค้นหา</button>
+          >
+            ค้นหา
+          </button>
         </div>
 
         <div class="accordion search-advance-box" id="accordion-search-advance">
@@ -103,12 +106,24 @@
                 </div>
                 <div class="advance-section">
                   <div class="section">
-                    <FormKit type="date" label="เริ่มต้น" name="EffectiveDate" placeholder="dd/mm/yyyy" :min="expireMinDate"
-                      v-model="effectiveDateText"/>
+                    <FormKit
+                      type="date"
+                      label="เริ่มต้น"
+                      name="EffectiveDate"
+                      placeholder="dd/mm/yyyy"
+                      :min="expireMinDate"
+                      v-model="effectiveDateText"
+                    />
                   </div>
                   <div class="section">
-                    <FormKit type="date" label="สิ้นสุด" name="ExpireDate" placeholder="dd/mm/yyyy" :min="expireMinDate"
-                      v-model="expireDateText"/>
+                    <FormKit
+                      type="date"
+                      label="สิ้นสุด"
+                      name="ExpireDate"
+                      placeholder="dd/mm/yyyy"
+                      :min="expireMinDate"
+                      v-model="expireDateText"
+                    />
                   </div>
                 </div>
               </div>
@@ -121,7 +136,12 @@
 
   <aside
     class="search-result"
-    v-if="(searchText != '' && SearchCategoryShow != '') || orderTypeText != '' || effectiveDateText!='' || expireDateText!=''"
+    v-if="
+      (searchText != '' && SearchCategoryShow != '') ||
+      orderTypeText != '' ||
+      effectiveDateText != '' ||
+      expireDateText != ''
+    "
   >
     <div class="notice-info">
       แสดงรายการจากผลการค้นหา "{{ searchText }}" จาก {{ SearchCategoryShow }}
@@ -130,7 +150,12 @@
       </button>
     </div>
   </aside>
-  <ElementsModalAlert v-if="isError" :is-error="isError" :message="messageError" :reload="false" />
+  <ElementsDialogModal
+   :modal-show="isError"
+   :modal-type="'warning'"
+   :modal-title="'ข้อความแจ้งเตือน'"
+   :modal-text="messageError"
+  />
 </template>
 
 <script setup lang="ts">
@@ -164,7 +189,7 @@ var searchCategory = ref("");
 var searchText = ref("");
 var orderTypeText = ref("");
 var effectiveDateText = ref("");
-var expireDateText = ref("")
+var expireDateText = ref("");
 const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
 
 var SearchCategoryShow = ref("");
@@ -178,20 +203,27 @@ const clearSearch = async () => {
   searchCategory.value = "";
   searchText.value = "";
   orderTypeText.value = "";
-  effectiveDateText.value="";
-  expireDateText.value="";
+  effectiveDateText.value = "";
+  expireDateText.value = "";
   emit("clearSearchHistory", true);
 };
-const validateSubmit = ():boolean=>{
-  let validate = false
-  validate = Boolean((searchCategory.value!='' && searchText.value != "") || (orderTypeText.value && orderTypeText.value != "") || (effectiveDateText.value && expireDateText.value))
-  
-  return validate
-}
+const validateSubmit = (): boolean => {
+  let validate = false;
+  validate = Boolean(
+    (searchCategory.value != "" && searchText.value != "") ||
+      (orderTypeText.value && orderTypeText.value != "") ||
+      (effectiveDateText.value && expireDateText.value)
+  );
+
+  return validate;
+};
 const submitSearch = async () => {
   isError.value = false;
   messageError.value = "";
-  if (validateSubmit()) {
+  await sleep(100)
+  const validate = validateSubmit()
+  console.log(validate,isError.value)
+  if (validate) {
     let historySearch: HistorySearch = {
       SearchCategory: searchOption.value.find((x) => x.value == searchCategory.value),
       SearchText: searchText.value,
@@ -209,20 +241,23 @@ const submitSearch = async () => {
     messageError.value = "กรุณากรอกช่องในการค้นหาให้ครบ";
   }
 };
+
+function sleep(ms:any) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 </script>
 <style scoped>
 .btn-primary a.btn-primary {
-    background-color: #138543!important;
-    border-color: #138543!important;
-    color: #fff!important;
+  background-color: #138543 !important;
+  border-color: #138543 !important;
+  color: #fff !important;
 }
-.btn:disabled{
+.btn:disabled {
   background: var(--fk-color-border) !important;
-    color: var(--fk-color-button) !important;
-    cursor: not-allowed;
+  color: var(--fk-color-button) !important;
+  cursor: not-allowed;
 }
-.btn-search-fix{
-  margin-top: 15px!important;
- 
+.btn-search-fix {
+  margin-top: 15px !important;
 }
 </style>

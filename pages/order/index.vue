@@ -72,6 +72,7 @@ import {
   Paging,
 } from "~/shared/entities/packageList-entity";
 import { useStoreStateOrder } from "~/stores/order/storeStateOrder";
+import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 
 // Define Variables
 // Loading state after form submiting
@@ -119,6 +120,9 @@ const placeorder = useStorePlaceorder();
 const storeSummary = useStoreOrderSummary();
 const storeState = useStoreStateOrder();
 
+const paymentGateway = useStorePaymentGateway();
+const { PaymenGatewaytInfo } = storeToRefs(paymentGateway);
+
 const showModalStaff = ref(false);
 
 const onLoad = onMounted(async () => {
@@ -136,6 +140,7 @@ const resume = async (OrderNo: string) => {
   isLoading.value = true;
 
   // await loadOrderDetail(OrderNo);
+  await paymentGateway.clearPaymenGateway()
   await loadOrderSummary(OrderNo);
   // set statte menu to store
   useStateMenu().setStateMenu(4)
@@ -280,6 +285,7 @@ const getCarDetail = (): string => {
 const pay = async (OrderNo: string) => {
   //ชำระเงิน
   // set statte menu to store
+  await paymentGateway.clearPaymenGateway()
   useStateMenu().setStateMenu(5)
   router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
 };

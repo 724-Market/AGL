@@ -21,9 +21,10 @@
       </div>
 
       <div class="col-lg-6">
-        <OrderCompulsoryThanksContact></OrderCompulsoryThanksContact>
+        <OrderCompulsoryThanksContact v-if="status != ''"></OrderCompulsoryThanksContact>
       </div>
     </div>
+    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   </NuxtLayout>
 </template>
 
@@ -85,6 +86,7 @@ const router = useRouter();
 
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
+    isLoading.value = true;
     console.log('OrderSummaryInfo.value',OrderSummaryInfo.value)
     console.log('PaymentGetInfo.value',PaymentGetInfo.value)
     if(!OrderSummaryInfo.value) {
@@ -143,6 +145,7 @@ const onLoad = onMounted(async () => {
   } else {
     router.push("/login");
   }
+  isLoading.value = false;
 });
 
 // Define layout

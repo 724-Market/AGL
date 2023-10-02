@@ -1,5 +1,5 @@
 <template>
-   <div id="dialogModalAlert" class="dialog-modal-alert">
+   <div id="dialogModalAlert" class="dialog-modal-alert" v-if="_loading">
         <div class="dialog-content-alert modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalToggleLabel">แจ้งเตือน</h1>
@@ -46,9 +46,9 @@ const onLoad = onMounted((
 function openModal() {
     //modal.show()
     _loading.value =true
-    const dialogLoading = document.getElementById("dialogModalAlert");
-    console.log(dialogLoading)
-  if (dialogLoading) dialogLoading.showModal();
+//     const dialogLoading = document.getElementById("dialogModalAlert");
+//     console.log(dialogLoading)
+//   if (dialogLoading) dialogLoading.showModal();
 }
 
 function closeModal() {
@@ -59,8 +59,8 @@ function closeModal() {
     
 
     _loading.value = false
-    const dialogLoading = document.getElementById("dialogModalAlert");
-  if (dialogLoading) dialogLoading.close();
+//     const dialogLoading = document.getElementById("dialogModalAlert");
+//   if (dialogLoading) dialogLoading.close();
 }
 
 </script>

@@ -290,11 +290,14 @@ const getCalculate = async () => {
     debitCredit.value = calculate.value.DebitCredit
     pledge.value = calculate.value.Pledge
     packagePrice.value = calculate.value.Total
-    // console.log('billPayment.value', billPayment.value)
-    // console.log('debitCredit.value', debitCredit.value)
-    // console.log('pledge.value', pledge.value)
 
-    shipopingCost.value = orderInfo.value?.DeliveryMethod1?.DeliveryType == 'DELIVERY' ? 50 : 0
+    if(calculate.value.DeliveryFee) {
+      const DeliveryFee = calculate.value.DeliveryFee
+      if(DeliveryFee.length > 0) {
+        shipopingCost.value = DeliveryFee[0].Price
+      }
+    }
+    
     radiioPaymentObject.value = {
       FeeQr: calculate.value.BillPayment.FullCommission?.Fee.Price ?? 0,
       FeeCard: calculate.value.DebitCredit.FullCommission?.Fee.Price ?? 0,
@@ -305,6 +308,9 @@ const getCalculate = async () => {
 }
 
 const getSummary = async () => {
+  console.log('packagePrice.value', packagePrice.value)
+  console.log('shipopingCost.value', shipopingCost.value)
+  console.log('feeCost.value', feeCost.value)
   let totalPrice = packagePrice.value + shipopingCost.value + feeCost.value
   let disCount = discountMethodText.value == 'partialdiscount' ? someDiscount.value : disPrice.value 
   let sum = totalPrice - disCount
@@ -318,7 +324,7 @@ const getSummary = async () => {
     PaymentMethod: paymentMethodText.value.toString(),
     DiscountMethod: discountMethodText.value.toString()
   }
-  // console.log('summaryDiscountObject', summaryDiscountObject)
+  console.log('summaryDiscountObject', summaryDiscountObject)
   emit('passSummary', summaryDiscountObject)
 }
 

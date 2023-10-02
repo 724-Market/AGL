@@ -1,10 +1,18 @@
 import { isString } from "@vueuse/core";
 import { storeToRefs } from "pinia";
-import { Paging } from "~/shared/entities/packageList-entity";
+import { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity";
 import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
 import dayjs from 'dayjs';
 import 'dayjs/locale/th' // import locale
 import buddhistEra from 'dayjs/plugin/buddhistEra' // import locale
+import { OrderDetails, OrderResponse } from "~/shared/entities/order-entity";
+import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import { IInformation } from "~/shared/entities/information-entity";
+import { useStoreInformation } from "~/stores/order/storeInformation";
+import { useStorePackageList } from "~/stores/order/storePackageList";
+import { useStorePackage } from "~/stores/order/storePackage";
+import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
+
 export default () => {
 
     const config = useRuntimeConfig()
@@ -129,6 +137,121 @@ export default () => {
         return M.join(' ');
     }
 
+    const setStoretoStep = async (data: OrderResponse, orderNo: string, orderDetail: OrderDetails) => {
+        if (data && data.Order) {
+            const paging: globalThis.Ref<Paging> = ref({
+                Length: 100,
+                Page: 1,
+                TotalRecord: 0,
+                RedirectUrl: "/order/compulsory/packages",
+            });
+
+            const d = new Date();
+            const getMonth = d.getMonth() + 1;
+            const EffectiveDate = `${d.getFullYear()}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
+                d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
+            }`;
+            const ExpireDate = `${d.getFullYear() + 1}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
+                d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
+            }`;
+
+            const infomation = useStoreInformation();
+            const storePackage = useStorePackage();
+            const placeorder = useStorePlaceorder();
+
+            const storeAuth = useStoreUserAuth();
+            const { AuthenInfo } = storeToRefs(storeAuth)
+
+            const order = data.Order;
+      
+            const req: PlaceOrderRequest = {
+                OrderNo: orderNo,
+                Package: order.Package,
+                CarDetailsExtension: order.CarDetailsExtension,
+                Customer: order.Customer,
+                DeliveryMethod1: order.DeliveryMethod1,
+                DeliveryMethod2: order.DeliveryMethod2,
+                IsTaxInvoice: order.IsTaxInvoice,
+            };
+            if(orderDetail) {
+                if (req.Customer && req.Customer.DefaultAddress) {
+                    req.Customer.DefaultAddress.ZipCode = orderDetail.AssuredDetails.ZipCode;
+                }
+                if (req.Customer && req.Customer.DeliveryAddress) {
+                    req.Customer.DeliveryAddress.ZipCode = orderDetail.DeliveryPolicyDetails.ZipCode;
+                }
+                if (req.Customer && req.Customer.TaxInvoiceAddress) {
+                    req.Customer.TaxInvoiceAddress.ZipCode = orderDetail.TaxInvoiceDetails.ZipCode;
+                }
+                if (req.Customer && req.Customer.TaxInvoiceDeliveryAddress) {
+                    req.Customer.TaxInvoiceDeliveryAddress.ZipCode = orderDetail.DeliveryTaxInvoiceDetails.ZipCode;
+                }
+            }
+            
+            placeorder.setOrder(req);
+      
+            const reqInfo: IInformation = {
+                CarBrand: order.Package.CarBrandID,
+                CarCC: orderDetail ? orderDetail.CarDetails.CarCC.toFixed(0) ?? "" : '',
+                CarDetail: getCarDetail(orderDetail),
+                CarModel: order.Package.CarModelID,
+                CarSize: order.Package.CarCategoryID,
+                CarType: order.Package.CarTypeCode,
+                CarUse: order.Package.UseCarCode,
+                CarYear: order.CarDetails.CarSalesYear.toFixed(0),
+                customSubCarModel: "",
+                EffectiveDate: order.Package.EffectiveDate,
+                EffectiveType: order.Package.EffectiveType,
+                ExpireDate: order.Package.ExpireDate,
+                SubCarModel: order.Package.CarModelID,
+                InsuranceDay: getDayOfYear(order.Package.EffectiveDate, order.Package.ExpireDate),
+            };
+            infomation.setInformation(reqInfo);
+      
+            const store = useStorePackageList();
+            const request: IPackageRequest = {
+                AgentCode: AuthenInfo.value.userName,
+                CarBrandID: reqInfo.CarBrand,
+                CarCategoryID: reqInfo.CarSize,
+                CarModelID: reqInfo.CarModel,
+                CarSalesYear: reqInfo.CarYear,
+                CarTypeCode: reqInfo.CarType,
+                EffectiveDate: EffectiveDate,
+                EffectiveType: reqInfo.EffectiveType,
+                ExpireDate: ExpireDate,
+                SubCarModelID: reqInfo.SubCarModel.split("|")[0],
+                UseCarCode: reqInfo.CarUse,
+                Paging: paging.value,
+            };
+            const packageList = await store.getPackageList(request);
+            const packageSelect = packageList.Data?.find(
+                (o) => o.CompanyCode == order.Package.CompanyCode
+            ) as IPackageResponse;
+            packageSelect.Price = order.InsureDetails.Total;
+            packageSelect.PackageResult[0].PriceACT = order.InsureDetails.Total;
+            packageSelect.PackageResult[0].AgentComDiscount = order.InsureDetails.ComValue;
+            storePackage.setPackage(packageSelect);
+        }
+    };
+    const getDayOfYear = (EffectiveDate: string, ExpireDate: string): number => {
+        let days = 0;
+      
+        const startDate = new Date(EffectiveDate);
+        const endDate = new Date(ExpireDate);
+        const diff = Math.abs(startDate.getTime() - endDate.getTime());
+        const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+        days = diffDays - 1;
+      
+        return days;
+    };
+    const getCarDetail = (orderDetail: OrderDetails): string => {
+        let carDetail = "";
+        if (orderDetail) {
+          carDetail = `${orderDetail.CarDetails.CarBrand} ${orderDetail.CarDetails.CarModel} ${orderDetail.CarDetails.SubCarModel}  ${orderDetail.CarDetails.CarYear}`;
+        }
+        return carDetail;
+    };
+
     return {
         getCompanyImage,
         getCurrency,
@@ -137,6 +260,7 @@ export default () => {
         getPaging,
         formatDate,
         downloadImage,
-        getDeviceId
+        getDeviceId,
+        setStoretoStep
     }
 }

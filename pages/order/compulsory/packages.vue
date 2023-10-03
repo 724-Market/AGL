@@ -81,7 +81,7 @@
             :loading="isLoading"
           />
 
-          <NuxtLink to="information" class="btn btn-back">ย้อนกลับ</NuxtLink>
+          <NuxtLink @click="backStep()" class="btn btn-back">ย้อนกลับ</NuxtLink>
         </div>
       </div>
     </FormKit>
@@ -240,7 +240,10 @@ const showPackageList = async () => {
     //isLoading.value = false
   }
 };
-
+const backStep = async () => {
+    useStateMenu().setStateMenu(1);
+    router.push('/order/compulsory/information');
+}
 // onmounted loading page
 const onLoad = onMounted(async () => {
   await onInit();

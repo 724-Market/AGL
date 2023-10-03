@@ -161,7 +161,7 @@
             >ไปเลือกวิธีชำระเงิน
           </button>
 
-          <NuxtLink to="packages" class="btn btn-back mt-3">ย้อนกลับ</NuxtLink>
+          <NuxtLink @click="backStep()" class="btn btn-back mt-3">ย้อนกลับ</NuxtLink>
         </div>
       </div>
     </FormKit>
@@ -377,6 +377,7 @@ const onLoad = onMounted(async () => {
     router.push("/login");
   }
 });
+
 // Submit form event
 const submitOrder = async (formData: any) => {
 
@@ -555,6 +556,11 @@ const submitOrder = async (formData: any) => {
   router.push("/order/compulsory/payment");
   isLoading.value = false;
 };
+
+const backStep = async () => {
+    useStateMenu().setStateMenu(2);
+    router.push('/order/compulsory/packages');
+}
 
 const getDeliveryMethod = (): DeliveryMethod[] => {
   let data: DeliveryMethod[] = [

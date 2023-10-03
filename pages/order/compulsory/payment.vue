@@ -118,7 +118,7 @@
             ไปต่อ
           </button>
 
-          <NuxtLink to="placeorder" class="btn btn-back mt-3">ย้อนกลับ</NuxtLink>
+          <NuxtLink @click="backStep()" class="btn btn-back mt-3">ย้อนกลับ</NuxtLink>
         </div>
       </div>
     </FormKit>
@@ -282,6 +282,11 @@ const onLoad = onMounted(async () => {
     router.push("/login");
   }
 });
+
+const backStep = async () => {
+    useStateMenu().setStateMenu(3);
+    router.push('/order/compulsory/placeorder');
+}
 
 // Submit form event
 const submitOrder = async (formData: any) => {

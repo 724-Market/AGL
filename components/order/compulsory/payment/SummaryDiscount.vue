@@ -13,7 +13,7 @@
                     </tr>
                     <tr class="product">
                       <th scope="row">พ.ร.บ. สำหรับรถยนต์นั่งส่วนบุคคล<span>พ.ร.บ. • {{companyName}}</span></th>
-                      <td class="text-end price">{{ packagePrice }}</td>
+                      <td class="text-end price">{{ useUtility().getCurrency(packagePrice,2) }}</td>
                     </tr>
                     <!-- <tr class="product">
                       <th scope="row">Family Man<span>ประกันภัยรถยนต์ ชั้น 1 • กรุงเทพประกันภัย</span></th>
@@ -21,22 +21,22 @@
                     </tr> -->
                     <tr class="shipping">
                       <th scope="row">ค่าจัดส่ง<span>{{ deliveryText}}</span></th>
-                      <td class="text-end price">{{ useUtility().getCurrency(parseInt(shippingCost)) }}</td>
+                      <td class="text-end price">{{ useUtility().getCurrency(shippingCost,2) }}</td>
                     </tr>
                     <tr class="fee">
                       <th scope="row">ค่าธรรมเนียม<span>{{paymentMethodText}}</span></th>
-                      <td class="text-end price">{{ useUtility().getCurrency(parseInt(feeCost)) }}</td>
+                      <td class="text-end price">{{ useUtility().getCurrency(feeCost,2) }}</td>
                     </tr>
                     <tr class="spacer">
                       <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal">
                       <th scope="row">รวมราคา</th>
-                      <td class="text-end price">{{ totalPrice }}</td>
+                      <td class="text-end price">{{ useUtility().getCurrency(totalPrice,2) }}</td>
                     </tr>
                     <tr class="discount">
                       <th scope="row">ส่วนลดหลังหักค่าธรรมเนียม</th>
-                      <td class="text-end price">-{{ disPrice }}</td>
+                      <td class="text-end price">-{{ useUtility().getCurrency(disPrice,2) }}</td>
                     </tr>
                     <!-- <tr class="coupon">
                       <th scope="row">ใช้คูปองส่วนลด</th>
@@ -49,7 +49,7 @@
                   <tfoot>
                     <tr>
                       <td scope="col">รวมยอดที่ต้องชำระ</td>
-                      <td scope="col" class="text-end price">{{ sumPrice }}</td>
+                      <td scope="col" class="text-end price">{{ useUtility().getCurrency(sumPrice,2) }}</td>
                     </tr>
                   </tfoot>
                 </table>

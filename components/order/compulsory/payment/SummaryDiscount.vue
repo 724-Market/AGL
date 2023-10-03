@@ -23,17 +23,17 @@
                       <th scope="row">ค่าจัดส่ง<span>{{ deliveryText}}</span></th>
                       <td class="text-end price">{{ useUtility().getCurrency(shippingCost,2) }}</td>
                     </tr>
-                    <tr class="fee">
+                    <!-- <tr class="fee">
                       <th scope="row">ค่าธรรมเนียม<span>{{paymentMethodText}}</span></th>
                       <td class="text-end price">{{ useUtility().getCurrency(feeCost,2) }}</td>
-                    </tr>
+                    </tr> -->
                     <tr class="spacer">
                       <td colspan="2"></td>
                     </tr>
-                    <tr class="subtotal">
+                    <!-- <tr class="subtotal">
                       <th scope="row">รวมราคา</th>
                       <td class="text-end price">{{ useUtility().getCurrency(totalPrice,2) }}</td>
-                    </tr>
+                    </tr> -->
                     <tr class="discount">
                       <th scope="row">ส่วนลดหลังหักค่าธรรมเนียม</th>
                       <td class="text-end price">-{{ useUtility().getCurrency(disPrice,2) }}</td>

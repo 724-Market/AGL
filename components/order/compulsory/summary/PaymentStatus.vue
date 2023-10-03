@@ -76,13 +76,12 @@
       >
         <i class="fa-regular fa-circle-xmark"></i> วงเงินไม่พอให้เติมเงิน
       </div>
-      <div class="status-action">
+      <div class="status-action" v-if="validateWallet()">
         <button
           type="button"
           class="btn btn-primary"
           @click="openWallet"
           title="เติมเงินมัดจำ"
-          v-if="validateWallet()"
         >
           เติมเงินมัดจำ
         </button>

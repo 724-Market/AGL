@@ -377,8 +377,16 @@ const handleSetSummary = async (summaryDiscount: SummaryDiscountObject) => {
     summaryDiscountObject.value.PaymentMethod != "" &&
     summaryDiscountObject.value.DiscountMethod != ""
   ) {
-    checklist.value[0].className = "current";
-    checklist.value[1].className = "current";
+    if(summaryDiscountObject.value.DiscountMethod != 'partialdiscount') {
+      checklist.value[0].className = "current";
+      checklist.value[1].className = "current";
+    }
+    else {
+      if(summaryDiscountObject.value.DisPrice > 0) {
+        checklist.value[0].className = "current";
+        checklist.value[1].className = "current";
+      }
+    }
   } else {
     checklist.value[0].className = "";
     checklist.value[1].className = "";

@@ -547,13 +547,12 @@ const submitOrder = async (formData: any) => {
       //     getData.apiResponse.Data[0].Order.Customer.TaxInvoiceDeliveryAddress.AddressID;
       // }
       storeOrder.setOrder(orderSetStore);
-
+      useStateMenu().setStateMenu(4);
+      router.push("/order/compulsory/payment");
     }
   }
   // set state menu
-  useStateMenu().setStateMenu(4);
-
-  router.push("/order/compulsory/payment");
+  
   isLoading.value = false;
 };
 

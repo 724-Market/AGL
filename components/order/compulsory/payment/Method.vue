@@ -308,10 +308,10 @@ const getCalculate = async () => {
 }
 
 const getSummary = async () => {
-  console.log('packagePrice.value', packagePrice.value)
-  console.log('shipopingCost.value', shipopingCost.value)
-  console.log('feeCost.value', feeCost.value)
-  let totalPrice = packagePrice.value + shipopingCost.value + feeCost.value
+  // console.log('packagePrice.value', packagePrice.value)
+  // console.log('shipopingCost.value', shipopingCost.value)
+  // console.log('feeCost.value', feeCost.value)
+  let totalPrice = packagePrice.value + shipopingCost.value 
   let disCount = discountMethodText.value == 'partialdiscount' ? someDiscount.value : disPrice.value 
   let sum = totalPrice - disCount
   let summaryDiscountObject: SummaryDiscountObject = {
@@ -324,7 +324,7 @@ const getSummary = async () => {
     PaymentMethod: paymentMethodText.value.toString(),
     DiscountMethod: discountMethodText.value.toString()
   }
-  console.log('summaryDiscountObject', summaryDiscountObject)
+  // console.log('summaryDiscountObject', summaryDiscountObject)
   emit('passSummary', summaryDiscountObject)
 }
 

@@ -41,6 +41,14 @@ export default defineNuxtConfig({
 					href: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai+Looped:wght@300;400;500&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap'
 				},
 				{
+					rel: 'stylesheet',
+					href: '/assets/css/login.css'
+				},
+				{
+					rel: 'stylesheet',
+					href: '/assets/css/monito.css'
+				},
+				{
 					rel: 'icon',
 					type: 'image/svg',
 					href: '/favicon.svg'

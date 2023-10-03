@@ -5,8 +5,9 @@ import { NoticePaymentRequest, NoticePaymentData, PaymentGatewayResponse, Paymen
 import { useStorePaymentGet } from '~/stores/order/storePaymentGet';
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 
-const paymentGateway = useStorePaymentGateway();
-const { PaymenGatewaytInfo } = storeToRefs(paymentGateway);
+// const paymentGateway = useStorePaymentGateway();
+// const { PaymenGatewaytInfo } = storeToRefs(paymentGateway);
+const PaymenGatewaytInfo = JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as PaymentGatewayResponse | undefined;
 
 class PaymentNoticeService {
     private hubConnection!: signalR.HubConnection;
@@ -83,7 +84,8 @@ class PaymentNoticeService {
             //         this.router.push('/order/compulsory/thanks')
             //     }
             // }
-            if(PaymenGatewaytInfo.value && PaymenGatewaytInfo.value.refno2 != '' && PaymenGatewaytInfo.value.refno2 == res.PaymentNo) {
+            
+            if(PaymenGatewaytInfo && PaymenGatewaytInfo.refno2 != '' && PaymenGatewaytInfo.refno2 == res.PaymentNo) {
                 const paymentGat = useStorePaymentGet();
                 const req: PaymentGetRequest = {
                     PaymentNo: res.PaymentNo,

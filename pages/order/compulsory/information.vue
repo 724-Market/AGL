@@ -248,7 +248,7 @@ const onLoad = onMounted(async () => {
       let today = new Date()
       let effectiveDateCheck = new Date(info.EffectiveDate)
       console.log('check EffectiveDate', effectiveDateCheck > today)
-      if(effectiveDateCheck > today) {
+      if(effectiveDateCheck >= today) {
         selectDate = new Date(info.EffectiveDate)
         effectiveType.value = info.EffectiveType
         effectiveDateText.value = info.EffectiveDate

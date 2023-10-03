@@ -5,15 +5,9 @@ import { NoticePaymentRequest, NoticePaymentData, PaymentGatewayResponse, Paymen
 import { useStorePaymentGet } from '~/stores/order/storePaymentGet';
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 
-const paymentGateway = useStorePaymentGateway();
-const { PaymenGatewaytInfo } = storeToRefs(paymentGateway);
-// const PaymenGatewaytInfo = JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as PaymentGatewayResponse | undefined;
-
 class PaymentNoticeService {
     private hubConnection!: signalR.HubConnection;
-    // private paymenGatewaytInfo: globalThis.Ref<PaymentGatewayResponse | undefined> = ref()
     private router = useRouter();
-    private route = useRoute();
     
     async connect(req:NoticePaymentRequest) {
         const url = `https://api-iom-signalr.724insure.net/SignalRHub?ClientID=${req.ClientID}&DeviceID=${req.DeviceID}&ReferenceID=${req.ReferenceID}&UserID=${req.UserID}&GroupType=${req.GroupType}&AccessToken=${req.AccessToken}`
@@ -52,16 +46,6 @@ class PaymentNoticeService {
             console.log(res)
             if(PaymenGatewaytInfo.refno2 == res.PaymentNo) {
                 this.router.push('#topup_thanks?PaymentNo=' + res.PaymentNo)
-
-                // const paymentGat = useStorePaymentGet();
-                // const req: PaymentGetRequest = {
-                //     PaymentNo: res.PaymentNo,
-                // };
-                // const response = await useRepository().pledge.creditorderPaymentGet(req);
-                // if(response.apiResponse.Status &&  response.apiResponse.Status == "200" && response.apiResponse.Data) {
-                //     paymentGat.setPaymentGet(response.apiResponse.Data[0])
-                //     this.router.push('/order/compulsory/thanks')
-                // }
             }
           }
         });
@@ -72,20 +56,10 @@ class PaymentNoticeService {
           console.log(message, data);
           if(data) {
             const res: NoticePaymentData = JSON.parse(data)
-            console.log(res)
-            // if(PaymenGateway.refno2 == res.PaymentNo) {
-            //     const paymentGat = useStorePaymentGet();
-            //     const req: PaymentGetRequest = {
-            //         PaymentNo: res.PaymentNo,
-            //     };
-            //     const response = await useRepository().payment.get(req);
-            //     if(response.apiResponse.Status &&  response.apiResponse.Status == "200" && response.apiResponse.Data) {
-            //         paymentGat.setPaymentGet(response.apiResponse.Data[0])
-            //         this.router.push('/order/compulsory/thanks')
-            //     }
-            // }
-            
-            if(PaymenGatewaytInfo && PaymenGatewaytInfo.refno2 != '' && PaymenGatewaytInfo.refno2 == res.PaymentNo) {
+            const paymentGateway = useStorePaymentGateway();
+            const { PaymenGatewaytInfo } = storeToRefs(paymentGateway);
+            // const PaymenGatewaytInfo = JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as PaymentGatewayResponse | undefined;
+            if(PaymenGatewaytInfo.value && PaymenGatewaytInfo.value.refno2 != '' && PaymenGatewaytInfo.value.refno2 == res.PaymentNo) {
                 const paymentGat = useStorePaymentGet();
                 const req: PaymentGetRequest = {
                     PaymentNo: res.PaymentNo,

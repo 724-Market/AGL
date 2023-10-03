@@ -105,7 +105,7 @@ const onLoad = onMounted(async () => {
 })
 // Define style
 useHead({
-    link: [{ rel: 'stylesheet', href: '/assets/css/monito.css' }],
+    // link: [{ rel: 'stylesheet', href: '/assets/css/monito.css' }],
     script: [
         { src: '/assets/js/popper.min.js' },
         { src: '/assets/js/bootstrap.min.js' },

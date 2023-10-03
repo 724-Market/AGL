@@ -5,9 +5,9 @@ import { NoticePaymentRequest, NoticePaymentData, PaymentGatewayResponse, Paymen
 import { useStorePaymentGet } from '~/stores/order/storePaymentGet';
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 
-// const paymentGateway = useStorePaymentGateway();
-// const { PaymenGatewaytInfo } = storeToRefs(paymentGateway);
-const PaymenGatewaytInfo = JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as PaymentGatewayResponse | undefined;
+const paymentGateway = useStorePaymentGateway();
+const { PaymenGatewaytInfo } = storeToRefs(paymentGateway);
+// const PaymenGatewaytInfo = JSON.parse(sessionStorage.getItem("useStoreInformation") || "") as PaymentGatewayResponse | undefined;
 
 class PaymentNoticeService {
     private hubConnection!: signalR.HubConnection;

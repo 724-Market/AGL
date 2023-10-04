@@ -566,7 +566,7 @@ const insureDetail:globalThis.Ref<CustomerOrderRequest> = ref({
 })
 const personProfile:globalThis.Ref<PersonProfile> = ref({
   CustomerID:'',
-  PrefixID:'00000',
+  PrefixID:'',
   FirstName:'',
   LastName:'',
   BirthDate:'',

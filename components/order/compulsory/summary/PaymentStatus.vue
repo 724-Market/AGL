@@ -93,7 +93,6 @@
 <script setup lang="ts">
 import { OptionsResponse, PaymentDetails } from "~/shared/entities/order-entity";
 
-// const isWallet = ref(false);
 const showWallet = ref(false);
 const emit = defineEmits(["openWallet"]);
 const props = defineProps({
@@ -105,12 +104,7 @@ const props = defineProps({
   },
 });
 
-// const onLoad = onMounted(async () => {
-//   isWallet.value = validateWallet()
-// })
-
 const validateWallet = (): boolean => {
-  console.log('props.options', props.options)
   let validate: boolean = false;
   if (props.options) {
     if (

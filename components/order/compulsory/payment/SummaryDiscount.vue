@@ -19,8 +19,8 @@
                       <th scope="row">Family Man<span>ประกันภัยรถยนต์ ชั้น 1 • กรุงเทพประกันภัย</span></th>
                       <td class="text-end price">7,500.00</td>
                     </tr> -->
-                    <tr class="shipping">
-                      <th scope="row">ค่าจัดส่ง<span>{{ deliveryText}}</span></th>
+                    <tr class="shipping" v-if="shippingCost > 0">
+                      <th scope="row">ค่าจัดส่ง<span>{{ deliveryText }}</span></th>
                       <td class="text-end price">{{ useUtility().getCurrency(shippingCost,2) }}</td>
                     </tr>
                     <!-- <tr class="fee">
@@ -34,9 +34,9 @@
                       <th scope="row">รวมราคา</th>
                       <td class="text-end price">{{ useUtility().getCurrency(totalPrice,2) }}</td>
                     </tr> -->
-                    <tr class="discount">
+                    <tr class="shipping">
                       <th scope="row">ส่วนลดหลังหักค่าธรรมเนียม</th>
-                      <td class="text-end price">-{{ useUtility().getCurrency(disPrice,2) }}</td>
+                      <td class="text-end price">{{ useUtility().getCurrency(disPrice,2) }}</td>
                     </tr>
                     <!-- <tr class="coupon">
                       <th scope="row">ใช้คูปองส่วนลด</th>

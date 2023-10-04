@@ -95,7 +95,7 @@
             v-if="isError"
             :is-error="isError"
             :message="messageError"
-            :reload="true"
+            :reload="false"
           />
         </div>
 
@@ -675,6 +675,8 @@ const loadPrefix = async (isPerson: boolean) => {
         };
         return options;
       });
+      prefix.value.unshift({ label: "เลือกคำนำหน้า", value: "", attrs: { disabled: true } })
+      console.log('prefix.value', prefix.value)
     } else {
       // data not found
     }
@@ -695,6 +697,7 @@ const loadPrefixRecieve = async () => {
         };
         return options;
       });
+      prefixRecieve.value.unshift({ label: "เลือกคำนำหน้า", value: "", attrs: { disabled: true } })
     } else {
       // data not found
     }

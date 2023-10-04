@@ -423,4 +423,14 @@ useHead({
     class: "page-order category-compulsory single-payment",
   },
 });
+
 </script>
+<style setup>
+
+.form-order .inner-section{
+  padding: 1rem !important
+}
+.form-order .discount-range .suffix{
+  width: 4.7ch!important;
+}
+</style>

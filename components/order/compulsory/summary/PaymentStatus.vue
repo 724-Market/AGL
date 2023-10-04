@@ -12,16 +12,16 @@
       <p>{{ $props.payment.GrandAmount }} บาท</p>
     </div> -->
 
-    <div class="status-info">
-      <!-- <div class="notice-info">
+    <!-- <div class="status-info">
+      <div class="notice-info">
         <i class="fa-regular fa-circle-info"></i> ค่าธรรมเนียม {{ $props.payment.FeeAmount }} บาท
-      </div> -->
+      </div>
       <div class="status-action">
         <a class="btn" href="/order/compulsory/payment" title="เปลี่ยนช่องทางการชำระเงิน"
           >เปลี่ยนช่องทางการชำระเงิน</a
         >
       </div>
-    </div>
+    </div> -->
   </div>
 
   <div
@@ -37,13 +37,13 @@
       <p>{{ $props.payment.GrandAmount }} บาท</p>
     </div> -->
 
-    <div class="status-info">
+    <!-- <div class="status-info">
       <div class="status-action">
         <a class="btn" href="/order/compulsory/payment" title="เปลี่ยนช่องทางการชำระเงิน"
           >เปลี่ยนช่องทางการชำระเงิน</a
         >
       </div>
-    </div>
+    </div> -->
   </div>
 
   <div
@@ -85,9 +85,7 @@
         >
           เติมเงินมัดจำ
         </button>
-        <a class="btn" href="/order/compulsory/payment" title="เปลี่ยนช่องทางการชำระเงิน"
-          >เปลี่ยนช่องทางการชำระเงิน</a
-        >
+        <a class="btn" href="/order/compulsory/payment" title="เปลี่ยนช่องทางการชำระเงิน">เปลี่ยนช่องทางการชำระเงิน</a>
       </div>
     </div>
   </div>
@@ -95,6 +93,7 @@
 <script setup lang="ts">
 import { OptionsResponse, PaymentDetails } from "~/shared/entities/order-entity";
 
+// const isWallet = ref(false);
 const showWallet = ref(false);
 const emit = defineEmits(["openWallet"]);
 const props = defineProps({
@@ -106,7 +105,12 @@ const props = defineProps({
   },
 });
 
+// const onLoad = onMounted(async () => {
+//   isWallet.value = validateWallet()
+// })
+
 const validateWallet = (): boolean => {
+  console.log('props.options', props.options)
   let validate: boolean = false;
   if (props.options) {
     if (

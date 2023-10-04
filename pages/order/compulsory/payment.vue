@@ -284,9 +284,9 @@ const onLoad = onMounted(async () => {
 });
 
 const backStep = async () => {
-    useStateMenu().setStateMenu(3);
-    router.push('/order/compulsory/placeorder');
-}
+  useStateMenu().setStateMenu(3);
+  router.push("/order/compulsory/placeorder");
+};
 
 // Submit form event
 const submitOrder = async (formData: any) => {
@@ -315,7 +315,7 @@ const submitOrder = async (formData: any) => {
     // set state menu
     useStateMenu().setStateMenu(5);
 
-    router.push("/order/compulsory/summary?OrderNo=" + paymentSaveResponse.value.OrderNo);
+    router.push("/order/compulsory/summary");
   } else {
     isError.value = true;
     messageError.value = response.apiResponse.ErrorMessage ?? "";
@@ -366,6 +366,8 @@ const getCalculate = async () => {
 };
 
 const handleSetSummary = async (summaryDiscount: SummaryDiscountObject) => {
+  checklist.value[1].className = "";
+  console.log(summaryDiscount);
   summaryDiscountObject.value = summaryDiscount;
   if (
     summaryDiscountObject.value.PaymentMethod != "" &&
@@ -377,12 +379,11 @@ const handleSetSummary = async (summaryDiscount: SummaryDiscountObject) => {
     summaryDiscountObject.value.PaymentMethod != "" &&
     summaryDiscountObject.value.DiscountMethod != ""
   ) {
-    if(summaryDiscountObject.value.DiscountMethod != 'partialdiscount') {
+    if (summaryDiscountObject.value.DiscountMethod != "partialdiscount") {
       checklist.value[0].className = "current";
       checklist.value[1].className = "current";
-    }
-    else {
-      if(summaryDiscountObject.value.DisPrice > 0) {
+    } else {
+      if (summaryDiscountObject.value.DisPrice > 0) {
         checklist.value[0].className = "current";
         checklist.value[1].className = "current";
       }

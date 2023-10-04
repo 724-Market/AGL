@@ -174,7 +174,7 @@ const pay = async (OrderNo: string) => {
   // set statte menu to store
   await paymentGateway.clearPaymenGateway()
   useStateMenu().setStateMenu(5)
-  router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
+  router.push(`/order/compulsory/summary`);
 };
 
 const trackStatus = async (OrderNo: string) => {

@@ -441,7 +441,7 @@ const getCarDetail = (): string => {
 
 const pay = async (OrderNo: string) => {
     //ชำระเงิน
-    router.push(`/order/compulsory/summary?OrderNo=${OrderNo}`);
+    router.push(`/order/compulsory/summary`);
 }
 
 const trackStatus = async (OrderNo: string) => {

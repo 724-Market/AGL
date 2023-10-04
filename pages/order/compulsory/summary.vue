@@ -302,8 +302,8 @@ const loadPledgeFeeLimit = async () => {
 const onLoad = onMounted(async () => {
   const route = useRoute();
   console.log(route.query);
-  if (route.query && isString(route.query.OrderNo)) {
-    const OrderNo: string = route.query.OrderNo;
+  if (OrderInfo.value && OrderInfo.value.OrderNo) {
+    const OrderNo: string = OrderInfo.value.OrderNo;
     isLoading.value = true;
     //TODO testing implement order detail
     await loadOrderDetail(OrderNo); //AMC2307000036
@@ -493,7 +493,7 @@ const handleCloseWarning = async () => {
   //window.location.reload();
   if (OrderInfo.value.OrderNo) {
     const router = useRouter();
-    router.push("/order/compulsory/summary?OrderNo=" + OrderInfo.value.OrderNo);
+    router.push("/order/compulsory/summary");
   }
 };
 // Define layout

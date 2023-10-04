@@ -24,9 +24,12 @@
               <div class="form-placeorder">
                 <div class="row">
                   <div class="col">
+                    <label for="CarLicense">
+                      <span class="text-danger">*</span>
+                      ทะเบียนรถ 
+                    </label>
                     <FormKit
                       type="text"
-                      label="ทะเบียนรถ"
                       id="CarLicense"
                       name="CarLicense"
                       placeholder="เลขป้ายทะเบียนรถ"

@@ -81,9 +81,9 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#menu-papers" title="กระดาษ" data-bs-toggle="collapse" role="button"
+                    <a class="nav-link" href="#menu-papers" title="แลกกระดาษ" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="menu-papers">
-                        <i class="fa-duotone fa-scroll fa-swap-opacity"></i><span class="nav-link-text">กระดาษ</span>
+                        <i class="fa-duotone fa-scroll fa-swap-opacity"></i><span class="nav-link-text">แลกกระดาษ</span>
                     </a>
                     <div class="collapse" id="menu-papers" data-bs-parent="#sidenav-collapse-main">
                         <ul class="nav">
@@ -91,7 +91,7 @@
                                 <NuxtLink class="nav-link" to="/papers" title="ประวัติการแลกกระดาษ">ประวัติการแลกกระดาษ</NuxtLink>
                             </li>
                             <li class="nav-item">
-                                <NuxtLink class="nav-link" to="/papers/exchange" title="แลกกระดาษ">แลกกระดาษ</NuxtLink>
+                                <NuxtLink class="nav-link" to="/papers/exchange" title="แลกกระดาษเพิ่ม">แลกกระดาษเพิ่ม</NuxtLink>
                             </li>
                         </ul>
                     </div>

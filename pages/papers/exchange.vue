@@ -315,12 +315,12 @@ const submitOrder = async (formData) => {
 
 // Define layout
 const layout = "monito"
-const layoutClass = "page-monito"
+const layoutClass = "layout-monito"
 const showPageSteps = false
 const showPageHeader = true
 
 // Define page meta
-const pageTitle = "แลกกระดาษ"
+const pageTitle = "เลือกกระดาษ"
 const pageCategory = "แลกกระดาษ"
 const pageDescription = ""
 
@@ -329,7 +329,7 @@ useHead({
 	title: pageTitle,
 	meta: [{ name: "description", content: pageDescription }],
 	bodyAttrs: {
-		class: "page-order category-papers single-exchange",
-	},
+		class: "page-papers single-exchange"
+	}
 })
 </script>

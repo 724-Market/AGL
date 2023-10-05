@@ -89,30 +89,31 @@ const props = defineProps({
 
 const showComponent = ref(true)
 
-
-
-if (props.layoutClass === 'page-monito-minimal') {
+if (props.layoutClass === '-monito-minimal') {
     showComponent.value = false
 } else {
     showComponent.value = true
 }
+
 const getToken = async () => {
     const token = await useUtility().getToken()
 }
+
 const onLoad = onMounted(async () => {
     getToken()
     setTimeout(getToken, 1000 * 60)
 })
+
 // Define style
 useHead({
     // link: [{ rel: 'stylesheet', href: '/assets/css/monito.css' }],
-    script: [
-        { src: '/assets/js/popper.min.js' },
-        { src: '/assets/js/bootstrap.min.js' },
-        { src: 'https://kit.fontawesome.com/285262ebb5.js', crossorigin: 'anonymous', 'data-search-pseudo-elements': true, defer: true },
-    ],
+    // script: [
+    //     { src: '/assets/js/popper.min.js' },
+    //     { src: '/assets/js/bootstrap.min.js' },
+    //     { src: 'https://kit.fontawesome.com/285262ebb5.js', crossorigin: 'anonymous', 'data-search-pseudo-elements': true, defer: true },
+    // ],
     bodyAttrs: {
-        class: props.layoutClass,
-    },
+        class: props.layoutClass
+    }
 })
 </script>

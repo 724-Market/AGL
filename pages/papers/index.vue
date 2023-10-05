@@ -105,9 +105,9 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <a class="btn btn-actions" href="/status" title="ดูรายละเอียด">
+                                        <NuxtLink class="btn btn-actions" to="/papers/status" title="ดูรายละเอียด">
                                             <i class="fa-regular fa-eye"></i>
-                                        </a>
+                                        </Nuxtlink>
                                     </td>
                                     <td class="order">#7WP309765724<time datetime="2023-05-05 08:08">2023-05-05 08:08</time>
                                     </td>
@@ -126,9 +126,9 @@
 
                                 <tr>
                                     <td>
-                                        <a class="btn btn-actions" href="/status" title="ดูรายละเอียด">
+                                        <NuxtLink class="btn btn-actions" to="/papers/status" title="ดูรายละเอียด">
                                             <i class="fa-regular fa-eye"></i>
-                                        </a>
+                                        </Nuxtlink>
                                     </td>
                                     <td class="order">#7WP309765725<time datetime="2022-02-05 02:08">2022-02-05 02:08</time>
                                     </td>
@@ -142,9 +142,9 @@
 
                                 <tr>
                                     <td>
-                                        <a class="btn btn-actions" href="/status" title="ดูรายละเอียด">
+                                        <NuxtLink class="btn btn-actions" to="/papers/status" title="ดูรายละเอียด">
                                             <i class="fa-regular fa-eye"></i>
-                                        </a>
+                                        </Nuxtlink>
                                     </td>
                                     <td class="order">#7WP309765726<time datetime="2022-11-11 10:10">2022-11-11 10:10</time>
                                     </td>
@@ -158,9 +158,9 @@
 
                                 <tr>
                                     <td>
-                                        <a class="btn btn-actions" href="/status" title="ดูรายละเอียด">
+                                        <NuxtLink class="btn btn-actions" to="/papers/status" title="ดูรายละเอียด">
                                             <i class="fa-regular fa-eye"></i>
-                                        </a>
+                                        </Nuxtlink>
                                     </td>
                                     <td class="order">#7WP309765750<time datetime="2023-03-15 03:08">2023-03-15 03:08</time>
                                     </td>
@@ -175,9 +175,9 @@
 
                                 <tr>
                                     <td>
-                                        <a class="btn btn-actions" href="/status" title="ดูรายละเอียด">
+                                        <NuxtLink class="btn btn-actions" to="/papers/status" title="ดูรายละเอียด">
                                             <i class="fa-regular fa-eye"></i>
-                                        </a>
+                                        </Nuxtlink>
                                     </td>
                                     <td class="order">#7WP309765760<time datetime="2023-03-15 03:08">2023-03-15 03:08</time>
                                     </td>
@@ -191,9 +191,9 @@
 
                                 <tr>
                                     <td>
-                                        <a class="btn btn-actions" href="/status" title="ดูรายละเอียด">
+                                        <NuxtLink class="btn btn-actions" to="/papers/status" title="ดูรายละเอียด">
                                             <i class="fa-regular fa-eye"></i>
-                                        </a>
+                                        </Nuxtlink>
                                     </td>
                                     <td class="order">#7WP309765911<time datetime="2022-02-05 02:08">2022-02-05 02:08</time>
                                     </td>

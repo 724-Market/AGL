@@ -10,12 +10,12 @@
     <div class="row">
       <div class="col-lg-6">
         <OrderCompulsoryThanksSuccess
-          v-if="status == 'Success'"
+          v-if="paymentGetInfo && status == 'Success'"
           :payment-get="paymentGetInfo"
         ></OrderCompulsoryThanksSuccess>
 
         <OrderCompulsoryThanksCancel
-          v-if="status == 'Cancel'"
+          v-if="paymentGetInfo && status == 'Cancel'"
           :payment-get="paymentGetInfo"
         ></OrderCompulsoryThanksCancel>
       </div>
@@ -87,30 +87,56 @@ const router = useRouter();
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
     isLoading.value = true;
-    console.log('OrderSummaryInfo.value',OrderSummaryInfo.value)
-    console.log('PaymentGetInfo.value',PaymentGetInfo.value)
     if(!OrderSummaryInfo.value) {
         router.push("/order");
     }
     const route = useRoute();
     if (PaymentGetInfo.value && PaymentGetInfo.value.PaymentNo != "") {
-      paymentGetInfo.value = PaymentGetInfo.value;
-      console.log("paymentGetInfo.value", paymentGetInfo.value as PaymentGetResponse);
+      // paymentGetInfo.value = PaymentGetInfo.value //TODO: Pass by referrence data be lost
+      paymentGetInfo.value = {
+        ID: PaymentGetInfo.value.ID,
+        OwnerID: PaymentGetInfo.value.OwnerID,
+        UserID: PaymentGetInfo.value.UserID,
+        PaymentNo: PaymentGetInfo.value.PaymentNo,
+        PaymentType: PaymentGetInfo.value.PaymentType,
+        DiscountType: PaymentGetInfo.value.DiscountType,
+        CouponCode: PaymentGetInfo.value.CouponCode,
+        NumCredit: PaymentGetInfo.value.NumCredit,
+        Status: PaymentGetInfo.value.Status,
+        LogMessage: PaymentGetInfo.value.LogMessage,
+        TransferFileID: PaymentGetInfo.value.TransferFileID,
+        TransferBankCode: PaymentGetInfo.value.TransferBankCode,
+        TransferDate: PaymentGetInfo.value.TransferDate,
+        DeliveryAmount: PaymentGetInfo.value.DeliveryAmount,
+        FeeAmount: PaymentGetInfo.value.FeeAmount,
+        DiscountAmount: PaymentGetInfo.value.DiscountAmount,
+        PaperAmount: PaymentGetInfo.value.PaperAmount,
+        CreditAmount: PaymentGetInfo.value.CreditAmount,
+        OrderAmount: PaymentGetInfo.value.OrderAmount,
+        GrandAmount: PaymentGetInfo.value.GrandAmount,
+        IsTransfer: PaymentGetInfo.value.IsTransfer,
+        IsConsent: PaymentGetInfo.value.IsConsent,
+        IsCallback: PaymentGetInfo.value.IsCallback,
+        IsSuccess: PaymentGetInfo.value.IsSuccess,
+        IsCancel: PaymentGetInfo.value.IsCancel,
+        IsPending: PaymentGetInfo.value.IsPending,
+        IsDelete: PaymentGetInfo.value.IsDelete,
+        PaymentDate: PaymentGetInfo.value.PaymentDate,
+        PaymentUser: PaymentGetInfo.value.PaymentUser,
+        CancelDate: PaymentGetInfo.value.CancelDate,
+        CancelUser: PaymentGetInfo.value.CancelUser,
+        CreateDate: PaymentGetInfo.value.CreateDate,
+        CreateUser: PaymentGetInfo.value.CreateUser,
+        UpdateDate: PaymentGetInfo.value.UpdateDate,
+        UpdateUser: PaymentGetInfo.value.UpdateUser
+      }
+      console.log("paymentGetInfo.value", paymentGetInfo.value);
       status.value =
         paymentGetInfo.value.IsSuccess && !paymentGetInfo.value.IsDelete
           ? "Success"
           : "Cancel";
       if (status.value == "Success") {
-        //TODO: Clear Store
-        placeorder.clearOrder()
-        information.clearInformation()
-        orderSummary.clearOrderSummary()
-        packages.clearPackage()
-        packageList.clearPackageList()
-        payment.clearPayment()
-        paymentGateway.clearPaymenGateway()
-        paymentGat.clearPaymentGet()
-        state.clearState();
+        await clearStore()
       }
     } else if (route.query && isString(route.query.PaymentNo)) {
       const PaymentNo: string = route.query.PaymentNo;
@@ -129,14 +155,7 @@ const onLoad = onMounted(async () => {
             ? "Success"
             : "Cancel";
         if (status.value == "Success") {
-          placeorder.clearOrder()
-          information.clearInformation()
-          packages.clearPackage()
-          packageList.clearPackageList()
-          orderSummary.clearOrderSummary()
-          payment.clearPayment()
-          paymentGateway.clearPaymenGateway()
-          paymentGat.clearPaymentGet()
+          await clearStore()
         }
       }
     } else {
@@ -148,23 +167,37 @@ const onLoad = onMounted(async () => {
   isLoading.value = false;
 });
 
+const clearStore = async () => {
+  setTimeout(() => {
+    placeorder.clearOrder()
+    information.clearInformation()
+    orderSummary.clearOrderSummary()
+    packages.clearPackage()
+    packageList.clearPackageList()
+    payment.clearPayment()
+    paymentGateway.clearPaymenGateway()
+    paymentGat.clearPaymentGet()
+    state.clearState();
+  }, 1000);
+};
+
 // Define layout
-const layout = "monito"
-const layoutClass = "layout-monito"
-const showPageSteps = false
-const showPageHeader = true
+const layout = "monito";
+const layoutClass = "page-monito";
+const showPageSteps = false;
+const showPageHeader = true;
 
 // Define page meta
-const pageTitle = "ผลการทำรายการ"
-const pageCategory = "แจ้งงาน พ.ร.บ."
-const pageDescription = ""
+const pageTitle = "ผลการทำรายการ";
+const pageCategory = "แจ้งงาน พ.ร.บ.";
+const pageDescription = "";
 
 // Define meta seo
 useHead({
   title: pageTitle,
   meta: [{ name: "description", content: pageDescription }],
   bodyAttrs: {
-    class: "page-order category-compulsory single-thanks"
-  }
-})
+    class: "page-order category-compulsory single-thanks",
+  },
+});
 </script>

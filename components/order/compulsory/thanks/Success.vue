@@ -9,12 +9,12 @@
                 <div class="status-item text-info text-big">
                     <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
                     <!-- <p>{{ $props.paymentGet.PaymentNo }}</p> -->
-                    <p>{{ PaymentNo }}</p>
+                    <p>{{ props.paymentGet.PaymentNo }}</p>
                 </div>
                 <div class="status-item">
                     <h5 class="topic">วันที่ทำรายการสำเร็จ</h5>
                     <!-- <p>{{ useUtility().formatDate($props.paymentGet.PaymentDate,"D MMMM BBBB HH:mm:ss") }}</p> -->
-                     <p>{{ useUtility().formatDate(PaymentDate,"D MMMM BBBB HH:mm:ss") }}</p>
+                     <p>{{ useUtility().formatDate(props.paymentGet.PaymentDate,"D MMMM BBBB HH:mm:ss") }}</p>
 
                 </div>
                 <div class="status-item text-warning">

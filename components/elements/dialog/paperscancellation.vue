@@ -9,7 +9,7 @@
 
                 <div class="card-body">
                     <figure class="dialog-icon">
-                        <i class="fa-kit fa-regular-scroll-slash"></i>
+                        <i class="fa-kit fa-regular-scroll-circle-xmark"></i>
                     </figure>
                     <h5>เหตุผลในการยกเลิกรายการ</h5>
                     

@@ -147,22 +147,22 @@ const onLoad = onMounted(async () => {
 });
 
 // Define layout
-const layout = "monito";
-const layoutClass = "page-monito";
-const showPageSteps = false;
-const showPageHeader = true;
+const layout = "monito"
+const layoutClass = "layout-monito"
+const showPageSteps = false
+const showPageHeader = true
 
 // Define page meta
-const pageTitle = "ผลการทำรายการ";
-const pageCategory = "แจ้งงาน พ.ร.บ.";
-const pageDescription = "";
+const pageTitle = "ผลการทำรายการ"
+const pageCategory = "แจ้งงาน พ.ร.บ."
+const pageDescription = ""
 
 // Define meta seo
 useHead({
   title: pageTitle,
   meta: [{ name: "description", content: pageDescription }],
   bodyAttrs: {
-    class: "page-order category-compulsory single-thanks",
-  },
-});
+    class: "page-order category-compulsory single-thanks"
+  }
+})
 </script>

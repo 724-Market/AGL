@@ -589,7 +589,7 @@ const continute = () => {
 
 // Define layout
 const layout = "monito"
-const layoutClass = "page-monito"
+const layoutClass = "layout-monito"
 const showPageSteps = false
 const showPageHeader = true
 
@@ -603,7 +603,7 @@ useHead({
     title: pageTitle,
     meta: [{ name: "description", content: pageDescription }],
     bodyAttrs: {
-        class: "page-history category-datatable category-papers single-transaction single-papers",
-    },
+        class: "page-papers single-history template-datatable"
+    }
 })
 </script>

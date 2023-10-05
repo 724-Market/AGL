@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-	ssr:false,
+	ssr: false,
 	runtimeConfig: {
 		public: {
 			BaseUrl: process.env.BASE_API || "http://localhost:3000",
@@ -27,34 +27,16 @@ export default defineNuxtConfig({
 				{ name: 'description', content: 'Welcome to Agent Love Club website' },
 			],
 			link: [
-				{
-					rel: 'preconnect',
-					href: 'https://fonts.googleapis.com'
-				},
-				{
-					rel: 'preconnect',
-					href: 'https://fonts.gstatic.com',
-					crossorigin: ''
-				},
-				{
-					rel: 'stylesheet',
-					href: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai+Looped:wght@300;400;500&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap'
-				},
-				{
-					rel: 'stylesheet',
-					href: '/assets/css/login.css'
-				},
-				{
-					rel: 'stylesheet',
-					href: '/assets/css/monito.css'
-				},
-				{
-					rel: 'icon',
-					type: 'image/svg',
-					href: '/favicon.svg'
-				},
-			]
-		},
+				{ rel: 'stylesheet', href: '/assets/css/login.css' },
+				{ rel: 'stylesheet', href: '/assets/css/monito.css' },
+				{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' },
+			],
+			script: [
+				{ src: '/assets/js/popper.min.js' },
+				{ src: '/assets/js/bootstrap.min.js' },
+				{ src: 'https://kit.fontawesome.com/285262ebb5.js', crossorigin: 'anonymous', 'data-search-pseudo-elements': true, defer: true },
+			],
+		}
 	},
 	modules: [
 		'@formkit/nuxt',

@@ -454,7 +454,7 @@ const submitOrder = async (formData: any) => {
       messageError.value = response.apiResponse.ErrorMessage ?? "";
     }
   }
-  if (!isError.value && orderNo == '') {
+  if (!isError.value && orderNo != '') {
     // get order after save or create
     const req: OrderDetailRequest = {
       OrderNo: orderReq.OrderNo ?? "",
@@ -476,8 +476,6 @@ const submitOrder = async (formData: any) => {
         DeliveryMethod2: summaryOrder.DeliveryMethod2,
         IsTaxInvoice: summaryOrder.IsTaxInvoice,
       };
-      console.log('orderSetStore', orderSetStore);
-      console.log('orderReq', orderReq)
       
       // const orderSetStore: PlaceOrderRequest = {
       //   OrderNo: orderReq.OrderNo,

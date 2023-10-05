@@ -87,8 +87,6 @@ const router = useRouter();
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
     isLoading.value = true;
-    console.log('OrderSummaryInfo.value',OrderSummaryInfo.value)
-    console.log('PaymentGetInfo.value',PaymentGetInfo.value)
     if(!OrderSummaryInfo.value) {
         router.push("/order");
     }
@@ -102,15 +100,15 @@ const onLoad = onMounted(async () => {
           : "Cancel";
       if (status.value == "Success") {
         //TODO: Clear Store
-        placeorder.clearOrder()
-        information.clearInformation()
-        orderSummary.clearOrderSummary()
-        packages.clearPackage()
-        packageList.clearPackageList()
-        payment.clearPayment()
-        paymentGateway.clearPaymenGateway()
-        paymentGat.clearPaymentGet()
-        state.clearState();
+        // placeorder.clearOrder()
+        // information.clearInformation()
+        // orderSummary.clearOrderSummary()
+        // packages.clearPackage()
+        // packageList.clearPackageList()
+        // payment.clearPayment()
+        // paymentGateway.clearPaymenGateway()
+        // paymentGat.clearPaymentGet()
+        // state.clearState();
       }
     } else if (route.query && isString(route.query.PaymentNo)) {
       const PaymentNo: string = route.query.PaymentNo;
@@ -129,14 +127,14 @@ const onLoad = onMounted(async () => {
             ? "Success"
             : "Cancel";
         if (status.value == "Success") {
-          placeorder.clearOrder()
-          information.clearInformation()
-          packages.clearPackage()
-          packageList.clearPackageList()
-          orderSummary.clearOrderSummary()
-          payment.clearPayment()
-          paymentGateway.clearPaymenGateway()
-          paymentGat.clearPaymentGet()
+          // placeorder.clearOrder()
+          // information.clearInformation()
+          // packages.clearPackage()
+          // packageList.clearPackageList()
+          // orderSummary.clearOrderSummary()
+          // payment.clearPayment()
+          // paymentGateway.clearPaymenGateway()
+          // paymentGat.clearPaymentGet()
         }
       }
     } else {

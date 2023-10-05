@@ -66,6 +66,7 @@ watch(
   () => props.paymentGet,
   async () => {
     if (props.paymentGet) {
+      console.log('props.paymentGet', props.paymentGet)
       paymentGetInfo.value = props.paymentGet
       PaymentNo.value = paymentGetInfo.value.PaymentNo
       PaymentDate.value = paymentGetInfo.value.PaymentDate

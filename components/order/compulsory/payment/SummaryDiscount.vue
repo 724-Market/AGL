@@ -34,9 +34,9 @@
                       <th scope="row">รวมราคา</th>
                       <td class="text-end price">{{ useUtility().getCurrency(totalPrice,2) }}</td>
                     </tr> -->
-                    <tr class="shipping">
+                    <tr class="discount" v-if="disPrice > 0">
                       <th scope="row">ส่วนลดหลังหักค่าธรรมเนียม</th>
-                      <td class="text-end price">{{ useUtility().getCurrency(disPrice,2) }}</td>
+                      <td class="text-end price">-{{ useUtility().getCurrency(disPrice,2) }}</td>
                     </tr>
                     <!-- <tr class="coupon">
                       <th scope="row">ใช้คูปองส่วนลด</th>

@@ -454,7 +454,7 @@ const submitOrder = async (formData: any) => {
       messageError.value = response.apiResponse.ErrorMessage ?? "";
     }
   }
-  if (!isError.value && orderNo != '') {
+  if (!isError.value) {
     // get order after save or create
     const req: OrderDetailRequest = {
       OrderNo: orderReq.OrderNo ?? "",

@@ -310,7 +310,7 @@ const { OrderInfo } = storeToRefs(storeOrder);
 const router = useRouter();
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
-    if (PackageInfo.value && CarInfo.value) {
+    if ((PackageInfo.value && PackageInfo.value.CompanyCode != '') && (CarInfo.value && CarInfo.value.CarType != '')) {
       infomation.value = CarInfo.value;
       SubCarModel.value = infomation.value.SubCarModel;
 
@@ -326,7 +326,8 @@ const onLoad = onMounted(async () => {
       await loadDelivery();
       isLoading.value = false;
     } else {
-      router.push("/order/compulsory/packages");
+      useStateMenu().setStateMenu(1);
+      router.push("/order/compulsory/information");
     }
 
     if (OrderInfo.value && OrderInfo.value.OrderNo != '') {

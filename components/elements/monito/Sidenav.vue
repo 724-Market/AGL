@@ -25,6 +25,10 @@
                                 <!-- <a class="nav-link" href="/order" title="ประวัติการทำรายการ">ประวัติการทำรายการ</a> -->
                             </li>
                             <li class="nav-item">
+                                <NuxtLink class="nav-link" to="/order/compulsory/create" title="ทำรายการใหม่">ทำรายการใหม่</NuxtLink>
+                                <!-- <a class="nav-link" href="/order/compulsory/information" title="กรอกข้อมูล">กรอกข้อมูล</a> -->
+                            </li>
+                            <li class="nav-item">
                                 <NuxtLink class="nav-link" to="/order/compulsory/information" title="กรอกข้อมูล">กรอกข้อมูล</NuxtLink>
                                 <!-- <a class="nav-link" href="/order/compulsory/information" title="กรอกข้อมูล">กรอกข้อมูล</a> -->
                             </li>

@@ -451,13 +451,13 @@ const handlerChangeSubDistrict2 = (e: string) => {
 const handlerChangeFullAddressTaxInvoice = (addr: string, ObjectAddress: DefaultAddress) => {
   if (addr && ObjectAddress) {
     taxInvoiceAddress.value = ObjectAddress as TaxInvoiceAddress
-    newTaxInvoiceFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
+    newTaxInvoiceFullAddressTemp.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
   }
 }
 const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress: DefaultAddress) => {
   if (addr && ObjectAddress) {
     taxInvoiceDeliveryAddress.value = ObjectAddress as TaxInvoiceAddress
-    newTaxInvoiceDeliveryFullAddressTemp.value =  `${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
+    newTaxInvoiceDeliveryFullAddressTemp.value =  `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
 
   }
 }

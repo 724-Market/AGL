@@ -81,6 +81,8 @@ export interface DefaultAddress {
   DistrictID: string
   SubDistrictID: string
   TaxID: string
+  PrefixID?: string
+  PrefixName?: string
   FirstName: string
   LastName: string
   PhoneNumber: string

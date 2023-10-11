@@ -693,6 +693,14 @@ const handlerChangeSubDistrict = (e: string)=>{
 }
 const handlerChangeFullAddress = (addr:string,ObjectAddress:DefaultAddress)=>{
   if(addr && ObjectAddress){
+    if(InsuredTypeText.value=="person"){
+      ObjectAddress.PrefixID = personProfile.value.PrefixID
+      ObjectAddress.PrefixName = Prefix.value.filter(x=>x.value==personProfile.value.PrefixID)[0].label
+    }
+    else{
+      ObjectAddress.PrefixID =  legalPersonProfile.value.PrefixID
+      ObjectAddress.PrefixName = Prefix.value.filter(x=>x.value==legalPersonProfile.value.PrefixID)[0].label
+    }
     insureDetail.value.DefaultAddress = ObjectAddress
     handlerChangeInsureDetail()
 

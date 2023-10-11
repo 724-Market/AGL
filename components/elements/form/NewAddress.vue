@@ -101,11 +101,11 @@ const props = defineProps({
 
 const defaultAddressCache: globalThis.Ref<DefaultAddress | undefined> = ref()
 
-var LabelAddressText: string = ''
-var PhoneNumberText: string = ''
-var TitleText: string = ''
-var FirstNameText: string = ''
-var LastNameText: string = ''
+const LabelAddressText = ref('')
+const PhoneNumberText = ref('')
+const TitleText = ref('')
+const  FirstNameText = ref('')
+const LastNameText = ref('')
 
 const insureFullAddress: globalThis.Ref<String> = ref('')
 const AddressObject: globalThis.Ref<DefaultAddress | undefined> = ref()
@@ -141,32 +141,32 @@ const onLoad = onMounted(() => {
     }
 
     if(defaultAddressCache.value) {
-      LabelAddressText = '' //TODO: without field
-      PhoneNumberText = defaultAddressCache.value.PhoneNumber
-      TitleText = '' //TODO: without field
-      FirstNameText = defaultAddressCache.value.FirstName
-      LastNameText = defaultAddressCache.value.LastName
+      LabelAddressText.value = '' //TODO: without field
+      PhoneNumberText.value = defaultAddressCache.value.PhoneNumber
+      TitleText.value = '' //TODO: without field
+      FirstNameText.value = defaultAddressCache.value.FirstName
+      LastNameText.value = defaultAddressCache.value.LastName
     }
 })
 
 const handleLabelAddressChange = async (event: any) => {
-  LabelAddressText = event.target.value
+  LabelAddressText.value = event.target.value
   await handlerChangeFullAddress(insureFullAddress.value.toString(), AddressObject.value as DefaultAddress)
 }
 const handlePhoneNumberChange = async (event: any) => {
-  PhoneNumberText = event.target.value
+  PhoneNumberText.value = event.target.value
   await handlerChangeFullAddress(insureFullAddress.value.toString(), AddressObject.value as DefaultAddress)
 }
 const handleTitleChange = async (event: any) => {
-  TitleText = event.target.value
+  TitleText.value = event.target.value
   await handlerChangeFullAddress(insureFullAddress.value.toString(), AddressObject.value as DefaultAddress)
 }
 const handleFirstNameChange = async (event: any) => {
-  FirstNameText = event.target.value
+  FirstNameText.value = event.target.value
   await handlerChangeFullAddress(insureFullAddress.value.toString(), AddressObject.value as DefaultAddress)
 }
 const handleLastNameChange = async (event: any) => {
-  LastNameText = event.target.value
+  LastNameText.value = event.target.value
   await handlerChangeFullAddress(insureFullAddress.value.toString(), AddressObject.value as DefaultAddress)
 }
 
@@ -224,9 +224,9 @@ watch(
   (newValue)=>{
     if(props.defaultAddressCache){
       defaultAddressCache.value = newValue
-      FirstNameText = defaultAddressCache.value?.FirstName ?? ""
-      LabelAddressText = defaultAddressCache.value?.LastName ?? ""
-      PhoneNumberText = defaultAddressCache.value?.PhoneNumber ?? ""
+      FirstNameText.value = defaultAddressCache.value?.FirstName ?? ""
+      LabelAddressText.value = defaultAddressCache.value?.LastName ?? ""
+      PhoneNumberText.value = defaultAddressCache.value?.PhoneNumber ?? ""
     }
   }
 )
@@ -251,11 +251,12 @@ const handlerChangeFullAddress = (addr:string, ObjectAddress:DefaultAddress)=>{
     insureFullAddress.value = addr
     AddressObject.value = ObjectAddress
 
-    ObjectAddress.AddressText = LabelAddressText
-    ObjectAddress.PhoneNumber = PhoneNumberText
-    // ObjectAddress.Title = TitleText //TODO: ไม่มีใน model
-    ObjectAddress.FirstName = FirstNameText
-    ObjectAddress.LastName = LastNameText
+    ObjectAddress.AddressText = LabelAddressText.value
+    ObjectAddress.PhoneNumber = PhoneNumberText.value
+    ObjectAddress.PrefixID =  TitleText.value
+    ObjectAddress.PrefixName = prefix.value.filter(x=>x.value==TitleText.value)[0].label
+    ObjectAddress.FirstName = FirstNameText.value
+    ObjectAddress.LastName = LastNameText.value
 
     emit('changeFullAddress', addr, ObjectAddress)
   }

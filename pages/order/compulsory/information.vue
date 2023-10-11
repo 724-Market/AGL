@@ -590,6 +590,8 @@ const loadCarModel = async (params: String, optionText: String) => {
 
 // Function For Call Api Get subcarmodel
 const loadSubcarModel = async (params: String, optionText: String) => {
+  carDetail = `${carDetail} `+carModel.value.find((e) => e.value == params)?.label ?? ''
+
   isLoading.value = true
   checklist.value[0].className = ''
 

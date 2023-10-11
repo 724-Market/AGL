@@ -76,29 +76,6 @@
                     <h4>แก้ไขใบกำกับภาษี</h4>
 
                     <div class="row">
-                      <div class="col-6">
-                        <FormKit
-                          type="text"
-                          label="ตั้งชื่อเรียกรายการนี้"
-                          name="NewLabelAddress"
-                          placeholder="เพื่อให้ง่ายต่อการเรียกใช้งานครั้งต่อไป"
-                          validation="required"
-                          :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-                          autocomplete="false"
-                        />
-                      </div>
-                      <div class="col-6">
-                        <FormKit
-                          type="text"
-                          label="หมายเลขโทรศัพท์"
-                          name="NewPhoneNumber"
-                          placeholder="098765XXXX"
-                          validation="required"
-                          :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-                          autocomplete="false"
-                          v-model="taxInvoiceAddress.PhoneNumber"
-                        />
-                      </div>
                       <div class="col-sm-4 col-lg-3">
                         <FormKit
                           type="select"
@@ -134,7 +111,18 @@
                           v-model="taxInvoiceAddress.LastName"
                         />
                       </div>
-
+                      <div class="col-6">
+                        <FormKit
+                          type="text"
+                          label="หมายเลขโทรศัพท์"
+                          name="NewPhoneNumber"
+                          placeholder="098765XXXX"
+                          validation="required"
+                          :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
+                          autocomplete="false"
+                          v-model="taxInvoiceAddress.PhoneNumber"
+                        />
+                      </div>
                       <ElementsFormAddress
                         element-key="taxinvoice"
                         :addr-province="addrProvince"
@@ -463,13 +451,13 @@ const handlerChangeSubDistrict2 = (e: string) => {
 const handlerChangeFullAddressTaxInvoice = (addr: string, ObjectAddress: DefaultAddress) => {
   if (addr && ObjectAddress) {
     taxInvoiceAddress.value = ObjectAddress as TaxInvoiceAddress
-    newTaxInvoiceFullAddressTemp.value = addr
+    newTaxInvoiceFullAddressTemp.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
   }
 }
 const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress: DefaultAddress) => {
   if (addr && ObjectAddress) {
     taxInvoiceDeliveryAddress.value = ObjectAddress as TaxInvoiceAddress
-    newTaxInvoiceDeliveryFullAddressTemp.value = addr
+    newTaxInvoiceDeliveryFullAddressTemp.value =  `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
 
   }
 }

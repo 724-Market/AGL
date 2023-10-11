@@ -933,7 +933,7 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
     defaultAddress.value = ObjectAddress;
   }
   if (addr) {
-    insureFullAddress.value = addr;
+    insureFullAddress.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr;
   }
 };
 const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {

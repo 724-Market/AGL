@@ -35,7 +35,8 @@
                                     </figure>
                                     <div class="detail">
                                         <h4 class="title">ได้รับกรมธรรม์</h4>
-                                        <p>กรมธรรม์จัดส่งเรียบร้อยแล้ว <a class="action" href="#">กรมธรรม์ TR-4635-453-32-1</a>
+                                        <p>กรมธรรม์จัดส่งเรียบร้อยแล้ว <a class="action" href="#">กรมธรรม์
+                                                TR-4635-453-32-1</a>
                                         </p>
                                     </div>
                                 </div>
@@ -74,7 +75,8 @@
                                     </figure>
                                     <div class="detail">
                                         <h4 class="title">จัดส่งกรมธรรม์</h4>
-                                        <p>เกิดปัญหาระหว่างจัดส่ง กรุณา <a class="action btn-open-support" href="#" title="ติดต่อเจ้าหน้าที่">ติดต่อเจ้าหน้าที่</a></p>
+                                        <p>เกิดปัญหาระหว่างจัดส่ง กรุณา <a class="action btn-open-support" href="#"
+                                                title="ติดต่อเจ้าหน้าที่">ติดต่อเจ้าหน้าที่</a></p>
                                     </div>
                                 </div>
 
@@ -127,7 +129,8 @@
                                         <h4 class="title">ข้อมูลคำสั่งซื้อ</h4>
                                         <h5 class="subtitle">พ.ร.บ.</h5>
                                         <p>MG รุ่น MG3 รุ่นย่อย D ปี 2018 (สีน้ำเงิน)
-                                            <a class="action btn-open-support" href="#" title="ติดต่อเจ้าหน้าที่">ติดต่อเจ้าหน้าที่</a>
+                                            <a class="action btn-open-support" href="#"
+                                                title="ติดต่อเจ้าหน้าที่">ติดต่อเจ้าหน้าที่</a>
                                         </p>
                                     </div>
                                 </div>
@@ -581,7 +584,8 @@
                                                 </div>
                                                 <div class="summary-item">
                                                     <h4 class="topic">ที่อยู่</h4>
-                                                    <p>724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160
+                                                    <p>724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ
+                                                        10160
                                                     </p>
                                                 </div>
                                                 <div class="summary-item">
@@ -637,7 +641,7 @@ useHead({
     title: pageTitle,
     meta: [{ name: "description", content: pageDescription }],
     bodyAttrs: {
-        class: "page-order category-tracking",
+        class: "page-papers single-status template-timeline",
     },
 })
 </script>

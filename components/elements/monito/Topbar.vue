@@ -2,7 +2,13 @@
   <div class="col">
     <nav class="navbar">
 
-      <ElementsUtilitiesWallet />
+      <div class="topbar-nav">
+        <div class="sidenav-toggle">
+          <a id="" href="#" title="เมนู">
+            <span class="sidenav-toggle-text"><span>เมนู</span></span>
+          </a>
+        </div>
+      </div>
 
       <ElementsUtilitiesNotificationDropdown />
 

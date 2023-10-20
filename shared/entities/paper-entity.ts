@@ -25,3 +25,19 @@ export interface ProductsubcategoryAreaListRes {
     ProductCategory: string;
     ProductSubCategory: string;
   }
+
+  export interface ProductcompanyAreaListReq {
+      AreaID: string;
+      WarehouseID: string;
+      ProductCategory: string;
+      ProductSubCategory: string;
+  }
+  export interface ProductcompanyAreaListRes {
+    AreaID: string;
+    WarehouseID: string;
+    ProductCompany: string;
+    ProductSubCategory: string;
+    ProductCategory: string;
+    CompanyName: string;
+    FriendlyName: string;
+  }

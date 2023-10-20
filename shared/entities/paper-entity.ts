@@ -41,3 +41,32 @@ export interface ProductsubcategoryAreaListRes {
     CompanyName: string;
     FriendlyName: string;
   }
+
+  export interface SearchMatchReq {
+      AreaID: string;
+      WarehouseID: string;
+      ProductCategory: string;
+      ProductSubCategory: string;
+      ProductCompany: string;
+      ProductBrand: string;
+      ProductModel: string;
+      ProductName: string;
+      ProductPrice: string;
+  }
+  export interface SearchMatchRes {
+    WarehouseID: string;
+    AreaID: string;
+    ProductID: string;
+    Name: string;
+    AreaName: string;
+    ProductCategory: string;
+    ProductSubCategory: string;
+    ProductCompany: string;
+    ProductBrand: string;
+    ProductModel: string;
+    ProductName: string;
+    ProductPrice: number;
+    ProductOnHandAmount: number;
+    CompanyName: string;
+    FriendlyName: string;
+  }

@@ -27,6 +27,10 @@ class PaperModule {
     async getProductcompanySubcategory(req: ProductcompanyAreaListReq): Promise<IAPIResponse<ProductcompanyAreaListRes[]>> {
       return await useCallApi().apiRepository<ProductcompanyAreaListRes[]>(`${this.RESOURCE}/productcompany/by-area-warehouse-subcategory/list`, req)
     }
+
+    async getProductSearchMatchReq(req: SearchMatchReq): Promise<IAPIResponse<SearchMatchRes[]>> {
+      return await useCallApi().apiRepository<SearchMatchRes[]>(`${this.RESOURCE}/search/match-and/list`, req)
+    }
 }
 
 export default PaperModule;

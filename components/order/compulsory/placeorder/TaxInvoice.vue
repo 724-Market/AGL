@@ -499,6 +499,7 @@ const setCacheData = ()=>{
           if(props.delivery && deliveryMethod2){
           const filter = props.delivery.filter(x=>x.value == deliveryMethod2.DeliveryChannelType)
           if(filter.length>0){
+            shippedPolicy.value='separately'
             ShippingMethodText.value = deliveryMethod2.DeliveryChannelType
             ShippingMethodFee.value = filter[0].option ?? "0"
           }

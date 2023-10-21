@@ -126,4 +126,11 @@ export interface AgentInfo {
   export interface AgentAddressSaveRes {
     Options?: string;
   }
+
+  export interface AgentAddressDeleteRes {
+    AddressID: string
+  }
+  export interface AgentAddressDeleteRes {
+    Options?: string;
+  }
   

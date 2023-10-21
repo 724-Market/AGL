@@ -4,7 +4,9 @@ import {
   AgentAddressCreateReq,
   AgentAddressCreateRes,
   AgentAddressSaveReq,
-  AgentAddressSaveRes
+  AgentAddressSaveRes,
+  AgentAddressDeleteReq,
+  AgentAddressDeleteRes
  } from "../entities/agent-entity";
 import { IAPIResponse } from "../entities/useApi-response";
 
@@ -25,6 +27,10 @@ class AgentModule {
 
   async AddressSave(req: AgentAddressSaveReq): Promise<IAPIResponse<AgentAddressSaveRes>> {
     return await useCallApi().apiRepository<AgentAddressSaveRes>(`${this.RESOURCE}/address/save`, req)
+  }
+
+  async AddressDelete(req: AgentAddressDeleteReq): Promise<IAPIResponse<AgentAddressDeleteRes>> {
+    return await useCallApi().apiRepository<AgentAddressDeleteRes>(`${this.RESOURCE}/address/delete`, req)
   }
   
 }

@@ -2,7 +2,9 @@ import {
   AgentInfo,
   AgentAddressListRes,
   AgentAddressCreateReq,
-  AgentAddressCreateRes
+  AgentAddressCreateRes,
+  AgentAddressSaveReq,
+  AgentAddressSaveRes
  } from "../entities/agent-entity";
 import { IAPIResponse } from "../entities/useApi-response";
 

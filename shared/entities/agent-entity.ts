@@ -25,4 +25,31 @@ export interface AgentInfo {
     UpdateUser?: string
     UpdateDate?: string
   }
+
+  export interface AgentAddressCreateReq {
+    ProvinceID: string;
+    DistrictID: string;
+    SubDistrictID: string;
+    TaxID: string;
+    FirstName: string;
+    LastName: string;
+    PhoneNumber: string;
+    Email: string;
+    Name: string;
+    AddressLine1: string;
+    AddressLine2: string;
+    AddressText: string;
+    No: string;
+    Moo: string;
+    Place: string;
+    Building: string;
+    Floor: string;
+    Room: string;
+    Branch: string;
+    Alley: string;
+    Road: string;
+  }
+  export interface AgentAddressCreateRes {
+    AddressID: string;
+  }
   

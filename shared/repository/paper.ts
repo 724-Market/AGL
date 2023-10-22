@@ -5,7 +5,9 @@ import {
   ProductsubcategoryAreaListReq,
   ProductsubcategoryAreaListRes,
   ProductcompanyAreaListReq,
-  ProductcompanyAreaListRes
+  ProductcompanyAreaListRes,
+  PaymentFeeLimitReq,
+  PaymentFeeLimitRes
  } from './../entities/paper-entity';
 import { IAPIResponse } from "../entities/useApi-response";
 
@@ -30,6 +32,10 @@ class PaperModule {
 
     async getProductSearchMatchReq(req: SearchMatchReq): Promise<IAPIResponse<SearchMatchRes[]>> {
       return await useCallApi().apiRepository<SearchMatchRes[]>(`${this.RESOURCE}/search/match-and/list`, req)
+    }
+
+    async getPaymentDeliveryFeeLimitReq(req: PaymentFeeLimitReq): Promise<IAPIResponse<PaymentFeeLimitRes[]>> {
+      return await useCallApi().apiRepository<PaymentFeeLimitRes[]>(`${this.RESOURCE}/payment/deliveryfee/limit/get`, req)
     }
 }
 

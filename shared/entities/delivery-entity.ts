@@ -4,3 +4,12 @@ export interface IDeliveryResponse {
     Type:string
     Cost:number
 }
+
+export interface DeliveryPaperRes {
+  ID: string;
+  Name: string;
+  NameEn: string;
+  Type: string;
+  Remark: string;
+  IsActive: boolean;
+}

@@ -70,3 +70,12 @@ export interface ProductsubcategoryAreaListRes {
     CompanyName: string;
     FriendlyName: string;
   }
+
+  export interface PaymentFeeLimitReq {
+    DeliveryType: string;
+  }
+  export interface PaymentFeeLimitRes {
+    Amount: number;
+    Max: number;
+    Min: number;
+  }

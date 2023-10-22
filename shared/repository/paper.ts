@@ -6,6 +6,8 @@ import {
   ProductsubcategoryAreaListRes,
   ProductcompanyAreaListReq,
   ProductcompanyAreaListRes,
+  SearchMatchReq,
+  SearchMatchRes,
   PaymentFeeLimitReq,
   PaymentFeeLimitRes
  } from './../entities/paper-entity';

@@ -9,8 +9,12 @@ import {
   SearchMatchReq,
   SearchMatchRes,
   PaymentFeeLimitReq,
-  PaymentFeeLimitRes
+  PaymentFeeLimitRes,
+  OrderExchangeCreateReq
  } from './../entities/paper-entity';
+ import {
+  PaymentGetResponse
+} from "../entities/payment-entity";
 import { IAPIResponse } from "../entities/useApi-response";
 
 class PaperModule {
@@ -38,6 +42,9 @@ class PaperModule {
 
     async getPaymentDeliveryFeeLimitReq(req: PaymentFeeLimitReq): Promise<IAPIResponse<PaymentFeeLimitRes[]>> {
       return await useCallApi().apiRepository<PaymentFeeLimitRes[]>(`${this.RESOURCE}/payment/deliveryfee/limit/get`, req)
+    }
+    async confirmOrderExchange(req:OrderExchangeCreateReq): Promise<IAPIResponse<PaymentGetResponse[]>> {
+      return await useCallApi().apiRepository<PaymentGetResponse[]>(`${this.RESOURCE}/order/exchange/create`, req)
     }
 }
 

@@ -1,3 +1,7 @@
+import { AreaListResponse } from "~/shared/entities/paper-entity";
+
+import { AreaListResponse } from "~/shared/entities/paper-entity";
+
 <template>
     <div class="form-placeorder">
 
@@ -51,4 +55,25 @@
 </template>
 
 <script setup lang="ts">
+import { 
+  AreaListResponse,
+  ProductcompanyAreaListRes,
+  ProductsubcategoryAreaListRes,
+  WarehouseAreaListRes
+} from '~/shared/entities/paper-entity';
+
+const props = defineProps({ 
+  area : {
+    type: Object as () => AreaListResponse[],
+  },
+  Warehouse : {
+    type: Object as () => WarehouseAreaListRes[],
+  },
+  productsubcategory : {
+    type: Object as () => ProductsubcategoryAreaListRes[],
+  },
+  productcompany : {
+    type: Object as () => ProductcompanyAreaListRes[],
+  },
+})
 </script>

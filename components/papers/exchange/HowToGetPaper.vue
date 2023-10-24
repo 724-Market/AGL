@@ -13,10 +13,10 @@
 
 					<div class="form-placeorder">
 						<div class="form-hide-label">
-							<ElementsFormRadioShippingPaper />
+							<ElementsFormRadioShippingPaper :option="shippingPaperTypeOption" v-model="shippingPaperText" />
 						</div>
 
-						<section class="shipping-method">
+						<section class="shipping-method" v-if="shippingPaperText == 'DELIVERY'">
 							<h3>วิธีการจัดส่ง</h3>
 							<div class="row">
 								<div class="col-12">
@@ -24,12 +24,12 @@
                                         <i class="fa-regular fa-circle-info"></i>
                                         <u>ฟรี</u>
 										ค่าจัดส่ง
-										เมื่อแลกกระดาษเกิน 5,000 บาทขึ้นไป
+										เมื่อแลกกระดาษเกิน {{ props.paymentFeeLimit[0].Min }} บาทขึ้นไป
                                     </div>
 								</div>
 								<div class="col-6">
-									<FormKit type="select" label="ช่องทางการจัดส่ง" name="ShippingMethod"
-										placeholder="ช่องทางการจัดส่ง" v-model="ShippingMethodText" 
+									<FormKit type="select" label="ช่องทางการจัดส่ง" name="ShippingMethod" placeholder="ช่องทางการจัดส่ง" 
+										:options="shippingMethodOption" v-model="ShippingMethodText" @change="onShippingMethodChange"
                                         validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
 								</div>
 								<div class="col-6">
@@ -39,7 +39,7 @@
 							</div>
 						</section>
 
-						<section class="shipping-address">
+						<section class="shipping-address" v-if="shippingPaperText == 'DELIVERY'">
 							<h3>ที่อยู่สำหรับจัดส่ง</h3>
 							<div class="form-hide-label">
 								<FormKit type="radio" label="รายชื่อที่อยู่" name="PostalAddressPolicy"
@@ -50,8 +50,11 @@
 								<div class="row">
 									<ElementsFormNewAddress />
 								</div>
-								<FormKit type="submit" label="บันทึกข้อมูล"
-									:classes="{ input: 'btn-primary', outer: 'form-actions' }" :loading="isLoading" />
+								<FormKit 
+									type="submit" label="บันทึกข้อมูล"
+									:classes="{ input: 'btn-primary', outer: 'form-actions' }" 
+									:loading="isLoading" 
+								/>
 							</aside>
 						</section>
 
@@ -65,4 +68,105 @@
 </template>
 
 <script setup lang="ts">
+import { 
+  IDeliveryResponse,
+  DeliveryPaperRes
+} from "~/shared/entities/delivery-entity";
+import { 
+  PaymentFeeLimitRes
+} from '~/shared/entities/paper-entity';
+import { RadioOption } from "~/shared/entities/select-option";
+
+const emit = defineEmits(['shippingTypeChange'])
+
+const props = defineProps({ 
+  deliveryChanel : {
+    type: Object as () => IDeliveryResponse[],
+  },
+  shippingPaperType : {
+    type: Object as () => DeliveryPaperRes[],
+  },
+  paymentFeeLimit : {
+    type: Object as () => PaymentFeeLimitRes[],
+  }
+})
+
+const shippingPaperTypeOption: globalThis.Ref<RadioOption[]> = ref([])
+const shippingMethodOption: globalThis.Ref<RadioOption[]> = ref([])
+
+var shippingPaperText = ref("")
+var ShippingMethodText = ref("")
+var ShippingFeeText = ref(0)
+
+const onLoad = onMounted(async () => {
+	if (props.shippingPaperType) {
+		shippingPaperTypeOption.value = [
+          {
+            label: 'รับทางไปรษณีย์',
+            value: props.shippingPaperType[1].Type,
+          },
+          {
+            label: 'รับที่สาขา',
+            value: props.shippingPaperType[0].Type,
+          }
+      	]
+    }
+	if (props.deliveryChanel) {
+		shippingMethodOption.value = [
+          {
+            label: props.deliveryChanel[0].Name,
+            value: props.deliveryChanel[0].Cost.toString(),
+          }
+      	]
+	}
+});
+
+const onShippingMethodChange = async (event: any) => {
+  ShippingFeeText.value = event.target.value
+};
+
+watch(shippingPaperText, async (newshippingPaperType) => {
+	emit('shippingTypeChange', newshippingPaperType)
+});
+
+watch(
+  () => props.deliveryChanel,
+  async () => {
+    if (props.deliveryChanel) {
+		shippingMethodOption.value = [
+          {
+            label: props.deliveryChanel[0].Name,
+            value: props.deliveryChanel[0].Cost.toString(),
+          }
+      	]
+    }
+  }
+)
+
+watch(
+  () => props.shippingPaperType,
+  async () => {
+    if (props.shippingPaperType) {
+		shippingPaperTypeOption.value = [
+          {
+            label: 'รับทางไปรษณีย์',
+            value: props.shippingPaperType[1].Type,
+          },
+          {
+            label: 'รับที่สาขา',
+            value: props.shippingPaperType[0].Type,
+          }
+      	]
+    }
+  }
+)
+
+watch(
+  () => props.paymentFeeLimit,
+  async () => {
+    if (props.paymentFeeLimit) {
+    }
+  }
+)
+
 </script>

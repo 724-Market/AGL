@@ -1,5 +1,5 @@
 import { 
-  AreaListResponse,
+  AreaListRes,
   WarehouseAreaListReq,
   WarehouseAreaListRes,
   ProductsubcategoryAreaListReq,
@@ -9,15 +9,19 @@ import {
   SearchMatchReq,
   SearchMatchRes,
   PaymentFeeLimitReq,
-  PaymentFeeLimitRes
+  PaymentFeeLimitRes,
+  OrderExchangeCreateReq
  } from './../entities/paper-entity';
+import {
+  PaymentGetResponse
+ } from "../entities/payment-entity";
 import { IAPIResponse } from "../entities/useApi-response";
 
 class PaperModule {
     private RESOURCE = '/Paper';
 
-    async getarea(): Promise<IAPIResponse<AreaListResponse[]>> {
-      return await useCallApi().apiRepository<AreaListResponse[]>(`${this.RESOURCE}/area/list`, {})
+    async getarea(): Promise<IAPIResponse<AreaListRes[]>> {
+      return await useCallApi().apiRepository<AreaListRes[]>(`${this.RESOURCE}/area/list`, {})
     }
 
     async getWarehouseArea(req: WarehouseAreaListReq): Promise<IAPIResponse<WarehouseAreaListRes[]>> {
@@ -38,6 +42,9 @@ class PaperModule {
 
     async getPaymentDeliveryFeeLimitReq(req: PaymentFeeLimitReq): Promise<IAPIResponse<PaymentFeeLimitRes[]>> {
       return await useCallApi().apiRepository<PaymentFeeLimitRes[]>(`${this.RESOURCE}/payment/deliveryfee/limit/get`, req)
+    }
+    async confirmOrderExchange(req:OrderExchangeCreateReq): Promise<IAPIResponse<PaymentGetResponse[]>> {
+      return await useCallApi().apiRepository<PaymentGetResponse[]>(`${this.RESOURCE}/order/exchange/create`, req)
     }
 }
 

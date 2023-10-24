@@ -1,4 +1,4 @@
-export interface AreaListResponse {
+export interface AreaListRes {
     ID: string
     Name: string
 }

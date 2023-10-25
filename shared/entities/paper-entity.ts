@@ -4,8 +4,8 @@ export interface AreaListRes {
 }
 
 export interface WarehouseAreaListReq {
-    AreaID: string
-    Type: string
+    AreaID?: string
+    Type?: string
 }
 export interface WarehouseAreaListRes {
     ID: string

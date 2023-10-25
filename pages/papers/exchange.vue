@@ -222,7 +222,7 @@ const onChangeProductSubcategory = async (productSubCategory: string, productCat
     ProductSubCategory: productSubCategory
   }
   if(productSubCategory == 'Compulsory') { //storeSearchMatchCompulsory storeSearchMatchInsurance
-    if(MatchCompulsoryInfo.value.Data) {
+    if(MatchCompulsoryInfo.value && MatchCompulsoryInfo.value.Data) {
       productSearchMatchAll.value = MatchCompulsoryInfo.value.Data
     }
     else {

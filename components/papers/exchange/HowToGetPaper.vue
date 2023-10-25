@@ -24,12 +24,12 @@
                                         <i class="fa-regular fa-circle-info"></i>
                                         <u>ฟรี</u>
 										ค่าจัดส่ง
-										เมื่อแลกกระดาษเกิน {{ props.paymentFeeLimit[0].Min }} บาทขึ้นไป
+										เมื่อแลกกระดาษเกิน {{ paymentFeeLimitMin }} บาทขึ้นไป
                                     </div>
 								</div>
 								<div class="col-6">
 									<FormKit type="select" label="ช่องทางการจัดส่ง" name="ShippingMethod" placeholder="ช่องทางการจัดส่ง" 
-										:options="shippingMethodOption" v-model="ShippingMethodText" @change="onShippingMethodChange"
+										:options="shippingMethodOption" v-model="ShippingMethodText" @change="onShippingMethodChange()"
                                         validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
 								</div>
 								<div class="col-6">
@@ -80,20 +80,15 @@ import { RadioOption } from "~/shared/entities/select-option";
 const emit = defineEmits(['shippingTypeChange'])
 
 const props = defineProps({ 
-  deliveryChanel : {
-    type: Object as () => IDeliveryResponse[],
-  },
-  shippingPaperType : {
-    type: Object as () => DeliveryPaperRes[],
-  },
-  paymentFeeLimit : {
-    type: Object as () => PaymentFeeLimitRes[],
-  }
+	deliveryChanel: Array<IDeliveryResponse>,
+	shippingPaperType: Array<DeliveryPaperRes>,
+	paymentFeeLimit: Array<PaymentFeeLimitRes>
 })
 
 const shippingPaperTypeOption: globalThis.Ref<RadioOption[]> = ref([])
 const shippingMethodOption: globalThis.Ref<RadioOption[]> = ref([])
 
+var paymentFeeLimitMin = ref(0)
 var shippingPaperText = ref("")
 var ShippingMethodText = ref("")
 var ShippingFeeText = ref(0)
@@ -119,6 +114,9 @@ const onLoad = onMounted(async () => {
           }
       	]
 	}
+	if (props.paymentFeeLimit) {
+		paymentFeeLimitMin.value = props.paymentFeeLimit[0].Min
+    }
 });
 
 const onShippingMethodChange = async (event: any) => {
@@ -165,6 +163,7 @@ watch(
   () => props.paymentFeeLimit,
   async () => {
     if (props.paymentFeeLimit) {
+		paymentFeeLimitMin.value = props.paymentFeeLimit[0].Min
     }
   }
 )

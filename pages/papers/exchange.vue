@@ -24,7 +24,16 @@
 							<h3 class="card-title">เลือกกระดาษ</h3>
 						</div>
 						<div class="card-body">
-							<ElementsFormPaperBranchStock></ElementsFormPaperBranchStock>
+							<ElementsFormPaperBranchStock
+                @area-change="onChangePaperArea"
+                @ware-house-change="onChangeWareHouse"
+                @product-sub-change="onChangeProductSubcategory"
+                @product-company-change="onChangeProductCompany"
+                :area="paperAreas"
+                :ware-house="warehouses"
+                :product-sub-category="productsubcategorys"
+                :product-company="productCompanys" 
+              ></ElementsFormPaperBranchStock>
 						</div>
 					</div>
 
@@ -39,6 +48,7 @@
 
 		<ElementsDialogPaperstock />
 
+    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
 	</NuxtLayout>
 </template>
 
@@ -55,11 +65,15 @@ import {
   ProductcompanyAreaListRes,
   ProductsubcategoryAreaListReq,
   ProductsubcategoryAreaListRes,
+  SearchMatchReq,
+  SearchMatchRes,
   WarehouseAreaListReq,
   WarehouseAreaListRes
 } from '~/shared/entities/paper-entity';
 import { storeToRefs } from "pinia";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
+import { useStoreSearchMatchCompulsory } from "~~/stores/paper/storeSearchMatchCompulsory";
+import { useStoreSearchMatchInsurance } from "~~/stores/paper/storeSearchMatchInsurance";
 
 const deliveryChanels: globalThis.Ref<IDeliveryResponse[] | undefined> = ref()
 const deliveryPaperTypes: globalThis.Ref<DeliveryPaperRes[] | undefined> = ref()
@@ -69,11 +83,18 @@ const paperAreas: globalThis.Ref<AreaListRes[] | undefined> = ref()
 const warehouses: globalThis.Ref<WarehouseAreaListRes[] | undefined> = ref()
 const productsubcategorys: globalThis.Ref<ProductsubcategoryAreaListRes[] | undefined> = ref()
 const productCompanys: globalThis.Ref<ProductcompanyAreaListRes[] | undefined> = ref()
+const productSearchMatch: globalThis.Ref<SearchMatchRes[] | undefined> = ref()
 
 const storeAuth = useStoreUserAuth()
 const { AuthenInfo } = storeToRefs(storeAuth)
 
-const isLoading = ref(true)
+const storeSearchMatchCompulsory = useStoreSearchMatchCompulsory()
+const { MatchCompulsoryInfo } = storeToRefs(storeSearchMatchCompulsory) 
+
+const storeSearchMatchInsurance = useStoreSearchMatchInsurance()
+const { MatchInsuranceInfo } = storeToRefs(storeSearchMatchInsurance)
+
+const isLoading = ref(false)
 const submitted = ref(false)
 
 const statusMessage = ref()
@@ -81,10 +102,15 @@ const statusMessageType = ref()
 
 const router = useRouter()
 
+var type = ref("")
+var area = ref("")
+var wareHouse = ref("")
+
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
 	await loadDeliveryChanel()
 	await loadDeliveryPaperType()
+  await loadPaperArea()
   } else {
     router.push("/login")
   }
@@ -114,8 +140,9 @@ const loadDeliveryPaperType = async () => {
 
 const onChangeShippingPaperType = async (deliveryType: string) => {
   isLoading.value = true;
+  type.value = deliveryType
   let req: PaymentFeeLimitReq = {
-	DeliveryType: deliveryType
+	  DeliveryType: deliveryType
   }
   var res = await useRepository().paper.getPaymentDeliveryFeeLimitReq(req);
   if (res.apiResponse.Status && res.apiResponse.Status == "200") {
@@ -132,14 +159,18 @@ const loadPaperArea = async () => {
   if (res.apiResponse.Status && res.apiResponse.Status == "200") {
     if (res.apiResponse.Data) {
       paperAreas.value = res.apiResponse.Data
-      console.log("paperAreas.value", paperAreas.value)
     }
   }
   isLoading.value = false;
 }
 
-const onChangePaperArea = async (req: WarehouseAreaListReq) => {
+const onChangePaperArea = async (areaId: string) => {
   isLoading.value = true;
+  area.value = areaId
+  let req: WarehouseAreaListReq = {
+    AreaID: areaId,
+	  Type: type.value
+  }
   var res = await useRepository().paper.getWarehouseArea(req);
   if (res.apiResponse.Status && res.apiResponse.Status == "200") {
     if (res.apiResponse.Data) {
@@ -149,8 +180,13 @@ const onChangePaperArea = async (req: WarehouseAreaListReq) => {
   isLoading.value = false;
 }
 
-const onChangeWarehouseArea = async (req: ProductsubcategoryAreaListReq) => {
+const onChangeWareHouse = async (wareHouseId: string) => {
   isLoading.value = true;
+  wareHouse.value = wareHouseId
+  let req: ProductsubcategoryAreaListReq = {
+    AreaID: area.value,
+	  WarehouseID: wareHouseId
+  }
   var res = await useRepository().paper.getProductsubcategoryWarehouse(req);
   if (res.apiResponse.Status && res.apiResponse.Status == "200") {
     if (res.apiResponse.Data) {
@@ -160,14 +196,47 @@ const onChangeWarehouseArea = async (req: ProductsubcategoryAreaListReq) => {
   isLoading.value = false;
 }
 
-const onChangeProductSubcategory = async (req: ProductcompanyAreaListReq) => {
+const onChangeProductSubcategory = async (productSubCategory: string, productCategory: string) => {
   isLoading.value = true;
-  var res = await useRepository().paper.getProductcompanySubcategory(req);
-  if (res.apiResponse.Status && res.apiResponse.Status == "200") {
-    if (res.apiResponse.Data) {
-      productCompanys.value = res.apiResponse.Data
+
+  let reqProductcompany: ProductcompanyAreaListReq = {
+    AreaID: area.value,
+	  WarehouseID: wareHouse.value,
+    ProductCategory: productCategory,
+    ProductSubCategory: productSubCategory
+  }
+  var resCompanySub = await useRepository().paper.getProductcompanySubcategory(reqProductcompany);
+  if (resCompanySub.apiResponse.Status && resCompanySub.apiResponse.Status == "200") {
+    if (resCompanySub.apiResponse.Data) {
+      productCompanys.value = resCompanySub.apiResponse.Data
     }
   }
+
+  let reqSearchMatch: SearchMatchReq = {
+    AreaID: area.value,
+	  WarehouseID: wareHouse.value,
+    ProductCategory: productCategory,
+    ProductSubCategory: productSubCategory
+  }
+  if(productSubCategory == 'Compulsory') {
+    if(MatchCompulsoryInfo.value.Data) productSearchMatch.value = MatchCompulsoryInfo.value.Data
+    else {
+      productSearchMatch.value = (await storeSearchMatchCompulsory.getSearchMatch(reqSearchMatch)).Data
+    }
+  }
+  else{
+    if(MatchInsuranceInfo.value) productSearchMatch.value = MatchInsuranceInfo.value.Data
+    else {
+      productSearchMatch.value = (await storeSearchMatchInsurance.getSearchMatch(reqSearchMatch)).Data
+    }
+  }
+
+  isLoading.value = false;
+}
+
+const onChangeProductCompany = async (productCompany: string) => {
+  isLoading.value = true;
+
   isLoading.value = false;
 }
 

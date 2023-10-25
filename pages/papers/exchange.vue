@@ -178,6 +178,7 @@ const onChangePaperArea = async (areaId: string) => {
       warehouses.value = res.apiResponse.Data
     }
   }
+  await clearStore()
   isLoading.value = false;
 }
 
@@ -194,6 +195,7 @@ const onChangeWareHouse = async (wareHouseId: string) => {
       productsubcategorys.value = res.apiResponse.Data
     }
   }
+  await clearStore()
   isLoading.value = false;
 }
 
@@ -219,7 +221,7 @@ const onChangeProductSubcategory = async (productSubCategory: string, productCat
     ProductCategory: productCategory,
     ProductSubCategory: productSubCategory
   }
-  if(productSubCategory == 'Compulsory') { //productSearchMatch
+  if(productSubCategory == 'Compulsory') { //storeSearchMatchCompulsory storeSearchMatchInsurance
     if(MatchCompulsoryInfo.value.Data) {
       productSearchMatchAll.value = MatchCompulsoryInfo.value.Data
     }
@@ -250,6 +252,11 @@ const onChangeProductCompany = async (productCompany: string) => {
   console.log('productSearchMatch.value', productSearchMatch.value)
 
   isLoading.value = false;
+}
+
+const clearStore = async () => {
+  await storeSearchMatchCompulsory.clearSearchMatch()
+  await storeSearchMatchInsurance.clearSearchMatch()
 }
 
 // Submit form event

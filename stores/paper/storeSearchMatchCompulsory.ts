@@ -19,7 +19,7 @@ export const useStoreSearchMatchCompulsory = defineStore('useStoreSearchMatchCom
             return this.$state
         },
 
-        clearPackage() {
+        clearSearchMatch() {
             this.$reset()
             this.$dispose()
             sessionStorage.removeItem('useStoreSearchMatchCompulsory')

@@ -19,7 +19,7 @@ export const useStoreSearchMatchInsurance = defineStore('useStoreSearchMatchInsu
             return this.$state
         },
 
-        clearPackage() {
+        clearSearchMatch() {
             this.$reset()
             this.$dispose()
             sessionStorage.removeItem('useStoreSearchMatchInsurance')

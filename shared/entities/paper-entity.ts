@@ -43,15 +43,15 @@ export interface ProductsubcategoryAreaListRes {
   }
 
   export interface SearchMatchReq {
-    AreaID: string
-    WarehouseID: string
-    ProductCategory: string
-    ProductSubCategory: string
-    ProductCompany: string
-    ProductBrand: string
-    ProductModel: string
-    ProductName: string
-    ProductPrice: string
+    AreaID?: string
+    WarehouseID?: string
+    ProductCategory?: string
+    ProductSubCategory?: string
+    ProductCompany?: string
+    ProductBrand?: string
+    ProductModel?: string
+    ProductName?: string
+    ProductPrice?: string
   }
   export interface SearchMatchRes {
     WarehouseID: string

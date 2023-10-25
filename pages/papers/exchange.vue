@@ -83,6 +83,7 @@ const paperAreas: globalThis.Ref<AreaListRes[] | undefined> = ref()
 const warehouses: globalThis.Ref<WarehouseAreaListRes[] | undefined> = ref()
 const productsubcategorys: globalThis.Ref<ProductsubcategoryAreaListRes[] | undefined> = ref()
 const productCompanys: globalThis.Ref<ProductcompanyAreaListRes[] | undefined> = ref()
+const productSearchMatchAll: globalThis.Ref<SearchMatchRes[] | undefined> = ref()
 const productSearchMatch: globalThis.Ref<SearchMatchRes[] | undefined> = ref()
 
 const storeAuth = useStoreUserAuth()
@@ -218,24 +219,35 @@ const onChangeProductSubcategory = async (productSubCategory: string, productCat
     ProductCategory: productCategory,
     ProductSubCategory: productSubCategory
   }
-  if(productSubCategory == 'Compulsory') {
-    if(MatchCompulsoryInfo.value.Data) productSearchMatch.value = MatchCompulsoryInfo.value.Data
+  if(productSubCategory == 'Compulsory') { //productSearchMatch
+    if(MatchCompulsoryInfo.value.Data) {
+      productSearchMatchAll.value = MatchCompulsoryInfo.value.Data
+    }
     else {
-      productSearchMatch.value = (await storeSearchMatchCompulsory.getSearchMatch(reqSearchMatch)).Data
+      productSearchMatchAll.value = (await storeSearchMatchCompulsory.getSearchMatch(reqSearchMatch)).Data
     }
   }
   else{
-    if(MatchInsuranceInfo.value) productSearchMatch.value = MatchInsuranceInfo.value.Data
+    if(MatchInsuranceInfo.value) {
+      productSearchMatchAll.value = MatchInsuranceInfo.value.Data
+    }
     else {
-      productSearchMatch.value = (await storeSearchMatchInsurance.getSearchMatch(reqSearchMatch)).Data
+      productSearchMatchAll.value = (await storeSearchMatchInsurance.getSearchMatch(reqSearchMatch)).Data
     }
   }
+
+  productSearchMatch.value = productSearchMatchAll.value
 
   isLoading.value = false;
 }
 
 const onChangeProductCompany = async (productCompany: string) => {
   isLoading.value = true;
+
+  productSearchMatch.value = productSearchMatchAll.value?.filter((obj) => {
+    return obj.ProductCompany === productCompany;
+  });
+  console.log('productSearchMatch.value', productSearchMatch.value)
 
   isLoading.value = false;
 }

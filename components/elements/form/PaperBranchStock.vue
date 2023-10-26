@@ -207,11 +207,18 @@ watch(
             };
             return options;
         });
-        productSubOption.value.unshift({
+
+        const defaultValue: SelectOption[] = [
+          {
             label: "เลือกบริษัทประกันภัย",
             value: "",
-            attrs: { disabled: true },
-        });
+          },
+          {
+            label: 'ทั้งหมด',
+            value: "-",
+          }
+      	]
+        productCompanyOption.value = [...defaultValue, ...productCompanyOption.value];
     }
   }
 )

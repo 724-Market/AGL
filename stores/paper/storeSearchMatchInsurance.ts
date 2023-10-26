@@ -4,7 +4,8 @@ import { WrapperResponse } from "~/shared/entities/wrapper-response"
 export const useStoreSearchMatchInsurance = defineStore('useStoreSearchMatchInsurance', {
     state: (): WrapperResponse<SearchMatchRes[]> => {
         return {
-            Status: ""
+            Status: "",
+            Data: []
         }
     },
     getters: {
@@ -12,17 +13,23 @@ export const useStoreSearchMatchInsurance = defineStore('useStoreSearchMatchInsu
     },
     actions: {
         async getSearchMatch(request: SearchMatchReq): Promise<WrapperResponse<SearchMatchRes[]>> {
-            if (!this.$state.Data) {
-                const response = await useRepository().paper.getProductSearchMatchReq(request);
-                this.$state = response.apiResponse
-            }
+            // if (!this.$state.Data) {
+            //     const response = await useRepository().paper.getProductSearchMatchReq(request);
+            //     this.$state = response.apiResponse
+            // }
+            const response = await useRepository().paper.getProductSearchMatchReq(request);
+            this.$state = response.apiResponse
             return this.$state
         },
 
         clearSearchMatch() {
-            this.$reset()
+            // this.$reset()
             // this.$dispose()
             // sessionStorage.removeItem('useStoreSearchMatchInsurance')
+            this.$state = {
+                Status: "",
+                Data: []
+            };
         }
     },
     persist: {

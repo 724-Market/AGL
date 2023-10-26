@@ -13,17 +13,23 @@ export const useStoreSearchMatchCompulsory = defineStore('useStoreSearchMatchCom
     },
     actions: {
         async getSearchMatch(request: SearchMatchReq): Promise<WrapperResponse<SearchMatchRes[]>> {
-            if (!this.$state.Data) {
-                const response = await useRepository().paper.getProductSearchMatchReq(request);
-                this.$state = response.apiResponse
-            }
+            // if (!this.$state.Data) {
+            //     const response = await useRepository().paper.getProductSearchMatchReq(request);
+            //     this.$state = response.apiResponse
+            // }
+            const response = await useRepository().paper.getProductSearchMatchReq(request);
+            this.$state = response.apiResponse
             return this.$state
         },
 
         clearSearchMatch() {
-            this.$reset()
+            // this.$reset()
             // this.$dispose()
             // sessionStorage.removeItem('useStoreSearchMatchCompulsory')
+            this.$state = {
+                Status: "",
+                Data: []
+            };
         }
     },
     persist: {

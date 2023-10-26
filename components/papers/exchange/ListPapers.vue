@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card" v-for="item in exchangeData" :key="item.MatchItem.ProductID">
+    <div class="card" v-for="item in exchangeDataList" :key="item.MatchItem.ProductID">
       <div class="card-body">
         <div class="package-item-new is-paper">
           <div class="detail">
@@ -37,7 +37,7 @@
                   v-model="item.Item.Amount"
                   type="number"
                   label="จำนวน"
-                  :validation="`required|max:30|between:1,${item.MatchItem.ProductOnHandAmount}`"
+                  :validation="`required|max:${item.MatchItem.ProductOnHandAmount}|between:1,${item.MatchItem.ProductOnHandAmount}`"
                   value="1"
                   min="1"
                   :max="item.MatchItem.ProductOnHandAmount"
@@ -121,7 +121,7 @@ const props = defineProps({
 
 })
 
-const exchangeData:globalThis.Ref<ExchangeDataSummary[]> =ref([])
+const exchangeDataList:globalThis.Ref<ExchangeDataSummary[]> =ref([])
 const onLoad = onMounted(()=>{
 
   loadExchangeDataList()
@@ -146,7 +146,7 @@ const loadExchangeDataList = ()=>{
 
       }
       array.push(item)
-      exchangeData.value = array
+      exchangeDataList.value = array
     })
   }
 }

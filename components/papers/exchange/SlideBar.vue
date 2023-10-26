@@ -10,7 +10,7 @@
         </div>
 
         <div class="card-body card-table">
-          <PapersExchangeSummary :exchange-data="exchangeData" :match-all-list="matchAllList"></PapersExchangeSummary>
+          <PapersExchangeSummary  :exchange-data="exchangeData" :match-all-list="matchAllList"></PapersExchangeSummary>
         </div>
         <!-- Component Checklist -->
         <OrderChecklist  :list="props.checkList" @change-check-save="handlerCheckSave" />

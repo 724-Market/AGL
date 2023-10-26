@@ -76,6 +76,7 @@ import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStoreSearchMatchCompulsory } from "~~/stores/paper/storeSearchMatchCompulsory";
 import { useStoreSearchMatchInsurance } from "~~/stores/paper/storeSearchMatchInsurance";
 import { IChecklist } from "~/shared/entities/checklist-entity";
+import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo";
 
 const deliveryChanels: globalThis.Ref<IDeliveryResponse[] | undefined> = ref()
 const deliveryPaperTypes: globalThis.Ref<DeliveryPaperRes[] | undefined> = ref()
@@ -97,6 +98,7 @@ const { MatchCompulsoryInfo } = storeToRefs(storeSearchMatchCompulsory)
 const storeSearchMatchInsurance = useStoreSearchMatchInsurance()
 const { MatchInsuranceInfo } = storeToRefs(storeSearchMatchInsurance)
 
+const storeExchange = useStoreExchangeDataInfo()
 const isLoading = ref(false)
 const submitted = ref(false)
 
@@ -127,6 +129,9 @@ const onLoad = onMounted(async () => {
 	await loadDeliveryChanel()
 	await loadDeliveryPaperType()
   await loadPaperArea()
+  onLoadExchangetoStore()
+
+
   } else {
     router.push("/login")
   }
@@ -271,6 +276,18 @@ const onChangeProductCompany = async (productCompany: string) => {
 
 const onSelectMatch = async(item:ExchangeDataSummary)=>{
   await usePagePaper().onSelectExchangePaper(item)
+  exchangeData.value = [];
+  exchangeData.value = storeExchange.$state
+  console.log(storeExchange.ExchangeDataSummaryInfo)
+  
+}
+const onLoadExchangetoStore=()=>{
+  exchangeData.value = [];
+  exchangeData.value = storeExchange.$state
+  if(exchangeData.value && exchangeData.value.length>0)
+  {
+    checklist.value[1].className="current";
+  }
 }
 
 const clearStore = async () => {

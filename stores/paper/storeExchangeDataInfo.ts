@@ -1,15 +1,16 @@
 import { ExchangeDataSummary, ExchangeType} from "~/shared/entities/paper-entity"
 
-export const useStoreExchangeDataSummary = defineStore('useStoreExchangeDataSummary', {
+export const useStoreExchangeDataInfo = defineStore('useStoreExchangeDataInfo', {
     state: (): ExchangeDataSummary[] => {
         return []
     },
     getters: {
-        ExchangeDataSummary: state => state,
+        ExchangeDataSummaryInfo: state => state,
     },
     actions: {
         async setExchangeData(request: ExchangeDataSummary,type:ExchangeType): Promise<ExchangeDataSummary[]> {
             if (this.$state.length==0) {
+                request.Item.Amount = parseInt(request.Item.Amount.toString())
                 this.$state.push(request)
             }
             else{
@@ -24,11 +25,13 @@ export const useStoreExchangeDataSummary = defineStore('useStoreExchangeDataSumm
                     }
                     else if (type == ExchangeType.Change)
                     {
+                        request.Item.Amount = parseInt(request.Item.Amount.toString())
                         this.$state[index] = request
                     }
                     
                 }
                 else{
+                    request.Item.Amount = parseInt(request.Item.Amount.toString())
                     this.$state.push(request)
                 }
             }

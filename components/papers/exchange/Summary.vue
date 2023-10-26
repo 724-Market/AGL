@@ -1,37 +1,43 @@
 <template>
   <div class="summary-table">
-    <table class="table no-striped" >
+    <table class="table no-striped">
       <thead>
         <tr>
           <th scope="col">รายการกระดาษ</th>
           <th scope="col" class="text-end">ราคามัดจำ (บาท)</th>
         </tr>
       </thead>
-      <tbody v-if="list && list.length>0">
+      <tbody v-if="list && list.length > 0">
         <tr class="spacer">
           <td colspan="2"></td>
         </tr>
-        <tr class="product" v-for="(item,i) in $props.exchangeData" :key="item.MatchItem.ProductID">
+        <tr
+          class="product"
+          v-for="(item, i) in list"
+          :key="item.MatchItem.ProductID"
+        >
           <th scope="row">
-           {{ i+1 }}. {{ item.MatchItem.ProductName }}<span>พ.ร.บ. • {{ item.MatchItem.CompanyName }}</span
+            {{ i + 1 }}. {{ item.MatchItem.ProductName
+            }}<span>พ.ร.บ. • {{ item.MatchItem.CompanyName }}</span
             ><a class="btn-delete" href="#" title="ลบรายการนี้"
               ><i class="fa-regular fa-trash-can"></i>ลบรายการนี้</a
             >
           </th>
           <td class="text-end price">
-            {{ useUtility().getCurrency(item.MatchItem.ProductPrice,0) }}
+            {{ useUtility().getCurrency(item.MatchItem.ProductPrice, 0) }}
 
             <FormKit
               type="stepNumber"
               label="ราคามัดจำ"
               :validation="`required|between:1,${item.MatchItem.ProductOnHandAmount}`"
               validation-label="Number"
-              :value="item.Item.Amount"
+              v-model="item.Item.Amount"
               min="1"
               :max="item.MatchItem.ProductOnHandAmount"
               step="1"
               :validation-messages="{ between: 'จำนวนไม่ถูกต้อง' }"
               readonly
+              @input-raw="onChangeAmount(item)"
             />
           </td>
         </tr>
@@ -57,9 +63,8 @@
       </tbody>
       <tbody v-else>
         <tr>
-          <td colspan="2"> <h4 class="text-center">คุณยังไม่ได้เลือกกระดาษ</h4></td>
+          <td colspan="2"><h4 class="text-center">คุณยังไม่ได้เลือกกระดาษ</h4></td>
         </tr>
-       
       </tbody>
       <tfoot>
         <tr>
@@ -85,8 +90,19 @@ const props = defineProps({
   matchAllList:Array<SearchMatchRes>,
   exchangeData:Array<ExchangeDataSummary>,
 })
+const onChangeAmount =async (item:ExchangeDataSummary) =>{
+console.log(item)
+await usePagePaper().onChangeExchangePaper(item);
 
+}
 watch(()=>props.exchangeData,()=>{
+  console.log(props.exchangeData)
+  if(props.exchangeData)
+  {
+    list.value = []
+  list.value = props.exchangeData
+  }
+
 //   let array:ExchangeDataSummary[] = [];
 //   if(props.exchangeData && props.exchangeData.length>0)
 //   props.exchangeData.forEach((value,index)=>{
@@ -103,5 +119,6 @@ watch(()=>props.exchangeData,()=>{
 // })
 
 
-})
+},
+  { deep: true })
 </script>

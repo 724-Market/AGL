@@ -21,9 +21,13 @@ export const useStoreSearchMatchCompulsory = defineStore('useStoreSearchMatchCom
         },
 
         clearSearchMatch() {
-            this.$reset()
+            // this.$reset()
             // this.$dispose()
             // sessionStorage.removeItem('useStoreSearchMatchCompulsory')
+            this.$state = {
+                Status: "",
+                Data: []
+            };
         }
     },
     persist: {

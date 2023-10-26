@@ -242,10 +242,13 @@ const onChangeProductSubcategory = async (productSubCategory: string, productCat
     ProductSubCategory: productSubCategory
   }
   if(productSubCategory == 'Compulsory') { 
+    console.log('MatchCompulsoryInfo.value', MatchCompulsoryInfo.value)
     if(MatchCompulsoryInfo.value && MatchCompulsoryInfo.value.Data && MatchCompulsoryInfo.value.Data.length > 0) {
+      console.log('MatchCompulsoryInfo.value.Data', MatchCompulsoryInfo.value.Data)
       productSearchMatchAll.value = MatchCompulsoryInfo.value.Data
     }
     else {
+      console.log('elseeeeee')
       productSearchMatchAll.value = (await storeSearchMatchCompulsory.getSearchMatch(reqSearchMatch)).Data
     }
   }
@@ -291,15 +294,10 @@ const onLoadExchangetoStore=()=>{
 }
 
 const clearStore = async () => {
-  //await storeSearchMatchCompulsory.clearSearchMatch()
-  // await storeSearchMatchInsurance.clearSearchMatch()
-
-  // if(MatchCompulsoryInfo.value && MatchCompulsoryInfo.value.Data &&  MatchCompulsoryInfo.value.Data.length > 0) {
-  //   await storeSearchMatchCompulsory.clearSearchMatch()
-  // }
-  // if(MatchInsuranceInfo.value && MatchInsuranceInfo.value.Data &&  MatchInsuranceInfo.value.Data.length > 0) {
-  //   await storeSearchMatchInsurance.clearSearchMatch()
-  // }
+  await storeSearchMatchCompulsory.clearSearchMatch()
+  //await storeSearchMatchInsurance.clearSearchMatch()
+  productSearchMatchAll.value = []
+  productSearchMatch.value = []
 }
 
 // Submit form event

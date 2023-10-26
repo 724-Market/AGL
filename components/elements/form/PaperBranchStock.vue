@@ -212,6 +212,7 @@ watch(
           {
             label: "เลือกบริษัทประกันภัย",
             value: "",
+            attrs: { disabled: true }
           },
           {
             label: 'ทั้งหมด',

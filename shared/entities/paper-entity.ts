@@ -161,3 +161,12 @@ export interface ProductsubcategoryAreaListRes {
     Road: string,
     ZipCode?: string
   }
+  export interface ExchangeDataSummary {
+    MatchItem:SearchMatchRes
+    Item:ExchangeDataReq
+  }
+
+  export enum ExchangeType {
+    Change,
+    None
+  }

@@ -37,11 +37,11 @@
 						</div>
 					</div>
 
-					<PapersExchangeListPapers></PapersExchangeListPapers>
+					<PapersExchangeListPapers v-if="productSearchMatch" :-match-list="productSearchMatch" @on-select-match="onSelectMatch"></PapersExchangeListPapers>
 
 				</div>
 
-				<PapersExchangeSlideBar></PapersExchangeSlideBar>
+				<PapersExchangeSlideBar :check-list="checklist" :match-all-list="productSearchMatchAll" :exchange-data="exchangeData"></PapersExchangeSlideBar>
 			</div>
 
 		</FormKit>
@@ -59,6 +59,7 @@ import {
 } from "~/shared/entities/delivery-entity";
 import { 
   AreaListRes,
+  ExchangeDataSummary,
   PaymentFeeLimitReq,
   PaymentFeeLimitRes,
   ProductcompanyAreaListReq,
@@ -74,6 +75,7 @@ import { storeToRefs } from "pinia";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStoreSearchMatchCompulsory } from "~~/stores/paper/storeSearchMatchCompulsory";
 import { useStoreSearchMatchInsurance } from "~~/stores/paper/storeSearchMatchInsurance";
+import { IChecklist } from "~/shared/entities/checklist-entity";
 
 const deliveryChanels: globalThis.Ref<IDeliveryResponse[] | undefined> = ref()
 const deliveryPaperTypes: globalThis.Ref<DeliveryPaperRes[] | undefined> = ref()
@@ -107,6 +109,19 @@ var type = ref("")
 var area = ref("")
 var wareHouse = ref("")
 
+const checklist: globalThis.Ref<IChecklist[]> = ref([
+  {
+    id: "1",
+    className: "",
+    desc: "วิธีการรับกระดาษ",
+  },
+  {
+    id: "2",
+    className: "",
+    desc: "เลือกกระดาษ",
+  },
+]);
+const exchangeData:globalThis.Ref<ExchangeDataSummary[]> =ref([])
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
 	await loadDeliveryChanel()
@@ -252,6 +267,10 @@ const onChangeProductCompany = async (productCompany: string) => {
   console.log('productSearchMatch.value', productSearchMatch.value)
 
   isLoading.value = false;
+}
+
+const onSelectMatch = async(item:ExchangeDataSummary)=>{
+  await usePagePaper().onSelectExchangePaper(item)
 }
 
 const clearStore = async () => {

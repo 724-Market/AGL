@@ -10,10 +10,11 @@
         </div>
 
         <div class="card-body card-table">
-          <PapersExchangeSummary></PapersExchangeSummary>
+          <PapersExchangeSummary :exchange-data="exchangeData" :match-all-list="matchAllList"></PapersExchangeSummary>
         </div>
         <!-- Component Checklist -->
-        <div class="card-footer">
+        <OrderChecklist  :list="props.checkList" @change-check-save="handlerCheckSave" />
+        <!-- <div class="card-footer">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb vertical fa-divider fa-icon">
               <li class="current">
@@ -24,7 +25,7 @@
               </li>
             </ol>
           </nav>
-        </div>
+        </div> -->
       </aside>
 
       <div class="formkit-outer form-actions" data-type="submit">
@@ -43,3 +44,18 @@
     </section>
   </div>
 </template>
+<script lang="ts" setup>
+import { IChecklist } from "~/shared/entities/checklist-entity"
+import {  ExchangeDataSummary, SearchMatchRes } from "~/shared/entities/paper-entity"
+
+const emits = defineEmits(['onSelectMatch'])
+const props = defineProps({
+	checkList: Array<IChecklist>,
+  matchAllList:Array<SearchMatchRes>,
+  exchangeData:Array<ExchangeDataSummary>,
+})
+
+const handlerCheckSave = (check: boolean) => {
+  //checkSave.value = check;
+};
+</script>

@@ -222,6 +222,7 @@ const onChangeProductSubcategory = async (productSubCategory: string, productCat
     ProductSubCategory: productSubCategory
   }
   if(productSubCategory == 'Compulsory') { 
+    console.log('MatchCompulsoryInfo.value', MatchCompulsoryInfo.value.Data)
     if(MatchCompulsoryInfo.value && MatchCompulsoryInfo.value.Data && MatchCompulsoryInfo.value.Data.length > 0) {
       productSearchMatchAll.value = MatchCompulsoryInfo.value.Data
     }
@@ -256,10 +257,12 @@ const onChangeProductCompany = async (productCompany: string) => {
 
 const clearStore = async () => {
   //await storeSearchMatchCompulsory.clearSearchMatch()
-  // await storeSearchMatchInsurance.clearSearchMatch()
+  //await storeSearchMatchInsurance.clearSearchMatch()
 
+  // console.log('MatchCompulsoryInfo.value', MatchCompulsoryInfo.value)
   // if(MatchCompulsoryInfo.value && MatchCompulsoryInfo.value.Data &&  MatchCompulsoryInfo.value.Data.length > 0) {
-  //   await storeSearchMatchCompulsory.clearSearchMatch()
+  //   console.log('MatchCompulsoryInfo.value.Data', MatchCompulsoryInfo.value.Data)
+  //   // await storeSearchMatchCompulsory.clearSearchMatch()
   // }
   // if(MatchInsuranceInfo.value && MatchInsuranceInfo.value.Data &&  MatchInsuranceInfo.value.Data.length > 0) {
   //   await storeSearchMatchInsurance.clearSearchMatch()

@@ -13,7 +13,7 @@ export const useStoreSearchMatchInsurance = defineStore('useStoreSearchMatchInsu
     actions: {
         async getSearchMatch(request: SearchMatchReq): Promise<WrapperResponse<SearchMatchRes[]>> {
             if (!this.$state.Data) {
-                var response = await useRepository().paper.getProductSearchMatchReq(request);
+                const response = await useRepository().paper.getProductSearchMatchReq(request);
                 this.$state = response.apiResponse
             }
             return this.$state

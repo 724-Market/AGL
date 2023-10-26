@@ -178,7 +178,7 @@ const onChangePaperArea = async (areaId: string) => {
       warehouses.value = res.apiResponse.Data
     }
   }
-  // await clearStore()
+  await clearStore()
   isLoading.value = false;
 }
 
@@ -195,7 +195,7 @@ const onChangeWareHouse = async (wareHouseId: string) => {
       productsubcategorys.value = res.apiResponse.Data
     }
   }
-  // await clearStore()
+  await clearStore()
   isLoading.value = false;
 }
 
@@ -222,16 +222,15 @@ const onChangeProductSubcategory = async (productSubCategory: string, productCat
     ProductSubCategory: productSubCategory
   }
   if(productSubCategory == 'Compulsory') { 
-    if(MatchCompulsoryInfo.value && MatchCompulsoryInfo.value.Data) {
+    if(MatchCompulsoryInfo.value && MatchCompulsoryInfo.value.Data && MatchCompulsoryInfo.value.Data.length > 0) {
       productSearchMatchAll.value = MatchCompulsoryInfo.value.Data
     }
     else {
       productSearchMatchAll.value = (await storeSearchMatchCompulsory.getSearchMatch(reqSearchMatch)).Data
-      // console.log('productSearchMatchAll', productSearchMatchAll.value)
     }
   }
-  else{
-    if(MatchInsuranceInfo.value && MatchInsuranceInfo.value.Data) {
+  else if(productSubCategory == 'Insurance'){
+    if(MatchInsuranceInfo.value &&  MatchInsuranceInfo.value.Data && MatchInsuranceInfo.value.Data.length > 0) {
       productSearchMatchAll.value = MatchInsuranceInfo.value.Data
     }
     else {
@@ -256,8 +255,15 @@ const onChangeProductCompany = async (productCompany: string) => {
 }
 
 const clearStore = async () => {
-  await storeSearchMatchCompulsory.clearSearchMatch()
-  await storeSearchMatchInsurance.clearSearchMatch()
+  //await storeSearchMatchCompulsory.clearSearchMatch()
+  // await storeSearchMatchInsurance.clearSearchMatch()
+
+  // if(MatchCompulsoryInfo.value && MatchCompulsoryInfo.value.Data &&  MatchCompulsoryInfo.value.Data.length > 0) {
+  //   await storeSearchMatchCompulsory.clearSearchMatch()
+  // }
+  // if(MatchInsuranceInfo.value && MatchInsuranceInfo.value.Data &&  MatchInsuranceInfo.value.Data.length > 0) {
+  //   await storeSearchMatchInsurance.clearSearchMatch()
+  // }
 }
 
 // Submit form event

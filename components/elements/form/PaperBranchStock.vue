@@ -11,12 +11,12 @@ import { AreaListResponse } from "~/shared/entities/paper-entity";
 
                 <div class="col-sm-12 col-md-6">
                     <FormKit type="select" label="ภาค" name="Zone" placeholder="เลือกภาค" 
-                    :options="areaOption" @change="onAreaChange"
+                    :options="areaOption" @change="onAreaChange" v-model="ZoneText"
                     validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
                 </div>
                 <div class="col-sm-12 col-md-6">
                     <FormKit type="select" label="สาขา" namr="Branch" placeholder="เลือกสาขา" 
-                    :options="wareHouseOption" @change="onWareHouseChange"
+                    :options="wareHouseOption" @change="onWareHouseChange" v-model="BranchText"
                     validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
                 </div>
 
@@ -28,12 +28,12 @@ import { AreaListResponse } from "~/shared/entities/paper-entity";
                 <div class="row">
                     <div class="col-md-5">
                         <FormKit type="select" label="ชนิดกระดาษ" name="PaperType" placeholder="เลือกชนิดกระดาษ" 
-                            :options="productSubOption" v-model="productSubText"
+                            :options="productSubOption" v-model="PaperTypeText"
                             validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
                     </div>
                     <div class="col-md-7">
                         <FormKit type="select" label="บริษัทประกันภัย" name="Company" placeholder="เลือกบริษัทประกันภัย"
-                            :options="productCompanyOption" @change="onProductCompanyChange"
+                            :options="productCompanyOption" @change="onProductCompanyChange" v-model="CompanyText"
                             validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
                     </div>
                 </div>
@@ -67,7 +67,10 @@ const wareHouseOption: globalThis.Ref<SelectOption[]> = ref([]);
 const productSubOption: globalThis.Ref<SelectOption[]> = ref([]);
 const productCompanyOption: globalThis.Ref<SelectOption[]> = ref([]);
 
-var productSubText = ref("")
+var ZoneText = ref("")
+var BranchText = ref("")
+var PaperTypeText = ref("")
+var CompanyText = ref("")
 
 const onLoad = onMounted(async () => {
 	if (props.area) {
@@ -110,14 +113,20 @@ const onLoad = onMounted(async () => {
 });
 
 const onAreaChange = async (event: any) => {
+    BranchText.value = ''
+    PaperTypeText.value = ''
+    CompanyText.value = ''
     emit('areaChange', event.target.value)
 };
 
 const onWareHouseChange = async (event: any) => {
+    PaperTypeText.value = ''
+    CompanyText.value = ''
     emit('wareHouseChange', event.target.value)
 };
 
-watch(productSubText, async (newProductSub) => {
+watch(PaperTypeText, async (newProductSub) => {
+    CompanyText.value = ''
     let productSub = productSubOption.value.find((w) => w.value == newProductSub);
     emit('productSubChange', productSub?.value, productSub?.option)
 });
@@ -136,7 +145,12 @@ watch(
                 value: x.ID,
             };
             return options;
-      });
+        });
+        areaOption.value.unshift({
+            label: "เลือกภาค",
+            value: "",
+            attrs: { disabled: true },
+        });
     }
   }
 )
@@ -151,6 +165,11 @@ watch(
                 value: x.ID,
             };
             return options;
+        });
+        wareHouseOption.value.unshift({
+            label: "เลือกสาขา",
+            value: "",
+            attrs: { disabled: true },
         });
     }
   }
@@ -168,6 +187,11 @@ watch(
             };
             return options;
         });
+        productSubOption.value.unshift({
+            label: "เลือกชนิดกระดาษ",
+            value: "",
+            attrs: { disabled: true },
+        });
     }
   }
 )
@@ -182,6 +206,11 @@ watch(
                 value: x.ProductCompany,
             };
             return options;
+        });
+        productSubOption.value.unshift({
+            label: "เลือกบริษัทประกันภัย",
+            value: "",
+            attrs: { disabled: true },
         });
     }
   }

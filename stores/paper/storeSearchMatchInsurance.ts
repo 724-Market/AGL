@@ -21,8 +21,8 @@ export const useStoreSearchMatchInsurance = defineStore('useStoreSearchMatchInsu
 
         clearSearchMatch() {
             this.$reset()
-            this.$dispose()
-            sessionStorage.removeItem('useStoreSearchMatchInsurance')
+            // this.$dispose()
+            // sessionStorage.removeItem('useStoreSearchMatchInsurance')
         }
     },
     persist: {

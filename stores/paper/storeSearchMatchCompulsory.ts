@@ -4,7 +4,8 @@ import { WrapperResponse } from "~/shared/entities/wrapper-response"
 export const useStoreSearchMatchCompulsory = defineStore('useStoreSearchMatchCompulsory', {
     state: (): WrapperResponse<SearchMatchRes[]> => {
         return {
-            Status: ""
+            Status: "",
+            Data: []
         }
     },
     getters: {
@@ -21,8 +22,8 @@ export const useStoreSearchMatchCompulsory = defineStore('useStoreSearchMatchCom
 
         clearSearchMatch() {
             this.$reset()
-            this.$dispose()
-            sessionStorage.removeItem('useStoreSearchMatchCompulsory')
+            // this.$dispose()
+            // sessionStorage.removeItem('useStoreSearchMatchCompulsory')
         }
     },
     persist: {

@@ -19,23 +19,18 @@
 						</div>
 					</div>
 
-					<div class="card">
-						<div class="card-header">
-							<h3 class="card-title">เลือกกระดาษ</h3>
-						</div>
-						<div class="card-body">
-							<ElementsFormPaperBranchStock
-                @area-change="onChangePaperArea"
-                @ware-house-change="onChangeWareHouse"
-                @product-sub-change="onChangeProductSubcategory"
-                @product-company-change="onChangeProductCompany"
-                :area="paperAreas"
-                :ware-house="warehouses"
-                :product-sub-category="productsubcategorys"
-                :product-company="productCompanys" 
-              ></ElementsFormPaperBranchStock>
-						</div>
-					</div>
+					<ElementsFormPaperBranchStock
+            v-if="type != ''"
+            @area-change="onChangePaperArea"
+            @ware-house-change="onChangeWareHouse"
+            @product-sub-change="onChangeProductSubcategory"
+            @product-company-change="onChangeProductCompany"
+            :area="paperAreas"
+            :ware-house="warehouses"
+            :product-sub-category="productsubcategorys"
+            :product-company="productCompanys" 
+            :shipping-type="type"
+          ></ElementsFormPaperBranchStock>
 
 					<PapersExchangeListPapers v-if="productSearchMatch" :-match-list="productSearchMatch" @on-select-match="onSelectMatch"></PapersExchangeListPapers>
 
@@ -161,16 +156,24 @@ const loadDeliveryPaperType = async () => {
 
 const onChangeShippingPaperType = async (deliveryType: string) => {
   isLoading.value = true;
+
   type.value = deliveryType
-  let req: PaymentFeeLimitReq = {
-	  DeliveryType: deliveryType
-  }
-  var res = await useRepository().paper.getPaymentDeliveryFeeLimitReq(req);
-  if (res.apiResponse.Status && res.apiResponse.Status == "200") {
-    if (res.apiResponse.Data) {
-      paymentFeeLimit.value = res.apiResponse.Data
+  if(deliveryType == 'WALKIN') {
+    let req: PaymentFeeLimitReq = {
+      DeliveryType: ''
+    }
+    var res = await useRepository().paper.getPaymentDeliveryFeeLimitReq(req);
+    if (res.apiResponse.Status && res.apiResponse.Status == "200") {
+      if (res.apiResponse.Data) {
+        paymentFeeLimit.value = res.apiResponse.Data
+      }
     }
   }
+  else {
+    await onChangePaperArea('')
+  }
+  await clearStore()
+  
   isLoading.value = false;
 }
 
@@ -190,7 +193,7 @@ const onChangePaperArea = async (areaId: string) => {
   area.value = areaId
   let req: WarehouseAreaListReq = {
     AreaID: areaId,
-	  Type: type.value
+	  Type: type.value == 'DELIVERY' ? 'BASE' : ''
   }
   var res = await useRepository().paper.getWarehouseArea(req);
   if (res.apiResponse.Status && res.apiResponse.Status == "200") {
@@ -202,11 +205,12 @@ const onChangePaperArea = async (areaId: string) => {
   isLoading.value = false;
 }
 
-const onChangeWareHouse = async (wareHouseId: string) => {
+const onChangeWareHouse = async (wareHouseId: string, areaId: string) => {
   isLoading.value = true;
   wareHouse.value = wareHouseId
+  if(areaId) area.value = areaId
   let req: ProductsubcategoryAreaListReq = {
-    AreaID: area.value,
+    AreaID: areaId ? areaId : area.value,
 	  WarehouseID: wareHouseId
   }
   var res = await useRepository().paper.getProductsubcategoryWarehouse(req);

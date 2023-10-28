@@ -141,7 +141,6 @@ const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
     await loadDeliveryChanel();
     await loadDeliveryPaperType();
-    await loadPaperArea();
     onLoadExchangetoStore();
   } else {
     router.push("/login");
@@ -186,10 +185,15 @@ const onChangeShippingPaperType = async (deliveryType: string) => {
     }
     await onChangePaperArea("");
   } 
+  else {
+    await loadPaperArea();
+    checklist.value[0].className = "current";
+  }
   await clearStore();
 
   isLoading.value = false;
 };
+
 const onChangeDeliveryChannel = async (
   ShippingMethodText: string,
   ShippingFeeText: string

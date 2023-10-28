@@ -336,11 +336,12 @@ const clearStore = async () => {
   exchangeData.value = [];
 };
 
-// Submit form event
-const submitOrder = async () => {
-  // Add waiting time for debug
-  await new Promise((r) => setTimeout(r, 1000));
-};
+
+// // Submit form event
+// const submitOrder = async () => {
+//   // Add waiting time for debug
+//   await new Promise((r) => setTimeout(r, 1000));
+// };
 
 // Define layout
 const layout = "monito";

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card" v-for="(item,i) in $props.MatchList" :key="item.ProductID">
+    <div class="card" v-for="(item,i) in exchangeDataList" :key="item.ProductID">
       <div class="card-body">
         <div class="package-item-new is-paper">
           <div class="detail">
@@ -116,22 +116,54 @@
 </template>
 <script lang="ts" setup>
 import {  ExchangeDataSummary, SearchMatchRes } from "~/shared/entities/paper-entity";
+import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo";
 const emits = defineEmits(['onSelectMatch'])
 const props = defineProps({
 	MatchList: Array<SearchMatchRes>,
 
 })
 
-const exchangeDataList:globalThis.Ref<ExchangeDataSummary[]> =ref([])
+const storeExchange = useStoreExchangeDataInfo();
+const exchangeDataList:globalThis.Ref<SearchMatchRes[]> =ref([])
 const onLoad = onMounted(()=>{
 
   //loadExchangeDataList()
 })
+const onSelection = async(item:SearchMatchRes)=>{
+  item.Amount = item.Amount ?? 1
+  emits('onSelectMatch',item);
+}
 watch(()=>props.MatchList,()=>{
-
+  if(props.MatchList)
+  {
+    exchangeDataList.value = props.MatchList
+  }
 
   //loadExchangeDataList()
 })
+watch(
+  () => storeExchange.$state,
+  () => {
+    console.log("storeExchange.$state", storeExchange.$state);
+    const list = storeExchange.$state
+    const exchangeList = exchangeDataList.value
+    list.forEach((value,i)=>{
+      
+      const index = exchangeList.findIndex(x=>x.ProductID===value.Item.ProductID && x.WarehouseID===value.Item.WarehouseID)
+      if(index>-1)
+      {
+        if( exchangeList[index].ProductOnHandAmount - value.Item.Amount>0)
+        {
+          exchangeList[index].ProductOnHandAmount = exchangeList[index].ProductOnHandAmount - value.Item.Amount
+        }
+        
+      }
+    })
+    exchangeDataList.value = exchangeList
+
+  },
+  
+);
 // const loadExchangeDataList = ()=>{
 //   let array:ExchangeDataSummary[] = [];
 //   if(props.MatchList && props.MatchList.length>0)
@@ -151,8 +183,5 @@ watch(()=>props.MatchList,()=>{
 //     })
 //   }
 // }
-const onSelection = async(item:SearchMatchRes)=>{
-  item.Amount = item.Amount ?? 1
-  emits('onSelectMatch',item);
-}
+
 </script>

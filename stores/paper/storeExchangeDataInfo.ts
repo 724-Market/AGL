@@ -57,6 +57,10 @@ export const useStoreExchangeDataInfo = defineStore('useStoreExchangeDataInfo', 
             }
             return this.$state
         },
+        async updateExchangeData(items: ExchangeDataSummary[]): Promise<ExchangeDataSummary[]> {
+            this.$state = items
+            return this.$state
+        },
 
         clearExchangeData() {
             this.$reset()

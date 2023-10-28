@@ -86,7 +86,7 @@ export interface ProductsubcategoryAreaListRes {
   export interface OrderExchangeCreateReq {
     IsConsent: boolean
     DeliveryMethod: DeliveryMethodReq
-    ExchangeData: ExchangeDataReq
+    ExchangeData: ExchangeDataReq[]
     DeliveryAddress?: DeliveryAddressReq|null
   }
   export interface OrderExchangeCreateRes {

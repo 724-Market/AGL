@@ -42,6 +42,7 @@
             name="order-submit"
             id="order-submit"
             :disabled="!checkSave"
+            @click="onContinue"
           >
             ไปต่อ
           </button>
@@ -50,7 +51,7 @@
 </template>
 <script lang="ts" setup>
 import { IChecklist } from "~/shared/entities/checklist-entity"
-import {  ExchangeDataSummary, OrderExchangeCreateReq, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
+import {  DeliveryAddressReq, ExchangeDataSummary, OrderExchangeCreateReq, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
 
 const emits = defineEmits(['onSelectMatch'])
 const props = defineProps({
@@ -59,14 +60,23 @@ const props = defineProps({
   exchangeData:Array<ExchangeDataSummary>,
   paymentFeeLimit: Array<PaymentFeeLimitRes>,
   shippingMethod:String,
-  shippingFee:String
+  shippingFee:String,
+  deliveryType:String,
+  addrAgent:Object as ()=>DeliveryAddressReq
 
 })
 const checkSave = ref(false)
 
 const onContinue = async ()=>{
-  const request:OrderExchangeCreateReq = usePagePaper().mappingExchangeConfirmRequest() 
-  const response =await  usePagePaper().onContinue(request);
+  if(props.deliveryType && props.shippingMethod && props.addrAgent)
+  {
+    const request:OrderExchangeCreateReq = usePagePaper().mappingExchangeConfirmRequest(props.deliveryType,props.shippingMethod,props.addrAgent) 
+    const response =await  usePagePaper().onContinue(request);
+  }
+  else{
+
+  }
+  
 }
 const handlerCheckSave = (check: boolean) => {
   //checkSave.value = check;

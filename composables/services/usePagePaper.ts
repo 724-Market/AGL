@@ -1,5 +1,5 @@
 import { storeToRefs } from "pinia"
-import { CalculateGrandTotal, ExchangeDataSummary, OrderExchangeCreateReq, OrderExchangeCreateRes, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
+import { CalculateGrandTotal, DeliveryAddressReq, ExchangeDataSummary, OrderExchangeCreateReq, OrderExchangeCreateRes, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
 import { PaymentGetResponse } from "~/shared/entities/payment-entity"
 import { WrapperResponse } from "~/shared/entities/wrapper-response"
 import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo"
@@ -10,60 +10,26 @@ export default () => {
     const storeExchange = useStoreExchangeDataInfo()
 
     const onSelectExchangePaper = async (item: SearchMatchRes) => {
-        console.log('onSelectExchangePaper', item)
         await storeExchange.setExchangeData(item)
     }
     const onChangeExchangePaper = async (item: ExchangeDataSummary) => {
-        console.log('onChangeExchangePaper', item)
         await storeExchange.changeExchangeData(item)
     }
     const onClearExchangePaper = async () => {
 
         await storeExchange.clearExchangeData()
     }
-    const mappingExchangeConfirmRequest = ():OrderExchangeCreateReq=>{
+    const mappingExchangeConfirmRequest = (deliveryType:string,shippingMethod:string,addr?:DeliveryAddressReq):OrderExchangeCreateReq=>{
+        const exchangeData = storeExchange.$state
         const req:OrderExchangeCreateReq = {
             DeliveryMethod:{
-              DeliveryChannelType:"",
-              DeliveryType:"",
-              MethodType:"",
+              DeliveryChannelType:shippingMethod,
+              DeliveryType:deliveryType,
+              MethodType:"PRODUCT_PAPER",
             },
-            ExchangeData:{
-              Amount:0,
-              ProductID:"",
-              WarehouseID:""
-            },
+            ExchangeData:exchangeData.map((x)=>x.Item),
             IsConsent:true,
-            DeliveryAddress:{
-              AddressID:"",
-              AddressLine1:"",
-              AddressLine2:"",
-              AddressText:"",
-              Alley:"",
-              Branch:"",
-              Building:"",
-              DistrictID:"",
-              Email:"",
-              FirstName:"",
-              Floor:"",
-              LastName:"",
-              Moo:"",
-              Name:"",
-              No:"",
-              PhoneNumber:"",
-              Place:"",
-              ProvinceID:"",
-              ReferenceID:"",
-              ReferenceType:"",
-              Road:"",
-              Room:"",
-              SubDistrictID:"",
-              TaxID:"",
-              Type:"",
-              PrefixID:"", // optional
-              PrefixName:"",// optional
-              ZipCode:"",// optional
-            }
+            DeliveryAddress:addr ?? null
           }
 
           return req

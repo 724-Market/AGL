@@ -55,6 +55,7 @@
           :shipping-fee="ShippingFee"
           :shipping-method="ShippingMethod"
           :payment-fee-limit="paymentFeeLimit"
+          :delivery-type="type"
         ></PapersExchangeSlideBar>
       </div>
     </FormKit>

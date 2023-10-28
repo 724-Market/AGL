@@ -38,7 +38,7 @@
           </td>
         </tr>
 
-        <tr class="shipping" v-if="cal">
+        <tr class="shipping" v-if="cal && cal.ShippingFee>0">
           <th scope="row">
             ค่าจัดส่ง<span>{{ cal.ShippingMethod }}</span>
           </th>

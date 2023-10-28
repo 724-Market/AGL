@@ -22,11 +22,11 @@
         <OrderChecklist :list="props.checkList" @change-check-save="handlerCheckSave" />
       </aside>
 
-      <div class="formkit-outer form-actions" data-type="submit">
+      <!-- <div class="formkit-outer form-actions" data-type="submit">
         <div class="formkit-wrapper">
           <button
             loading="false"
-            class="formkit-input btn-primary"
+            class="formkit-input btn btn-primary btn-accept pledge-action"
             type="button"
             name="order-submit"
             id="order-submit"
@@ -34,7 +34,17 @@
             ไปต่อ
           </button>
         </div>
-      </div>
+      </div> -->
+      <button
+            loading="false"
+            class="formkit-input btn btn-primary btn-accept pledge-action"
+            type="button"
+            name="order-submit"
+            id="order-submit"
+            :disabled="!checkSave"
+          >
+            ไปต่อ
+          </button>
     </section>
   </div>
 </template>
@@ -52,8 +62,20 @@ const props = defineProps({
   shippingFee:String
 
 })
-
+const checkSave = ref(false)
 const handlerCheckSave = (check: boolean) => {
-  //checkSave.value = check;
+  checkSave.value = check;
 };
 </script>
+<style scoped>
+.btn-primary a.btn-primary {
+  background-color: #138543 !important;
+  border-color: #138543 !important;
+  color: #fff !important;
+}
+.btn:disabled {
+  background: var(--fk-color-border) !important;
+  color: var(--fk-color-button) !important;
+  cursor: not-allowed;
+}
+</style>

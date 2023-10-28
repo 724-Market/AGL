@@ -1,32 +1,32 @@
 <template>
   <div>
-    <div class="card" v-for="item in exchangeDataList" :key="item.MatchItem.ProductID">
+    <div class="card" v-for="(item,i) in $props.MatchList" :key="item.ProductID">
       <div class="card-body">
         <div class="package-item-new is-paper">
           <div class="detail">
             <figure class="brand">
               <img
-                src="https://724.co.th/image/logo_insurance_company/logo_TIP.png"
+                :src="`${ useUtility().getCompanyImage() }${item.ProductCompanyImage.replace('LOGO', 'logo')}`"
                 alt=""
               />
             </figure>
 
             <div class="topic">
-              <h4 class="title">{{ item.MatchItem.CompanyName }}</h4>
+              <h4 class="title">{{ item.CompanyName }}</h4>
               <h5 class="subtitle">
                 ราคามัดจำ
                 <span class="big">{{
-                  useUtility().getCurrency(item.MatchItem.ProductPrice, 0)
+                  useUtility().getCurrency(item.ProductPrice, 0)
                 }}</span>
               </h5>
             </div>
           </div>
 
           <div class="tags">
-            <span class="badge">{{ item.MatchItem.ProductCompany }}</span>
+            <span class="badge">{{ item.ProductCompany }}</span>
             <span class="badge-bg-secondary">พ.ร.บ.</span>
             <span class="badge-info">{{
-              useUtility().getCurrency(item.MatchItem.ProductPrice, 0)
+              useUtility().getCurrency(item.ProductPrice, 0)
             }}</span>
           </div>
 
@@ -34,13 +34,14 @@
             <div class="quantity">
               <div class="form-hide-label">
                 <FormKit
-                  v-model="item.Item.Amount"
+                  v-model="item.Amount"
+                  :name="`paperListAmount_${i}`"
                   type="number"
                   label="จำนวน"
-                  :validation="`required|max:${item.MatchItem.ProductOnHandAmount}|between:1,${item.MatchItem.ProductOnHandAmount}`"
+                  :validation="`required|max:${item.ProductOnHandAmount}|between:1,${item.ProductOnHandAmount}`"
                   value="1"
                   min="1"
-                  :max="item.MatchItem.ProductOnHandAmount"
+                  :max="item.ProductOnHandAmount"
                   :validation-messages="{
                     required: 'ระบุจำนวน',
                     between: 'จำนวนไม่ถูกต้อง',
@@ -50,7 +51,7 @@
                 />
               </div>
               <span class="remain"
-                >มีอยู่ {{ item.MatchItem.ProductOnHandAmount }} แผ่น</span
+                >มีอยู่ {{ item.ProductOnHandAmount }} แผ่น</span
               >
             </div>
 
@@ -124,33 +125,34 @@ const props = defineProps({
 const exchangeDataList:globalThis.Ref<ExchangeDataSummary[]> =ref([])
 const onLoad = onMounted(()=>{
 
-  loadExchangeDataList()
+  //loadExchangeDataList()
 })
 watch(()=>props.MatchList,()=>{
 
 
-  loadExchangeDataList()
+  //loadExchangeDataList()
 })
-const loadExchangeDataList = ()=>{
-  let array:ExchangeDataSummary[] = [];
-  if(props.MatchList && props.MatchList.length>0)
-  {
-    props.MatchList.forEach((value,index)=>{
-      const item:ExchangeDataSummary = {
-        MatchItem:value,
-        Item:{
-          Amount:1,
-        ProductID:value.ProductID,
-        WarehouseID:value.WarehouseID
-        }
+// const loadExchangeDataList = ()=>{
+//   let array:ExchangeDataSummary[] = [];
+//   if(props.MatchList && props.MatchList.length>0)
+//   {
+//     props.MatchList.forEach((value,index)=>{
+//       const item:ExchangeDataSummary = {
+//         MatchItem:value,
+//         Item:{
+//           Amount:1,
+//         ProductID:value.ProductID,
+//         WarehouseID:value.WarehouseID
+//         }
 
-      }
-      array.push(item)
-      exchangeDataList.value = array
-    })
-  }
-}
-const onSelection = async(item:ExchangeDataSummary)=>{
+//       }
+//       array.push(item)
+//       exchangeDataList.value = array
+//     })
+//   }
+// }
+const onSelection = async(item:SearchMatchRes)=>{
+  item.Amount = item.Amount ?? 1
   emits('onSelectMatch',item);
 }
 </script>

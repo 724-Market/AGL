@@ -10,22 +10,16 @@
         </div>
 
         <div class="card-body card-table">
-          <PapersExchangeSummary  :exchange-data="exchangeData" :match-all-list="matchAllList"></PapersExchangeSummary>
+          <PapersExchangeSummary
+            :exchange-data="$props.exchangeData"
+            :match-all-list="$props.matchAllList"
+            :payment-fee-limit="$props.paymentFeeLimit"
+            :shipping-fee="$props.shippingFee"
+            :shipping-method="$props.shippingMethod"
+          ></PapersExchangeSummary>
         </div>
         <!-- Component Checklist -->
-        <OrderChecklist  :list="props.checkList" @change-check-save="handlerCheckSave" />
-        <!-- <div class="card-footer">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb vertical fa-divider fa-icon">
-              <li class="current">
-                <em><i class="fa-solid fa-circle-check"></i>วิธีการรับกระดาษ</em>
-              </li>
-              <li>
-                <em><i class="fa-solid fa-circle-check"></i>เลือกกระดาษ</em>
-              </li>
-            </ol>
-          </nav>
-        </div> -->
+        <OrderChecklist :list="props.checkList" @change-check-save="handlerCheckSave" />
       </aside>
 
       <div class="formkit-outer form-actions" data-type="submit">
@@ -46,13 +40,17 @@
 </template>
 <script lang="ts" setup>
 import { IChecklist } from "~/shared/entities/checklist-entity"
-import {  ExchangeDataSummary, SearchMatchRes } from "~/shared/entities/paper-entity"
+import {  ExchangeDataSummary, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
 
 const emits = defineEmits(['onSelectMatch'])
 const props = defineProps({
 	checkList: Array<IChecklist>,
   matchAllList:Array<SearchMatchRes>,
   exchangeData:Array<ExchangeDataSummary>,
+  paymentFeeLimit: Array<PaymentFeeLimitRes>,
+  shippingMethod:String,
+  shippingFee:String
+
 })
 
 const handlerCheckSave = (check: boolean) => {

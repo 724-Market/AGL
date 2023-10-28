@@ -11,11 +11,7 @@
         <tr class="spacer">
           <td colspan="2"></td>
         </tr>
-        <tr
-          class="product"
-          v-for="(item, i) in list"
-          :key="item.MatchItem.ProductID"
-        >
+        <tr class="product" v-for="(item, i) in list" :key="item.MatchItem.ProductID">
           <th scope="row">
             {{ i + 1 }}. {{ item.MatchItem.ProductName
             }}<span>พ.ร.บ. • {{ item.MatchItem.CompanyName }}</span
@@ -42,20 +38,31 @@
           </td>
         </tr>
 
-        <tr class="shipping">
-          <th scope="row">ค่าจัดส่ง<span>DHL Express</span></th>
-          <td class="text-end price">50.00</td>
+        <tr class="shipping" v-if="cal">
+          <th scope="row">
+            ค่าจัดส่ง<span>{{ cal.ShippingMethod }}</span>
+          </th>
+          <td class="text-end price">
+            {{ cal.ShippingFee > 0 ? useUtility().getCurrency(cal.ShippingFee, 2) : "" }}
+          </td>
         </tr>
         <tr class="spacer">
           <td colspan="2"></td>
         </tr>
-        <tr class="subtotal">
+        <tr class="subtotal" v-if="cal">
           <th scope="row">รวมราคามัดจำ</th>
-          <td class="text-end price">7,050.00</td>
+          <td class="text-end price">
+            {{ useUtility().getCurrency(cal.OrderAmount, 2) }}
+          </td>
         </tr>
-        <tr class="discount">
-          <th scope="row">หักส่วนลดค่าจัดส่ง<span>แลกกระดาษเกิน 5,000 บาท</span></th>
-          <td class="text-end price">-50.00</td>
+        <tr class="discount" v-if="cal && cal.PaymentFeeLimit>0">
+          <th scope="row">
+            หักส่วนลดค่าจัดส่ง<span
+              >แลกกระดาษเกิน
+              {{ useUtility().getCurrency(cal.PaymentFeeLimit, 0) }} บาท</span
+            >
+          </th>
+          <td class="text-end price">{{ useUtility().getCurrency(cal.Discount, 0) }}</td>
         </tr>
         <tr class="spacer">
           <td colspan="2"></td>
@@ -67,58 +74,68 @@
         </tr>
       </tbody>
       <tfoot>
-        <tr>
+        <tr v-if="cal">
           <td scope="col">รวมยอดมัดจำที่ต้องใช้</td>
-          <td scope="col" class="text-end price">6,000.00</td>
+          <td scope="col" class="text-end price">
+            {{ useUtility().getCurrency(cal.GrandAmount, 2) }}
+          </td>
         </tr>
-        <tr>
+        <tr v-if="cal">
           <td scope="col">เงินมัดจำคงเหลือ</td>
-          <td scope="col" class="text-end price">275,334.00</td>
+          <td scope="col" class="text-end price">
+            {{ useUtility().getCurrency(cal.AvailableBalanceCredit, 2) }}
+          </td>
         </tr>
       </tfoot>
     </table>
   </div>
 </template>
 <script lang="ts" setup>
-import {  ExchangeDataSummary } from "~/shared/entities/paper-entity";
+import {  CalculateGrandTotal, ExchangeDataSummary, PaymentFeeLimitRes } from "~/shared/entities/paper-entity";
 
 import { SearchMatchRes } from "~/shared/entities/paper-entity";
 
 const list:globalThis.Ref<ExchangeDataSummary[]> = ref([])
-
+const cal:globalThis.Ref<CalculateGrandTotal|undefined> = ref()
 const props = defineProps({
   matchAllList:Array<SearchMatchRes>,
   exchangeData:Array<ExchangeDataSummary>,
+  paymentFeeLimit: Array<PaymentFeeLimitRes>,
+  shippingMethod:String,
+  shippingFee:String
+
 })
+const onCalculate = ()=>{
+  if(list.value.length>0)
+  {
+    cal.value = usePagePaper().calculateGrandTotal(list.value,props.paymentFeeLimit ?? [],props.shippingMethod ?? "",parseInt(props.shippingFee ?? "0"))
+  }
+}
 const onChangeAmount =async (item:ExchangeDataSummary) =>{
 console.log(item)
 await usePagePaper().onChangeExchangePaper(item);
+if(list.value && props.paymentFeeLimit && props.shippingMethod && props.shippingFee)
+    cal.value = usePagePaper().calculateGrandTotal(list.value,props.paymentFeeLimit,props.shippingMethod,parseInt(props.shippingFee))
 
 }
 watch(()=>props.exchangeData,()=>{
-  console.log(props.exchangeData)
   if(props.exchangeData)
   {
-    list.value = []
-  list.value = props.exchangeData
+    list.value=[]
+    list.value  =props.exchangeData
   }
-
-//   let array:ExchangeDataSummary[] = [];
-//   if(props.exchangeData && props.exchangeData.length>0)
-//   props.exchangeData.forEach((value,index)=>{
-//     const itemFilter = props.matchAllList?.filter(x=>x.WarehouseID===value.WarehouseID && x.ProductID ===value.ProductID)
-//     if(itemFilter && itemFilter.length>0)
-//     {
-//       const req:ExchangeDataSummary = {
-//         MatchItem:itemFilter[0],
-//         Item:value
-//       }
-//       array.push(req)
-//       list.value = array;
-//     }
-// })
-
+  onCalculate()
 
 },
   { deep: true })
+
+watch(()=>props.paymentFeeLimit,()=>{
+    onCalculate()
+}, { deep: true })
+watch(()=>props.shippingMethod,()=>{
+  onCalculate()
+})
+watch(()=>props.shippingFee,()=>{
+  onCalculate()
+})
 </script>

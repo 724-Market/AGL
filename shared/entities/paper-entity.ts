@@ -71,6 +71,7 @@ export interface ProductsubcategoryAreaListRes {
     ProductOnHandAmount: number;
     CompanyName: string;
     FriendlyName: string;
+    Amount:number | undefined;
   }
 
   export interface PaymentFeeLimitReq {
@@ -167,8 +168,12 @@ export interface ProductsubcategoryAreaListRes {
     MatchItem:SearchMatchRes
     Item:ExchangeDataReq
   }
-
-  export enum ExchangeType {
-    Change,
-    None
+  export interface CalculateGrandTotal{
+    ShippingMethod:string
+    ShippingFee:number
+    OrderAmount:number
+    PaymentFeeLimit:number
+    Discount:number
+    GrandAmount:number
+    AvailableBalanceCredit:number
   }

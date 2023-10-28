@@ -29,7 +29,7 @@
 								</div>
 								<div class="col-6">
 									<FormKit type="select" label="ช่องทางการจัดส่ง" name="ShippingMethod" placeholder="ช่องทางการจัดส่ง" 
-										:options="shippingMethodOption" v-model="ShippingMethodText" @change="onShippingMethodChange()"
+										:options="shippingMethodOption" v-model="ShippingMethodText" @change="onShippingMethodChange"
                                         validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
 								</div>
 								<div class="col-6">
@@ -77,7 +77,7 @@ import {
 } from '~/shared/entities/paper-entity';
 import { RadioOption } from "~/shared/entities/select-option";
 
-const emit = defineEmits(['shippingTypeChange'])
+const emit = defineEmits(['shippingTypeChange','changeDeliveryChannel'])
 
 const props = defineProps({ 
 	deliveryChanel: Array<IDeliveryResponse>,
@@ -92,7 +92,7 @@ var paymentFeeLimitMin = ref(0)
 var shippingPaperText = ref("")
 var ShippingMethodText = ref("")
 var ShippingFeeText = ref(0)
-
+var isLoading = ref(false)
 const onLoad = onMounted(async () => {
 	if (props.shippingPaperType) {
 		shippingPaperTypeOption.value = [
@@ -121,6 +121,7 @@ const onLoad = onMounted(async () => {
 
 const onShippingMethodChange = async (event: any) => {
   ShippingFeeText.value = event.target.value
+  emit('changeDeliveryChannel',ShippingMethodText.value,ShippingFeeText.value)
 };
 
 watch(shippingPaperText, async (newshippingPaperType) => {

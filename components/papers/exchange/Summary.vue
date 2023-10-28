@@ -15,7 +15,7 @@
           <th scope="row">
             {{ i + 1 }}. {{ item.MatchItem.ProductName
             }}<span>พ.ร.บ. • {{ item.MatchItem.CompanyName }}</span
-            ><a class="btn-delete" href="#" title="ลบรายการนี้"
+            ><a class="btn-delete" @click="onDelete(item)" title="ลบรายการนี้"
               ><i class="fa-regular fa-trash-can"></i>ลบรายการนี้</a
             >
           </th>
@@ -38,7 +38,7 @@
           </td>
         </tr>
 
-        <tr class="shipping" v-if="cal && cal.ShippingFee>0">
+        <tr class="shipping" v-if="cal && cal.ShippingFee > 0">
           <th scope="row">
             ค่าจัดส่ง<span>{{ cal.ShippingMethod }}</span>
           </th>
@@ -55,7 +55,7 @@
             {{ useUtility().getCurrency(cal.OrderAmount, 2) }}
           </td>
         </tr>
-        <tr class="discount" v-if="cal && cal.PaymentFeeLimit>0">
+        <tr class="discount" v-if="cal && cal.PaymentFeeLimit > 0">
           <th scope="row">
             หักส่วนลดค่าจัดส่ง<span
               >แลกกระดาษเกิน
@@ -88,13 +88,26 @@
         </tr>
       </tfoot>
     </table>
+    <ElementsDialogConfirm
+    v-if="isDeleteConfirm"
+      :modal-show="isDeleteConfirm"
+      :modal-type="ModalType.Danger"
+      :modal-title="'ยืนยันการลบรายการ'"
+      :modal-text="textDeleteConfirm"
+      @on-confirm-modal="onDeleteConfirm"
+      @on-close-modal="onCloseConfirm"
+    />
   </div>
 </template>
 <script lang="ts" setup>
+import { ModalType } from "~/shared/entities/enum-entity";
 import {  CalculateGrandTotal, ExchangeDataSummary, PaymentFeeLimitRes } from "~/shared/entities/paper-entity";
 
 import { SearchMatchRes } from "~/shared/entities/paper-entity";
 
+const isDeleteConfirm = ref(false)
+const textDeleteConfirm=ref('')
+const itemSelection:globalThis.Ref<ExchangeDataSummary | undefined> = ref()
 const list:globalThis.Ref<ExchangeDataSummary[]> = ref([])
 const cal:globalThis.Ref<CalculateGrandTotal|undefined> = ref()
 const props = defineProps({
@@ -105,6 +118,7 @@ const props = defineProps({
   shippingFee:String
 
 })
+
 const onCalculate = ()=>{
   if(list.value.length>0)
   {
@@ -117,6 +131,22 @@ await usePagePaper().onChangeExchangePaper(item);
 if(list.value && props.paymentFeeLimit && props.shippingMethod && props.shippingFee)
     cal.value = usePagePaper().calculateGrandTotal(list.value,props.paymentFeeLimit,props.shippingMethod,parseInt(props.shippingFee))
 
+}
+const onDelete =async (item:ExchangeDataSummary) =>{
+  itemSelection.value =item
+  isDeleteConfirm.value = true
+  textDeleteConfirm.value=`คุณต้องการลบรายการ ${item.MatchItem.ProductName} จำนวนกระดาษ ${item.Item.Amount} หรือไม่ ?`
+}
+const onDeleteConfirm = async()=>{
+  if(itemSelection.value)
+  {
+   const exchangeData =  await usePagePaper().onDeleteConfirm(itemSelection.value)
+   list.value = exchangeData
+  }
+
+}
+const onCloseConfirm = async()=>{
+  isDeleteConfirm.value = false
 }
 watch(()=>props.exchangeData,()=>{
   if(props.exchangeData)

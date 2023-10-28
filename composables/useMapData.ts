@@ -1,7 +1,37 @@
-import { Filter, TableRequest } from "~/shared/entities/table-option";
+import { ModalType } from "~/shared/entities/enum-entity";
+import { Filter } from "~/shared/entities/table-option";
 
 export default () => {
-    const config = useRuntimeConfig()
+    const getStyleIconColor = (modalType:ModalType):string=>{
+        const StyleColor = [
+            'icon check text-success',
+            'icon cross text-danger',
+            'icon exclamation text-warning',
+            'icon question text-info'
+        ]
+
+        return StyleColor[modalType]
+    }
+    const getStyleColor = (modalType:ModalType):string=>{
+        const StyleColor = [
+            'text-success',
+            'text-danger',
+            'text-warning',
+            'text-info'
+        ]
+
+        return StyleColor[modalType]
+    }
+    const getStyleButtonColor = (modalType:ModalType):string=>{
+        const StyleColor = [
+            'btn-primary',
+            'btn-danger',
+            'btn-warning',
+            'btn-gray'
+        ]
+
+        return StyleColor[modalType]
+    }
     const getOrderType = (id: string): any => {
         const OrderType = {
             C1: {
@@ -172,6 +202,9 @@ export default () => {
         getOrderType,
         getOrderClassType,
         getFilterSearchHistory,
+        getStyleColor,
+        getStyleButtonColor,
+        getStyleIconColor
         // covertQueryStringToJsonHistory,
         // getJsonTableHistory
     }

@@ -37,7 +37,7 @@
       </div> -->
       <button
             loading="false"
-            class="formkit-input btn btn-primary btn-accept pledge-action"
+            class="formkit-input btn-continue btn btn-primary btn-accept pledge-action"
             type="button"
             name="order-submit"
             id="order-submit"
@@ -50,7 +50,7 @@
 </template>
 <script lang="ts" setup>
 import { IChecklist } from "~/shared/entities/checklist-entity"
-import {  ExchangeDataSummary, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
+import {  ExchangeDataSummary, OrderExchangeCreateReq, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
 
 const emits = defineEmits(['onSelectMatch'])
 const props = defineProps({
@@ -63,17 +63,23 @@ const props = defineProps({
 
 })
 const checkSave = ref(false)
+
+const onContinue = async ()=>{
+  const request:OrderExchangeCreateReq = usePagePaper().mappingExchangeConfirmRequest() 
+  const response =await  usePagePaper().onContinue(request);
+}
 const handlerCheckSave = (check: boolean) => {
-  checkSave.value = check;
+  //checkSave.value = check;
+  checkSave.value = true;
 };
 </script>
 <style scoped>
-.btn-primary a.btn-primary {
+.btn-continue.btn-primary  {
   background-color: #138543 !important;
   border-color: #138543 !important;
   color: #fff !important;
 }
-.btn:disabled {
+.btn-continue.btn:disabled {
   background: var(--fk-color-border) !important;
   color: var(--fk-color-button) !important;
   cursor: not-allowed;

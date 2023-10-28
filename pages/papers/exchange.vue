@@ -184,9 +184,8 @@ const onChangeShippingPaperType = async (deliveryType: string) => {
         paymentFeeLimit.value = res.apiResponse.Data;
       }
     }
-  } else {
     await onChangePaperArea("");
-  }
+  } 
   await clearStore();
 
   isLoading.value = false;

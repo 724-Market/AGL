@@ -147,9 +147,6 @@ const onWareHouseChange = async (event: string, area: string) => {
     CompanyText.value = ''
     if(wareHouseOption.value.length > 0) {
         BranchLabel.value = wareHouseOption.value.find(w => w.value == event)?.label.toString() ?? ''
-        console.log('event', event)
-        console.log('wareHouseOption', wareHouseOption.value.find(w => w.value == event)?.label.toString())
-        console.log('BranchLabel.value', BranchLabel.value)
 
     }
     emit('wareHouseChange', event, area)
@@ -200,7 +197,6 @@ watch(
     if (props.wareHouse) {
         if(shippingType.value == 'DELIVERY') {
             BranchLabel.value = props.wareHouse[0].Name
-            console.log('BranchLabel.value', BranchLabel.value)
             await onWareHouseChange(props.wareHouse[0].ID, props.wareHouse[0].AreaID)
         }
         else {

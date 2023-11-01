@@ -21,6 +21,7 @@
               <PapersExchangeHowToGetPaper
                 @shipping-type-change="onChangeShippingPaperType"
                 @change-delivery-channel="onChangeDeliveryChannel"
+                @check-address="handleCheckAddress"
                 :delivery-chanel="deliveryChanels"
                 :shipping-paper-type="deliveryPaperTypes"
                 :payment-fee-limit="paymentFeeLimit"
@@ -81,6 +82,7 @@ import {
   SearchMatchRes,
   WarehouseAreaListReq,
   WarehouseAreaListRes,
+  DeliveryAddressReq
 } from "~/shared/entities/paper-entity";
 import { storeToRefs } from "pinia";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
@@ -341,7 +343,22 @@ const clearStore = async () => {
   exchangeData.value = [];
 };
 
-
+const handleCheckAddress = async (DeliveryAddressReq: DeliveryAddressReq) => {
+  console.log('RecieveObject', DeliveryAddressReq)
+  // if (deliveryAddress && RecieveObject.PostalDelivary?.ShippingMethod != "") {
+  //   if (
+  //     // deliveryAddress.AddressText.length > 0 &&
+  //     deliveryAddress.PhoneNumber.length > 0 &&
+  //     deliveryAddress.FirstName.length > 0 &&
+  //     deliveryAddress.LastName.length > 0 &&
+  //     deliveryAddress.No.length > 0 &&
+  //     deliveryAddress.ProvinceID.length > 0 &&
+  //     deliveryAddress.DistrictID.length > 0 &&
+  //     deliveryAddress.SubDistrictID.length > 0
+  //   ) {
+  //     checklist.value[2].className = "current";
+  //   }
+};
 // // Submit form event
 // const submitOrder = async () => {
 //   // Add waiting time for debug

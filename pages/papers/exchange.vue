@@ -25,6 +25,7 @@
                 :delivery-chanel="deliveryChanels"
                 :shipping-paper-type="deliveryPaperTypes"
                 :payment-fee-limit="paymentFeeLimit"
+                :is-create="isCreate"
               ></PapersExchangeHowToGetPaper>
             </div>
           </div>
@@ -105,6 +106,7 @@ const productSearchMatchAll: globalThis.Ref<SearchMatchRes[] | undefined> = ref(
 const productSearchMatch: globalThis.Ref<SearchMatchRes[] | undefined> = ref();
 const ShippingMethod = ref("");
 const ShippingFee = ref("");
+const isCreate = ref(false);
 const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
 
@@ -343,21 +345,26 @@ const clearStore = async () => {
   exchangeData.value = [];
 };
 
-const handleCheckAddress = async (DeliveryAddressReq: DeliveryAddressReq) => {
-  console.log('RecieveObject', DeliveryAddressReq)
-  // if (deliveryAddress && RecieveObject.PostalDelivary?.ShippingMethod != "") {
-  //   if (
-  //     // deliveryAddress.AddressText.length > 0 &&
-  //     deliveryAddress.PhoneNumber.length > 0 &&
-  //     deliveryAddress.FirstName.length > 0 &&
-  //     deliveryAddress.LastName.length > 0 &&
-  //     deliveryAddress.No.length > 0 &&
-  //     deliveryAddress.ProvinceID.length > 0 &&
-  //     deliveryAddress.DistrictID.length > 0 &&
-  //     deliveryAddress.SubDistrictID.length > 0
-  //   ) {
-  //     checklist.value[2].className = "current";
-  //   }
+const handleCheckAddress = async (AddressReq: DeliveryAddressReq) => {
+  console.log('AddressReq', AddressReq)
+  if (AddressReq && ShippingMethod.value) {
+    if (
+      AddressReq.PhoneNumber.length > 0 &&
+      AddressReq.FirstName.length > 0 &&
+      AddressReq.LastName.length > 0 &&
+      AddressReq.No.length > 0 &&
+      AddressReq.ProvinceID.length > 0 &&
+      AddressReq.DistrictID.length > 0 &&
+      AddressReq.SubDistrictID.length > 0
+    ) {
+      isCreate.value = true
+      checklist.value[0].className = "current";
+    }
+    else {
+      isCreate.value = false
+      checklist.value[0].className = "";
+    }
+  }
 };
 // // Submit form event
 // const submitOrder = async () => {

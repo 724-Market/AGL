@@ -67,9 +67,12 @@
 									/>
 								</div>
 								<FormKit 
-									type="submit" label="บันทึกข้อมูล"
+									type="submit" 
+                  label="บันทึกข้อมูล"
+                  @click="handleSave"
 									:classes="{ input: 'btn-primary', outer: 'form-actions' }" 
 									:loading="isLoading" 
+                  :disabled="!isCreate"
 								/>
 							</aside>
 						</section>
@@ -94,6 +97,9 @@ import {
   PaymentFeeLimitRes,
   DeliveryAddressReq
 } from '~/shared/entities/paper-entity';
+import { 
+  AgentAddressCreateReq,
+ } from "~/shared/entities/agent-entity";
 import { DefaultAddress } from "~/shared/entities/placeorder-entity";
 import { RadioOption, SelectOption } from "~/shared/entities/select-option";
 
@@ -102,7 +108,8 @@ const emit = defineEmits(['shippingTypeChange','changeDeliveryChannel','checkAdd
 const props = defineProps({ 
 	deliveryChanel: Array<IDeliveryResponse>,
 	shippingPaperType: Array<DeliveryPaperRes>,
-	paymentFeeLimit: Array<PaymentFeeLimitRes>
+	paymentFeeLimit: Array<PaymentFeeLimitRes>,
+  isCreate: Boolean,
 })
 
 const shippingPaperTypeOption: globalThis.Ref<RadioOption[]> = ref([])
@@ -112,6 +119,7 @@ var paymentFeeLimitMin = ref(0)
 var shippingPaperText = ref("")
 var ShippingMethodText = ref("")
 var ShippingFeeText = ref(0)
+var isCreate = ref(false)
 var isLoading = ref(false)
 
 const agentAddress: globalThis.Ref<RadioOption[]> = ref([]);
@@ -150,6 +158,9 @@ const onLoad = onMounted(async () => {
 	if (props.paymentFeeLimit) {
 		paymentFeeLimitMin.value = props.paymentFeeLimit[0].Min
   }
+  if (props.isCreate) {
+		isCreate.value = props.isCreate
+  }
   await loadAgentAddress();
 	await loadPrefix();
 	await loadProvince();
@@ -158,6 +169,7 @@ const onLoad = onMounted(async () => {
 const onShippingMethodChange = async (event: any) => {
   ShippingFeeText.value = event.target.value
   emit('changeDeliveryChannel',ShippingMethodText.value,ShippingFeeText.value)
+  await handleCheckInsuranceRecieve()
 }
 
 watch(shippingPaperText, async (newshippingPaperType) => {
@@ -198,59 +210,38 @@ const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddres
   }
 }
 
-const handleCheckInsuranceRecieve = async () => {
-	let address = newAddressObject.value as DeliveryAddressReq
-	console.log('address', address)
-//   let RecieveObject: InsuranceRecieveObject = {
-//     ShippingPolicy: shippingPolicyText.value.toString(),
-//     Email: emailValue,
-//     PostalDelivary: {
-//       IsDeliveryAddressSameAsDefault: postalAddressPolicyText.value == 'insured' ? true : false,
-//       ShippingMethod: RecieveShippingMethodText.value,
-//       ShippingFee: ShippingFeeText.value,
-//       DeliveryAddress: {
-//         AddressID: newAddressObject.value?.AddressID ?? '',
-//         ReferenceID: newAddressObject.value?.ReferenceID ?? '',
-//         ReferenceType: newAddressObject.value?.ReferenceType ?? '',
-//         ProvinceID: newAddressObject.value?.ProvinceID ?? '',
-//         DistrictID: newAddressObject.value?.DistrictID ?? '',
-//         SubDistrictID: newAddressObject.value?.SubDistrictID ?? '',
-//         TaxID: newAddressObject.value?.TaxID ?? '',
-//         FirstName: newAddressObject.value?.FirstName ?? '',
-//         LastName: newAddressObject.value?.LastName ?? '',
-//         PhoneNumber: newAddressObject.value?.PhoneNumber ?? '',
-//         Email: newAddressObject.value?.Email ?? '',
-//         Name: newAddressObject.value?.Name ?? '',
-//         Type: newAddressObject.value?.Type ?? '',
-//         AddressLine1: newAddressObject.value?.AddressLine1 ?? '',
-//         AddressLine2: newAddressObject.value?.AddressLine2 ?? '',
-//         AddressText: newAddressObject.value?.AddressText ?? '',
-//         No: newAddressObject.value?.No ?? '',
-//         Moo: newAddressObject.value?.Moo ?? '',
-//         Place: newAddressObject.value?.Place ?? '',
-//         Building: newAddressObject.value?.Building ?? '',
-//         Floor: newAddressObject.value?.Floor ?? '',
-//         Room: newAddressObject.value?.Room ?? '',
-//         Branch: newAddressObject.value?.Branch ?? '',
-//         Alley: newAddressObject.value?.Alley ?? '',
-//         Road: newAddressObject.value?.Road ?? '',
-//         ZipCode: newAddressObject.value?.ZipCode ?? '',
-//       }
-//     }
-//   }
-//   emit('checkInsuranceRecieve', RecieveObject)
+const setPostalAddress = async (labelAddnew: string) => {
+  agentAddress.value = [
+    {
+      label: '+ เพิ่มที่อยู่ใหม่',
+      value: 'addnew',
+      help: labelAddnew,
+      attrs: { addnewaddress: true }
+    }
+  ]
 }
 
-const handleSaveAddress = async () => {
+const handleSave = async (event: any) => {
+  await setPostalAddress(insureFullNewAddress.value.toString())
+
   isLoading.value = true;
-  // var response = await useRepository().agent.GetAddressList();
-  // if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-  //   if (response.apiResponse.Data) {
-      
-  //   }
-  // }
+  if(isCreate) {
+    let address = newAddressObject.value as AgentAddressCreateReq
+    console.log('address', address)
+    // var response = await useRepository().agent.CreateAddress(address);
+    // if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    //   if (response.apiResponse.Data) {
+        
+    //   }
+    // }
+  }
   isLoading.value = false;
-};
+}
+
+const handleCheckInsuranceRecieve = async () => {
+	let address = newAddressObject.value as DeliveryAddressReq
+  emit('checkAddress', address)
+}
 
 const loadAgentAddress = async () => {
   isLoading.value = true;
@@ -273,7 +264,7 @@ const loadAgentAddress = async () => {
   }
   agentAddress.value.push({
     label: '+ เพิ่มที่อยู่ใหม่',
-    value: ''
+    value: 'addnew'
   })
   isLoading.value = false;
 };
@@ -422,5 +413,17 @@ watch(
     }
   }
 )
+
+watch(
+  () => props.isCreate,
+  async () => {
+    if (props.isCreate) {
+      isCreate.value = props.isCreate
+      console.log('isCreate.value', isCreate.value)
+    }
+  }
+)
+
+
 
 </script>

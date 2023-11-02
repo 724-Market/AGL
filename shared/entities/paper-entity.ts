@@ -54,21 +54,23 @@ export interface ProductsubcategoryAreaListRes {
     ProductPrice?: string
   }
   export interface SearchMatchRes {
-    WarehouseID: string
-    AreaID: string
-    ProductID: string
-    Name: string
-    AreaName: string
-    ProductCategory: string
-    ProductSubCategory: string
-    ProductCompany: string
-    ProductBrand: string
-    ProductModel: string
-    ProductName: string
-    ProductPrice: number
-    ProductOnHandAmount: number
-    CompanyName: string
-    FriendlyName: string
+    WarehouseID: string;
+    AreaID: string;
+    ProductID: string;
+    Name: string;
+    AreaName: string;
+    ProductCategory: string;
+    ProductSubCategory: string;
+    ProductCompany: string;
+    ProductCompanyImage: string;
+    ProductImage: string | null;
+    ProductBrand: string;
+    ProductModel: string;
+    ProductName: string;
+    ProductPrice: number;
+    ProductOnHandAmount: number;
+    CompanyName: string;
+    FriendlyName: string;
   }
 
   export interface PaymentFeeLimitReq {
@@ -83,7 +85,7 @@ export interface ProductsubcategoryAreaListRes {
   export interface OrderExchangeCreateReq {
     IsConsent: boolean
     DeliveryMethod: DeliveryMethodReq
-    ExchangeData: ExchangeDataReq
+    ExchangeData: ExchangeDataReq[]
     DeliveryAddress?: DeliveryAddressReq|null
   }
   export interface OrderExchangeCreateRes {

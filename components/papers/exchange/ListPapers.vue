@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card" v-for="(item,i) in exchangeDataList" :key="item.ProductID">
+    <div class="card" v-for="(item,i) in props.productMatchList" :key="i">
       <div class="card-body">
         <div class="package-item-new is-paper">
           <div class="detail">
@@ -119,7 +119,7 @@ import {  ExchangeDataSummary, SearchMatchRes } from "~/shared/entities/paper-en
 import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo";
 const emits = defineEmits(['onSelectMatch'])
 const props = defineProps({
-	MatchList: Array<SearchMatchRes>,
+	productMatchList: Array<SearchMatchRes>,
 
 })
 
@@ -133,37 +133,38 @@ const onSelection = async(item:SearchMatchRes)=>{
   item.Amount = item.Amount ?? 1
   emits('onSelectMatch',item);
 }
-watch(()=>props.MatchList,()=>{
-  if(props.MatchList)
+watch(()=>props.productMatchList,()=>{
+  if(props.productMatchList)
   {
-    exchangeDataList.value = props.MatchList
+    exchangeDataList.value =[]
+    exchangeDataList.value = props.productMatchList
   }
 
   //loadExchangeDataList()
 })
-watch(
-  () => storeExchange.$state,
-  () => {
-    console.log("storeExchange.$state", storeExchange.$state);
-    const list = storeExchange.$state
-    const exchangeList = exchangeDataList.value
-    list.forEach((value,i)=>{
+// watch(
+//   () => storeExchange.$state,
+//   () => {
+//     console.log("storeExchange.$state", storeExchange.$state);
+//     const list = storeExchange.$state
+//     const exchangeList = exchangeDataList.value
+//     list.forEach((value,i)=>{
       
-      const index = exchangeList.findIndex(x=>x.ProductID===value.Item.ProductID && x.WarehouseID===value.Item.WarehouseID)
-      if(index>-1)
-      {
-        if( exchangeList[index].ProductOnHandAmount - value.Item.Amount>0)
-        {
-          exchangeList[index].ProductOnHandAmount = exchangeList[index].ProductOnHandAmount - value.Item.Amount
-        }
+//       const index = exchangeList.findIndex(x=>x.ProductID===value.Item.ProductID && x.WarehouseID===value.Item.WarehouseID)
+//       if(index>-1)
+//       {
+//         if( exchangeList[index].ProductOnHandAmount - value.Item.Amount>0)
+//         {
+//           exchangeList[index].ProductOnHandAmount = exchangeList[index].ProductOnHandAmount - value.Item.Amount
+//         }
         
-      }
-    })
-    exchangeDataList.value = exchangeList
+//       }
+//     })
+//     exchangeDataList.value = exchangeList
 
-  },
+//   },
   
-);
+// );
 // const loadExchangeDataList = ()=>{
 //   let array:ExchangeDataSummary[] = [];
 //   if(props.MatchList && props.MatchList.length>0)

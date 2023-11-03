@@ -45,7 +45,7 @@
 
           <PapersExchangeListPapers
             v-if="productSearchMatch"
-            :-match-list="productSearchMatch"
+            :product-match-list="productSearchMatch"
             @on-select-match="onSelectMatch"
           ></PapersExchangeListPapers>
         </div>
@@ -231,6 +231,7 @@ const onChangePaperArea = async (areaId: string) => {
     }
   }
   await clearStore();
+  await usePagePaper().onClearExchangePaper();
   isLoading.value = false;
 };
 
@@ -249,6 +250,7 @@ const onChangeWareHouse = async (wareHouseId: string, areaId: string) => {
     }
   }
   await clearStore();
+  await usePagePaper().onClearExchangePaper();
   isLoading.value = false;
 };
 
@@ -338,7 +340,6 @@ const onLoadExchangetoStore = () => {
 
 const clearStore = async () => {
   await storeSearchMatchCompulsory.clearSearchMatch();
-  await usePagePaper().onClearExchangePaper();
   //await storeSearchMatchInsurance.clearSearchMatch()
   productSearchMatchAll.value = [];
   productSearchMatch.value = [];

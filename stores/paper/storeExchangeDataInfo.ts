@@ -47,7 +47,7 @@ export const useStoreExchangeDataInfo = defineStore('useStoreExchangeDataInfo', 
                 const index = this.$state.findIndex(x => x.Item.ProductID === request.Item.ProductID && x.Item.WarehouseID === request.Item.WarehouseID)
                 if (index > -1) {
                     request.Item.Amount = parseInt(request.Item.Amount.toString())
-                        this.$state[index] = request
+                    this.$state[index] = request
 
                 }
                 else {
@@ -62,9 +62,11 @@ export const useStoreExchangeDataInfo = defineStore('useStoreExchangeDataInfo', 
             return this.$state
         },
 
-        clearExchangeData() {
+        async clearExchangeData() {
+            this.$state = [];
             this.$reset()
-            sessionStorage.removeItem('useStoreExchangeDataSummary')
+            this.$dispose()
+            sessionStorage.removeItem('useStoreExchangeDataInfo')
         }
     },
     persist: {

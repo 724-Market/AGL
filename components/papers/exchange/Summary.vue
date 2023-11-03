@@ -11,7 +11,7 @@
         <tr class="spacer">
           <td colspan="2"></td>
         </tr>
-        <tr class="product" v-for="(item, i) in list" :key="item.MatchItem.ProductID">
+        <tr class="product" v-for="(item, i) in list" :key="i">
           <th scope="row">
             {{ i + 1 }}. {{ item.MatchItem.ProductName
             }}<span>พ.ร.บ. • {{ item.MatchItem.CompanyName }}</span

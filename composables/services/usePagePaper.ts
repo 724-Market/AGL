@@ -16,27 +16,27 @@ export default () => {
         await storeExchange.changeExchangeData(item)
     }
     const onClearExchangePaper = async () => {
-
-        await storeExchange.clearExchangeData()
+        storeExchange.$state = [];
+        //await storeExchange.clearExchangeData();
     }
-    const mappingExchangeConfirmRequest = (deliveryType:string,shippingMethod:string,addr?:DeliveryAddressReq):OrderExchangeCreateReq=>{
+    const mappingExchangeConfirmRequest = (deliveryType: string, shippingMethod: string, addr?: DeliveryAddressReq): OrderExchangeCreateReq => {
         const exchangeData = storeExchange.$state
-        const req:OrderExchangeCreateReq = {
-            DeliveryMethod:{
-              DeliveryChannelType:shippingMethod,
-              DeliveryType:deliveryType,
-              MethodType:"PRODUCT_PAPER",
+        const req: OrderExchangeCreateReq = {
+            DeliveryMethod: {
+                DeliveryChannelType: shippingMethod,
+                DeliveryType: deliveryType,
+                MethodType: "PRODUCT_PAPER",
             },
-            ExchangeData:exchangeData.map((x)=>x.Item),
-            IsConsent:true,
-            DeliveryAddress:addr ?? null
-          }
+            ExchangeData: exchangeData.map((x) => x.Item),
+            IsConsent: true,
+            DeliveryAddress: addr ?? null
+        }
 
-          return req
+        return req
     }
     const onContinue = async (req: OrderExchangeCreateReq): Promise<WrapperResponse<PaymentGetResponse[]>> => {
         let res: WrapperResponse<PaymentGetResponse[]> = {
-          Status:"",
+            Status: "",
         }
         const orderExchange = await useRepository().paper.confirmOrderExchange(req)
         res = orderExchange.apiResponse;
@@ -87,6 +87,6 @@ export default () => {
         calculateGrandTotal,
         onDeleteConfirm,
         onContinue,
-        mappingExchangeConfirmRequest
+        mappingExchangeConfirmRequest,
     }
 }

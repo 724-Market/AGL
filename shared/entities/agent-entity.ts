@@ -127,7 +127,7 @@ export interface AgentInfo {
     Options?: string;
   }
 
-  export interface AgentAddressDeleteRes {
+  export interface AgentAddressDeleteReq {
     AddressID: string
   }
   export interface AgentAddressDeleteRes {

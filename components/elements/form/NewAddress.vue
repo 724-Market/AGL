@@ -222,11 +222,18 @@ watch(
 watch(
   ()=>props.defaultAddressCache,
   (newValue)=>{
+    defaultAddressCache.value = newValue
     if(props.defaultAddressCache){
-      defaultAddressCache.value = newValue
       FirstNameText.value = defaultAddressCache.value?.FirstName ?? ""
+      LastNameText.value = defaultAddressCache.value?.LastName ?? ""
       LabelAddressText.value = defaultAddressCache.value?.LastName ?? ""
       PhoneNumberText.value = defaultAddressCache.value?.PhoneNumber ?? ""
+    }
+    else {
+      FirstNameText.value = ""
+      LastNameText.value = ""
+      LabelAddressText.value = ""
+      PhoneNumberText.value = ""
     }
   }
 )

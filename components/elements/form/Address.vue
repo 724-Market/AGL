@@ -244,15 +244,46 @@ watch(
   async (newValue) => {
     let addressCache = newValue as DefaultAddress
 
-    ObjectAddress.value.ProvinceID = addressCache.ProvinceID
-    await emit('changeProvince', ObjectAddress.value.ProvinceID)
-    ObjectAddress.value.DistrictID = addressCache.DistrictID
-    await emit('changeDistrict', ObjectAddress.value.DistrictID)
-    ObjectAddress.value.SubDistrictID = addressCache.SubDistrictID
-    await emit('changeSubDistrict', ObjectAddress.value.SubDistrictID)
-    
-    ObjectAddress.value = addressCache
-    addrZipCode.value = addressCache.ZipCode
+    if(addressCache) {
+      ObjectAddress.value.ProvinceID = addressCache.ProvinceID 
+      await emit('changeProvince', ObjectAddress.value.ProvinceID)
+      ObjectAddress.value.DistrictID = addressCache.DistrictID
+      await emit('changeDistrict', ObjectAddress.value.DistrictID)
+      ObjectAddress.value.SubDistrictID = addressCache.SubDistrictID
+      await emit('changeSubDistrict', ObjectAddress.value.SubDistrictID)
+
+      ObjectAddress.value = addressCache
+      addrZipCode.value = addressCache ? addressCache.ZipCode ?? '' : ''
+    } else {
+      ObjectAddress.value = {
+        AddressID: '',
+        AddressLine1: '',
+        AddressLine2: '',
+        AddressText: '',
+        Alley: '',
+        Branch: '',
+        Building: '',
+        DistrictID: '',
+        Email: '',
+        FirstName: '',
+        Floor: '',
+        LastName: '',
+        Moo: '',
+        Name: '',
+        No: '',
+        PhoneNumber: '',
+        Place: '',
+        ProvinceID: '',
+        ReferenceID: '',
+        ReferenceType: '',
+        Road: '',
+        Room: '',
+        SubDistrictID: '',
+        TaxID: '',
+        Type: '',
+        ZipCode: '',
+      }
+    }
 })
 
 

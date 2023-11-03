@@ -21,11 +21,11 @@
 							<div class="row">
 								<div class="col-12">
 									<div class="notice-info">
-                                        <i class="fa-regular fa-circle-info"></i>
-                                        <u>ฟรี</u>
+                    <i class="fa-regular fa-circle-info"></i>
+                    <u>ฟรี</u>
 										ค่าจัดส่ง
 										เมื่อแลกกระดาษเกิน {{ paymentFeeLimitMin }} บาทขึ้นไป
-                                    </div>
+                  </div>
 								</div>
 								<div class="col-6">
 									<FormKit type="select" label="ช่องทางการจัดส่ง" name="ShippingMethod" placeholder="ช่องทางการจัดส่ง" 
@@ -40,17 +40,29 @@
 						</section>
 
 						<section class="shipping-address" v-if="shippingPaperText == 'DELIVERY'">
-							<h3>ที่อยู่สำหรับจัดส่ง</h3>
+              <div class="card-header card-header-btn">
+                  <div>
+                    <h3>ที่อยู่สำหรับจัดส่ง</h3>
+                    </div>
+                  <div class="mb-4">
+                    <button 
+                      type="button" 
+                      class="btn btn-danger" 
+                      @click="handleDelete"
+                      :disabled="agentAddressText == '' || agentAddressText == 'addnew'"
+                    >ลบ</button>
+                  </div>
+              </div>
 							<div class="form-hide-label">
 								<FormKit 
                   type="radio" 
                   label="รายชื่อที่อยู่" 
-                  name="PostalAddressPolicy"
+                  name="agentAddress"
                   :options="agentAddress"
                   v-model="agentAddressText"
 									options-class="option-block-stack" />
 							</div>
-							<aside class="new-shipping-address inner-section">
+							<aside class="new-shipping-address inner-section" v-if="agentAddressText != ''">
 								<h4>ที่อยู่จัดส่งใหม่</h4>
 								<div class="row">
 									<ElementsFormNewAddress 
@@ -60,20 +72,21 @@
 										:addr-district="addrDistrict"
 										:addr-sub-district="addrSubDistrict"
 										:addr-zip-code="addrZipCode"
+                    :default-address-cache="newAddressObjectCache"
 										@change-province="handlerChangeProvince"
 										@change-district="handlerChangeDistrict"
 										@change-sub-district="handlerChangeSubDistrict"
 										@change-full-address="handlerChangeFullAddress"
 									/>
 								</div>
-								<FormKit 
-									type="submit" 
+								<button 
+									type="button" 
                   label="บันทึกข้อมูล"
                   @click="handleSave"
-									:classes="{ input: 'btn-primary', outer: 'form-actions' }" 
+                  class="btn btn-primary"
 									:loading="isLoading" 
-                  :disabled="!isCreate"
-								/>
+                  :disabled="!isSubmit"
+								>บันทึกข้อมูล</button>
 							</aside>
 						</section>
 
@@ -84,10 +97,11 @@
 
 		</div>
 	</div>
+  <ElementsModalAlert v-if="isShow" :is-error="isShow" :message="message" :reload="false" @close-modal="handleCloseModal" />
 </template>
 
 <script setup lang="ts">
-import { AgentAddressListRes } from "~/shared/entities/agent-entity";
+import { AgentAddressDeleteReq, AgentAddressListRes, AgentAddressSaveReq } from "~/shared/entities/agent-entity";
 import { 
   IDeliveryResponse,
   DeliveryPaperRes
@@ -109,8 +123,11 @@ const props = defineProps({
 	deliveryChanel: Array<IDeliveryResponse>,
 	shippingPaperType: Array<DeliveryPaperRes>,
 	paymentFeeLimit: Array<PaymentFeeLimitRes>,
-  isCreate: Boolean,
+  isSubmit: Boolean,
 })
+
+var isShow = ref(false) 
+var message = ref("")
 
 const shippingPaperTypeOption: globalThis.Ref<RadioOption[]> = ref([])
 const shippingMethodOption: globalThis.Ref<RadioOption[]> = ref([])
@@ -119,10 +136,11 @@ var paymentFeeLimitMin = ref(0)
 var shippingPaperText = ref("")
 var ShippingMethodText = ref("")
 var ShippingFeeText = ref(0)
-var isCreate = ref(false)
+var isSubmit = ref(false)
 var isLoading = ref(false)
 
-const agentAddress: globalThis.Ref<RadioOption[]> = ref([]);
+const agentAddress: globalThis.Ref<RadioOption[]> = ref([]); 
+const agentAddressList: globalThis.Ref<AgentAddressListRes[]> = ref([]);
 var agentAddressText = ref("")
 const prefix: globalThis.Ref<SelectOption[]> = ref([]);
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([]);
@@ -131,6 +149,7 @@ const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([]);
 const addrZipCode = ref("");
 
 const newAddressObject: globalThis.Ref<DefaultAddress | undefined> = ref()
+const newAddressObjectCache: globalThis.Ref<DefaultAddress | undefined> = ref()
 const insureFullAddress: globalThis.Ref<String> = ref('')
 const insureFullNewAddress: globalThis.Ref<String> = ref('')
 
@@ -146,7 +165,7 @@ const onLoad = onMounted(async () => {
             value: props.shippingPaperType[0].Type,
           }
       	]
-    }
+  }
 	if (props.deliveryChanel) {
 		shippingMethodOption.value = [
           {
@@ -158,22 +177,66 @@ const onLoad = onMounted(async () => {
 	if (props.paymentFeeLimit) {
 		paymentFeeLimitMin.value = props.paymentFeeLimit[0].Min
   }
-  if (props.isCreate) {
-		isCreate.value = props.isCreate
+  if (props.isSubmit) {
+		isSubmit.value = props.isSubmit
   }
   await loadAgentAddress();
 	await loadPrefix();
 	await loadProvince();
 })
 
+const handleCloseModal = async (event: boolean) => {
+  isShow.value = event
+  message.value = ''
+}
+
 const onShippingMethodChange = async (event: any) => {
   ShippingFeeText.value = event.target.value
-  emit('changeDeliveryChannel',ShippingMethodText.value,ShippingFeeText.value)
+  emit('changeDeliveryChannel', ShippingMethodText.value,ShippingFeeText.value)
   await handleCheckInsuranceRecieve()
 }
 
 watch(shippingPaperText, async (newshippingPaperType) => {
 	emit('shippingTypeChange', newshippingPaperType)
+})
+
+watch(agentAddressText, async (newAgentAddressText) => {
+  const addressSelect = agentAddressList.value.find(w => w.ID == newAgentAddressText) 
+  if(addressSelect && addressSelect.ID != '') {
+    newAddressObjectCache.value =  {
+      AddressID: addressSelect.ID,
+      ReferenceID: addressSelect.ReferenceID,
+      ReferenceType: addressSelect.ReferenceType,
+      ProvinceID: addressSelect.ProvinceID,
+      DistrictID: addressSelect.DistrictID,
+      SubDistrictID: addressSelect.SubDistrictID,
+      TaxID: addressSelect.TaxID,
+      PrefixID: '',
+      FirstName: addressSelect.FirstName,
+      LastName: addressSelect.LastName,
+      PhoneNumber: addressSelect.PhoneNumber,
+      Email: addressSelect.Email,
+      Name: addressSelect.Name,
+      Type: addressSelect.Type,
+      AddressLine1: addressSelect.AddressLine1,
+      AddressLine2: addressSelect.AddressLine2,
+      AddressText: addressSelect.AddressText,
+      No: addressSelect.No,
+      Moo: addressSelect.Moo,
+      Place: addressSelect.Place,
+      Building: addressSelect.Building,
+      Floor: addressSelect.Floor,
+      Room: addressSelect.Room,
+      Branch: addressSelect.Branch,
+      Alley: addressSelect.Alley,
+      Road: addressSelect.Road,
+      ZipCode: addressSelect.ZipCode,
+    }
+  }
+  else {
+    newAddressObjectCache.value = undefined
+  }
+  console.log('newAddressObjectCache.value', newAddressObjectCache.value)
 })
 
 const handlerChangeProvince = async (e: string) => {
@@ -211,30 +274,55 @@ const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddres
 }
 
 const setPostalAddress = async (labelAddnew: string) => {
-  agentAddress.value = [
-    {
-      label: '+ เพิ่มที่อยู่ใหม่',
-      value: 'addnew',
-      help: labelAddnew,
-      attrs: { addnewaddress: true }
-    }
-  ]
+  let index = agentAddress.value.findIndex(w => w.value == 'addnew')
+  agentAddress.value[index].help = labelAddnew
+  agentAddress.value[index].attrs = { addnewaddress: true }
+  console.log('agentAddress.value', agentAddress.value)
 }
 
 const handleSave = async (event: any) => {
-  await setPostalAddress(insureFullNewAddress.value.toString())
+  if(agentAddressText.value != '') await setPostalAddress(insureFullNewAddress.value.toString())
 
   isLoading.value = true;
-  if(isCreate) {
-    let address = newAddressObject.value as AgentAddressCreateReq
-    console.log('address', address)
-    // var response = await useRepository().agent.CreateAddress(address);
-    // if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    //   if (response.apiResponse.Data) {
-        
-    //   }
-    // }
+  if(isSubmit) {
+    if(agentAddressText.value == 'addnew') {
+      let address = newAddressObject.value as AgentAddressCreateReq
+      console.log('address create', address)
+      var resCreate = await useRepository().agent.CreateAddress(address);
+      if (resCreate.apiResponse.Status && resCreate.apiResponse.Status == "200") {
+        isShow.value = true
+        message.value = 'create success'
+      }
+    } else {
+      let address = newAddressObject.value as AgentAddressSaveReq
+      address.AddressID = agentAddressText.value
+      console.log('address save', address)
+      var resSave = await useRepository().agent.AddressSave(address);
+      if (resSave.apiResponse.Status && resSave.apiResponse.Status == "200") {
+        isShow.value = true
+        message.value = 'save success'
+      }
+    }
   }
+  isLoading.value = false;
+}
+
+const handleDelete = async (event: any) => {
+  isLoading.value = true;
+
+  if(agentAddressText.value != '' && agentAddressText.value != 'addnew') {
+    let req: AgentAddressDeleteReq = {
+      AddressID: agentAddressText.value
+    }
+    var response = await useRepository().agent.AddressDelete(req);
+    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+      isShow.value = true
+      message.value = 'Delete success'
+    }
+    await loadAgentAddress();
+    agentAddressText.value = ''
+  }
+
   isLoading.value = false;
 }
 
@@ -248,9 +336,10 @@ const loadAgentAddress = async () => {
   var response = await useRepository().agent.GetAddressList();
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if (response.apiResponse.Data) {
+      agentAddressList.value = response.apiResponse.Data
       agentAddress.value = response.apiResponse.Data.map((x) => {
         const options: RadioOption = {
-          label: `${x.OwnerFirstName} ${x.OwnerLastName}`,
+          label: `${x.FirstName} ${x.LastName}`,
           value: x.ID,
           help: `${x.No} ${x.Moo} ${x.Place} ${x.Building} 
                  ${x.Floor} ${x.Room} ${x.Branch} ${x.Alley} 
@@ -288,7 +377,6 @@ const loadPrefix = async () => {
         value: "",
         attrs: { disabled: true },
       });
-      console.log("prefix.value", prefix.value);
     } else {
       // data not found
     }
@@ -415,15 +503,10 @@ watch(
 )
 
 watch(
-  () => props.isCreate,
+  () => props.isSubmit,
   async () => {
-    if (props.isCreate) {
-      isCreate.value = props.isCreate
-      console.log('isCreate.value', isCreate.value)
-    }
+    isSubmit.value = props.isSubmit
   }
 )
-
-
 
 </script>

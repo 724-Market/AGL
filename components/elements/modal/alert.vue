@@ -14,6 +14,7 @@
   
 </template>
 <script setup>
+const emit = defineEmits(['closeModal'])
 const props = defineProps({
   message: String,
   isError:Boolean,
@@ -56,8 +57,7 @@ function closeModal() {
     {
         window.location.reload();
     }
-    
-
+    emit('closeModal', false)
     _loading.value = false
 //     const dialogLoading = document.getElementById("dialogModalAlert");
 //   if (dialogLoading) dialogLoading.close();

@@ -25,7 +25,7 @@
                 :delivery-chanel="deliveryChanels"
                 :shipping-paper-type="deliveryPaperTypes"
                 :payment-fee-limit="paymentFeeLimit"
-                :is-create="isCreate"
+                :is-submit="isSubmit"
               ></PapersExchangeHowToGetPaper>
             </div>
           </div>
@@ -106,7 +106,7 @@ const productSearchMatchAll: globalThis.Ref<SearchMatchRes[] | undefined> = ref(
 const productSearchMatch: globalThis.Ref<SearchMatchRes[] | undefined> = ref();
 const ShippingMethod = ref("");
 const ShippingFee = ref("");
-const isCreate = ref(false);
+const isSubmit = ref(false);
 const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
 
@@ -358,11 +358,11 @@ const handleCheckAddress = async (AddressReq: DeliveryAddressReq) => {
       AddressReq.DistrictID.length > 0 &&
       AddressReq.SubDistrictID.length > 0
     ) {
-      isCreate.value = true
+      isSubmit.value = true
       checklist.value[0].className = "current";
     }
     else {
-      isCreate.value = false
+      isSubmit.value = false
       checklist.value[0].className = "";
     }
   }

@@ -128,6 +128,19 @@ const onLoad = onMounted(async () => {
             };
             return options;
         });
+        const defaultValue: SelectOption[] = [
+          {
+            label: "เลือกบริษัทประกันภัย",
+            value: "",
+            attrs: { disabled: true }
+          },
+          {
+            label: 'ทั้งหมด',
+            value: "-",
+          }
+      	]
+        productCompanyOption.value = [...defaultValue, ...productCompanyOption.value];
+        CompanyText.value = '-'
     }
 });
 
@@ -262,6 +275,7 @@ watch(
           }
       	]
         productCompanyOption.value = [...defaultValue, ...productCompanyOption.value];
+        CompanyText.value = '-'
     }
   }
 )

@@ -51,20 +51,22 @@
         :modal-text="messageError"
         :modal-title="'แจ้งเตือน'"
         :modal-type="'danger'"
+        @on-continue="handlerError"
       ></ElementsDialogModal>
     </section>
   </div>
 </template>
 <script lang="ts" setup>
 import { IChecklist } from "~/shared/entities/checklist-entity"
+import { ErrorCodeRes } from "~/shared/entities/error-entity";
 import {  DeliveryAddressReq, ExchangeDataSummary, OrderExchangeCreateReq, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
 import { useStoreSearchMatchCompulsory } from "~/stores/paper/storeSearchMatchCompulsory";
 
 const messageError = ref('')
 const isError = ref(false)
 const storeSearchMatchCompulsory = useStoreSearchMatchCompulsory();
-
-const emits = defineEmits(['onSelectMatch'])
+const errorRes:globalThis.Ref<ErrorCodeRes | undefined> = ref()
+const emits = defineEmits(['onSelectMatch','onHandleError'])
 const props = defineProps({
 	checkList: Array<IChecklist>,
   matchAllList:Array<SearchMatchRes>,
@@ -91,14 +93,22 @@ const onContinue = async ()=>{
       router.push({ path: "/papers/thanks" });
     }
     else{
-      messageError.value = useMapData().mappingMessageError(response.ErrorCode ?? "",response.ErrorMessage ?? "")
+      errorRes.value = useMapData().mappingMessageError(response.ErrorCode ?? "",response.ErrorMessage ?? "")
+      messageError.value = errorRes.value.MessageResponse
       isError.value = true
     }
 
 }
+const handlerError = ()=>{
+if(errorRes.value){
+  if(errorRes.value.option=="OUT_OF_STOCK"){
+    emits('onHandleError')
+  }
+}
+}
 const handlerCheckSave = (check: boolean) => {
-  //checkSave.value = check;
-  checkSave.value = true;
+  checkSave.value = check;
+  //checkSave.value = true;
 };
 </script>
 <style scoped>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card" v-for="(item,i) in props.productMatchList" :key="i">
+    <div class="card" v-for="(item,i) in exchangeDataList" :key="i">
       <div class="card-body">
         <div class="package-item-new is-paper">
           <div class="detail">
@@ -125,6 +125,7 @@ const props = defineProps({
 
 const storeExchange = useStoreExchangeDataInfo();
 const exchangeDataList:globalThis.Ref<SearchMatchRes[]> =ref([])
+  const tempExchangeDataList:globalThis.Ref<SearchMatchRes[]> =ref([])
 const onLoad = onMounted(()=>{
 
   //loadExchangeDataList()
@@ -141,6 +142,33 @@ watch(()=>props.productMatchList,()=>{
   }
 
   //loadExchangeDataList()
+},{deep:true})
+watch(()=>storeExchange.$state,()=>{
+  console.log(storeExchange.$state)
+  tempExchangeDataList.value = [];
+  if(storeExchange.$state.length>0 && props.productMatchList)
+  {
+    const productMatchList = props.productMatchList
+
+    for(let i=0;i<productMatchList.length;i++)
+    {
+      const value=productMatchList[i]
+      const filter = storeExchange.$state.filter(x=>x.Item.ProductID===value.ProductID && x.Item.WarehouseID===value.WarehouseID)
+      if(filter.length>0)
+      {
+        const temp = {...value}
+        temp.ProductOnHandAmount = value.ProductOnHandAmount - filter[0].Item.Amount
+        tempExchangeDataList.value.push(temp)
+        
+      }
+    }
+    //exchangeDataList.value = productMatchList
+
+  }
+},{deep:true})
+watch(tempExchangeDataList,()=>{
+  exchangeDataList.value = tempExchangeDataList.value
+
 })
 // watch(
 //   () => storeExchange.$state,

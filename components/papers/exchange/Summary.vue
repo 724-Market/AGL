@@ -104,12 +104,14 @@ import { ModalType } from "~/shared/entities/enum-entity";
 import {  CalculateGrandTotal, ExchangeDataSummary, PaymentFeeLimitRes } from "~/shared/entities/paper-entity";
 
 import { SearchMatchRes } from "~/shared/entities/paper-entity";
+import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo";
 
 const isDeleteConfirm = ref(false)
 const textDeleteConfirm=ref('')
 const itemSelection:globalThis.Ref<ExchangeDataSummary | undefined> = ref()
 const list:globalThis.Ref<ExchangeDataSummary[]> = ref([])
 const cal:globalThis.Ref<CalculateGrandTotal|undefined> = ref()
+const storeExchange = useStoreExchangeDataInfo();
 const props = defineProps({
   matchAllList:Array<SearchMatchRes>,
   exchangeData:Array<ExchangeDataSummary>,
@@ -148,12 +150,13 @@ const onDeleteConfirm = async()=>{
 const onCloseConfirm = async()=>{
   isDeleteConfirm.value = false
 }
+const onLoadExchangetoStore = () => {
+  list.value=[]
+  list.value = storeExchange.$state;
+  
+};
 watch(()=>props.exchangeData,()=>{
-  if(props.exchangeData)
-  {
-    list.value=[]
-    list.value  =props.exchangeData
-  }
+  onLoadExchangetoStore()
   onCalculate()
 
 },

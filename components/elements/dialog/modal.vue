@@ -3,7 +3,7 @@
     <div class="dialog-card">
       <!-- Add class 'is-info', 'is-success', 'is-warning', 'is-danger' for color styling -->
       <div class="card-header">
-        <button class="btn btn-close btn-close-modal">ปิด</button>
+        <button type="button" class="btn btn-close btn-close-modal">ปิด</button>
       </div>
       <div class="card-body">
         <figure v-if="$props.modalType == 'success'" class="dialog-icon">
@@ -40,6 +40,8 @@
 </template>
 
 <script setup>
+const emit = defineEmits(['onContinue'])
+
 const props = defineProps({
   modalType: String,
   modalTitle: String,
@@ -66,8 +68,10 @@ function showDialogModal() {
 }
 
 function hiddenDialogModal() {
+  emit('onContinue')
   const dialogModal = document.getElementById("modal-dialog");
   if (dialogModal) dialogModal.close();
+
 }
 watch(
   () => props.modalShow,

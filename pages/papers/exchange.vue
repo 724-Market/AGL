@@ -59,6 +59,7 @@
           :payment-fee-limit="paymentFeeLimit"
           :delivery-type="type"
           :addr-agent="addrAgent"
+          @on-handle-error="handleError"
         ></PapersExchangeSlideBar>
       </div>
     </FormKit>
@@ -144,6 +145,9 @@ const checklist: globalThis.Ref<IChecklist[]> = ref([
   },
 ]);
 const exchangeData: globalThis.Ref<ExchangeDataSummary[]> = ref([]);
+const textProductSubCategory = ref('')
+const textProductCategory = ref('')
+const textProductCompany = ref('')
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
     await loadDeliveryChanel();
@@ -234,6 +238,7 @@ const onChangePaperArea = async (areaId: string) => {
   }
   await clearStore();
   await usePagePaper().onClearExchangePaper();
+  checklist.value[1].className="";
   isLoading.value = false;
 };
 
@@ -253,6 +258,7 @@ const onChangeWareHouse = async (wareHouseId: string, areaId: string) => {
   }
   await clearStore();
   await usePagePaper().onClearExchangePaper();
+  checklist.value[1].className="";
   isLoading.value = false;
 };
 
@@ -260,6 +266,8 @@ const onChangeProductSubcategory = async (
   productSubCategory: string,
   productCategory: string
 ) => {
+  textProductCategory.value = productCategory
+  textProductSubCategory.value = productSubCategory
   isLoading.value = true;
 
   let reqProductcompany: ProductcompanyAreaListReq = {
@@ -319,7 +327,7 @@ const onChangeProductSubcategory = async (
 
 const onChangeProductCompany = async (productCompany: string) => {
   isLoading.value = true;
-
+  textProductCompany.value = productCompany
   productSearchMatch.value = productSearchMatchAll.value?.filter((obj) => {
     return obj.ProductCompany == productCompany || productCompany == "-";
   });
@@ -346,6 +354,8 @@ const clearStore = async () => {
   productSearchMatchAll.value = [];
   productSearchMatch.value = [];
   exchangeData.value = [];
+
+  
 };
 
 const handleCheckAddress = async (AddressReq: DeliveryAddressReq) => {
@@ -370,6 +380,22 @@ const handleCheckAddress = async (AddressReq: DeliveryAddressReq) => {
     }
   }
 };
+const handleError = async()=>{
+  let reqSearchMatch: SearchMatchReq = {
+    AreaID: area.value,
+    WarehouseID: wareHouse.value,
+    ProductCategory: textProductCategory.value,
+    ProductSubCategory: textProductSubCategory.value,
+  };
+  productSearchMatchAll.value = (
+        await storeSearchMatchCompulsory.getSearchMatch(reqSearchMatch)
+      ).Data;
+  
+      productSearchMatch.value = productSearchMatchAll.value?.filter((obj) => {
+    return obj.ProductCompany == textProductCompany.value || textProductCompany.value == "-";
+  });
+}
+
 // // Submit form event
 // const submitOrder = async () => {
 //   // Add waiting time for debug

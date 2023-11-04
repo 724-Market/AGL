@@ -33,7 +33,7 @@
                 <button class="btn-gray btn-cancel-modal">ยกเลิก</button>
             </div>-->
       <div class="card-footer">
-        <button class="btn-primary btn-cancel-modal">ตกลง</button>
+        <button type="button" class="btn-primary btn-cancel-modal">ตกลง</button>
       </div>
     </div>
   </dialog>

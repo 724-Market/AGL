@@ -16,7 +16,8 @@ export default () => {
         await storeExchange.changeExchangeData(item)
     }
     const onClearExchangePaper = async () => {
-        storeExchange.$state = [];
+        const count = storeExchange.$state.length;
+        storeExchange.$state.splice(0,count);
         //await storeExchange.clearExchangeData();
     }
     const mappingExchangeConfirmRequest = (deliveryType: string, shippingMethod: string, addr?: DeliveryAddressReq): OrderExchangeCreateReq => {

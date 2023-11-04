@@ -1,4 +1,5 @@
 import { ModalType } from "~/shared/entities/enum-entity";
+import { ErrorCodeRes, ErrorMessageReplace } from "~/shared/entities/error-entity";
 import { Filter } from "~/shared/entities/table-option";
 
 export default () => {
@@ -197,6 +198,70 @@ export default () => {
         }   
         return data
     }
+    const mappingMessageError = (errorCode:string,errorMessage:string):string=>{
+        // add mapping error Code Message here
+        const data:ErrorCodeRes[] = [
+            {
+                ErrorCode:"90000999",
+                ErrorMessageReplace:[
+                {
+                    replaceMessage:"Paper quantity between",
+                    toMessage:"จำนวนกระดาษให้กรอกอยู่ในช่วง"
+                },
+                {
+                    replaceMessage:"\\[1\\]",
+                    toMessage:""
+                },
+                ],
+                ErrorMessage:"Paper quantity between 1 - 100. [1]",
+                MessageResponse:"@0",
+            },
+            {
+                ErrorCode:"3502999",
+                ErrorMessageReplace:[{
+                    replaceMessage:"Paper quantity must more than 0. \\[1\\]",
+                    toMessage:"ปริมาณกระดาษต้องมากกว่า 0"
+                },
+                ],
+                ErrorMessage:"Paper quantity must more than 0. [1]",
+                MessageResponse:"@0",
+            },
+            {
+            ErrorCode:"3501999",
+            ErrorMessageReplace:[
+                {
+                replaceMessage:"Insufficient balance. Request",
+                toMessage:"ยอดเงินคงเหลือไม่พอ ต้องการ"
+            },
+            {
+                replaceMessage:"/ Available",
+                toMessage:" บาท คงเหลือ"
+            }],
+            ErrorMessage:"Insufficient balance. Request 1000.000/ Available 71.69",
+            MessageResponse:"@0 บาท",
+        }]
+        // filter error code from api response
+        const item = data.filter(x=>x.ErrorCode===errorCode)
+        let message=errorMessage;
+        if(item.length>0)
+        {
+            // replace message from ErrorMessageReplace
+            const textReplace =  replaceMessageError(errorMessage,item[0].ErrorMessageReplace)
+            // response message error to text replace
+            message =item[0].MessageResponse.replaceAll(new RegExp('@0','gi') ,textReplace)
+        }
+
+        return message;
+    }
+    const replaceMessageError = (message:string,replaces:ErrorMessageReplace[]):string=>{
+        let text=message;
+        for(let i=0;i<replaces.length;i++)
+        {
+            const reg = new RegExp(replaces[i].replaceMessage, 'gi')
+            text = text.replaceAll(reg,replaces[i].toMessage);
+        }
+        return text;
+    }
    
     return {
         getOrderType,
@@ -204,7 +269,8 @@ export default () => {
         getFilterSearchHistory,
         getStyleColor,
         getStyleButtonColor,
-        getStyleIconColor
+        getStyleIconColor,
+        mappingMessageError
         // covertQueryStringToJsonHistory,
         // getJsonTableHistory
     }

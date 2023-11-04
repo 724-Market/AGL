@@ -58,6 +58,7 @@
           :shipping-method="ShippingMethod"
           :payment-fee-limit="paymentFeeLimit"
           :delivery-type="type"
+          :addr-agent="addrAgent"
         ></PapersExchangeSlideBar>
       </div>
     </FormKit>
@@ -95,6 +96,7 @@ import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo";
 const deliveryChanels: globalThis.Ref<IDeliveryResponse[] | undefined> = ref();
 const deliveryPaperTypes: globalThis.Ref<DeliveryPaperRes[] | undefined> = ref();
 const paymentFeeLimit: globalThis.Ref<PaymentFeeLimitRes[] | undefined> = ref();
+const addrAgent:globalThis.Ref<DeliveryAddressReq|undefined> = ref();
 
 const paperAreas: globalThis.Ref<AreaListRes[] | undefined> = ref();
 const warehouses: globalThis.Ref<WarehouseAreaListRes[] | undefined> = ref();
@@ -348,6 +350,7 @@ const clearStore = async () => {
 
 const handleCheckAddress = async (AddressReq: DeliveryAddressReq) => {
   console.log('AddressReq', AddressReq)
+  addrAgent.value = AddressReq
   if (AddressReq && ShippingMethod.value) {
     if (
       AddressReq.PhoneNumber.length > 0 &&

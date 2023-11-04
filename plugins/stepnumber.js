@@ -13,6 +13,7 @@ const numberInputSchema = [
       children: '-'
     }],
     attrs: {
+      type:'button',
       class: '$classes.stepInput',
       onClick: '$handlers.updateValue(-1)'
     }
@@ -38,6 +39,7 @@ const numberInputSchema = [
       children: '+'
     }],
     attrs: {
+      type:'button',
       class: '$classes.stepInput',
       onClick: '$handlers.updateValue(1)'
     }

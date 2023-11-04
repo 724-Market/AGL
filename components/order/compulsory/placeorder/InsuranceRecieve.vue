@@ -105,7 +105,12 @@
                       v-model="postalAddressPolicyText"
                       :options="postalAddressPolicy"
                       options-class="option-block-stack"
-                    />
+                    >
+                      <template #label="context">
+                      <div class="ml-2">{{context.option.label}}</div>
+                      <button>ลบ</button>
+                      </template>
+                    </FormKit>
                   </div>
 
                   <aside v-if="isAddnew" class="new-shipping-address inner-section">

@@ -8,12 +8,13 @@
             <div class="modal-body" style="height:150px">
               <div class="notice-warning"><i class="fa-thin fa-triangle-exclamation"></i>{{ message }}</div>
             </div>
-            <button class="btn-primary" @click="closeModal">ตกลง</button>
+            <button class="btn-primary" type="button" @click="closeModal">ตกลง</button>
         </div>
     </div>
   
 </template>
 <script setup>
+const emit = defineEmits(['closeModal'])
 const props = defineProps({
   message: String,
   isError:Boolean,
@@ -56,8 +57,7 @@ function closeModal() {
     {
         window.location.reload();
     }
-    
-
+    emit('closeModal', false)
     _loading.value = false
 //     const dialogLoading = document.getElementById("dialogModalAlert");
 //   if (dialogLoading) dialogLoading.close();

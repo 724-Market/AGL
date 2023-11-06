@@ -16,19 +16,15 @@
     >
       <div class="row">
         <div class="col">
-          <div class="card">
-            <div class="card-body">
-              <PapersExchangeHowToGetPaper
-                @shipping-type-change="onChangeShippingPaperType"
-                @change-delivery-channel="onChangeDeliveryChannel"
-                @check-address="handleCheckAddress"
-                :delivery-chanel="deliveryChanels"
-                :shipping-paper-type="deliveryPaperTypes"
-                :payment-fee-limit="paymentFeeLimit"
-                :is-submit="isSubmit"
-              ></PapersExchangeHowToGetPaper>
-            </div>
-          </div>
+          <PapersExchangeHowToGetPaper
+            @shipping-type-change="onChangeShippingPaperType"
+            @change-delivery-channel="onChangeDeliveryChannel"
+            @check-address="handleCheckAddress"
+            :delivery-chanel="deliveryChanels"
+            :shipping-paper-type="deliveryPaperTypes"
+            :payment-fee-limit="paymentFeeLimit"
+            :is-submit="isSubmit"
+          ></PapersExchangeHowToGetPaper>
 
           <ElementsFormPaperBranchStock
             v-if="type != ''"

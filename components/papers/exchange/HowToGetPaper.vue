@@ -1,102 +1,127 @@
 <template>
-    <div class="accordion" id="accordion-shipping">
-		<div class="accordion-item">
+  <div class="card">
+    <div class="card-body">
 
-			<h2 class="accordion-header">
-				<button class="accordion-button" type="button" data-bs-toggle="collapse"
-					data-bs-target="#collapse-shipping" aria-expanded="true"
-					aria-controls="collapse-shipping">วิธีการรับกระดาษ</button>
-			</h2>
+      <div class="accordion" id="accordion-shipping">
+        <div class="accordion-item">
 
-			<div id="collapse-shipping" class="accordion-collapse collapse show" data-bs-parent="#accordion-shipping">
-				<div class="accordion-body">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapse-shipping" aria-expanded="true"
+              aria-controls="collapse-shipping">วิธีการรับกระดาษ</button>
+          </h2>
 
-					<div class="form-placeorder">
-						<div class="form-hide-label">
-							<ElementsFormRadioShippingPaper :option="shippingPaperTypeOption" v-model="shippingPaperText" />
-						</div>
+          <div id="collapse-shipping" class="accordion-collapse collapse show" data-bs-parent="#accordion-shipping">
+            <div class="accordion-body">
 
-						<section class="shipping-method" v-if="shippingPaperText == 'DELIVERY'">
-							<h3>วิธีการจัดส่ง</h3>
-							<div class="row">
-								<div class="col-12">
-									<div class="notice-info">
-                    <i class="fa-regular fa-circle-info"></i>
-                    <u>ฟรี</u>
-										ค่าจัดส่ง
-										เมื่อแลกกระดาษเกิน {{ paymentFeeLimitMin }} บาทขึ้นไป
-                  </div>
-								</div>
-								<div class="col-6">
-									<FormKit type="select" label="ช่องทางการจัดส่ง" name="ShippingMethod" placeholder="ช่องทางการจัดส่ง" 
-										:options="shippingMethodOption" v-model="ShippingMethodText" @change="onShippingMethodChange"
-                                        validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
-								</div>
-								<div class="col-6">
-									<FormKit type="text" label="ค่าจัดส่ง" name="ShippingFee" placeholder="ค่าจัดส่ง"
-										v-model="ShippingFeeText" readonly />
-								</div>
-							</div>
-						</section>
+              <div class="form-placeorder">
+                <div class="form-hide-label">
+                  <ElementsFormRadioShippingPaper :option="shippingPaperTypeOption" v-model="shippingPaperText" />
+                </div>
 
-						<section class="shipping-address" v-if="shippingPaperText == 'DELIVERY'">
-              <div class="card-header card-header-btn">
-                  <div>
-                    <h3>ที่อยู่สำหรับจัดส่ง</h3>
+                <section class="shipping-method" v-if="shippingPaperText == 'DELIVERY'">
+                  <h3>วิธีการจัดส่ง</h3>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="notice-info">
+                        <i class="fa-regular fa-circle-info"></i>
+                        <u>ฟรี</u>
+                        ค่าจัดส่ง
+                        เมื่อแลกกระดาษเกิน {{ paymentFeeLimitMin }} บาทขึ้นไป
+                      </div>
                     </div>
-                  <div class="mb-4">
+                    <div class="col-6">
+                      <FormKit type="select" label="ช่องทางการจัดส่ง" name="ShippingMethod" placeholder="ช่องทางการจัดส่ง" 
+                        :options="shippingMethodOption" v-model="ShippingMethodText" @change="onShippingMethodChange"
+                                            validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                    </div>
+                    <div class="col-6">
+                      <FormKit type="text" label="ค่าจัดส่ง" name="ShippingFee" placeholder="ค่าจัดส่ง"
+                        v-model="ShippingFeeText" readonly />
+                    </div>
+                  </div>
+                </section>
+
+                <section class="shipping-address" v-if="shippingPaperText == 'DELIVERY'">
+                  <div class="card-header card-header-btn">
+                      <div>
+                        <h3>ที่อยู่สำหรับจัดส่ง</h3>
+                      </div>
+                      <div class="d-flex justify-content-end">
+                        <div class="m-1">
+                          <button 
+                            type="button" 
+                            class="btn btn-warning" 
+                            @click="handleEdit"
+                            :disabled="agentAddressText == '' || agentAddressText == 'addnew'"
+                          >แก้ไข</button>
+                        </div>
+                        <div class="m-1">
+                          <button 
+                            type="button" 
+                            class="btn btn-danger" 
+                            @click="handleDelete"
+                            :disabled="agentAddressText == '' || agentAddressText == 'addnew'"
+                          >ลบ</button>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="form-hide-label">
+                    <FormKit 
+                      type="radio" 
+                      label="รายชื่อที่อยู่" 
+                      name="agentAddress"
+                      :options="agentAddress"
+                      v-model="agentAddressText"
+                      options-class="option-block-stack" />
+                  </div>
+                  <aside class="new-shipping-address inner-section" v-if="isShowComponentAddress">
+                    <h4>ที่อยู่จัดส่งใหม่</h4>
+                    <div class="row">
+                      <ElementsFormNewAddress 
+                        element-key="delivery"
+                        :prefix="prefix"
+                        :addr-province="addrProvince"
+                        :addr-district="addrDistrict"
+                        :addr-sub-district="addrSubDistrict"
+                        :addr-zip-code="addrZipCode"
+                        :default-address-cache="newAddressObjectCache"
+                        @change-province="handlerChangeProvince"
+                        @change-district="handlerChangeDistrict"
+                        @change-sub-district="handlerChangeSubDistrict"
+                        @change-full-address="handlerChangeFullAddress"
+                      />
+                    </div>
                     <button 
                       type="button" 
-                      class="btn btn-danger" 
-                      @click="handleDelete"
-                      :disabled="agentAddressText == '' || agentAddressText == 'addnew'"
-                    >ลบ</button>
-                  </div>
+                      label="บันทึกข้อมูล"
+                      class="btn btn-primary"
+                      @click="handleSave"
+                      :loading="isLoading" 
+                      :disabled="!isSubmit"
+                    >บันทึกข้อมูล</button>
+                  </aside>
+                </section>
+
               </div>
-							<div class="form-hide-label">
-								<FormKit 
-                  type="radio" 
-                  label="รายชื่อที่อยู่" 
-                  name="agentAddress"
-                  :options="agentAddress"
-                  v-model="agentAddressText"
-									options-class="option-block-stack" />
-							</div>
-							<aside class="new-shipping-address inner-section" v-if="agentAddressText != ''">
-								<h4>ที่อยู่จัดส่งใหม่</h4>
-								<div class="row">
-									<ElementsFormNewAddress 
-										element-key="delivery"
-										:prefix="prefix"
-										:addr-province="addrProvince"
-										:addr-district="addrDistrict"
-										:addr-sub-district="addrSubDistrict"
-										:addr-zip-code="addrZipCode"
-                    :default-address-cache="newAddressObjectCache"
-										@change-province="handlerChangeProvince"
-										@change-district="handlerChangeDistrict"
-										@change-sub-district="handlerChangeSubDistrict"
-										@change-full-address="handlerChangeFullAddress"
-									/>
-								</div>
-								<button 
-									type="button" 
-                  label="บันทึกข้อมูล"
-                  @click="handleSave"
-                  class="btn btn-primary"
-									:loading="isLoading" 
-                  :disabled="!isSubmit"
-								>บันทึกข้อมูล</button>
-							</aside>
-						</section>
 
-					</div>
+            </div>
+          </div>
 
-				</div>
-			</div>
-
-		</div>
-	</div>
+        </div>
+      </div>
+      <div class="m-2 d-flex justify-content-end" v-if="isAcdordian">
+        <button 
+          type="button" 
+          label="OK"
+          class="btn btn-primary"
+          @click="handleAcdordian"
+          :loading="isLoading" 
+          :disabled="!isAcdordian"
+        >OK</button>
+      </div>
+    </div>
+  </div>
   <ElementsModalAlert v-if="isShow" :is-error="isShow" :message="message" :reload="false" @close-modal="handleCloseModal" />
 </template>
 
@@ -139,9 +164,11 @@ var ShippingFeeText = ref(0)
 var isSubmit = ref(false)
 var isLoading = ref(false)
 
+var isAcdordian = ref(false)
 const agentAddress: globalThis.Ref<RadioOption[]> = ref([]); 
 const agentAddressList: globalThis.Ref<AgentAddressListRes[]> = ref([]);
 var agentAddressText = ref("")
+var isShowComponentAddress = ref(false)
 const prefix: globalThis.Ref<SelectOption[]> = ref([]);
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([]);
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([]);
@@ -190,51 +217,32 @@ const handleCloseModal = async (event: boolean) => {
   message.value = ''
 }
 
+const handleAcdordian = async (event: boolean) => {
+  const acordian = document.getElementById("collapse-shipping");
+  if(acordian) acordian.classList.remove("show");
+  // emit('shippingTypeChange', shippingPaperText.value)
+}
+
+watch(shippingPaperText, async (newshippingPaperType) => {
+  agentAddressText.value = ''
+  isShowComponentAddress.value = false
+  if(newshippingPaperType == 'WALKIN') isAcdordian.value = true
+	emit('shippingTypeChange', newshippingPaperType)
+})
+
 const onShippingMethodChange = async (event: any) => {
   ShippingFeeText.value = event.target.value
   emit('changeDeliveryChannel', ShippingMethodText.value,ShippingFeeText.value)
   await handleCheckInsuranceRecieve()
 }
 
-watch(shippingPaperText, async (newshippingPaperType) => {
-	emit('shippingTypeChange', newshippingPaperType)
-})
-
 watch(agentAddressText, async (newAgentAddressText) => {
-  const addressSelect = agentAddressList.value.find(w => w.ID == newAgentAddressText) 
-  if(addressSelect && addressSelect.ID != '') {
-    newAddressObjectCache.value =  {
-      AddressID: addressSelect.ID,
-      ReferenceID: addressSelect.ReferenceID,
-      ReferenceType: addressSelect.ReferenceType,
-      ProvinceID: addressSelect.ProvinceID,
-      DistrictID: addressSelect.DistrictID,
-      SubDistrictID: addressSelect.SubDistrictID,
-      TaxID: addressSelect.TaxID,
-      PrefixID: '',
-      FirstName: addressSelect.FirstName,
-      LastName: addressSelect.LastName,
-      PhoneNumber: addressSelect.PhoneNumber,
-      Email: addressSelect.Email,
-      Name: addressSelect.Name,
-      Type: addressSelect.Type,
-      AddressLine1: addressSelect.AddressLine1,
-      AddressLine2: addressSelect.AddressLine2,
-      AddressText: addressSelect.AddressText,
-      No: addressSelect.No,
-      Moo: addressSelect.Moo,
-      Place: addressSelect.Place,
-      Building: addressSelect.Building,
-      Floor: addressSelect.Floor,
-      Room: addressSelect.Room,
-      Branch: addressSelect.Branch,
-      Alley: addressSelect.Alley,
-      Road: addressSelect.Road,
-      ZipCode: addressSelect.ZipCode,
-    }
+  if(newAgentAddressText == 'addnew') {
+    newAddressObjectCache.value = undefined
+    isShowComponentAddress.value = true
   }
   else {
-    newAddressObjectCache.value = undefined
+    isShowComponentAddress.value = false
   }
   console.log('newAddressObjectCache.value', newAddressObjectCache.value)
 })
@@ -274,14 +282,27 @@ const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddres
 }
 
 const setPostalAddress = async (labelAddnew: string) => {
-  let index = agentAddress.value.findIndex(w => w.value == 'addnew')
-  agentAddress.value[index].help = labelAddnew
-  agentAddress.value[index].attrs = { addnewaddress: true }
+  agentAddress.value = agentAddressList.value.map((x) => {
+    const options: RadioOption = {
+      label: `${x.FirstName} ${x.LastName}`,
+      value: x.ID,
+      help: `${x.No} ${x.Moo} ${x.Place} ${x.Building} 
+             ${x.Floor} ${x.Room} ${x.Branch} ${x.Alley} 
+             ${x.Road} ${x.ProvinceName} ${x.DistrictName} ${x.SubDistrictName} 
+             ${x.ZipCode ?? ''}`
+    };
+    return options;
+  });
+  agentAddress.value.push({
+    label: '+ เพิ่มที่อยู่ใหม่',
+    value: 'addnew',
+    help: labelAddnew
+  })
   console.log('agentAddress.value', agentAddress.value)
 }
 
 const handleSave = async (event: any) => {
-  if(agentAddressText.value != '') await setPostalAddress(insureFullNewAddress.value.toString())
+  if(agentAddressText.value == 'addnew') await setPostalAddress(insureFullNewAddress.value.toString())
 
   isLoading.value = true;
   if(isSubmit) {
@@ -301,10 +322,48 @@ const handleSave = async (event: any) => {
       if (resSave.apiResponse.Status && resSave.apiResponse.Status == "200") {
         isShow.value = true
         message.value = 'save success'
+        await loadAgentAddress()
       }
     }
+    isShowComponentAddress.value = false
   }
   isLoading.value = false;
+}
+
+const handleEdit = async (event: any) => {
+  const addressSelect = agentAddressList.value.find(w => w.ID == agentAddressText.value) 
+  if(addressSelect && addressSelect.ID != '') {
+    isShowComponentAddress.value = true
+    newAddressObjectCache.value =  {
+      AddressID: addressSelect.ID,
+      ReferenceID: addressSelect.ReferenceID,
+      ReferenceType: addressSelect.ReferenceType,
+      ProvinceID: addressSelect.ProvinceID,
+      DistrictID: addressSelect.DistrictID,
+      SubDistrictID: addressSelect.SubDistrictID,
+      TaxID: addressSelect.TaxID,
+      PrefixID: '',
+      FirstName: addressSelect.FirstName,
+      LastName: addressSelect.LastName,
+      PhoneNumber: addressSelect.PhoneNumber,
+      Email: addressSelect.Email,
+      Name: addressSelect.Name,
+      Type: addressSelect.Type,
+      AddressLine1: addressSelect.AddressLine1,
+      AddressLine2: addressSelect.AddressLine2,
+      AddressText: addressSelect.AddressText,
+      No: addressSelect.No,
+      Moo: addressSelect.Moo,
+      Place: addressSelect.Place,
+      Building: addressSelect.Building,
+      Floor: addressSelect.Floor,
+      Room: addressSelect.Room,
+      Branch: addressSelect.Branch,
+      Alley: addressSelect.Alley,
+      Road: addressSelect.Road,
+      ZipCode: addressSelect.ZipCode,
+    }
+  }
 }
 
 const handleDelete = async (event: any) => {
@@ -319,7 +378,7 @@ const handleDelete = async (event: any) => {
       isShow.value = true
       message.value = 'Delete success'
     }
-    await loadAgentAddress();
+    await loadAgentAddress()
     agentAddressText.value = ''
   }
 
@@ -337,7 +396,7 @@ const loadAgentAddress = async () => {
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if (response.apiResponse.Data) {
       agentAddressList.value = response.apiResponse.Data
-      agentAddress.value = response.apiResponse.Data.map((x) => {
+      agentAddress.value = agentAddressList.value.map((x) => {
         const options: RadioOption = {
           label: `${x.FirstName} ${x.LastName}`,
           value: x.ID,

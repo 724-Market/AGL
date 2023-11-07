@@ -61,7 +61,7 @@
                             type="button" 
                             class="btn btn-danger" 
                             @click="handleDelete"
-                            :disabled="agentAddressText == '' || agentAddressText == 'addnew'"
+                            :disabled="agentAddressText == '' || agentAddressText == 'addnew' || isEditMode"
                           >ลบ</button>
                         </div>
                       </div>
@@ -165,6 +165,8 @@ var isSubmit = ref(false)
 var isLoading = ref(false)
 
 var isAcdordian = ref(false)
+var isEditMode = ref(false)
+
 const agentAddress: globalThis.Ref<RadioOption[]> = ref([]); 
 const agentAddressList: globalThis.Ref<AgentAddressListRes[]> = ref([]);
 var agentAddressText = ref("")
@@ -217,17 +219,24 @@ const handleCloseModal = async (event: boolean) => {
   message.value = ''
 }
 
-const handleAcdordian = async (event: boolean) => {
+const handleAcdordian = async () => {
   const acordian = document.getElementById("collapse-shipping");
-  if(acordian) acordian.classList.remove("show");
-  // emit('shippingTypeChange', shippingPaperText.value)
+  if(acordian) {
+    acordian.classList.remove("show");
+    isAcdordian.value = false
+    emit('shippingTypeChange', shippingPaperText.value)
+  }
 }
 
 watch(shippingPaperText, async (newshippingPaperType) => {
   agentAddressText.value = ''
   isShowComponentAddress.value = false
-  if(newshippingPaperType == 'WALKIN') isAcdordian.value = true
-	emit('shippingTypeChange', newshippingPaperType)
+  if(newshippingPaperType == 'WALKIN') {
+    emit('shippingTypeChange', newshippingPaperType)
+  } 
+  else {
+    emit('shippingTypeChange', 'clear')
+  }
 })
 
 const onShippingMethodChange = async (event: any) => {
@@ -239,12 +248,51 @@ const onShippingMethodChange = async (event: any) => {
 watch(agentAddressText, async (newAgentAddressText) => {
   if(newAgentAddressText == 'addnew') {
     newAddressObjectCache.value = undefined
+    newAddressObject.value = undefined
     isShowComponentAddress.value = true
+    isAcdordian.value = false
   }
   else {
+    const addressSelect = agentAddressList.value.find(w => w.ID == agentAddressText.value) 
+    if(addressSelect && addressSelect.ID != '') {
+      newAddressObjectCache.value =  {
+        AddressID: addressSelect.ID,
+        ReferenceID: addressSelect.ReferenceID,
+        ReferenceType: addressSelect.ReferenceType,
+        ProvinceID: addressSelect.ProvinceID,
+        DistrictID: addressSelect.DistrictID,
+        SubDistrictID: addressSelect.SubDistrictID,
+        TaxID: addressSelect.TaxID,
+        PrefixID: '',
+        FirstName: addressSelect.FirstName,
+        LastName: addressSelect.LastName,
+        PhoneNumber: addressSelect.PhoneNumber,
+        Email: addressSelect.Email,
+        Name: addressSelect.Name,
+        Type: addressSelect.Type,
+        AddressLine1: addressSelect.AddressLine1,
+        AddressLine2: addressSelect.AddressLine2,
+        AddressText: addressSelect.AddressText,
+        No: addressSelect.No,
+        Moo: addressSelect.Moo,
+        Place: addressSelect.Place,
+        Building: addressSelect.Building,
+        Floor: addressSelect.Floor,
+        Room: addressSelect.Room,
+        Branch: addressSelect.Branch,
+        Alley: addressSelect.Alley,
+        Road: addressSelect.Road,
+        ZipCode: addressSelect.ZipCode,
+      }
+      newAddressObject.value = newAddressObjectCache.value 
+      // emit('shippingTypeChange', shippingPaperText.value)
+    }
     isShowComponentAddress.value = false
+    isAcdordian.value = true
   }
-  console.log('newAddressObjectCache.value', newAddressObjectCache.value)
+  isEditMode.value = false
+  await handleCheckInsuranceRecieve()
+  // console.log('newAddressObjectCache.value', newAddressObjectCache.value)
 })
 
 const handlerChangeProvince = async (e: string) => {
@@ -298,7 +346,6 @@ const setPostalAddress = async (labelAddnew: string) => {
     value: 'addnew',
     help: labelAddnew
   })
-  console.log('agentAddress.value', agentAddress.value)
 }
 
 const handleSave = async (event: any) => {
@@ -308,8 +355,8 @@ const handleSave = async (event: any) => {
   if(isSubmit) {
     if(agentAddressText.value == 'addnew') {
       let address = newAddressObject.value as AgentAddressCreateReq
-      console.log('address create', address)
       var resCreate = await useRepository().agent.CreateAddress(address);
+      console.log('resCreate', resCreate)
       if (resCreate.apiResponse.Status && resCreate.apiResponse.Status == "200") {
         isShow.value = true
         message.value = 'create success'
@@ -317,7 +364,6 @@ const handleSave = async (event: any) => {
     } else {
       let address = newAddressObject.value as AgentAddressSaveReq
       address.AddressID = agentAddressText.value
-      console.log('address save', address)
       var resSave = await useRepository().agent.AddressSave(address);
       if (resSave.apiResponse.Status && resSave.apiResponse.Status == "200") {
         isShow.value = true
@@ -325,44 +371,49 @@ const handleSave = async (event: any) => {
         await loadAgentAddress()
       }
     }
+    isEditMode.value = false
+    isAcdordian.value = true
     isShowComponentAddress.value = false
   }
   isLoading.value = false;
 }
 
 const handleEdit = async (event: any) => {
-  const addressSelect = agentAddressList.value.find(w => w.ID == agentAddressText.value) 
-  if(addressSelect && addressSelect.ID != '') {
+  isAcdordian.value = false
+  // const addressSelect = agentAddressList.value.find(w => w.ID == agentAddressText.value) 
+  if(newAddressObjectCache.value && newAddressObjectCache.value.AddressID != '') {
+    isEditMode.value = true
     isShowComponentAddress.value = true
-    newAddressObjectCache.value =  {
-      AddressID: addressSelect.ID,
-      ReferenceID: addressSelect.ReferenceID,
-      ReferenceType: addressSelect.ReferenceType,
-      ProvinceID: addressSelect.ProvinceID,
-      DistrictID: addressSelect.DistrictID,
-      SubDistrictID: addressSelect.SubDistrictID,
-      TaxID: addressSelect.TaxID,
-      PrefixID: '',
-      FirstName: addressSelect.FirstName,
-      LastName: addressSelect.LastName,
-      PhoneNumber: addressSelect.PhoneNumber,
-      Email: addressSelect.Email,
-      Name: addressSelect.Name,
-      Type: addressSelect.Type,
-      AddressLine1: addressSelect.AddressLine1,
-      AddressLine2: addressSelect.AddressLine2,
-      AddressText: addressSelect.AddressText,
-      No: addressSelect.No,
-      Moo: addressSelect.Moo,
-      Place: addressSelect.Place,
-      Building: addressSelect.Building,
-      Floor: addressSelect.Floor,
-      Room: addressSelect.Room,
-      Branch: addressSelect.Branch,
-      Alley: addressSelect.Alley,
-      Road: addressSelect.Road,
-      ZipCode: addressSelect.ZipCode,
-    }
+    await handleCheckInsuranceRecieve()
+    // newAddressObjectCache.value =  {
+    //   AddressID: addressSelect.ID,
+    //   ReferenceID: addressSelect.ReferenceID,
+    //   ReferenceType: addressSelect.ReferenceType,
+    //   ProvinceID: addressSelect.ProvinceID,
+    //   DistrictID: addressSelect.DistrictID,
+    //   SubDistrictID: addressSelect.SubDistrictID,
+    //   TaxID: addressSelect.TaxID,
+    //   PrefixID: '',
+    //   FirstName: addressSelect.FirstName,
+    //   LastName: addressSelect.LastName,
+    //   PhoneNumber: addressSelect.PhoneNumber,
+    //   Email: addressSelect.Email,
+    //   Name: addressSelect.Name,
+    //   Type: addressSelect.Type,
+    //   AddressLine1: addressSelect.AddressLine1,
+    //   AddressLine2: addressSelect.AddressLine2,
+    //   AddressText: addressSelect.AddressText,
+    //   No: addressSelect.No,
+    //   Moo: addressSelect.Moo,
+    //   Place: addressSelect.Place,
+    //   Building: addressSelect.Building,
+    //   Floor: addressSelect.Floor,
+    //   Room: addressSelect.Room,
+    //   Branch: addressSelect.Branch,
+    //   Alley: addressSelect.Alley,
+    //   Road: addressSelect.Road,
+    //   ZipCode: addressSelect.ZipCode,
+    // }
   }
 }
 

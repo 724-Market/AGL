@@ -192,9 +192,13 @@ const onChangeShippingPaperType = async (deliveryType: string) => {
     }
     await onChangePaperArea("");
   } 
-  else {
+  else if (deliveryType == 'WALKIN') {
     await loadPaperArea();
     checklist.value[0].className = "current";
+  }
+  else {
+    type.value = ''
+    checklist.value[0].className = "";
   }
   await clearStore();
 
@@ -374,8 +378,16 @@ const handleCheckAddress = async (AddressReq: DeliveryAddressReq) => {
       isSubmit.value = false
       checklist.value[0].className = "";
     }
+  } else if (AddressReq) {
+    isSubmit.value = true
+    checklist.value[0].className = "";
+  }
+  else {
+    isSubmit.value = false
+    checklist.value[0].className = "";
   }
 };
+
 const handleError = async()=>{
   let reqSearchMatch: SearchMatchReq = {
     AreaID: area.value,

@@ -15,7 +15,7 @@ const numberInputSchema = [
     attrs: {
       type:'button',
       class: '$classes.stepInput',
-      onClick: '$handlers.updateValue(-1)'
+      onClick: "$handlers.updateValue(-1,'-')"
     }
   },
   {
@@ -41,7 +41,7 @@ const numberInputSchema = [
     attrs: {
       type:'button',
       class: '$classes.stepInput',
-      onClick: '$handlers.updateValue(1)'
+      onClick: "$handlers.updateValue(1,'+')"
     }
   }
 ]
@@ -52,11 +52,14 @@ const numberInputSchema = [
  */
 function addHandlers(node) {
   node.on('created', () => {
-    node.context.handlers.updateValue = (n) => () => {
+    node.context.handlers.updateValue = (n,type) => () => {
       if (!node.context.disabled) {
         // step the value
         const value = parseInt(node.value) || 0
-        node.input(value + n)
+        if((value>0 && type=='-') || type=='+')
+        {
+          node.input(value + n)
+        }
         // trigger the blur handler because we've touched the input
         node.on('settled', () => {
           setTimeout(() => { // ensure we run after validation

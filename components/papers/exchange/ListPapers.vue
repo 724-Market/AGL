@@ -1,12 +1,15 @@
 <template>
   <div>
-    <div class="card" v-for="(item,i) in exchangeDataList" :key="i">
+    <div class="card" v-for="(item, i) in exchangeDataList" :key="i">
       <div class="card-body">
         <div class="package-item-new is-paper">
           <div class="detail">
             <figure class="brand">
               <img
-                :src="`${ useUtility().getCompanyImage() }${item.ProductCompanyImage.replace('LOGO', 'logo')}`"
+                :src="`${useUtility().getCompanyImage()}${item.ProductCompanyImage.replace(
+                  'LOGO',
+                  'logo'
+                )}`"
                 alt=""
               />
             </figure>
@@ -39,7 +42,6 @@
                   type="number"
                   label="จำนวน"
                   :validation="`required|max:${item.ProductOnHandAmount}|between:1,${item.ProductOnHandAmount}`"
-                  value="1"
                   min="1"
                   :max="item.ProductOnHandAmount"
                   :validation-messages="{
@@ -48,14 +50,22 @@
                     max: 'จำนวนไม่เพียงพอ',
                   }"
                   inputmode="numeric"
+                  @keyup="onChangeValidate(item)"
                 />
               </div>
-              <span class="remain"
-                >มีอยู่ {{ item.ProductOnHandAmount }} แผ่น</span
-              >
+              <span class="remain">มีอยู่ {{ item.ProductOnHandAmount }} แผ่น</span>
             </div>
 
-            <button class="btn-primary" type="button" @click="onSelection(item)">
+            <button
+              :disabled="
+                !(
+                  (item.Amount ?? 0) <= item.ProductOnHandAmount && (item.Amount ?? 0) > 0
+                )
+              "
+              class="btn-primary"
+              type="button"
+              @click="onSelection(item)"
+            >
               ใส่ตระกร้า
             </button>
           </div>
@@ -124,12 +134,20 @@ const props = defineProps({
 })
 
 const storeExchange = useStoreExchangeDataInfo();
+
+const storeExchangeInfo:globalThis.Ref<ExchangeDataSummary[]> = ref([])
 const exchangeDataList:globalThis.Ref<SearchMatchRes[]> =ref([])
   const tempExchangeDataList:globalThis.Ref<SearchMatchRes[]> =ref([])
 const onLoad = onMounted(()=>{
-
+  storeExchangeInfo.value = storeExchange.$state
   //loadExchangeDataList()
 })
+const onChangeValidate = (item:SearchMatchRes)=>{
+  if((item.Amount ?? 0)<= item.ProductOnHandAmount && (item.Amount ?? 0)>0 )
+  {
+
+  }
+}
 const onSelection = async(item:SearchMatchRes)=>{
   item.Amount = item.Amount ?? 1
   emits('onSelectMatch',item);
@@ -144,6 +162,7 @@ watch(()=>props.productMatchList,()=>{
   //loadExchangeDataList()
 },{deep:true})
 watch(()=>storeExchange.$state,()=>{
+  storeExchangeInfo.value = storeExchange.$state
   console.log(storeExchange.$state)
   tempExchangeDataList.value = [];
   if(storeExchange.$state.length>0 && props.productMatchList)
@@ -154,13 +173,12 @@ watch(()=>storeExchange.$state,()=>{
     {
       const value=productMatchList[i]
       const filter = storeExchange.$state.filter(x=>x.Item.ProductID===value.ProductID && x.Item.WarehouseID===value.WarehouseID)
+      const temp = {...value}
       if(filter.length>0)
       {
-        const temp = {...value}
         temp.ProductOnHandAmount = value.ProductOnHandAmount - filter[0].Item.Amount
-        tempExchangeDataList.value.push(temp)
-        
       }
+        tempExchangeDataList.value.push(temp)
     }
     //exchangeDataList.value = productMatchList
 
@@ -177,7 +195,7 @@ watch(tempExchangeDataList,()=>{
 //     const list = storeExchange.$state
 //     const exchangeList = exchangeDataList.value
 //     list.forEach((value,i)=>{
-      
+
 //       const index = exchangeList.findIndex(x=>x.ProductID===value.Item.ProductID && x.WarehouseID===value.Item.WarehouseID)
 //       if(index>-1)
 //       {
@@ -185,13 +203,13 @@ watch(tempExchangeDataList,()=>{
 //         {
 //           exchangeList[index].ProductOnHandAmount = exchangeList[index].ProductOnHandAmount - value.Item.Amount
 //         }
-        
+
 //       }
 //     })
 //     exchangeDataList.value = exchangeList
 
 //   },
-  
+
 // );
 // const loadExchangeDataList = ()=>{
 //   let array:ExchangeDataSummary[] = [];
@@ -212,5 +230,4 @@ watch(tempExchangeDataList,()=>{
 //     })
 //   }
 // }
-
 </script>

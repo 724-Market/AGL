@@ -59,13 +59,14 @@
 <script lang="ts" setup>
 import { IChecklist } from "~/shared/entities/checklist-entity"
 import { ErrorCodeRes } from "~/shared/entities/error-entity";
-import {  DeliveryAddressReq, ExchangeDataSummary, OrderExchangeCreateReq, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
+import {  CalculateGrandTotal, DeliveryAddressReq, ExchangeDataSummary, OrderExchangeCreateReq, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
 import { useStoreSearchMatchCompulsory } from "~/stores/paper/storeSearchMatchCompulsory";
 
 const messageError = ref('')
 const isError = ref(false)
 const storeSearchMatchCompulsory = useStoreSearchMatchCompulsory();
 const errorRes:globalThis.Ref<ErrorCodeRes | undefined> = ref()
+  const cal:globalThis.Ref<CalculateGrandTotal|undefined> = ref()
 const emits = defineEmits(['onSelectMatch','onHandleError'])
 const props = defineProps({
 	checkList: Array<IChecklist>,
@@ -81,8 +82,15 @@ const props = defineProps({
 const checkSave = ref(false)
 
 const onContinue = async ()=>{
+  if(props.exchangeData)
+  {
+    cal.value = await usePagePaper().calculateGrandTotal(props.exchangeData,props.paymentFeeLimit ?? [],props.shippingMethod ?? "",parseInt(props.shippingFee!='' ? props.shippingFee ?? "0": "0"))
+  }
+
   messageError.value="";
   isError.value=false;
+  if(cal.value && cal.value.AvailableBalanceCredit>=cal.value.GrandAmount)
+  {
     const request:OrderExchangeCreateReq = usePagePaper().mappingExchangeConfirmRequest(props.deliveryType ?? "",props.shippingMethod ?? "",props.addrAgent)
     const response =await  usePagePaper().onContinue(request);
     if(response.Status=='200')
@@ -97,6 +105,11 @@ const onContinue = async ()=>{
       messageError.value = errorRes.value.MessageResponse
       isError.value = true
     }
+  }
+  else{
+      messageError.value = "ยอดเงินของคุณไม่เพียงพอ";
+      isError.value = true
+  }
 
 }
 const handlerError = ()=>{

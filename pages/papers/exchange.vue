@@ -81,7 +81,7 @@ import {
   SearchMatchRes,
   WarehouseAreaListReq,
   WarehouseAreaListRes,
-  DeliveryAddressReq
+  DeliveryAddressReq,
 } from "~/shared/entities/paper-entity";
 import { storeToRefs } from "pinia";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
@@ -93,7 +93,7 @@ import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo";
 const deliveryChanels: globalThis.Ref<IDeliveryResponse[] | undefined> = ref();
 const deliveryPaperTypes: globalThis.Ref<DeliveryPaperRes[] | undefined> = ref();
 const paymentFeeLimit: globalThis.Ref<PaymentFeeLimitRes[] | undefined> = ref();
-const addrAgent:globalThis.Ref<DeliveryAddressReq|undefined> = ref();
+const addrAgent: globalThis.Ref<DeliveryAddressReq | undefined> = ref();
 
 const paperAreas: globalThis.Ref<AreaListRes[] | undefined> = ref();
 const warehouses: globalThis.Ref<WarehouseAreaListRes[] | undefined> = ref();
@@ -141,10 +141,11 @@ const checklist: globalThis.Ref<IChecklist[]> = ref([
   },
 ]);
 const exchangeData: globalThis.Ref<ExchangeDataSummary[]> = ref([]);
-const textProductSubCategory = ref('')
-const textProductCategory = ref('')
-const textProductCompany = ref('')
+const textProductSubCategory = ref("");
+const textProductCategory = ref("");
+const textProductCompany = ref("");
 const onLoad = onMounted(async () => {
+  await usePagePaper().onClearExchangePaper();
   if (AuthenInfo.value) {
     await loadDeliveryChanel();
     await loadDeliveryPaperType();
@@ -238,7 +239,7 @@ const onChangePaperArea = async (areaId: string) => {
   }
   await clearStore();
   await usePagePaper().onClearExchangePaper();
-  checklist.value[1].className="";
+  checklist.value[1].className = "";
   isLoading.value = false;
 };
 
@@ -258,7 +259,7 @@ const onChangeWareHouse = async (wareHouseId: string, areaId: string) => {
   }
   await clearStore();
   await usePagePaper().onClearExchangePaper();
-  checklist.value[1].className="";
+  checklist.value[1].className = "";
   isLoading.value = false;
 };
 
@@ -266,8 +267,8 @@ const onChangeProductSubcategory = async (
   productSubCategory: string,
   productCategory: string
 ) => {
-  textProductCategory.value = productCategory
-  textProductSubCategory.value = productSubCategory
+  textProductCategory.value = productCategory;
+  textProductSubCategory.value = productSubCategory;
   isLoading.value = true;
 
   let reqProductcompany: ProductcompanyAreaListReq = {
@@ -291,7 +292,7 @@ const onChangeProductSubcategory = async (
     ProductCategory: productCategory,
     ProductSubCategory: productSubCategory,
   };
-  if (productSubCategory == "Compulsory") {
+  if (productSubCategory == "Compulsory" || productSubCategory == "พ.ร.บ.") {
     console.log("MatchCompulsoryInfo.value", MatchCompulsoryInfo.value);
     if (
       MatchCompulsoryInfo.value &&
@@ -299,12 +300,26 @@ const onChangeProductSubcategory = async (
       MatchCompulsoryInfo.value.Data.length > 0
     ) {
       console.log("MatchCompulsoryInfo.value.Data", MatchCompulsoryInfo.value.Data);
+      const MatchCompulsoryAll = MatchCompulsoryInfo.value.Data.map((item, index) => {
+        let data = item;
+        data.Amount = 1;
+        return item;
+      });
       productSearchMatchAll.value = MatchCompulsoryInfo.value.Data;
     } else {
       console.log("elseeeeee");
       productSearchMatchAll.value = (
         await storeSearchMatchCompulsory.getSearchMatch(reqSearchMatch)
       ).Data;
+
+      // Default Amount 1
+      if (productSearchMatchAll.value) {
+        productSearchMatchAll.value = productSearchMatchAll.value.map((item, index) => {
+          let data = item;
+          data.Amount = 1;
+          return item;
+        });
+      }
     }
   } else if (productSubCategory == "Insurance") {
     if (
@@ -327,7 +342,7 @@ const onChangeProductSubcategory = async (
 
 const onChangeProductCompany = async (productCompany: string) => {
   isLoading.value = true;
-  textProductCompany.value = productCompany
+  textProductCompany.value = productCompany;
   productSearchMatch.value = productSearchMatchAll.value?.filter((obj) => {
     return obj.ProductCompany == productCompany || productCompany == "-";
   });
@@ -354,13 +369,11 @@ const clearStore = async () => {
   productSearchMatchAll.value = [];
   productSearchMatch.value = [];
   exchangeData.value = [];
-
-  
 };
 
 const handleCheckAddress = async (AddressReq: DeliveryAddressReq) => {
-  console.log('AddressReq', AddressReq)
-  addrAgent.value = AddressReq
+  console.log("AddressReq", AddressReq);
+  addrAgent.value = AddressReq;
   if (AddressReq && ShippingMethod.value) {
     if (
       AddressReq.PhoneNumber.length > 0 &&
@@ -371,11 +384,10 @@ const handleCheckAddress = async (AddressReq: DeliveryAddressReq) => {
       AddressReq.DistrictID.length > 0 &&
       AddressReq.SubDistrictID.length > 0
     ) {
-      isSubmit.value = true
+      isSubmit.value = true;
       checklist.value[0].className = "current";
-    }
-    else {
-      isSubmit.value = false
+    } else {
+      isSubmit.value = false;
       checklist.value[0].className = "";
     }
   } else if (AddressReq) {
@@ -387,8 +399,7 @@ const handleCheckAddress = async (AddressReq: DeliveryAddressReq) => {
     checklist.value[0].className = "";
   }
 };
-
-const handleError = async()=>{
+const handleError = async () => {
   let reqSearchMatch: SearchMatchReq = {
     AreaID: area.value,
     WarehouseID: wareHouse.value,
@@ -396,13 +407,15 @@ const handleError = async()=>{
     ProductSubCategory: textProductSubCategory.value,
   };
   productSearchMatchAll.value = (
-        await storeSearchMatchCompulsory.getSearchMatch(reqSearchMatch)
-      ).Data;
-  
-      productSearchMatch.value = productSearchMatchAll.value?.filter((obj) => {
-    return obj.ProductCompany == textProductCompany.value || textProductCompany.value == "-";
+    await storeSearchMatchCompulsory.getSearchMatch(reqSearchMatch)
+  ).Data;
+
+  productSearchMatch.value = productSearchMatchAll.value?.filter((obj) => {
+    return (
+      obj.ProductCompany == textProductCompany.value || textProductCompany.value == "-"
+    );
   });
-}
+};
 
 // // Submit form event
 // const submitOrder = async () => {

@@ -89,7 +89,7 @@
       </tfoot>
     </table>
     <ElementsDialogConfirm
-    v-if="isDeleteConfirm"
+      v-if="isDeleteConfirm"
       :modal-show="isDeleteConfirm"
       :modal-type="ModalType.Danger"
       :modal-title="'ยืนยันการลบรายการ'"
@@ -122,13 +122,13 @@ const props = defineProps({
 })
 
 const onCalculate = ()=>{
-  if(list.value.length>0)
-  {
+  // if(list.value.length>0)
+  // {
     cal.value = usePagePaper().calculateGrandTotal(list.value,props.paymentFeeLimit ?? [],props.shippingMethod ?? "",parseInt(props.shippingFee ?? "0"))
-  }
+  //}
 }
 const onChangeAmount =async (item:ExchangeDataSummary) =>{
-console.log(item)
+
 await usePagePaper().onChangeExchangePaper(item);
 if(list.value && props.paymentFeeLimit && props.shippingMethod && props.shippingFee)
     cal.value = usePagePaper().calculateGrandTotal(list.value,props.paymentFeeLimit,props.shippingMethod,parseInt(props.shippingFee))
@@ -144,6 +144,7 @@ const onDeleteConfirm = async()=>{
   {
    const exchangeData =  await usePagePaper().onDeleteConfirm(itemSelection.value)
    list.value = exchangeData
+   onCalculate()
   }
 
 }
@@ -153,7 +154,7 @@ const onCloseConfirm = async()=>{
 const onLoadExchangetoStore = () => {
   list.value=[]
   list.value = storeExchange.$state;
-  
+
 };
 watch(()=>props.exchangeData,()=>{
   onLoadExchangetoStore()

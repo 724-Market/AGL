@@ -285,6 +285,7 @@ watch(agentAddressText, async (newAgentAddressText) => {
         ZipCode: addressSelect.ZipCode,
       }
       newAddressObject.value = newAddressObjectCache.value 
+      // emit('shippingTypeChange', shippingPaperText.value)
     }
     isShowComponentAddress.value = false
     isAcdordian.value = true

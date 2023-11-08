@@ -192,13 +192,11 @@ const onChangeShippingPaperType = async (deliveryType: string) => {
       }
     }
     await onChangePaperArea("");
-  } 
-  else if (deliveryType == 'WALKIN') {
+  } else if (deliveryType == "WALKIN") {
     await loadPaperArea();
     checklist.value[0].className = "current";
-  }
-  else {
-    type.value = ''
+  } else {
+    type.value = "";
     checklist.value[0].className = "";
   }
   await clearStore();
@@ -210,6 +208,7 @@ const onChangeDeliveryChannel = async (
   ShippingMethodText: string,
   ShippingFeeText: string
 ) => {
+  console.log(ShippingMethodText,ShippingFeeText)
   ShippingMethod.value = ShippingMethodText;
   ShippingFee.value = ShippingFeeText;
 };
@@ -391,11 +390,10 @@ const handleCheckAddress = async (AddressReq: DeliveryAddressReq) => {
       checklist.value[0].className = "";
     }
   } else if (AddressReq) {
-    isSubmit.value = true
+    isSubmit.value = true;
     checklist.value[0].className = "";
-  }
-  else {
-    isSubmit.value = false
+  } else {
+    isSubmit.value = false;
     checklist.value[0].className = "";
   }
 };
@@ -416,7 +414,18 @@ const handleError = async () => {
     );
   });
 };
-
+// checklist validate exchange list
+watch(
+  () => storeExchange.$state,
+  () => {
+    if (storeExchange.$state.length > 0) {
+      checklist.value[1].className = "current";
+    } else {
+      checklist.value[1].className = "";
+    }
+  },
+  { deep: true }
+);
 // // Submit form event
 // const submitOrder = async () => {
 //   // Add waiting time for debug

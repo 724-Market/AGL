@@ -241,12 +241,14 @@ const onLoad = onMounted(async () => {
       	]
   }
 	if (props.deliveryChanel) {
-		shippingMethodOption.value = [
-          {
-            label: props.deliveryChanel[0].Name,
-            value: props.deliveryChanel[0].Name,
-          }
-      	]
+		shippingMethodOption.value = props.deliveryChanel.map((item,index)=>{
+      const options:RadioOption = {
+        label: item.Name,
+        value: item.Type,
+        option:item.Cost.toString()
+      }
+      return options
+    })
 	}
 	if (props.paymentFeeLimit) {
 		paymentFeeLimitMin.value = props.paymentFeeLimit[0].Min
@@ -468,22 +470,23 @@ const handleEdit = async (event: any) => {
 }
 
 const handleDelete = async (event: any) => {
-  isLoading.value = true;
-
-  if(agentAddressText.value != '' && agentAddressText.value != 'addnew') {
-    let req: AgentAddressDeleteReq = {
-      AddressID: agentAddressText.value
+  let confirmAction = confirm("ต้องการลบรายการหรือไม่?");
+  if (confirmAction) {
+    isLoading.value = true;
+    if(agentAddressText.value != '' && agentAddressText.value != 'addnew') {
+      let req: AgentAddressDeleteReq = {
+        AddressID: agentAddressText.value
+      }
+      var response = await useRepository().agent.AddressDelete(req);
+      if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+        isShow.value = true
+        message.value = 'Delete success'
+      }
+      await loadAgentAddress()
+      agentAddressText.value = ''
     }
-    var response = await useRepository().agent.AddressDelete(req);
-    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-      isShow.value = true
-      message.value = 'Delete success'
-    }
-    await loadAgentAddress()
-    agentAddressText.value = ''
+    isLoading.value = false;
   }
-
-  isLoading.value = false;
 }
 
 const handleCheckInsuranceRecieve = async () => {
@@ -625,14 +628,14 @@ watch(
   () => props.deliveryChanel,
   async () => {
     if (props.deliveryChanel) {
-		shippingMethodOption.value = props.deliveryChanel.map((item,index)=>{
-      const options:RadioOption = {
-            label: item.Name,
-            value: item.Type,
-            option:item.Cost.toString()
-          }
-          return options
-    })
+      shippingMethodOption.value = props.deliveryChanel.map((item,index)=>{
+        const options:RadioOption = {
+          label: item.Name,
+          value: item.Type,
+          option:item.Cost.toString()
+        }
+        return options
+      })
     }
   }
 )

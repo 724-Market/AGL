@@ -55,7 +55,7 @@
             {{ useUtility().getCurrency(cal.OrderAmount, 2) }}
           </td>
         </tr>
-        <tr class="discount" v-if="cal && cal.PaymentFeeLimit > 0">
+        <tr class="discount" v-if="cal && cal.PaymentFeeLimit > 0 && cal.TotalQty>=cal.PaymentFeeLimit">
           <th scope="row">
             หักส่วนลดค่าจัดส่ง<span
               >แลกกระดาษเกิน

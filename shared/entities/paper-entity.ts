@@ -175,5 +175,6 @@ export interface ProductsubcategoryAreaListRes {
     PaymentFeeLimit:number
     Discount:number
     GrandAmount:number
+    TotalQty:number
     AvailableBalanceCredit:number
   }

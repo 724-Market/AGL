@@ -17,7 +17,7 @@ export default () => {
     }
     const onClearExchangePaper = async () => {
         const count = storeExchange.$state.length;
-        storeExchange.$state.splice(0,count);
+        storeExchange.$state.splice(0, count);
         //await storeExchange.clearExchangeData();
     }
     const mappingExchangeConfirmRequest = (deliveryType: string, shippingMethod: string, addr?: DeliveryAddressReq): OrderExchangeCreateReq => {
@@ -46,15 +46,17 @@ export default () => {
     const calculateGrandTotal = (exchangeData: ExchangeDataSummary[], paymentFee: PaymentFeeLimitRes[], shippingMethod: string, shippingFee: number): CalculateGrandTotal => {
         const storeCredit = useStoreCreditBalance()
         const { AvailableBalance } = storeToRefs(storeCredit)
-        //const TotalAmount = exchangeData.reduce((accumulator, currentValue) => accumulator + (currentValue.Item.Amount),0)
+        const TotalQty = exchangeData.reduce((accumulator, currentValue) => accumulator + (currentValue.Item.Amount), 0)
         const OrderAmount = exchangeData.reduce((accumulator, currentValue) => accumulator + (currentValue.Item.Amount * currentValue.MatchItem.ProductPrice), 0)
         const paymentFeeDiscount = paymentFee.length > 0 ? paymentFee[0].Min : 0
         let GrandAmount = 0;
-        if (shippingMethod == "" || (shippingMethod != "" && OrderAmount >= paymentFeeDiscount)) {
-            GrandAmount = OrderAmount
-        }
-        else {
-            GrandAmount = shippingFee + OrderAmount
+        if (OrderAmount > 0) {
+            if (shippingMethod == "" || (shippingMethod != "" && OrderAmount >= paymentFeeDiscount)) {
+                GrandAmount = OrderAmount
+            }
+            else {
+                GrandAmount = shippingFee + OrderAmount
+            }
         }
 
         const res: CalculateGrandTotal = {
@@ -64,6 +66,7 @@ export default () => {
             PaymentFeeLimit: paymentFeeDiscount,
             ShippingFee: shippingFee,
             ShippingMethod: shippingMethod,
+            TotalQty: TotalQty,
             Discount: paymentFeeDiscount ? -shippingFee : 0
         }
 

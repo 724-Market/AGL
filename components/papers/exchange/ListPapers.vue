@@ -165,7 +165,7 @@ watch(()=>storeExchange.$state,()=>{
   storeExchangeInfo.value = storeExchange.$state
   console.log(storeExchange.$state)
   tempExchangeDataList.value = [];
-  if(storeExchange.$state.length>0 && props.productMatchList)
+  if(storeExchange.$state && props.productMatchList)
   {
     const productMatchList = props.productMatchList
 

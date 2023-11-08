@@ -199,7 +199,7 @@ const onLoad = onMounted(async () => {
 		shippingMethodOption.value = [
           {
             label: props.deliveryChanel[0].Name,
-            value: props.deliveryChanel[0].Cost.toString(),
+            value: props.deliveryChanel[0].Name,
           }
       	]
 	}
@@ -578,7 +578,7 @@ watch(
 		shippingMethodOption.value = [
           {
             label: props.deliveryChanel[0].Name,
-            value: props.deliveryChanel[0].Cost.toString(),
+            value: props.deliveryChanel[0].Name,
           }
       	]
     }

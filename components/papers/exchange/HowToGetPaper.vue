@@ -199,7 +199,7 @@ const onLoad = onMounted(async () => {
 		shippingMethodOption.value = [
           {
             label: props.deliveryChanel[0].Name,
-            value: props.deliveryChanel[0].Name,
+            value: props.deliveryChanel[0].Type,
           }
       	]
 	}
@@ -418,22 +418,23 @@ const handleEdit = async (event: any) => {
 }
 
 const handleDelete = async (event: any) => {
-  isLoading.value = true;
-
-  if(agentAddressText.value != '' && agentAddressText.value != 'addnew') {
-    let req: AgentAddressDeleteReq = {
-      AddressID: agentAddressText.value
+  let confirmAction = confirm("ต้องการลบรายการหรือไม่?");
+  if (confirmAction) {
+    isLoading.value = true;
+    if(agentAddressText.value != '' && agentAddressText.value != 'addnew') {
+      let req: AgentAddressDeleteReq = {
+        AddressID: agentAddressText.value
+      }
+      var response = await useRepository().agent.AddressDelete(req);
+      if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+        isShow.value = true
+        message.value = 'Delete success'
+      }
+      await loadAgentAddress()
+      agentAddressText.value = ''
     }
-    var response = await useRepository().agent.AddressDelete(req);
-    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-      isShow.value = true
-      message.value = 'Delete success'
-    }
-    await loadAgentAddress()
-    agentAddressText.value = ''
+    isLoading.value = false;
   }
-
-  isLoading.value = false;
 }
 
 const handleCheckInsuranceRecieve = async () => {
@@ -578,7 +579,7 @@ watch(
 		shippingMethodOption.value = [
           {
             label: props.deliveryChanel[0].Name,
-            value: props.deliveryChanel[0].Name,
+            value: props.deliveryChanel[0].Type,
           }
       	]
     }

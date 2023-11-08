@@ -8,7 +8,7 @@
                 <section class="shippped-branch">
 
                     <div class="row" v-if="shippingType != 'DELIVERY'">
-
+                        <div class="notice-warning">!!! หากเปลี่ยนภาคหรือสาขา จะ reset ข้อมูลที่ทำรายการไว้ทั้งหมด</div>
                         <div class="col-sm-12 col-md-6">
                             <FormKit type="select" label="ภาค" name="Zone" placeholder="เลือกภาค" 
                             :options="areaOption" @change="onAreaChange" v-model="ZoneText"

@@ -55,6 +55,7 @@
           :payment-fee-limit="paymentFeeLimit"
           :delivery-type="type"
           :addr-agent="addrAgent"
+          @on-loading="onLoading"
           @on-handle-error="handleError"
         ></PapersExchangeSlideBar>
       </div>
@@ -414,6 +415,9 @@ const handleError = async () => {
     );
   });
 };
+const onLoading = (loading:boolean)=>{
+  isLoading.value = loading
+}
 // checklist validate exchange list
 watch(
   () => storeExchange.$state,

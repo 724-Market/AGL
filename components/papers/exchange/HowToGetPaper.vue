@@ -161,6 +161,15 @@
       </div>
     </div>
   </div>
+  <ElementsDialogConfirm
+    v-if="isDeleteConfirm"
+    :modal-show="isDeleteConfirm"
+    :modal-type="ModalType.Warning"
+    :modal-title="'ยืนยันการลบรายการ'"
+    :modal-text="textDeleteConfirm"
+    @on-confirm-modal="onDeleteConfirm"
+    @on-close-modal="onCloseConfirm"
+  />
   <ElementsModalAlert
     v-if="isShow"
     :is-error="isShow"
@@ -171,6 +180,7 @@
 </template>
 
 <script setup lang="ts">
+import { ModalType } from "~/shared/entities/enum-entity";
 import { AgentAddressDeleteReq, AgentAddressListRes, AgentAddressSaveReq } from "~/shared/entities/agent-entity";
 import {
   IDeliveryResponse,
@@ -211,6 +221,8 @@ var isLoading = ref(false)
 
 var isAcdordian = ref(false)
 var isEditMode = ref(false)
+const isDeleteConfirm = ref(false)
+const textDeleteConfirm=ref('')
 
 const agentAddress: globalThis.Ref<RadioOption[]> = ref([]);
 const agentAddressList: globalThis.Ref<AgentAddressListRes[]> = ref([]);
@@ -470,23 +482,46 @@ const handleEdit = async (event: any) => {
 }
 
 const handleDelete = async (event: any) => {
-  let confirmAction = confirm("ต้องการลบรายการหรือไม่?");
-  if (confirmAction) {
-    isLoading.value = true;
-    if(agentAddressText.value != '' && agentAddressText.value != 'addnew') {
-      let req: AgentAddressDeleteReq = {
-        AddressID: agentAddressText.value
-      }
-      var response = await useRepository().agent.AddressDelete(req);
-      if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-        isShow.value = true
-        message.value = 'Delete success'
-      }
+  isDeleteConfirm.value = true
+  textDeleteConfirm.value=`คุณต้องการลบรายการหรือไม่ ?`
+  // let confirmAction = confirm("ต้องการลบรายการหรือไม่?");
+  // if (confirmAction) {
+  //   isLoading.value = true;
+  //   if(agentAddressText.value != '' && agentAddressText.value != 'addnew') {
+  //     let req: AgentAddressDeleteReq = {
+  //       AddressID: agentAddressText.value
+  //     }
+  //     var response = await useRepository().agent.AddressDelete(req);
+  //     if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+  //       isShow.value = true
+  //       message.value = 'Delete success'
+  //     }
+  //     await loadAgentAddress()
+  //     agentAddressText.value = ''
+  //   }
+  //   isLoading.value = false;
+  // }
+}
+
+const onDeleteConfirm = async()=>{
+  isLoading.value = true;
+  if(agentAddressText.value != '' && agentAddressText.value != 'addnew') {
+    let req: AgentAddressDeleteReq = {
+      AddressID: agentAddressText.value
+    }
+    var response = await useRepository().agent.AddressDelete(req);
+    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+      isShow.value = true
+      message.value = 'Delete success'
       await loadAgentAddress()
       agentAddressText.value = ''
     }
-    isLoading.value = false;
   }
+  isLoading.value = false;
+}
+
+const onCloseConfirm = async()=>{
+  isDeleteConfirm.value = false
 }
 
 const handleCheckInsuranceRecieve = async () => {

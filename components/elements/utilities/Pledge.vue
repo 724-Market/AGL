@@ -5,7 +5,7 @@
             :credit-order="paymentConfirm"></PaymentWalletModalWallet>
     </div>
 
-    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+    <!-- <ElementsModalLoading :loading="isLoading"></ElementsModalLoading> -->
 
     <div class="card-shortcut" :class="{ 'is-danger': remaining <= 0, 'is-success': remaining > 0 }">
         <div class="shortcut-wrapper">

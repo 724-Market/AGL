@@ -66,8 +66,9 @@ const messageError = ref('')
 const isError = ref(false)
 const storeSearchMatchCompulsory = useStoreSearchMatchCompulsory();
 const errorRes:globalThis.Ref<ErrorCodeRes | undefined> = ref()
-  const cal:globalThis.Ref<CalculateGrandTotal|undefined> = ref()
-const emits = defineEmits(['onSelectMatch','onHandleError'])
+const cal:globalThis.Ref<CalculateGrandTotal|undefined> = ref()
+const isLoading = ref(false)
+const emits = defineEmits(['onSelectMatch','onHandleError','onLoading'])
 const props = defineProps({
 	checkList: Array<IChecklist>,
   matchAllList:Array<SearchMatchRes>,
@@ -82,6 +83,7 @@ const props = defineProps({
 const checkSave = ref(false)
 
 const onContinue = async ()=>{
+  emits('onLoading',true)
   if(props.exchangeData)
   {
     cal.value = await usePagePaper().calculateGrandTotal(props.exchangeData,props.paymentFeeLimit ?? [],props.shippingMethod ?? "",parseInt(props.shippingFee!='' ? props.shippingFee ?? "0": "0"))
@@ -95,6 +97,7 @@ const onContinue = async ()=>{
     const response =await  usePagePaper().onContinue(request);
     if(response.Status=='200')
     {
+      emits('onLoading',false)
       await storeSearchMatchCompulsory.clearSearchMatch();
       await usePagePaper().onClearExchangePaper();
       const router = useRouter();
@@ -110,7 +113,7 @@ const onContinue = async ()=>{
       messageError.value = "ยอดเงินของคุณไม่เพียงพอ";
       isError.value = true
   }
-
+  emits('onLoading',false)
 }
 const handlerError = ()=>{
 if(errorRes.value){

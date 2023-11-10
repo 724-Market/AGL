@@ -221,8 +221,8 @@ var isLoading = ref(false)
 
 var isAcdordian = ref(false)
 var isEditMode = ref(false)
-const isDeleteConfirm = ref(false)
-const textDeleteConfirm=ref('')
+var isDeleteConfirm = ref(false)
+var textDeleteConfirm=ref('')
 
 const agentAddress: globalThis.Ref<RadioOption[]> = ref([]);
 const agentAddressList: globalThis.Ref<AgentAddressListRes[]> = ref([]);
@@ -290,12 +290,14 @@ const handleAcdordian = async () => {
 watch(shippingPaperText, async (newshippingPaperType) => {
   agentAddressText.value = ''
   isShowComponentAddress.value = false
-  if(newshippingPaperType == 'WALKIN') {
-    emit('shippingTypeChange', newshippingPaperType)
-  }
-  else {
-    emit('shippingTypeChange', 'clear')
-  }
+  emit('shippingTypeChange', newshippingPaperType)
+  // if(newshippingPaperType == 'WALKIN') {
+  //   emit('shippingTypeChange', newshippingPaperType)
+  // }
+  // else {
+  //   emit('shippingTypeChange', 'clear')
+  // }
+  isAcdordian.value = false
 })
 
 const onShippingMethodChange = async (event: any) => {

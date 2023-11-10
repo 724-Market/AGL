@@ -283,12 +283,13 @@ const handleAcdordian = async () => {
   if(acordian) {
     acordian.classList.remove("show");
     isAcdordian.value = false
-    emit('shippingTypeChange', shippingPaperText.value)
+    emit('shippingTypeChange', 'ok')
   }
 }
 
 watch(shippingPaperText, async (newshippingPaperType) => {
   agentAddressText.value = ''
+  isAcdordian.value = false
   isShowComponentAddress.value = false
   emit('shippingTypeChange', newshippingPaperType)
   // if(newshippingPaperType == 'WALKIN') {
@@ -297,7 +298,6 @@ watch(shippingPaperText, async (newshippingPaperType) => {
   // else {
   //   emit('shippingTypeChange', 'clear')
   // }
-  isAcdordian.value = false
 })
 
 const onShippingMethodChange = async (event: any) => {
@@ -351,10 +351,10 @@ watch(agentAddressText, async (newAgentAddressText) => {
         ZipCode: addressSelect.ZipCode,
       }
       newAddressObject.value = newAddressObjectCache.value
+      isAcdordian.value = true
       // emit('shippingTypeChange', shippingPaperText.value)
     }
     isShowComponentAddress.value = false
-    isAcdordian.value = true
   }
   isEditMode.value = false
   await handleCheckInsuranceRecieve()

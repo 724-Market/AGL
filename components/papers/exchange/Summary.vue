@@ -20,7 +20,7 @@
             >
           </th>
           <td class="text-end price">
-            {{ useUtility().getCurrency(item.MatchItem.ProductPrice, 0) }}
+            {{ useUtility().getCurrency(item.MatchItem.ProductPrice*item.Item.Amount, 0) }}
 
             <FormKit
               type="stepNumber"

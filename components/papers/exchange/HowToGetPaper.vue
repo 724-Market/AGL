@@ -291,6 +291,8 @@ watch(shippingPaperText, async (newshippingPaperType) => {
   agentAddressText.value = ''
   isAcdordian.value = false
   isShowComponentAddress.value = false
+  ShippingMethodText.value=""
+  ShippingFeeText.value=0;
   emit('shippingTypeChange', newshippingPaperType)
   // if(newshippingPaperType == 'WALKIN') {
   //   emit('shippingTypeChange', newshippingPaperType)

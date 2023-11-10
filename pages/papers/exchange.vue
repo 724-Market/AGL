@@ -192,14 +192,17 @@ const onChangeShippingPaperType = async (deliveryType: string) => {
         paymentFeeLimit.value = res.apiResponse.Data;
       }
     }
+    await onChangePaperArea("");
     type.value = "";
     checklist.value[0].className = "";
-    await onChangePaperArea("");
   } 
-  else {
+  else if (deliveryType == "WALKIN") {
     await loadPaperArea();
     checklist.value[0].className = "current";
   } 
+  else {
+    type.value = "DELIVERY";
+  }
   await clearStore();
 
   isLoading.value = false;

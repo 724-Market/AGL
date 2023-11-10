@@ -182,6 +182,7 @@ const onChangeShippingPaperType = async (deliveryType: string) => {
   isLoading.value = true;
 
   type.value = deliveryType;
+
   if (deliveryType == "DELIVERY") {
     let req: PaymentFeeLimitReq = {
       DeliveryType: deliveryType,
@@ -195,12 +196,14 @@ const onChangeShippingPaperType = async (deliveryType: string) => {
     await onChangePaperArea("");
     type.value = "";
     checklist.value[0].className = "";
-  } 
-  else if (deliveryType == "WALKIN") {
+  } else if (deliveryType == "WALKIN") {
     await loadPaperArea();
     checklist.value[0].className = "current";
-  } 
-  else {
+    // clear data after change delivery type
+    await usePagePaper().onClearExchangePaper();
+    ShippingMethod.value = "";
+    ShippingFee.value = "";
+  } else {
     type.value = "DELIVERY";
   }
   await clearStore();
@@ -212,7 +215,7 @@ const onChangeDeliveryChannel = async (
   ShippingMethodText: string,
   ShippingFeeText: string
 ) => {
-  console.log(ShippingMethodText,ShippingFeeText)
+  console.log(ShippingMethodText, ShippingFeeText);
   ShippingMethod.value = ShippingMethodText;
   ShippingFee.value = ShippingFeeText;
 };
@@ -418,9 +421,9 @@ const handleError = async () => {
     );
   });
 };
-const onLoading = (loading:boolean)=>{
-  isLoading.value = loading
-}
+const onLoading = (loading: boolean) => {
+  isLoading.value = loading;
+};
 // checklist validate exchange list
 watch(
   () => storeExchange.$state,

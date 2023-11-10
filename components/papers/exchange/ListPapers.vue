@@ -177,6 +177,7 @@ watch(()=>storeExchange.$state,()=>{
       if(filter.length>0)
       {
         temp.ProductOnHandAmount = value.ProductOnHandAmount - filter[0].Item.Amount
+        temp.Amount=1;
       }
         tempExchangeDataList.value.push(temp)
     }

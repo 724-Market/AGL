@@ -21,8 +21,8 @@ class AgentModule {
     return await useCallApi().apiRepository<AgentAddressListRes[]>(`${this.RESOURCE}/address/list`, {})
   }
 
-  async CreateAddress(req: AgentAddressCreateReq): Promise<IAPIResponse<AgentAddressCreateRes[]>> {
-    return await useCallApi().apiRepository<AgentAddressCreateRes[]>(`${this.RESOURCE}/address/create`, req)
+  async CreateAddress(req: AgentAddressCreateReq): Promise<IAPIResponse<AgentAddressCreateRes>> {
+    return await useCallApi().apiRepository<AgentAddressCreateRes>(`${this.RESOURCE}/address/create`, req)
   }
 
   async AddressSave(req: AgentAddressSaveReq): Promise<IAPIResponse<AgentAddressSaveRes>> {

@@ -415,17 +415,19 @@ const setPostalAddress = async (labelAddnew: string) => {
 }
 
 const handleSave = async (event: any) => {
-  if(agentAddressText.value == 'addnew') await setPostalAddress(insureFullNewAddress.value.toString())
+  // if(agentAddressText.value == 'addnew') await setPostalAddress(insureFullNewAddress.value.toString())
 
   isLoading.value = true;
   if(isSubmit) {
     if(agentAddressText.value == 'addnew') {
       let address = newAddressObject.value as AgentAddressCreateReq
       var resCreate = await useRepository().agent.CreateAddress(address);
-      console.log('resCreate', resCreate)
       if (resCreate.apiResponse.Status && resCreate.apiResponse.Status == "200") {
         isShow.value = true
         message.value = 'create success'
+        if(resCreate.apiResponse.Data) {
+          agentAddressText.value = resCreate.apiResponse.Data.AddressID
+        }
       }
     } else {
       let address = newAddressObject.value as AgentAddressSaveReq
@@ -434,9 +436,9 @@ const handleSave = async (event: any) => {
       if (resSave.apiResponse.Status && resSave.apiResponse.Status == "200") {
         isShow.value = true
         message.value = 'save success'
-        await loadAgentAddress()
       }
     }
+    await loadAgentAddress()
     isEditMode.value = false
     isAcdordian.value = true
     isShowComponentAddress.value = false

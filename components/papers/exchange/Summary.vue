@@ -55,7 +55,7 @@
             {{ useUtility().getCurrency(cal.OrderAmount, 2) }}
           </td>
         </tr>
-        <tr class="discount" v-if="cal && cal.PaymentFeeLimit > 0 && cal.TotalQty>=cal.PaymentFeeLimit">
+        <tr class="discount" v-if="cal && cal.PaymentFeeLimit > 0 && cal.OrderAmount>=cal.PaymentFeeLimit">
           <th scope="row">
             หักส่วนลดค่าจัดส่ง<span
               >แลกกระดาษเกิน
@@ -124,14 +124,14 @@ const props = defineProps({
 const onCalculate = ()=>{
   // if(list.value.length>0)
   // {
-    cal.value = usePagePaper().calculateGrandTotal(list.value,props.paymentFeeLimit ?? [],props.shippingMethod ?? "",parseInt(props.shippingFee ?? "0"))
+    cal.value = usePagePaper().calculateGrandTotal(list.value,props.paymentFeeLimit ?? [],props.shippingMethod ?? "",(props.shippingFee ?? "0")!='' ?parseInt(props.shippingFee ?? "0") : 0)
   //}
 }
 const onChangeAmount =async (item:ExchangeDataSummary) =>{
 
 await usePagePaper().onChangeExchangePaper(item);
 if(list.value && props.paymentFeeLimit && props.shippingMethod && props.shippingFee)
-    cal.value = usePagePaper().calculateGrandTotal(list.value,props.paymentFeeLimit,props.shippingMethod,parseInt(props.shippingFee))
+    cal.value = usePagePaper().calculateGrandTotal(list.value,props.paymentFeeLimit,props.shippingMethod,(props.shippingFee ?? "0")!='' ?parseInt(props.shippingFee ?? "0") : 0)
 
 }
 const onDelete =async (item:ExchangeDataSummary) =>{

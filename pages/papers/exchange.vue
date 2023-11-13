@@ -399,8 +399,21 @@ const handleCheckAddress = async (AddressReq: DeliveryAddressReq) => {
       checklist.value[0].className = "";
     }
   } else if (AddressReq) {
-    isSubmit.value = true;
-    checklist.value[0].className = "";
+    if (
+      AddressReq.PhoneNumber.length > 0 &&
+      AddressReq.FirstName.length > 0 &&
+      AddressReq.LastName.length > 0 &&
+      AddressReq.No.length > 0 &&
+      AddressReq.ProvinceID.length > 0 &&
+      AddressReq.DistrictID.length > 0 &&
+      AddressReq.SubDistrictID.length > 0
+    ) {
+      isSubmit.value = true;
+      checklist.value[0].className = "";
+    } else {
+      isSubmit.value = false;
+      checklist.value[0].className = "";
+    }
   } else {
     isSubmit.value = false;
     checklist.value[0].className = "";

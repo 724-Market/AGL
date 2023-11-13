@@ -84,6 +84,19 @@ export default () => {
         return list
 
     }
+    const setClassExchangeList = ():string=>{
+        let className = "";
+        const exhangeList = storeExchange.$state
+        if(exhangeList.length>0)
+        {
+            className="cart-not-empty";
+        }
+        else{
+            className="";
+        }
+        
+        return className;
+    }
     return {
         onSelectExchangePaper,
         onChangeExchangePaper,
@@ -92,5 +105,6 @@ export default () => {
         onDeleteConfirm,
         onContinue,
         mappingExchangeConfirmRequest,
+        setClassExchangeList
     }
 }

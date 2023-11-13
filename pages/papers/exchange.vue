@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout
     :name="layout"
-    :layout-class="layoutClass"
+    :layout-class="`${layoutClass}`"
     :page-title="pageTitle"
     :page-category="pageCategory"
     :show-page-steps="showPageSteps"
@@ -145,12 +145,12 @@ const exchangeData: globalThis.Ref<ExchangeDataSummary[]> = ref([]);
 const textProductSubCategory = ref("");
 const textProductCategory = ref("");
 const textProductCompany = ref("");
+const classNameExchange = ref("");
 const onLoad = onMounted(async () => {
   await usePagePaper().onClearExchangePaper();
   if (AuthenInfo.value) {
     await loadDeliveryChanel();
     await loadDeliveryPaperType();
-    onLoadExchangetoStore();
   } else {
     router.push("/login");
   }
@@ -231,6 +231,7 @@ const loadPaperArea = async () => {
 };
 
 const onChangePaperArea = async (areaId: string) => {
+  await clearStore();
   isLoading.value = true;
   area.value = areaId;
   let req: WarehouseAreaListReq = {
@@ -243,13 +244,13 @@ const onChangePaperArea = async (areaId: string) => {
       warehouses.value = res.apiResponse.Data;
     }
   }
-  await clearStore();
-  await usePagePaper().onClearExchangePaper();
+
   checklist.value[1].className = "";
   isLoading.value = false;
 };
 
 const onChangeWareHouse = async (wareHouseId: string, areaId: string) => {
+  await clearStore();
   isLoading.value = true;
   wareHouse.value = wareHouseId;
   if (areaId) area.value = areaId;
@@ -263,8 +264,7 @@ const onChangeWareHouse = async (wareHouseId: string, areaId: string) => {
       productsubcategorys.value = res.apiResponse.Data;
     }
   }
-  await clearStore();
-  await usePagePaper().onClearExchangePaper();
+
   checklist.value[1].className = "";
   isLoading.value = false;
 };
@@ -371,6 +371,8 @@ const onLoadExchangetoStore = () => {
 
 const clearStore = async () => {
   await storeSearchMatchCompulsory.clearSearchMatch();
+  await usePagePaper().onClearExchangePaper();
+  onLoadExchangetoStore();
   //await storeSearchMatchInsurance.clearSearchMatch()
   productSearchMatchAll.value = [];
   productSearchMatch.value = [];
@@ -441,6 +443,7 @@ const onLoading = (loading: boolean) => {
 watch(
   () => storeExchange.$state,
   () => {
+    classNameExchange.value = usePagePaper().setClassExchangeList();
     if (storeExchange.$state.length > 0) {
       checklist.value[1].className = "current";
     } else {
@@ -471,7 +474,12 @@ useHead({
   title: pageTitle,
   meta: [{ name: "description", content: pageDescription }],
   bodyAttrs: {
-    class: "page-papers single-exchange",
+    //class: "page-papers single-exchange",
+    class: computed(() => {
+      const className = `page-papers single-exchange ${classNameExchange.value}`;
+      return className;
+
+    }),
   },
 });
 </script>

@@ -1,23 +1,23 @@
 <template>
-    <div class="card" >
-		<div class="card-header">
-			<h3 class="card-title">เลือกกระดาษ</h3>
-		</div>
-		<div class="card-body">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">เลือกกระดาษ</h3>
+        </div>
+        <div class="card-body">
             <div class="form-placeorder">
                 <section class="shippped-branch">
 
-                    <div class="row" v-if="shippingType != 'DELIVERY'">
-                        <div class="notice-warning">!!! หากเปลี่ยนภาคหรือสาขา จะ reset ข้อมูลที่ทำรายการไว้ทั้งหมด</div>
-                        <div class="col-sm-12 col-md-6">
-                            <FormKit type="select" label="ภาค" name="Zone" placeholder="เลือกภาค" 
-                            :options="areaOption" @change="onAreaChange" v-model="ZoneText"
-                            validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                    <div class="row -blocker-boundary" v-if="shippingType != 'DELIVERY'">
+                        <div class="-blocker-action btn-open-emptycart"></div>
+                        <div class="col-md-6">
+                            <FormKit type="select" label="ภาค" name="Zone" placeholder="เลือกภาค" :options="areaOption"
+                                @change="onAreaChange" v-model="ZoneText" validation="required"
+                                :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
                         </div>
-                        <div class="col-sm-12 col-md-6">
-                            <FormKit type="select" label="สาขา" namr="Branch" placeholder="เลือกสาขา" 
-                            :options="wareHouseOption" v-model="BranchText"
-                            validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                        <div class="col-md-6">
+                            <FormKit type="select" label="สาขา" namr="Branch" placeholder="เลือกสาขา"
+                                :options="wareHouseOption" v-model="BranchText" validation="required"
+                                :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
                         </div>
 
                     </div>
@@ -27,14 +27,15 @@
 
                         <div class="row">
                             <div class="col-md-5">
-                                <FormKit type="select" label="ชนิดกระดาษ" name="PaperType" placeholder="เลือกชนิดกระดาษ" 
-                                    :options="productSubOption" v-model="PaperTypeText"
-                                    validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                                <FormKit type="select" label="ชนิดกระดาษ" name="PaperType" placeholder="เลือกชนิดกระดาษ"
+                                    :options="productSubOption" v-model="PaperTypeText" validation="required"
+                                    :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
                             </div>
                             <div class="col-md-7">
-                                <FormKit type="select" label="บริษัทประกันภัย" name="Company" placeholder="เลือกบริษัทประกันภัย"
-                                    :options="productCompanyOption" @change="onProductCompanyChange" v-model="CompanyText"
-                                    validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                                <FormKit type="select" label="บริษัทประกันภัย" name="Company"
+                                    placeholder="เลือกบริษัทประกันภัย" :options="productCompanyOption"
+                                    @change="onProductCompanyChange" v-model="CompanyText" validation="required"
+                                    :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
                             </div>
                         </div>
                     </aside>
@@ -42,22 +43,21 @@
                 </section>
             </div>
         </div>
-	</div>
-    
+    </div>
 </template>
 
 <script setup lang="ts">
-import { 
-  AreaListRes,
-  ProductcompanyAreaListRes,
-  ProductsubcategoryAreaListRes,
-  WarehouseAreaListRes
+import {
+    AreaListRes,
+    ProductcompanyAreaListRes,
+    ProductsubcategoryAreaListRes,
+    WarehouseAreaListRes
 } from '~/shared/entities/paper-entity';
 import { SelectOption } from '~/shared/entities/select-option';
 
 const emit = defineEmits(['areaChange', 'wareHouseChange', 'productSubChange', 'productCompanyChange'])
 
-const props = defineProps({ 
+const props = defineProps({
     area: Array<AreaListRes>,
     shippingType: String,
     wareHouse: Array<WarehouseAreaListRes>,
@@ -78,7 +78,7 @@ var PaperTypeText = ref("")
 var CompanyText = ref("")
 
 const onLoad = onMounted(async () => {
-	if (props.area) {
+    if (props.area) {
         areaOption.value = props.area.map((x) => {
             const options: SelectOption = {
                 label: x.Name,
@@ -91,7 +91,7 @@ const onLoad = onMounted(async () => {
         shippingType.value = props.shippingType
     }
     if (props.wareHouse) {
-        if(shippingType.value == 'DELIVERY') {
+        if (shippingType.value == 'DELIVERY') {
             BranchLabel.value = props.wareHouse[0].Name
             await onWareHouseChange(props.wareHouse[0].ID, props.wareHouse[0].AreaID)
         }
@@ -129,19 +129,30 @@ const onLoad = onMounted(async () => {
             return options;
         });
         const defaultValue: SelectOption[] = [
-          {
-            label: "เลือกบริษัทประกันภัย",
-            value: "",
-            attrs: { disabled: true }
-          },
-          {
-            label: 'ทั้งหมด',
-            value: "-",
-          }
-      	]
+            {
+                label: "เลือกบริษัทประกันภัย",
+                value: "",
+                attrs: { disabled: true }
+            },
+            {
+                label: 'ทั้งหมด',
+                value: "-",
+            }
+        ]
         productCompanyOption.value = [...defaultValue, ...productCompanyOption.value];
         CompanyText.value = '-'
     }
+
+    const dialogEmptyCart = document.getElementById('emptycart-dialog')
+    const openDialogEmptyCart = document.querySelectorAll('.btn-open-emptycart')
+
+    openDialogEmptyCart.forEach(function (openItem) {
+        openItem.addEventListener('click', function () {
+            if (dialogEmptyCart instanceof HTMLDialogElement) {
+                dialogEmptyCart.showModal();
+            }
+        })
+    })
 });
 
 const onAreaChange = async (event: any) => {
@@ -158,7 +169,7 @@ watch(BranchText, async (newBranch) => {
 const onWareHouseChange = async (event: string, area: string) => {
     PaperTypeText.value = ''
     CompanyText.value = ''
-    if(wareHouseOption.value.length > 0) {
+    if (wareHouseOption.value.length > 0) {
         BranchLabel.value = wareHouseOption.value.find(w => w.value == event)?.label.toString() ?? ''
 
     }
@@ -176,108 +187,108 @@ const onProductCompanyChange = async (event: any) => {
 };
 
 watch(
-  () => props.area,
-  async () => {
-    if (props.area) {
-		areaOption.value = props.area.map((x) => {
-            const options: SelectOption = {
-                label: x.Name,
-                value: x.ID,
-            };
-            return options;
-        });
-        areaOption.value.unshift({
-            label: "เลือกภาค",
-            value: "",
-            attrs: { disabled: true },
-        });
-    }
-  }
-)
-
-watch(
-  () => props.shippingType,
-  async () => {
-    if (props.shippingType) {
-        shippingType.value = props.shippingType
-    }
-  }
-)
-
-watch(
-  () => props.wareHouse,
-  async () => {
-    if (props.wareHouse) {
-        if(shippingType.value == 'DELIVERY') {
-            BranchLabel.value = props.wareHouse[0].Name
-            await onWareHouseChange(props.wareHouse[0].ID, props.wareHouse[0].AreaID)
-        }
-        else {
-            wareHouseOption.value = props.wareHouse.map((x) => {
+    () => props.area,
+    async () => {
+        if (props.area) {
+            areaOption.value = props.area.map((x) => {
                 const options: SelectOption = {
                     label: x.Name,
                     value: x.ID,
                 };
                 return options;
             });
-            wareHouseOption.value.unshift({
-                label: "เลือกสาขา",
+            areaOption.value.unshift({
+                label: "เลือกภาค",
                 value: "",
                 attrs: { disabled: true },
             });
         }
     }
-  }
 )
 
 watch(
-  () => props.productSubCategory,
-  async () => {
-    if (props.productSubCategory) {
-        productSubOption.value = props.productSubCategory.map((x) => {
-            const options: SelectOption = {
-                label: x.ProductSubCategory,
-                value: x.ProductSubCategory,
-                option: x.ProductCategory
-            };
-            return options;
-        });
-        productSubOption.value.unshift({
-            label: "เลือกชนิดกระดาษ",
-            value: "",
-            attrs: { disabled: true },
-        });
+    () => props.shippingType,
+    async () => {
+        if (props.shippingType) {
+            shippingType.value = props.shippingType
+        }
     }
-  }
 )
 
 watch(
-  () => props.productCompany,
-  async () => {
-    if (props.productCompany) {
-        productCompanyOption.value = props.productCompany.map((x) => {
-            const options: SelectOption = {
-                label: x.CompanyName,
-                value: x.ProductCompany,
-            };
-            return options;
-        });
-
-        const defaultValue: SelectOption[] = [
-          {
-            label: "เลือกบริษัทประกันภัย",
-            value: "",
-            attrs: { disabled: true }
-          },
-          {
-            label: 'ทั้งหมด',
-            value: "-",
-          }
-      	]
-        productCompanyOption.value = [...defaultValue, ...productCompanyOption.value];
-        CompanyText.value = '-'
+    () => props.wareHouse,
+    async () => {
+        if (props.wareHouse) {
+            if (shippingType.value == 'DELIVERY') {
+                BranchLabel.value = props.wareHouse[0].Name
+                await onWareHouseChange(props.wareHouse[0].ID, props.wareHouse[0].AreaID)
+            }
+            else {
+                wareHouseOption.value = props.wareHouse.map((x) => {
+                    const options: SelectOption = {
+                        label: x.Name,
+                        value: x.ID,
+                    };
+                    return options;
+                });
+                wareHouseOption.value.unshift({
+                    label: "เลือกสาขา",
+                    value: "",
+                    attrs: { disabled: true },
+                });
+            }
+        }
     }
-  }
+)
+
+watch(
+    () => props.productSubCategory,
+    async () => {
+        if (props.productSubCategory) {
+            productSubOption.value = props.productSubCategory.map((x) => {
+                const options: SelectOption = {
+                    label: x.ProductSubCategory,
+                    value: x.ProductSubCategory,
+                    option: x.ProductCategory
+                };
+                return options;
+            });
+            productSubOption.value.unshift({
+                label: "เลือกชนิดกระดาษ",
+                value: "",
+                attrs: { disabled: true },
+            });
+        }
+    }
+)
+
+watch(
+    () => props.productCompany,
+    async () => {
+        if (props.productCompany) {
+            productCompanyOption.value = props.productCompany.map((x) => {
+                const options: SelectOption = {
+                    label: x.CompanyName,
+                    value: x.ProductCompany,
+                };
+                return options;
+            });
+
+            const defaultValue: SelectOption[] = [
+                {
+                    label: "เลือกบริษัทประกันภัย",
+                    value: "",
+                    attrs: { disabled: true }
+                },
+                {
+                    label: 'ทั้งหมด',
+                    value: "-",
+                }
+            ]
+            productCompanyOption.value = [...defaultValue, ...productCompanyOption.value];
+            CompanyText.value = '-'
+        }
+    }
 )
 
 </script>

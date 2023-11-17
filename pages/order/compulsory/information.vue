@@ -184,7 +184,7 @@
                   :max="effectiveMaxDate"
                   format="DD/MM/YYYY"
                   v-model="effectiveDateText"
-                  @change="handleEffectiveDateChange"
+                  
                   validation="required"
                   :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
                 />
@@ -200,7 +200,7 @@
                   :max="expireMaxDate"
                   :disabled="effectiveType == 'FULLYEAR' || effectiveDateText == ''"
                   v-model="expireDateText"
-                  @change="handleExpireDateChange"
+                  
                   validation="required"
                   :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
                 />
@@ -385,7 +385,12 @@ const onLoad = onMounted(async () => {
 watch(carUseText, async (newCarUse) => {
   await handleRadioCarUseChange(newCarUse, "");
 });
-
+watch(effectiveDateText, async(effectiveDateNew,effectiveDate)=>{
+  await handleEffectiveDateChange(effectiveDateNew.toString())
+})
+watch(expireDateText, async(expireDateNew,expireDateText)=>{
+  await handleExpireDateChange(expireDateNew.toString())
+})
 // Event Handle CarUse Change Call Api Cartype
 const handleRadioCarUseChange = async (event: String, optionText: string) => {
   if (event != undefined && (event == "PERSONAL" || event == "HIRE" || event == "RENT")) {
@@ -511,9 +516,10 @@ const handleEffectiveTypeChange = async (event: any) => {
 
 /* Event Handle EffectiveDate Change Set Value To EffectiveDate, ExpireDate 
 And Calculate Min, Max ExpireDate And Call Function checkFromDate */
-const handleEffectiveDateChange = async (event: any) => {
-  if (event.target.value && event.target.value != "") {
-    selectDate = new Date(event.target.value);
+const handleEffectiveDateChange = async (value: string) => {
+  console.log("handleEffectiveDateChange",value)
+  if (value && value != "") {
+    selectDate = new Date(value);
     effectiveDateText.value = selectDate.toLocaleDateString("en-CA");
     switch (effectiveType.value) {
       case "FULLYEAR":
@@ -544,11 +550,11 @@ const handleEffectiveDateChange = async (event: any) => {
 };
 
 // Event Handle ExpireDate Change Set Value To ExpireDate And Call Function checkFromDate
-const handleExpireDateChange = async (event: any) => {
-  if (event.target.value && event.target.value != "") {
-    expireDateText.value = new Date(event.target.value).toLocaleDateString("en-CA");
+const handleExpireDateChange = async (value: string) => {
+  if (value && value != "") {
+    expireDateText.value = new Date(value).toLocaleDateString("en-CA");
     let efDate = new Date(effectiveDateText.value.toString());
-    let exDate = new Date(event.target.value);
+    let exDate = new Date(value);
     let differenceMs = exDate.getTime() - efDate.getTime();
     let differenceDays = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
     setInsuranceDay(differenceDays);

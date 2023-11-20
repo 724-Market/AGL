@@ -13,13 +13,11 @@
 
                     <!--  Sidenav toggler -->
                     <div class="sidenav-toggler-wrapper">
-                        <div class="sidenav-toggler" data-action="sidenav-unpin" data-target="#sidenav-main">
+                        <a id="btn-sidenav-close" class="sidenav-toggler" href="#" title="เมนู">
                             <div class="sidenav-toggler-inner">
-                                <i class="sidenav-toggler-line"></i>
-                                <i class="sidenav-toggler-line"></i>
-                                <i class="sidenav-toggler-line"></i>
+                                <div class="sidenav-toggler-line"></div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </header>
 
@@ -27,6 +25,8 @@
 
             </div>
         </nav>
+
+        <div class="sidenav-backdrop"></div>
 
         <!-- Main content-->
         <main class="main-content" id="panel">
@@ -102,6 +102,23 @@ const getToken = async () => {
 const onLoad = onMounted(async () => {
     getToken()
     setTimeout(getToken, 1000 * 60)
+})
+
+onMounted(() => {
+    document.body.classList.remove('sidenav-show')
+
+    const sideNavOpen = document.getElementById('btn-sidenav-open')
+    const sideNavClose = document.getElementById('btn-sidenav-close')
+
+    sideNavOpen.addEventListener('click', (e) => {
+        document.body.classList.add('sidenav-show')
+        e.preventDefault()
+    })
+
+    sideNavClose.addEventListener('click', (e) => {
+        document.body.classList.remove('sidenav-show')
+        e.preventDefault()
+    })
 })
 
 // Define style

@@ -13,125 +13,162 @@
 
                             <section class="timeline is-vertical">
 
-                                <div class="timeline-item is-cancel">
-                                    <div class="datetime">
-                                        <time datetime="2022-02-09 09:30">2022-02-09<span>09:30</span></time>
-                                    </div>
-                                    <figure class="timeline-icon">
-                                        <div class="icon cross"></div>
-                                    </figure>
-                                    <div class="detail">
-                                        <h4 class="title">ยกเลิกการทำรายการ</h4>
-                                        <p>ไม่สามารถออกกรมธรรม์ได้ เนื่องจากผิดเงื่อนไข</p>
-                                    </div>
-                                </div>
-
-                                <div class="timeline-item is-success">
-                                    <div class="datetime">
-                                        <time datetime="2022-02-09 09:30">2022-02-09<span>09:30</span></time>
-                                    </div>
-                                    <figure class="timeline-icon">
-                                        <div class="icon check"></div>
-                                    </figure>
-                                    <div class="detail">
-                                        <h4 class="title">ได้รับกรมธรรม์</h4>
-                                        <p>กรมธรรม์จัดส่งเรียบร้อยแล้ว <a class="action" href="#">กรมธรรม์
-                                                TR-4635-453-32-1</a>
-                                        </p>
+                                <div class="timeline-list">
+                                    <div class="timeline-item is-success is-next">
+                                        <div class="datetime">
+                                        </div>
+                                        <figure class="timeline-icon">
+                                            <div class="icon check"></div>
+                                        </figure>
+                                        <div class="detail">
+                                            <h4 class="title">ได้รับกรมธรรม์</h4>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="timeline-item is-admin">
-                                    <div class="datetime">
-                                        <time datetime="2022-02-08 12:10">2022-02-08<span>12:10</span></time>
-                                    </div>
-                                    <figure class="timeline-icon">
-                                        <div class="icon"></div>
-                                    </figure>
-                                    <div class="detail">
-                                        <p>เจ้าหน้าที่ประสานงานกับบริษัทขนส่ง</p>
-                                    </div>
-                                </div>
-
-                                <div class="timeline-item">
-                                    <div class="datetime">
-                                        <time datetime="2022-02-08 10:55">2022-02-08<span>10:55</span></time>
-                                    </div>
-                                    <figure class="timeline-icon">
-                                        <div class="icon delivery"></div>
-                                    </figure>
-                                    <div class="detail">
-                                        <h4 class="title">จัดส่งกรมธรรม์</h4>
-                                        <p>โดย DHL Express <a class="action" href="#">TH 453-75648-56</a></p>
+                                <div class="timeline-list">
+                                    <div class="timeline-item is-cancel">
+                                        <div class="datetime">
+                                            <time datetime="2022-02-09 09:30">2022-02-09<span>09:30</span></time>
+                                        </div>
+                                        <figure class="timeline-icon">
+                                            <div class="icon cross"></div>
+                                        </figure>
+                                        <div class="detail">
+                                            <h4 class="title">ยกเลิกการทำรายการ</h4>
+                                            <p>ไม่สามารถออกกรมธรรม์ได้ เนื่องจากผิดเงื่อนไข</p>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="timeline-item is-danger is-current">
-                                    <div class="datetime">
-                                        <time datetime="2022-02-08 10:55">2022-02-08<span>10:55</span></time>
-                                    </div>
-                                    <figure class="timeline-icon">
-                                        <div class="icon delivery"></div>
-                                    </figure>
-                                    <div class="detail">
-                                        <h4 class="title">จัดส่งกรมธรรม์</h4>
-                                        <p>เกิดปัญหาระหว่างจัดส่ง กรุณา <a class="action btn-open-support" href="#"
-                                                title="ติดต่อเจ้าหน้าที่">ติดต่อเจ้าหน้าที่</a></p>
-                                    </div>
-                                </div>
-
-                                <div class="timeline-item is-admin is-current">
-                                    <div class="datetime">
-                                        <time datetime="2022-02-07 12:34">2022-02-07<span>12:34</span></time>
-                                    </div>
-                                    <figure class="timeline-icon">
-                                        <div class="icon"></div>
-                                    </figure>
-                                    <div class="detail">
-                                        <p>เจ้าหน้าที่ประสานงานกับบริษัทประกันภัย</p>
+                                <div class="timeline-list">
+                                    <div class="timeline-item is-success">
+                                        <div class="datetime">
+                                            <time datetime="2022-02-09 09:30">2022-02-09<span>09:30</span></time>
+                                        </div>
+                                        <figure class="timeline-icon">
+                                            <div class="icon check"></div>
+                                        </figure>
+                                        <div class="detail">
+                                            <h4 class="title">ได้รับกรมธรรม์</h4>
+                                            <p>กรมธรรม์จัดส่งเรียบร้อยแล้ว <a class="action" href="#">กรมธรรม์
+                                                    TR-4635-453-32-1</a></p>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="timeline-item is-warning">
-                                    <div class="datetime">
-                                        <time datetime="2022-02-06 02:23">2022-02-06<span>02:23</span></time>
+                                <div class="timeline-list">
+                                    <div class="timeline-item is-child">
+                                        <div class="datetime">
+                                            <time datetime="2022-02-08 12:20">2022-02-08<span>12:20</span></time>
+                                        </div>
+                                        <figure class="timeline-icon">
+                                            <div class="icon"></div>
+                                        </figure>
+                                        <div class="detail">
+                                            <p>เจ้าหน้าที่ดำเนินการเรียบร้อยแล้ว</p>
+                                        </div>
                                     </div>
-                                    <figure class="timeline-icon">
-                                        <div class="icon car-inspect"></div>
-                                    </figure>
-                                    <div class="detail">
-                                        <h4 class="title">ตรวจสภาพรถ</h4>
-                                        <p>กำลังนัดหมายเพื่อตรวจสอบสภาพรถ</p>
+
+                                    <div class="timeline-item is-child">
+                                        <div class="datetime">
+                                            <time datetime="2022-02-08 12:10">2022-02-08<span>12:10</span></time>
+                                        </div>
+                                        <figure class="timeline-icon">
+                                            <div class="icon"></div>
+                                        </figure>
+                                        <div class="detail">
+                                            <p>เจ้าหน้าที่ประสานงานกับบริษัทขนส่ง</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="timeline-item">
+                                        <div class="datetime">
+                                            <time datetime="2022-02-08 10:55">2022-02-08<span>10:55</span></time>
+                                        </div>
+                                        <figure class="timeline-icon">
+                                            <div class="icon delivery"></div>
+                                        </figure>
+                                        <div class="detail">
+                                            <h4 class="title">จัดส่งกรมธรรม์</h4>
+                                            <p>โดย DHL Express <a class="action" href="#">TH 453-75648-56</a></p>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="timeline-item">
-                                    <div class="datetime">
-                                        <time datetime="2022-02-05 03:03">2022-02-05<span>03:03</span></time>
-                                    </div>
-                                    <figure class="timeline-icon">
-                                        <div class="icon pledge"></div>
-                                    </figure>
-                                    <div class="detail">
-                                        <h4 class="title">ชำระเงิน</h4>
-                                        <p>ผ่านวงเงินมัดจำ 645.21 บาท</p>
+                                <div class="timeline-list">
+                                    <div class="timeline-item is-danger is-current">
+                                        <div class="datetime">
+                                            <time datetime="2022-02-08 10:55">2022-02-08<span>10:55</span></time>
+                                        </div>
+                                        <figure class="timeline-icon">
+                                            <div class="icon delivery"></div>
+                                        </figure>
+                                        <div class="detail">
+                                            <h4 class="title">จัดส่งกรมธรรม์</h4>
+                                            <p>เกิดปัญหาระหว่างจัดส่ง กรุณา <a class="action" href="#">ติดต่อเจ้าหน้าที่</a>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="timeline-item">
-                                    <div class="datetime">
-                                        <time datetime="2022-02-05 02:08">2022-02-05<span>02:08</span></time>
+                                <div class="timeline-list">
+                                    <div class="timeline-item is-child is-current">
+                                        <div class="datetime">
+                                            <time datetime="2022-02-07 12:34">2022-02-07<span>12:34</span></time>
+                                        </div>
+                                        <figure class="timeline-icon">
+                                            <div class="icon"></div>
+                                        </figure>
+                                        <div class="detail">
+                                            <p>เจ้าหน้าที่ประสานงานกับบริษัทประกันภัย</p>
+                                        </div>
                                     </div>
-                                    <figure class="timeline-icon">
-                                        <div class="icon purchase-order"></div>
-                                    </figure>
-                                    <div class="detail">
-                                        <h4 class="title">ข้อมูลคำสั่งซื้อ</h4>
-                                        <h5 class="subtitle">พ.ร.บ.</h5>
-                                        <p>MG รุ่น MG3 รุ่นย่อย D ปี 2018 (สีน้ำเงิน)
-                                            <a class="action btn-open-support" href="#"
-                                                title="ติดต่อเจ้าหน้าที่">ติดต่อเจ้าหน้าที่</a>
-                                        </p>
+
+                                    <div class="timeline-item is-warning">
+                                        <div class="datetime">
+                                            <time datetime="2022-02-06 02:23">2022-02-06<span>02:23</span></time>
+                                        </div>
+                                        <figure class="timeline-icon">
+                                            <div class="icon car-inspect"></div>
+                                        </figure>
+                                        <div class="detail">
+                                            <h4 class="title">ตรวจสภาพรถ</h4>
+                                            <p>กำลังนัดหมายเพื่อตรวจสอบสภาพรถ</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-list">
+                                    <div class="timeline-item">
+                                        <div class="datetime">
+                                            <time datetime="2022-02-05 03:03">2022-02-05<span>03:03</span></time>
+                                        </div>
+                                        <figure class="timeline-icon">
+                                            <div class="icon pledge"></div>
+                                        </figure>
+                                        <div class="detail">
+                                            <h4 class="title">ชำระเงิน</h4>
+                                            <p>ผ่านวงเงินมัดจำ 645.21 บาท</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-list">
+                                    <div class="timeline-item">
+                                        <div class="datetime">
+                                            <time datetime="2022-02-05 02:08">2022-02-05<span>02:08</span></time>
+                                        </div>
+                                        <figure class="timeline-icon">
+                                            <div class="icon purchase-order"></div>
+                                        </figure>
+                                        <div class="detail">
+                                            <h4 class="title">ข้อมูลคำสั่งซื้อ</h4>
+                                            <h5 class="subtitle">พ.ร.บ.</h5>
+                                            <p>MG รุ่น MG3 รุ่นย่อย D ปี 2018 (สีน้ำเงิน)
+                                                <a class="action" href="#">ติดต่อเจ้าหน้าที่</a>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </section>

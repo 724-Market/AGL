@@ -381,16 +381,7 @@ const onLoad = onMounted(async () => {
   }
 });
 
-// Define watch For Radio CarUse Change
-watch(carUseText, async (newCarUse) => {
-  await handleRadioCarUseChange(newCarUse, "");
-});
-watch(effectiveDateText, async(effectiveDateNew,effectiveDate)=>{
-  await handleEffectiveDateChange(effectiveDateNew.toString())
-})
-watch(expireDateText, async(expireDateNew,expireDateText)=>{
-  await handleExpireDateChange(expireDateNew.toString())
-})
+
 // Event Handle CarUse Change Call Api Cartype
 const handleRadioCarUseChange = async (event: String, optionText: string) => {
   if (event != undefined && (event == "PERSONAL" || event == "HIRE" || event == "RENT")) {
@@ -797,6 +788,22 @@ const getCarDetail = async () => {
 
   
 };
+// Define watch For Radio CarUse Change
+watch(carUseText, async (newCarUse) => {
+  await handleRadioCarUseChange(newCarUse, "");
+});
+watch(effectiveDateText, async(effectiveDateNew,effectiveDate)=>{
+  if(effectiveDateNew)
+  {
+    await handleEffectiveDateChange(effectiveDateNew.toString())
+  }
+  
+})
+watch(expireDateText, async(expireDateNew,expireDateText)=>{
+  if(expireDateNew)
+  {await handleExpireDateChange(expireDateNew.toString())}
+  
+})
 // Submit form event
 const submitOrder = async (formData: any) => {
   await getCarDetail();

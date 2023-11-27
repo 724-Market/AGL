@@ -87,15 +87,16 @@
                   :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block-inline" />
               </div>
               <div class="form-inline">
-                <FormKit type="datepicker" label="เริ่มต้น" name="EffectiveDate" placeholder="วัน/เดือน/ปี ค.ศ."
-                  :min-date="effectiveMinDate" :max-date="effectiveMaxDate" format="DD/MM/YYYY"
-                  v-model="effectiveDateText" validation="required"
-                  :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" />
+                <FormKit type="datepicker" label="เริ่มต้น" name="EffectiveDate" 
+                  placeholder="วัน/เดือน/ปี ค.ศ." format="DD/MM/YYYY" picker-only 
+                  :min-date="effectiveMinDate" :max-date="effectiveMaxDate" v-model="effectiveDateText"
+                  validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" />
               </div>
               <div class="form-inline">
-                <FormKit type="datepicker" label="สิ้นสุด" name="ExpireDate" picker-only placeholder="วัน/เดือน/ปี ค.ศ"
-                  format="DD/MM/YYYY" :min-date="expireMinDate" :max-date="expireMaxDate"
-                  :disabled="effectiveType == 'FULLYEAR' || effectiveDateText == ''" v-model="expireDateText"
+                <FormKit type="datepicker" label="สิ้นสุด" name="ExpireDate" 
+                  placeholder="วัน/เดือน/ปี ค.ศ" format="DD/MM/YYYY" picker-only 
+                  :min-date="expireMinDate" :max-date="expireMaxDate" v-model="expireDateText"
+                  :disabled="effectiveType == 'FULLYEAR' || effectiveDateText == ''" 
                   validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" />
               </div>
 
@@ -195,14 +196,14 @@ var carCC: globalThis.Ref<String> = ref("");
 
 var effectiveType: globalThis.Ref<String> = ref("FULLYEAR");
 
-var selectDate: Date;
-var effectiveDateText: globalThis.Ref<String> = ref("");
 const dateNow: Date = new Date();
 const effectiveMinDate: String = dateNow.toLocaleDateString("en-CA"); // en-CA or sv => yyyy-MM-dd
 const effectiveMaxDate: String = new Date(
   dateNow.setDate(dateNow.getDate() + defineEventHandler.compulsory.CoverageFuture)
 ).toLocaleDateString("en-CA");
 
+var selectDate: Date;
+var effectiveDateText: globalThis.Ref<String | undefined> = ref();
 var expireDate: Date;
 var expireDateText: globalThis.Ref<String> = ref("");
 var expireMinDate: String = "";

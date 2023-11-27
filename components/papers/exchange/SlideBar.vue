@@ -101,7 +101,14 @@ const onContinue = async ()=>{
       await storeSearchMatchCompulsory.clearSearchMatch();
       await usePagePaper().onClearExchangePaper();
       const router = useRouter();
-      router.push({ path: "/papers/thanks" });
+      // Check if response.Data exists and is an array with at least one element
+      if (response.Data && Array.isArray(response.Data) && response.Data.length > 0) {
+        const orderNo = response.Data[0].OrderNo; 
+        console.log("OrderNo: " + response.Data[0].OrderNo);
+        router.push({ path: "/papers/thanks", query: { orderNo } });
+      } else {
+        console.log("No OrderNo available in the response");
+      }
     }
     else{
       errorRes.value = useMapData().mappingMessageError(response.ErrorCode ?? "",response.ErrorMessage ?? "")

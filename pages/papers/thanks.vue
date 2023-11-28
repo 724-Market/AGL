@@ -112,7 +112,7 @@ const loadOrderDetail = async (orderNo: string) => {
     console.log("loadOrderDetail OrderNo in thanks.vue:", orderNo);
     //get credit balance
     const req: OrderListReq = {
-        OrderNo: "PO2311000063",
+        OrderNo: orderNo,
     };
 
     const resPOrder = await useRepository().paper.getOrder(req);

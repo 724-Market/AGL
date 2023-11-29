@@ -203,10 +203,10 @@ var carCC: globalThis.Ref<String> = ref("");
 var effectiveType: globalThis.Ref<String> = ref("FULLYEAR");
 
 const dateNow: Date = new Date();
-const effectiveMinDate: String = dateNow.toLocaleDateString("en-CA"); // en-CA or sv => yyyy-MM-dd
+const effectiveMinDate: String = dateNow.toISOString() // en-CA or sv => yyyy-MM-dd
 const effectiveMaxDate: String = new Date(
   dateNow.setDate(dateNow.getDate() + defineEventHandler.compulsory.CoverageFuture)
-).toLocaleDateString("en-CA");
+).toISOString()
 
 var selectDate: Date;
 var effectiveDateText: globalThis.Ref<String | undefined> = ref(undefined);
@@ -379,13 +379,13 @@ const handleEffectiveTypeChange = async (event: any) => {
         expireMinDateText.setDate(
           expireMinDateText.getDate() + coverageExpireDateNotFullYearMinDay
         );
-        expireMinDate = expireMinDateText.toLocaleDateString("en-CA");
+        expireMinDate = expireMinDateText.toISOString()
 
         let expireMaxDateText = new Date(selectDate);
         expireMaxDateText.setDate(
           expireMaxDateText.getDate() + coverageExpireDateNotFullYearMaxDay
         );
-        expireMaxDate = expireMaxDateText.toLocaleDateString("en-CA");
+        expireMaxDate = expireMaxDateText.toISOString()
 
         if (CarInfo.value.InsuranceDay) setInsuranceDay(CarInfo.value.InsuranceDay ?? 0);
         else setInsuranceDay(CoverageExpireDateFullYearMaxDay);
@@ -401,7 +401,7 @@ const handleEffectiveDateChange = async (value: string) => {
   console.log("handleEffectiveDateChange", value)
   if (value && value != "") {
     selectDate = new Date(value);
-    effectiveDateText.value = selectDate.toLocaleDateString("en-CA");
+    effectiveDateText.value = selectDate.toISOString()
     switch (effectiveType.value) {
       case "FULLYEAR":
         await setExpireDate(CoverageExpireDateFullYearMaxDay);
@@ -413,13 +413,13 @@ const handleEffectiveDateChange = async (value: string) => {
         expireMinDateText.setDate(
           expireMinDateText.getDate() + coverageExpireDateNotFullYearMinDay
         );
-        expireMinDate = expireMinDateText.toLocaleDateString("en-CA");
+        expireMinDate = expireMinDateText.toISOString()
 
         let expireMaxDateText = new Date(selectDate);
         expireMaxDateText.setDate(
           expireMaxDateText.getDate() + coverageExpireDateNotFullYearMaxDay
         );
-        expireMaxDate = expireMaxDateText.toLocaleDateString("en-CA");
+        expireMaxDate = expireMaxDateText.toISOString()
 
         setInsuranceDay(coverageExpireDateNotFullYearMinDay);
     }
@@ -433,7 +433,7 @@ const handleEffectiveDateChange = async (value: string) => {
 // Event Handle ExpireDate Change Set Value To ExpireDate And Call Function checkFromDate
 const handleExpireDateChange = async (value: string) => {
   if (value && value != "") {
-    expireDateText.value = new Date(value).toLocaleDateString("en-CA");
+    expireDateText.value = new Date(value).toISOString()
     let efDate = new Date(effectiveDateText.value.toString());
     let exDate = new Date(value);
     let differenceMs = exDate.getTime() - efDate.getTime();
@@ -450,7 +450,7 @@ const setExpireDate = async (dateCount: number) => {
   expireDate = new Date(selectDate);
   if (dateCount < 365) expireDate.setDate(expireDate.getDate() + dateCount);
   else expireDate.setFullYear(expireDate.getFullYear() + 1);
-  expireDateText.value = expireDate.toLocaleDateString("en-CA");
+  expireDateText.value = expireDate.toISOString()
 };
 
 const setInsuranceDay = async (dateCount: number) => {

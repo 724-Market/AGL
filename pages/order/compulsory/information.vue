@@ -105,6 +105,7 @@
                 <FormKit type="datepicker" label="สิ้นสุด" name="ExpireDate" 
                   placeholder="วัน/เดือน/ปี ค.ศ" format="DD/MM/YYYY" picker-only 
                   :min-date="expireMinDate" :max-date="expireMaxDate" v-model="expireDateText"
+                  :disabled="effectiveType == 'FULLYEAR' || effectiveDateText == ''" 
                   validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" />
               </div>
 
@@ -211,9 +212,9 @@ const effectiveMaxDate: String = new Date(
 ).toLocaleDateString("en-CA");
 
 var selectDate: Date;
-var effectiveDateText: globalThis.Ref<String | undefined> = ref(undefined);
+var effectiveDateText: globalThis.Ref<String | undefined> = ref();
 var expireDate: Date;
-var expireDateText: globalThis.Ref<String> = ref("");
+var expireDateText: globalThis.Ref<String | undefined> = ref();
 var expireMinDate: String = "";
 var expireMaxDate: String = "";
 

@@ -706,7 +706,7 @@ const submitOrder = async (formData: any) => {
   const router = useRouter();
   router.push("/order/compulsory/packages");
 };
-
+ 
 // Define layout
 const layout = "monito";
 const layoutClass = "page-monito";

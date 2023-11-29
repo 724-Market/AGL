@@ -203,7 +203,7 @@ const effectiveMaxDate: String = new Date(
 ).toLocaleDateString("en-CA");
 
 var selectDate: Date;
-var effectiveDateText: globalThis.Ref<String | undefined> = ref(undefined);
+var effectiveDateText: globalThis.Ref<String | undefined> = ref(undefined); 
 var expireDate: Date;
 var expireDateText: globalThis.Ref<String> = ref("");
 var expireMinDate: String = "";

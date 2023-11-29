@@ -87,23 +87,23 @@
                   :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block-inline" />
               </div>
               <div class="form-inline">
-                <!-- <FormKit type="datepicker" label="เริ่มต้น" name="EffectiveDate" 
-                  placeholder="วัน/เดือน/ปี ค.ศ." format="DD/MM/YYYY" picker-only
-                  :min-date="effectiveMinDate" :max-date="effectiveMaxDate" v-model="effectiveDateText"
-                  validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" /> -->
                 <FormKit type="datepicker" label="เริ่มต้น" name="EffectiveDate" 
                   placeholder="วัน/เดือน/ปี ค.ศ." format="DD/MM/YYYY" picker-only
+                  :min-date="effectiveMinDate" :max-date="effectiveMaxDate" v-model="effectiveDateText"
                   validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" />
+                <!-- <FormKit type="datepicker" label="เริ่มต้น" name="EffectiveDate" 
+                  placeholder="วัน/เดือน/ปี ค.ศ." format="DD/MM/YYYY" picker-only
+                  validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" /> -->
               </div>
               <div class="form-inline">
-                <!-- <FormKit type="datepicker" label="สิ้นสุด" name="ExpireDate" 
+                <FormKit type="datepicker" label="สิ้นสุด" name="ExpireDate" 
                   placeholder="วัน/เดือน/ปี ค.ศ" format="DD/MM/YYYY" picker-only 
                   :min-date="expireMinDate" :max-date="expireMaxDate" v-model="expireDateText"
                   :disabled="effectiveType == 'FULLYEAR' || effectiveDateText == ''" 
-                  validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" /> -->
-                <FormKit type="datepicker" label="สิ้นสุด" name="ExpireDate" 
-                  placeholder="วัน/เดือน/ปี ค.ศ" format="DD/MM/YYYY" picker-only 
                   validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" />
+                <!-- <FormKit type="datepicker" label="สิ้นสุด" name="ExpireDate" 
+                  placeholder="วัน/เดือน/ปี ค.ศ" format="DD/MM/YYYY" picker-only 
+                  validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" /> -->
               </div>
 
               <p class="text-center">

@@ -92,7 +92,7 @@
                   :min-date="effectiveMinDate" :max-date="effectiveMaxDate" v-model="effectiveDateText"
                   validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" /> -->
                 <FormKit type="datepicker" label="เริ่มต้น" name="EffectiveDate" 
-                  placeholder="วัน/เดือน/ปี ค.ศ." format="DD/MM/YYYY" picker-only
+                  placeholder="วัน/เดือน/ปี ค.ศ." format="DD/MM/YYYY" 
                   :min-date="effectiveMinDate" :max-date="effectiveMaxDate" v-model="effectiveDateText"
                   validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" />
               </div>
@@ -212,9 +212,9 @@ const effectiveMaxDate: String = new Date(
 ).toLocaleDateString("en-CA");
 
 var selectDate: Date;
-var effectiveDateText: globalThis.Ref<String | undefined> = ref();
+var effectiveDateText: globalThis.Ref<String> = ref("");
 var expireDate: Date;
-var expireDateText: globalThis.Ref<String | undefined> = ref();
+var expireDateText: globalThis.Ref<String> = ref("");
 var expireMinDate: String = "";
 var expireMaxDate: String = "";
 

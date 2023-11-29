@@ -89,7 +89,7 @@
               <div class="form-inline">
                 <FormKit type="datepicker" label="เริ่มต้น" name="EffectiveDate" 
                   placeholder="วัน/เดือน/ปี ค.ศ." format="DD/MM/YYYY" picker-only
-                  :min-date="effectiveMinDate" :max-date="effectiveMaxDate" v-model="effectiveDateText"
+                  :min-date="effectiveMinDate" :max-date="effectiveMaxDate" 
                   validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" />
               </div>
               <div class="form-inline">

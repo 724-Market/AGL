@@ -22,19 +22,6 @@
         <OrderChecklist :list="props.checkList" @change-check-save="handlerCheckSave" />
       </aside>
 
-      <!-- <div class="formkit-outer form-actions" data-type="submit">
-        <div class="formkit-wrapper">
-          <button
-            loading="false"
-            class="formkit-input btn btn-primary btn-accept pledge-action"
-            type="button"
-            name="order-submit"
-            id="order-submit"
-          >
-            ไปต่อ
-          </button>
-        </div>
-      </div> -->
       <button
         loading="false"
         class="formkit-input btn-continue btn btn-primary btn-accept pledge-action"

@@ -1,9 +1,23 @@
 <template>
-  <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
+  <NuxtLayout
+    :name="layout"
+    :layout-class="layoutClass"
+    :page-title="pageTitle"
+    :page-category="pageCategory"
+    :show-page-steps="showPageSteps"
+    :show-page-header="showPageHeader"
+  >
     <!-- Content -->
-    <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
-      #default="{ value }" v-model="values" :incomplete-message="false">
+    <FormKit
+      type="form"
+      @submit="submitOrder"
+      :actions="false"
+      id="form-order"
+      form-class="form-order form-theme"
+      #default="{ value }"
+      v-model="values"
+      :incomplete-message="false"
+    >
       <div class="row">
         <div class="col-lg-8 col-xl-9">
           <div class="card">
@@ -20,52 +34,117 @@
               </div>
 
               <div class="form-inline">
-                <FormKit type="select" label="ประเภทรถยนต์" name="CarType" placeholder="เลือกข้อมูล" :options="carType"
-                  :value="carType.value" v-model="carTypeText" @change="handleCarTypeChange()" validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                <FormKit
+                  type="select"
+                  label="ประเภทรถยนต์"
+                  name="CarType"
+                  placeholder="เลือกข้อมูล"
+                  :options="carType"
+                  :value="carType.value"
+                  v-model="carTypeText"
+                  @change="handleCarTypeChange()"
+                  validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                />
                 <!-- <ElementsFormSelectCarType :options="carType" :value="carType.value" v-model="carTypeText"
                   @change="handleCarTypeChange" /> -->
               </div>
 
               <div class="form-inline">
-                <FormKit type="select" label="ขนาดรถยนต์" name="CarSize" placeholder="เลือกข้อมูล" :options="carSize"
-                  :value="carSize.value" v-model="carSizeText" @change="handleCarSizeChange" validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                <FormKit
+                  type="select"
+                  label="ขนาดรถยนต์"
+                  name="CarSize"
+                  placeholder="เลือกข้อมูล"
+                  :options="carSize"
+                  :value="carSize.value"
+                  v-model="carSizeText"
+                  @change="handleCarSizeChange"
+                  validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                />
               </div>
 
               <div class="form-inline">
-                <FormKit type="select" label="ปีที่จดทะเบียน" name="CarYear" placeholder="เลือกข้อมูล" :options="carYesrs"
-                  :value="carYesrs.value" v-model="carYesrsText" @change="handleCarYesrsChange" validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                <FormKit
+                  type="select"
+                  label="ปีที่จดทะเบียน"
+                  name="CarYear"
+                  placeholder="เลือกข้อมูล"
+                  :options="carYesrs"
+                  :value="carYesrs.value"
+                  v-model="carYesrsText"
+                  @change="handleCarYesrsChange"
+                  validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                />
               </div>
 
               <div class="form-inline">
-                <FormKit type="select" label="ยี่ห้อรถ" name="CarBrand" placeholder="เลือกข้อมูล" :options="carBrand"
-                  :value="carBrand.value" v-model="carBrandText" @change="handleCarBrandChange" validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                <FormKit
+                  type="select"
+                  label="ยี่ห้อรถ"
+                  name="CarBrand"
+                  placeholder="เลือกข้อมูล"
+                  :options="carBrand"
+                  :value="carBrand.value"
+                  v-model="carBrandText"
+                  @change="handleCarBrandChange"
+                  validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                />
               </div>
 
               <div class="form-inline">
-                <FormKit type="select" label="รุ่นรถ" name="CarModel" placeholder="เลือกข้อมูล" :options="carModel"
-                  :value="carModel.value" v-model="carModelText" @change="handleCarModelChange" validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                <FormKit
+                  type="select"
+                  label="รุ่นรถ"
+                  name="CarModel"
+                  placeholder="เลือกข้อมูล"
+                  :options="carModel"
+                  :value="carModel.value"
+                  v-model="carModelText"
+                  @change="handleCarModelChange"
+                  validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                />
               </div>
 
               <div class="form-inline">
-                <FormKit type="select" label="รุ่นย่อย" name="SubCarModel" placeholder="เลือกข้อมูล"
-                  :options="subcarModel" :value="subcarModel.value" v-model="subcarModelText"
-                  @change="handleSubcarModelChange" validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                <FormKit
+                  type="select"
+                  label="รุ่นย่อย"
+                  name="SubCarModel"
+                  placeholder="เลือกข้อมูล"
+                  :options="subcarModel"
+                  :value="subcarModel.value"
+                  v-model="subcarModelText"
+                  @change="handleSubcarModelChange"
+                  validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                />
               </div>
 
               <div class="form-inline" v-if="subcarModelText == 'other'">
-                <FormKit type="text" label="รุ่นย่อย (ระบุด้วยตนเอง)" name="customSubCarModel" placeholder="กรอกข้อมูล"
-                  v-model="customSubCarModel" @change="handleCustomSubcarModelChange" />
+                <FormKit
+                  type="text"
+                  label="รุ่นย่อย (ระบุด้วยตนเอง)"
+                  name="customSubCarModel"
+                  placeholder="กรอกข้อมูล"
+                  v-model="customSubCarModel"
+                  @change="handleCustomSubcarModelChange"
+                />
               </div>
 
               <div class="form-inline" v-if="subcarModelText != 'unknown'">
-                <FormKit type="text" label="ขนาดเครื่องยนต์" name="CarCC" placeholder="ระบุ cc ของเครื่องยนต์"
-                  disabled="true" v-model="carCC" />
+                <FormKit
+                  type="text"
+                  label="ขนาดเครื่องยนต์"
+                  name="CarCC"
+                  placeholder="ระบุ cc ของเครื่องยนต์"
+                  disabled="true"
+                  v-model="carCC"
+                />
               </div>
             </div>
           </div>
@@ -80,27 +159,54 @@
               </div>
 
               <div class="form-inline">
-                <FormKit type="radio" label="เลือกวันคุ้มครอง" name="EffectiveType" :options="{
-                  FULLYEAR: 'คุ้มครอง 1 ปี',
-                  NOTFULLYEAR: 'เลือกวันคุ้มครองเอง',
-                }" v-model="effectiveType" @input="handleEffectiveTypeChange" validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block-inline" />
+                <FormKit
+                  type="radio"
+                  label="เลือกวันคุ้มครอง"
+                  name="EffectiveType"
+                  :options="{
+                    FULLYEAR: 'คุ้มครอง 1 ปี',
+                    NOTFULLYEAR: 'เลือกวันคุ้มครองเอง',
+                  }"
+                  v-model="effectiveType"
+                  @input="handleEffectiveTypeChange"
+                  validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                  options-class="option-block-inline"
+                />
               </div>
               <div class="form-inline">
-                <FormKit type="datepicker" label="เริ่มต้น" name="EffectiveDate" 
-                  placeholder="วัน/เดือน/ปี ค.ศ." format="DD/MM/YYYY" picker-only
-                  :min-date="effectiveMinDate" :max-date="effectiveMaxDate" v-model="effectiveDateText"
-                  validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" />
+                <FormKit
+                  type="datepicker"
+                  label="เริ่มต้น"
+                  name="EffectiveDate"
+                  placeholder="วัน/เดือน/ปี ค.ศ."
+                  format="DD/MM/YYYY"
+                  picker-only
+                  :min-date="effectiveMinDate"
+                  :max-date="effectiveMaxDate"
+                  v-model="effectiveDateText"
+                  validation="required"
+                  :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
+                />
                 <!-- <FormKit type="datepicker" label="เริ่มต้น" name="EffectiveDate" 
                   placeholder="วัน/เดือน/ปี ค.ศ." format="DD/MM/YYYY" picker-only
                   validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" /> -->
               </div>
               <div class="form-inline">
-                <FormKit type="datepicker" label="สิ้นสุด" name="ExpireDate" 
-                  placeholder="วัน/เดือน/ปี ค.ศ" format="DD/MM/YYYY" picker-only 
-                  :min-date="expireMinDate" :max-date="expireMaxDate" v-model="expireDateText"
-                  :disabled="effectiveType == 'FULLYEAR' || effectiveDateText == ''" 
-                  validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" />
+                <FormKit
+                  type="datepicker"
+                  label="สิ้นสุด"
+                  name="ExpireDate"
+                  placeholder="วัน/เดือน/ปี ค.ศ"
+                  format="DD/MM/YYYY"
+                  picker-only
+                  :min-date="expireMinDate"
+                  :max-date="expireMaxDate"
+                  v-model="expireDateText"
+                  :disabled="effectiveType == 'FULLYEAR' || effectiveDateText == ''"
+                  validation="required"
+                  :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
+                />
                 <!-- <FormKit type="datepicker" label="สิ้นสุด" name="ExpireDate" 
                   placeholder="วัน/เดือน/ปี ค.ศ" format="DD/MM/YYYY" picker-only 
                   validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" /> -->
@@ -123,9 +229,17 @@
             <OrderChecklist :list="checklist" />
           </aside>
 
-          <FormKit type="submit" label="ไปเลือกแพ็กเกจ" name="order-submit" id="order-submit"
-            :classes="{ input: 'btn-primary', outer: 'form-actions' }" :disabled="checklist[0].className != 'current' || checklist[1].className != 'current'
-              " :loading="isLoading" />
+          <FormKit
+            type="submit"
+            label="ไปเลือกแพ็กเกจ"
+            name="order-submit"
+            id="order-submit"
+            :classes="{ input: 'btn-primary', outer: 'form-actions' }"
+            :disabled="
+              checklist[0].className != 'current' || checklist[1].className != 'current'
+            "
+            :loading="isLoading"
+          />
         </div>
       </div>
     </FormKit>
@@ -203,17 +317,17 @@ var carCC: globalThis.Ref<String> = ref("");
 var effectiveType: globalThis.Ref<String> = ref("FULLYEAR");
 
 const dateNow: Date = new Date();
-const effectiveMinDate: String = dateNow.toISOString() // en-CA or sv => yyyy-MM-dd
+const effectiveMinDate: String = dateNow.toISOString(); // en-CA or sv => yyyy-MM-dd
 const effectiveMaxDate: String = new Date(
   dateNow.setDate(dateNow.getDate() + defineEventHandler.compulsory.CoverageFuture)
-).toISOString()
+).toISOString();
 
 var selectDate: Date;
 var effectiveDateText: globalThis.Ref<String | undefined> = ref(undefined);
 var expireDate: Date;
 var expireDateText: globalThis.Ref<String> = ref("");
-var expireMinDate: String = "";
-var expireMaxDate: String = "";
+var expireMinDate: globalThis.Ref<Date | undefined> = ref();
+var expireMaxDate: globalThis.Ref<Date | undefined> = ref();
 
 var insuranceDay: globalThis.Ref<number> = ref(365);
 
@@ -379,13 +493,13 @@ const handleEffectiveTypeChange = async (event: any) => {
         expireMinDateText.setDate(
           expireMinDateText.getDate() + coverageExpireDateNotFullYearMinDay
         );
-        expireMinDate = expireMinDateText.toISOString()
+        expireMinDate.value = expireMinDateText;
 
         let expireMaxDateText = new Date(selectDate);
         expireMaxDateText.setDate(
           expireMaxDateText.getDate() + coverageExpireDateNotFullYearMaxDay
         );
-        expireMaxDate = expireMaxDateText.toISOString()
+        expireMaxDate.value = expireMaxDateText;
 
         if (CarInfo.value.InsuranceDay) setInsuranceDay(CarInfo.value.InsuranceDay ?? 0);
         else setInsuranceDay(CoverageExpireDateFullYearMaxDay);
@@ -398,10 +512,10 @@ const handleEffectiveTypeChange = async (event: any) => {
 /* Event Handle EffectiveDate Change Set Value To EffectiveDate, ExpireDate 
 And Calculate Min, Max ExpireDate And Call Function checkFromDate */
 const handleEffectiveDateChange = async (value: string) => {
-  console.log("handleEffectiveDateChange", value)
+  console.log("handleEffectiveDateChange", value);
   if (value && value != "") {
     selectDate = new Date(value);
-    effectiveDateText.value = selectDate.toISOString()
+    effectiveDateText.value = selectDate.toISOString();
     switch (effectiveType.value) {
       case "FULLYEAR":
         await setExpireDate(CoverageExpireDateFullYearMaxDay);
@@ -413,13 +527,13 @@ const handleEffectiveDateChange = async (value: string) => {
         expireMinDateText.setDate(
           expireMinDateText.getDate() + coverageExpireDateNotFullYearMinDay
         );
-        expireMinDate = expireMinDateText.toISOString()
+        expireMinDate.value = expireMinDateText;
 
         let expireMaxDateText = new Date(selectDate);
         expireMaxDateText.setDate(
           expireMaxDateText.getDate() + coverageExpireDateNotFullYearMaxDay
         );
-        expireMaxDate = expireMaxDateText.toISOString()
+        expireMaxDate.value = expireMaxDateText;
 
         setInsuranceDay(coverageExpireDateNotFullYearMinDay);
     }
@@ -433,12 +547,14 @@ const handleEffectiveDateChange = async (value: string) => {
 // Event Handle ExpireDate Change Set Value To ExpireDate And Call Function checkFromDate
 const handleExpireDateChange = async (value: string) => {
   if (value && value != "") {
-    expireDateText.value = new Date(value).toISOString()
-    let efDate = new Date(effectiveDateText.value.toString());
-    let exDate = new Date(value);
-    let differenceMs = exDate.getTime() - efDate.getTime();
-    let differenceDays = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
-    setInsuranceDay(differenceDays);
+    expireDateText.value = new Date(value).toISOString();
+    if (effectiveDateText && effectiveDateText.value) {
+      let efDate = new Date(effectiveDateText.value.toString());
+      let exDate = new Date(value);
+      let differenceMs = exDate.getTime() - efDate.getTime();
+      let differenceDays = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
+      setInsuranceDay(differenceDays);
+    }
   } else {
     expireDateText.value = "";
   }
@@ -450,7 +566,7 @@ const setExpireDate = async (dateCount: number) => {
   expireDate = new Date(selectDate);
   if (dateCount < 365) expireDate.setDate(expireDate.getDate() + dateCount);
   else expireDate.setFullYear(expireDate.getFullYear() + 1);
-  expireDateText.value = expireDate.toISOString()
+  expireDateText.value = expireDate.toISOString();
 };
 
 const setInsuranceDay = async (dateCount: number) => {
@@ -564,8 +680,6 @@ const loadCarModel = async (params: String, optionText: String) => {
   isLoading.value = true;
   checklist.value[0].className = "";
 
-
-
   carModel.value = [];
   subcarModel.value = [];
 
@@ -596,9 +710,6 @@ const loadCarModel = async (params: String, optionText: String) => {
 
 // Function For Call Api Get subcarmodel
 const loadSubcarModel = async (params: String, optionText: String) => {
-
-
-
   isLoading.value = true;
   checklist.value[0].className = "";
 
@@ -662,36 +773,34 @@ const getCarDetail = async () => {
   }
   if (carModelText.value && carModelText.value != "") {
     carDetail =
-      `${carDetail} ` + carModel.value.find((e) => e.value == carModelText.value)?.label ?? "";
+      `${carDetail} ` +
+        carModel.value.find((e) => e.value == carModelText.value)?.label ?? "";
   }
   if (subcarModelText.value && subcarModelText.value != "") {
     if (!otherSubcarModel.includes(subcarModelText.value)) {
-      carDetail = `${carDetail} ${subcarModel.value.find((e) => e.value == subcarModelText.value)?.label
-        }`;
+      carDetail = `${carDetail} ${
+        subcarModel.value.find((e) => e.value == subcarModelText.value)?.label
+      }`;
     }
   }
   if (carYesrsText.value && carYesrsText.value != "") {
     carDetail = `${carDetail} ${Number(carYesrsText.value) - 543}`;
   }
-
-
 };
 // Define watch For Radio CarUse Change
 watch(carUseText, async (newCarUse) => {
   await handleRadioCarUseChange(newCarUse, "");
 });
-watch(effectiveDateText, async(effectiveDateNew,effectiveDate)=>{
-  if(effectiveDateNew)
-  {
-    await handleEffectiveDateChange(effectiveDateNew.toString())
+watch(effectiveDateText, async (effectiveDateNew, effectiveDate) => {
+  if (effectiveDateNew) {
+    await handleEffectiveDateChange(effectiveDateNew.toString());
   }
-  
-})
-watch(expireDateText, async(expireDateNew,expireDateText)=>{
-  if(expireDateNew)
-  {await handleExpireDateChange(expireDateNew.toString())}
-  
-})
+});
+watch(expireDateText, async (expireDateNew, expireDateText) => {
+  if (expireDateNew) {
+    await handleExpireDateChange(expireDateNew.toString());
+  }
+});
 // Submit form event
 const submitOrder = async (formData: any) => {
   await getCarDetail();
@@ -706,7 +815,7 @@ const submitOrder = async (formData: any) => {
   const router = useRouter();
   router.push("/order/compulsory/packages");
 };
- 
+
 // Define layout
 const layout = "monito";
 const layoutClass = "page-monito";

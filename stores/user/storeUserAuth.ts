@@ -16,8 +16,7 @@ export const useStoreUserAuth = defineStore('useStoreUserAuth', {
         AuthenInfo: state => state,
     },
     actions: {
-        async authLogin(request: any): Promise<WrapperResponse<IUserAuthResponse>> {
-            const req = request as IUserAuthRequest
+        async authLogin(req: IUserAuthRequest): Promise<WrapperResponse<IUserAuthResponse>> {
             const response = await useRepository().session.getToken(req)
             
             const result = response.apiResponse

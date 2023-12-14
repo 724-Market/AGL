@@ -205,10 +205,7 @@ const datatableOptions = {
       userProfile?.addEventListener('click', async () => {
         emit('onProfile', userProfile.dataset.id);
       });
-      */
-     //Emit onProfile got bug when we use id to control it.
       let isUserProfileClickHandled = false;
-
       const menuProfile = document.getElementById('profile');
       menuProfile?.addEventListener('click', async () => {
         if (!isUserProfileClickHandled) {
@@ -216,9 +213,15 @@ const datatableOptions = {
           emit('onProfile', menuProfile.dataset.id);
         }
       });
+      */
+     //Emit onProfile got bug when we use id to control it.
+      const menuProfile = TdId1.querySelector('.emit-profile');
+      menuProfile?.addEventListener('click', async () => {
+        emit('onProfile', menuProfile.dataset.id)
+      })
 
     if(data.IsActive == false) {
-      const menuDelete = TdId1.querySelector('.icon-trash');
+      const menuDelete = TdId1.querySelector('.emit-trash');
       menuDelete?.addEventListener('click', async () => {
         emit('onDelete', menuDelete.dataset.id)
       })

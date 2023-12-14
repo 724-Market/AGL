@@ -261,6 +261,7 @@
     userDetails: {
       type: Object as () => UserDataRes,
     },
+    loadData: Boolean,
     getUserPassword: String,
     userID: String,
   });
@@ -319,6 +320,21 @@ const deleteBranch = async (branchid: string) => {
 };
 
 const clearStore = async () => {
+  const req: UserProfileReq = {
+      Password: "",
+      FirstName: "",
+      LastName: "",
+      PhoneNumber: "",
+      Email: "",
+      CreditLimit: 0,
+      Commission: 0,
+      BranchName: branchText.value,
+      IsActive: isActive.value,
+      
+    }
+    console.log("submitCreateUser setUser store"+passwordNumberText.value);
+    userSave.setUserSave(req);
+
 };
 
 const loadGroupList = async () => {
@@ -366,7 +382,7 @@ const loadCommissionList = async (userid: string) => {
 
 // Submit form event
 const submitCreateUser = async (formData: any) => {
-  if (props.userID == null || passwordNumberText.value != null){
+  if (props.userID == null && passwordNumberText.value != null){
     const req: UserProfileReq = {
       Password: passwordNumberText.value,
       FirstName: firstNameText.value,

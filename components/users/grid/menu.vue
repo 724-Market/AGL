@@ -12,14 +12,14 @@
     </a>
     <ul class="dropdown-menu">
         <a class="dropdown-item" title="ดูประวัติ"
-          ><span class="icon-tracking" id="profile" :data-id="$props.row.UserID">ดูประวัติ</span></a
+          ><span class="emit-profile" id="profile" :data-id="$props.row.UserID">ดูประวัติ</span></a
         >
         <a class="dropdown-item" title="แก้ไขข้อมูล"
-          ><span class="icon-edit" id="profile" :data-id="$props.row.UserID">แก้ไขข้อมูล</span></a
+          ><span class="emit-profile" id="profile" :data-id="$props.row.UserID">แก้ไขข้อมูล</span></a
         >
       <li v-if="props.row?.IsActive == false">
         <a class="dropdown-item"  title="ลบผู้ช่วยนี้"
-          ><span class="icon-trash" id="delete" :data-id="$props.row.UserID">ลบผู้ช่วยนี้</span></a
+          ><span class="emit-trash" id="delete" :data-id="$props.row.UserID">ลบผู้ช่วยนี้</span></a
         >
       </li>
     </ul>

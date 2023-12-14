@@ -15,6 +15,7 @@
             <UsersProfileDetail
               @edit-user-confirm="handleUserEdit"
               :user-i-d="userId"
+              :load-data="isLoading"
               :get-user-password="newPassUser"
               :user-details="userDetails"
               v-if="userDetails"
@@ -68,7 +69,7 @@
         userId.value = Array.isArray(route.params.id)
           ? route.params.id[0] // Use the first element if it's an array
           : route.params.id;
-        //### Delete after validate complete ###
+        //### Delete after validate complete ####
         console.log("Before loadUserDetails");
         console.log("userSave.Password "+userSave.Password)
         newPassUser.value = userSave.Password;

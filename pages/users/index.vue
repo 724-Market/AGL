@@ -5,129 +5,129 @@
             <div class="col">
 
                 <div id="transaction-stats" class="card-stat-stack">
-                    <OrderHistoryCardsUsers />
+                    <OrderHistoryCardsUsers 
+                      v-if="usersLimitRes"
+                      :user-limit="usersLimitRes"
+                    ></OrderHistoryCardsUsers>
                 </div>
 
-                <div class="card">
-                    <div class="card-body card-table">
-
-                        <table id="datatables" class="table table-transaction nowrap" data-order='[[ 1, "asc" ]]'>
-                            <thead>
-                                <tr>
-                                    <th data-orderable="false"></th>
-                                    <th>วันที่สร้าง</th>
-                                    <th>ชื่อผู้ใช้งาน</th>
-                                    <th>ชื่อผู้ช่วย</th>
-                                    <th>สาขา</th>
-                                    <th class="limit">วงเงินต่อวัน (บาท)</th>
-                                    <th>สถานะ</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="btn btn-actions dropdown-toggle" href="#" role="button"
-                                                title="เครื่องมือจัดการเพิ่มเติม" data-bs-toggle="dropdown"
-                                                aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#"><span
-                                                            class="icon-edit">แก้ไขข้อมูล</span></a></li>
-                                                <li><a class="dropdown-item" href="#"><span
-                                                            class="icon-tracking">ดูประวัติ</span></a></li>
-                                                <li>
-                                                    <hr class="dropdown-divider">
-                                                </li>
-                                                <li><a class="dropdown-item" href="#"><span
-                                                            class="icon-trash">ลบผู้ช่วยนี้</span></a></li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td class="created"><time datetime="2023-05-05 08:08">2023-05-05 08:08</time></td>
-                                    <td class="username">M0001</td>
-                                    <td class="name">วิทยา อภิมหาบุณย์<span>089-xxx-x464</span></td>
-                                    <td class="tags">บางบอน</td>
-                                    <td class="limit">2,000</td>
-                                    <td class="status">
-                                        <FormKit type="toggle" name="toggle" on-value="active" off-value="inactive"
-                                            value="inactive" />
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="btn btn-actions dropdown-toggle" href="#" role="button"
-                                                title="เครื่องมือจัดการเพิ่มเติม" data-bs-toggle="dropdown"
-                                                aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#"><span
-                                                            class="icon-edit">แก้ไขข้อมูล</span></a></li>
-                                                <li><a class="dropdown-item" href="#"><span
-                                                            class="icon-tracking">ดูประวัติ</span></a></li>
-                                                <li>
-                                                    <hr class="dropdown-divider">
-                                                </li>
-                                                <li><a class="dropdown-item" href="#"><span
-                                                            class="icon-trash">ลบผู้ช่วยนี้</span></a></li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td class="created"><time datetime="2023-04-12 11:06">2023-04-12 11:06</time></td>
-                                    <td class="username">M0002</td>
-                                    <td class="name">พัชราภรณ์ โภชนะวนิชย์<span>089-xxx-x077</span></td>
-                                    <td class="tags">สยามเซ็นเตอร์</td>
-                                    <td class="limit">20,000</td>
-                                    <td class="status">
-                                        <FormKit type="toggle" name="toggle" on-value="active" off-value="inactive"
-                                            value="active" />
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="btn btn-actions dropdown-toggle" href="#" role="button"
-                                                title="เครื่องมือจัดการเพิ่มเติม" data-bs-toggle="dropdown"
-                                                aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#"><span
-                                                            class="icon-edit">แก้ไขข้อมูล</span></a></li>
-                                                <li><a class="dropdown-item" href="#"><span
-                                                            class="icon-tracking">ดูประวัติ</span></a></li>
-                                                <li>
-                                                    <hr class="dropdown-divider">
-                                                </li>
-                                                <li><a class="dropdown-item" href="#"><span
-                                                            class="icon-trash">ลบผู้ช่วยนี้</span></a></li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td class="created"><time datetime="2023-04-15 10:23">2023-04-15 10:23</time></td>
-                                    <td class="username">M0004</td>
-                                    <td class="name">ปฐมพงศ์ สังคจิตต์<span>089-xxx-x478</span></td>
-                                    <td class="tags">พระรามเก้า</td>
-                                    <td class="limit">200</td>
-                                    <td class="status">
-                                        <FormKit type="toggle" name="toggle" on-value="active" off-value="inactive"
-                                            value="active" />
-                                    </td>
-                                </tr>
-
-                            </tbody>
-                        </table>
-
-                    </div>
-                </div>
-
+                <UsersGridTable 
+                  :filters="filterOptionTable" 
+                  v-if="filterOptionTable.length >= 0"
+                  @change-table="handlerChangeTable" 
+                  @on-delete="deleteUsers"
+                  @on-profile="loadProfileUser"
+                ></UsersGridTable>
+                
             </div>
         </div>
 
     </NuxtLayout>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+
+import {
+    UserDataReq,
+    UserLimitRes
+} from "~/shared/entities/user-entity";
+
+import { storeToRefs } from "pinia";
+import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
+import { Filter } from "~/shared/entities/table-option";
+import { useStoreStateOrder } from "~/stores/order/storeStateOrder";
+
+// Define Variables
+// Loading state after form submiting
+
+const isLoading = ref(false);
+const table = ref();
+let values = reactive({});
+const router = useRouter();
+const usersLimitRes: globalThis.Ref<UserLimitRes | undefined> = ref();
+
+const d = new Date();
+const getMonth = d.getMonth() + 1;
+
+const filterOption: globalThis.Ref<Filter[]> = ref([]);
+const filterOptionTable: globalThis.Ref<Filter[]> = ref([
+  { field: "IsActive", type: "LIKE", value: "" },
+]);
+
+const storeAuth = useStoreUserAuth();
+const { AuthenInfo } = storeToRefs(storeAuth);
+const storeState = useStoreStateOrder();
+
+
+const isError = ref(false);
+const messageError = ref("");
+
+const onLoad = onMounted(async () => {
+  storeState.clearState();
+  if (AuthenInfo.value) {
+    await loadUsersLimit();
+  } else {
+    router.push("/login");
+  }
+});
+
+const loadProfileUser = async (UserID: string) => {
+  //ทำรายการต่อ
+  isLoading.value = true;
+
+  router.push("/users/profile/"+UserID);
+
+  isLoading.value = false;
+};
+
+const deleteUsers = async (OrderNo: string) => {
+  console.log("deleteUsers")
+  /*
+  //ลบแบบร่างนี้
+  let confirmAction = confirm("ต้องการลบรายการหรือไม่?");
+  if (confirmAction) {
+    isLoading.value = true;
+    let req: UserDetailRequest = {
+        SubUserID: OrderNo,
+    };
+    var response = await useRepository().order.delete(req);
+    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+      await loadHistoryStatus();
+    } else {
+      alert(response.apiResponse.ErrorMessage);
+    }
+    isLoading.value = false;
+  }
+  */
+};
+
+const loadUsersLimit = async () => {
+  const response = await useRepository().user.createLimit();
+
+  if (
+    response.apiResponse.Status &&
+    response.apiResponse.Status == "200" &&
+    response.apiResponse.Data
+  ) {
+    // Now TypeScript knows that Data is an array, so accessing [0] is valid
+    usersLimitRes.value = response.apiResponse.Data[0];
+    return usersLimitRes.value;
+  } else {
+    isError.value = true;
+    messageError.value = response.apiResponse.ErrorMessage ?? "";
+  }
+};
+
+const handlerChangeTable = async (datatable: any) => {
+  table.value = datatable;
+
+  console.log("datatable", table.value);
+}
+
+const continute = () => {
+  alert("ทำรายการต่อ");
+  console.log("ทำรายการต่อ");
+};
 // Define layout
 const layout = "monito"
 const layoutClass = "layout-monito"
@@ -137,6 +137,7 @@ const showPageHeader = true
 const pageTitle = "ผู้ช่วย"
 const pageCategory = "รายชื่อผู้ช่วย"
 const pageDescription = ""
+
 // Define meta seo
 useHead({
     title: pageTitle,

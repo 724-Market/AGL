@@ -163,3 +163,11 @@ export interface delGroupReq {
 export interface delGroupRes {
   ID: string;
 }
+
+export interface delUserReq {
+  SubUserID: string;
+}
+
+export interface delUserRes {
+  SubUserID: string;
+}

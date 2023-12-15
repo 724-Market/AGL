@@ -115,7 +115,12 @@
                           label="ผลตอบแทน"
                           name="Commission"
                           maxlength="1"
-                          step="1"
+                          validation="required|+length:1|number"
+                          :validation-messages="{
+                            required: 'กรุณาใส่ข้อมูล',
+                            length: 'กรุณาใส่ตัวเลขเบอร์โทรศัพท์ 1 หลัก',
+                            number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
+                          }"
                           v-model="commission"
                           autocomplete="off"
                         />
@@ -186,7 +191,7 @@
                             </tr>
                           </thead>
                           <tbody>
-                            <template v-for="(item, j) in userCommissionList" :key="j">
+                            <template v-for="(item, j) in props.userCommissionList" :key="j">
                               <p>{{ item.Commission }} : {{ useUtility().formatDate(item.CreateDate, "DD MMMM BBBB HH:mm:ss") }}</p>
                             </template>
                           </tbody>
@@ -204,232 +209,228 @@
     </div>
   </template>
   <script setup lang="ts">
-  import { 
-    UserProfileReq,
-    UserDataRes,
-    UserCommissionListReq,
-    UserCommissionListRes,
-    UserGroupListRes,
-    delGroupReq,
-  } from "~/shared/entities/user-entity";
-   
-  import { useStoreUserSave } from "~/stores/user/storePasswordUser";
-  import { defineProps, onMounted } from 'vue';
-  import { toRef } from 'vue';
+    import { 
+      UserProfileReq,
+      UserDataRes,
+      UserCommissionListReq,
+      UserCommissionListRes,
+      UserGroupListRes,
+      delGroupReq,
+    } from "~/shared/entities/user-entity";
+    
+    import { useStoreUserSave } from "~/stores/user/storePasswordUser";
+    import { defineProps, onMounted } from 'vue';
+    import { toRef } from 'vue';
 
-  const emit = defineEmits(["checkProfileDetail", "createUserConfirm", "editUserConfirm", "reProfile"])
-  const userDetails: globalThis.Ref<UserDataRes | undefined> = ref();
-  const userGroupList: globalThis.Ref<UserGroupListRes | undefined> = ref();
-  const userCommissionList: Ref<UserCommissionListRes[]> = ref([]);
+    const emit = defineEmits(["checkProfileDetail", "createUserConfirm", "editUserConfirm", "reProfile"])
+    const userDetails: globalThis.Ref<UserDataRes | undefined> = ref();
+    const userGroupList: globalThis.Ref<UserGroupListRes | undefined> = ref();
+    //const userCommissionList: Ref<UserCommissionListRes[]> = ref([]);
 
-  const userSave = useStoreUserSave();
+    const userSave = useStoreUserSave();
 
-  const isError = ref(false);
-  const messageError = ref("");
-   
-  const dateNow: Date = new Date();
+    const isError = ref(false);
+    const messageError = ref("");
+    
+    const dateNow: Date = new Date();
+    
+    const isLoading = ref(false);
+
+    var userIDRes = ref("");
+
+
+    var passwordNumberText = ref("");
+
+    var confirmPasswordText = ref("");
+
+    var firstNameText = ref("");
+
+    var lastNameText = ref("");
+
+    var phoneNumberText = ref("");
+
+    var emailText = ref("");
+
+    const limitMoney = ref(0);
+
+    const commission = ref(0);
+
+    var branchText = ref("");
+
+    const isActive = ref(false);
+
+    const props = defineProps({
+      userProfile: {
+        type: Object as () => UserProfileReq,
+      },
+      userDetails: {
+        type: Object as () => UserDataRes,
+      },
+      userCommissionList: {
+        type: Object as () => UserCommissionListRes[],
+      },
+      loadData: Boolean,
+      getUserPassword: String,
+      getStatus: {
+        type: [Number, String],
+        default: 0,
+        validator: (value) => {
+          return typeof value === 'number' || (typeof value === 'string' && value.trim() === '') || value === null;
+        },
+      },
+      userID: String,
+    });
   
-  const isLoading = ref(false);
+    const userPassRes = toRef(props, 'getUserPassword');
 
-  var userIDRes = ref("");
+    // Create a ref to store the initial value
+    const originalUserPass = ref(props.getUserPassword);
 
+    onMounted(() => {
+      loadGroupList();
 
-  var passwordNumberText = ref("");
+      console.log("Commission list component ", props.userCommissionList)
 
-  var confirmPasswordText = ref("");
+      if (props.userDetails && originalUserPass.value !== null) {
 
-  var firstNameText = ref("");
+        passwordNumberText.value = "";
+        confirmPasswordText.value = "";
+        firstNameText.value = props.userDetails.FirstName;
+        lastNameText.value = props.userDetails.LastName;
+        phoneNumberText.value = props.userDetails.Phone;
+        emailText.value = props.userDetails.Email;
 
-  var lastNameText = ref("");
+        // Convert string values to numbers
+        limitMoney.value = parseFloat(props.userDetails.CreditLimitAmount);
+        commission.value = props.userDetails.Commission;
+        branchText.value = props.userDetails.UserGroupName;
+        isActive.value = !!props.userDetails.IsActive;
+        userIDRes.value = props.userDetails?.UserName;
+        //userPassRes.value = originalUserPass.value ?? ''; 
 
-  var phoneNumberText = ref("");
+        clearStore()
+      }
+    });
 
-  var emailText = ref("");
+    const deleteBranch = async (branchid: string) => {
+      //ลบแบบร่างนี้
+      let confirmAction = confirm("ต้องการลบรายการหรือไม่?");
+      if (confirmAction) {
+        isLoading.value = true;
+        let req: delGroupReq = {
+          ID: branchid,
+        };
+        var response = await useRepository().user.deleteGroup(req);
+        if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+          //await loadHistoryStatus();
+          emit('reProfile', props.userID);
 
-  const limitMoney = ref(0);
-
-  const commission = ref(0);
-
-  var branchText = ref("");
-
-  const isActive = ref(false);
-
-  const props = defineProps({
-    userProfile: {
-      type: Object as () => UserProfileReq,
-    },
-    userDetails: {
-      type: Object as () => UserDataRes,
-    },
-    loadData: Boolean,
-    getUserPassword: String,
-    userID: String,
-  });
- 
-  const userPassRes = toRef(props, 'getUserPassword');
-
-  // Create a ref to store the initial value
-  const originalUserPass = ref(props.getUserPassword);
-
-  onMounted(() => {
-    loadGroupList();
-    if (props.userID){
-      loadCommissionList(props.userDetails?.UserID);
-    }
-
-    if (props.userDetails && originalUserPass.value !== null) {
-
-      passwordNumberText.value = "";
-      confirmPasswordText.value = "";
-      firstNameText.value = props.userDetails.FirstName;
-      lastNameText.value = props.userDetails.LastName;
-      phoneNumberText.value = props.userDetails.Phone;
-      emailText.value = props.userDetails.Email;
-
-      // Convert string values to numbers
-      limitMoney.value = parseFloat(props.userDetails.CreditLimitAmount);
-      commission.value = props.userDetails.Commission;
-      branchText.value = props.userDetails.UserGroupName;
-      isActive.value = !!props.userDetails.IsActive;
-      userIDRes.value = props.userDetails?.UserName;
-      //userPassRes.value = originalUserPass.value ?? ''; 
-
-      clearStore()
-    }
-  });
-
-const deleteBranch = async (branchid: string) => {
-  //ลบแบบร่างนี้
-  let confirmAction = confirm("ต้องการลบรายการหรือไม่?");
-  if (confirmAction) {
-    isLoading.value = true;
-    let req: delGroupReq = {
-      ID: branchid,
+        } else {
+          console.log("props.userID"+props.userID)
+          alert(response.apiResponse.ErrorMessage);
+        }
+        isLoading.value = false;
+      }
     };
-    var response = await useRepository().user.deleteGroup(req);
-    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-      //await loadHistoryStatus();
-      emit('reProfile', props.userID);
 
-    } else {
-      console.log("props.userID"+props.userID)
-      alert(response.apiResponse.ErrorMessage);
-    }
-    isLoading.value = false;
-  }
-};
+    const clearStore = async () => {
+      const req: UserProfileReq = {
+          Password: "",
+          FirstName: "",
+          LastName: "",
+          PhoneNumber: "",
+          Email: "",
+          CreditLimit: 0,
+          Commission: 0,
+          BranchName: "",
+          IsActive: isActive.value,
+          
+        }
+        console.log("submitCreateUser setUser store"+passwordNumberText.value);
+        userSave.setUserSave(req);
 
-const clearStore = async () => {
-  const req: UserProfileReq = {
-      Password: "",
-      FirstName: "",
-      LastName: "",
-      PhoneNumber: "",
-      Email: "",
-      CreditLimit: 0,
-      Commission: 0,
-      BranchName: branchText.value,
-      IsActive: isActive.value,
+    };
+
+    const loadGroupList = async () => {
       
-    }
-    console.log("submitCreateUser setUser store"+passwordNumberText.value);
-    userSave.setUserSave(req);
-
-};
-
-const loadGroupList = async () => {
-  
-  const response = await useRepository().user.getGroupList();
-  if (
-    response.apiResponse.Status &&
-    response.apiResponse.Status == "200" &&
-    response.apiResponse.Data
-  ) {
-    userGroupList.value = response.apiResponse.Data;
-  } else {
-    isError.value = true;
-    messageError.value = response.apiResponse.ErrorMessage ?? "";
-  }
-};
-
-const loadCommissionList = async (userid: string) => {
-  const useCommisionReq: UserCommissionListReq = {
-    SubUserID: userid,
-    Paging: {
-      Page: 0,
-      Length: 10,
-      TotalRecord: 0,
-    }
-  }
-  
-  const response = await useRepository().user.getCommionList(useCommisionReq);
-
-    if (
-      response.apiResponse.Status !== undefined &&
-      response.apiResponse.Status === 200 &&
-      response.apiResponse.Data
-    ) {
-      userCommissionList.value = Array.isArray(response.apiResponse.Data)
-        ? response.apiResponse.Data
-        : [response.apiResponse.Data]; // Convert to array if not already
-    } else {
-      console.log("User CommissionList fail!!!")
-      isError.value = true;
-      messageError.value = response.apiResponse.ErrorMessage ?? "";
-    }
-  };
+      const response = await useRepository().user.getGroupList();
+      if (
+        response.apiResponse.Status &&
+        response.apiResponse.Status == "200" &&
+        response.apiResponse.Data
+      ) {
+        userGroupList.value = response.apiResponse.Data;
+      } else {
+        isError.value = true;
+        messageError.value = response.apiResponse.ErrorMessage ?? "";
+      }
+    };
 
 
-// Submit form event
-const submitCreateUser = async (formData: any) => {
-  if (props.userID == null && passwordNumberText.value != null){
-    const req: UserProfileReq = {
-      Password: passwordNumberText.value,
-      FirstName: firstNameText.value,
-      LastName: lastNameText.value,
-      PhoneNumber: phoneNumberText.value,
-      Email: emailText.value,
-      CreditLimit: limitMoney.value,
-      Commission: commission.value,
-      BranchName: branchText.value,
-      IsActive: isActive.value,
-      
-    }
-    console.log("submitCreateUser setUser store"+passwordNumberText.value);
-    userSave.setUserSave(req);
-  }
-  if (props.userID == null){
-    // Add waiting time for debug
-    emit("createUserConfirm", 
-    passwordNumberText.value, 
-    firstNameText.value, 
-    lastNameText.value, 
-    phoneNumberText.value, 
-    emailText.value, 
-    limitMoney.value, 
-    commission.value, 
-    branchText.value,
-    isActive.value
+    // Submit form event
+    const submitCreateUser = async (formData: any) => {
+      if (props.userID == null && passwordNumberText.value != null){
+        const req: UserProfileReq = {
+          Password: passwordNumberText.value,
+          FirstName: firstNameText.value,
+          LastName: lastNameText.value,
+          PhoneNumber: phoneNumberText.value,
+          Email: emailText.value,
+          CreditLimit: limitMoney.value,
+          Commission: commission.value,
+          BranchName: branchText.value,
+          IsActive: isActive.value,
+          
+        }
+        console.log("submitCreateUser setUser store"+passwordNumberText.value);
+        userSave.setUserSave(req);
+      }
+      if (props.userID == null){
+        // Add waiting time for debug
+        emit("createUserConfirm", 
+        passwordNumberText.value, 
+        firstNameText.value, 
+        lastNameText.value, 
+        phoneNumberText.value, 
+        emailText.value, 
+        limitMoney.value, 
+        commission.value, 
+        branchText.value,
+        isActive.value
+        );
+      } else {
+        if (passwordNumberText.value==null){
+          userSave.clearUserSave()
+        }
+        emit("editUserConfirm", 
+        props.userDetails?.UserID,
+        passwordNumberText.value, 
+        firstNameText.value, 
+        lastNameText.value, 
+        phoneNumberText.value, 
+        emailText.value, 
+        limitMoney.value, 
+        commission.value, 
+        branchText.value,
+        isActive.value
+        );
+        passwordNumberText.value = "";
+        confirmPasswordText.value = "";
+      }
+    };
+
+    // Watch for changes in response.apiResponse.Status
+    watch(
+      () => props.getStatus,
+      async (newStatus) => {
+        if (newStatus == '200') {
+          console.log('User profile update!!!'+newStatus);
+          isLoading.value = true;
+          await loadGroupList();
+          isLoading.value = false;
+
+        }
+      }
     );
-  } else {
-    if (passwordNumberText.value==null){
-      userSave.clearUserSave()
-    }
-    emit("editUserConfirm", 
-    props.userDetails?.UserID,
-    passwordNumberText.value, 
-    firstNameText.value, 
-    lastNameText.value, 
-    phoneNumberText.value, 
-    emailText.value, 
-    limitMoney.value, 
-    commission.value, 
-    branchText.value,
-    isActive.value
-    );
-    passwordNumberText.value = "";
-    confirmPasswordText.value = "";
-  }
-};
   </script>
   

@@ -25,8 +25,7 @@ export const useStoreUserSave = defineStore('useStoreUserSave',{
         clearUserSave() {
             this.$reset()
             this.$dispose()
-            //sessionStorage.removeItem('useStoreUserSave')
-            sessionStorage.clear()
+            sessionStorage.removeItem('useStoreUserSave')
         }
     },
     persist: {

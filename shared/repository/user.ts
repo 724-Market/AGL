@@ -11,6 +11,8 @@ import {
   UserGroupListRes,
   delGroupReq,
   delGroupRes,
+  delUserReq,
+  delUserRes,
  } from "../entities/user-entity";
 import { IAPIResponse } from "../entities/useApi-response";
 
@@ -41,6 +43,9 @@ class UserModule {
   }
   async deleteGroup(req: delGroupReq): Promise<IAPIResponse<delGroupRes>> {
     return await useCallApi().apiRepository<delGroupRes>(`${this.RESOURCE_User}/group/delete`, req)
+  }
+  async deleteUser(req: delUserReq): Promise<IAPIResponse<delUserRes>> {
+    return await useCallApi().apiRepository<delUserRes>(`${this.RESOURCE_User}/subuser/delete`, req)
   }
   
 }

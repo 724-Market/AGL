@@ -29,7 +29,8 @@
 
 import {
     UserDataReq,
-    UserLimitRes
+    UserLimitRes,
+    delUserReq,
 } from "~/shared/entities/user-entity";
 
 import { storeToRefs } from "pinia";
@@ -80,25 +81,25 @@ const loadProfileUser = async (UserID: string) => {
   isLoading.value = false;
 };
 
-const deleteUsers = async (OrderNo: string) => {
-  console.log("deleteUsers")
-  /*
+const deleteUsers = async (UserID: string) => {
+  console.log("deleteUsers"+UserID)
   //ลบแบบร่างนี้
   let confirmAction = confirm("ต้องการลบรายการหรือไม่?");
   if (confirmAction) {
     isLoading.value = true;
-    let req: UserDetailRequest = {
-        SubUserID: OrderNo,
+    let req: delUserReq = {
+        SubUserID: UserID,
     };
-    var response = await useRepository().order.delete(req);
+    var response = await useRepository().user.deleteUser(req);
     if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-      await loadHistoryStatus();
+      const refreshPage = () => {
+        window.location.reload(); // Reloads the current page
+      };
     } else {
       alert(response.apiResponse.ErrorMessage);
     }
     isLoading.value = false;
   }
-  */
 };
 
 const loadUsersLimit = async () => {

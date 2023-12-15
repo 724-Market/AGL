@@ -18,7 +18,9 @@
               :load-data="isLoading"
               :get-user-password="newPassUser"
               :user-details="userDetails"
+              :user-commission-list="userCommissionList"
               v-if="userDetails"
+              :get-status="getStatus"
             ></UsersProfileDetail>
   
         </div>
@@ -31,7 +33,9 @@
   import {
     UserDataReq,
     UserDataRes,
-    UserSaveReq
+    UserSaveReq,
+    UserCommissionListRes,
+    UserCommissionListReq,
   } from "~/shared/entities/user-entity";
   
   // Import store
@@ -39,8 +43,10 @@
   // using pinia
   import { storeToRefs } from "pinia";
   import { useStoreUserSave } from "~/stores/user/storePasswordUser";
+  import { ref, onMounted, watch } from 'vue';  
   
   const userDetails: globalThis.Ref<UserDataRes | undefined> = ref();
+  const userCommissionList: Ref<UserCommissionListRes[]> = ref([]);
   
   const userSave = useStoreUserSave();
 
@@ -52,6 +58,7 @@
   const messageError = ref("");
   const isLoading = ref(false);
   const userId = ref("");
+  const getStatus = ref("");
 
   const saveProfileRes = ref("");
   const newPassUser = ref("");
@@ -112,13 +119,36 @@
     
   
     const response = await useRepository().user.saveProfile(saveProfileReq);
-
+    const useCommisionReq: UserCommissionListReq = {
+        SubUserID: saveProfileReq.SubUserID,
+        Paging: {
+          Page: 0,
+          Length: 10,
+          TotalRecord: 0,
+        }
+      }
     if (response.apiResponse.Status && 
     response.apiResponse.Status == "200") {
-      saveProfileRes.value = response.apiResponse.Status;
       newPassUser.value = saveProfileReq.NewPassword;
       console.log("Save Profile Success!!! newPassUser.value"+newPassUser.value);
-      router.push("/users/profile/" + saveProfileReq.SubUserID);
+      getStatus.value = response.apiResponse.Status;
+      
+      const responseCom = await useRepository().user.getCommionList(useCommisionReq);
+      if (
+        responseCom.apiResponse.Status !== undefined &&
+        responseCom.apiResponse.Status === 200 && 
+        responseCom.apiResponse.Data
+      ) {
+        console.log("getCommissionList ",responseCom.apiResponse.Data)
+        userCommissionList.value = responseCom.apiResponse.Data!;
+          
+      } else {
+        console.log("Load CommissionList fail!!!")
+        isError.value = true;
+        messageError.value = responseCom.apiResponse.ErrorMessage ?? "";
+      }
+
+      router.push("/users/profile/"+saveProfileReq.SubUserID);
     } else {
       isError.value = true;
       messageError.value = response.apiResponse.ErrorMessage ?? "";
@@ -154,8 +184,11 @@
       console.log("New Status:", newStatus);
       console.log("Old Status:", oldStatus.value);
 
-      if (newStatus && newStatus === "200") {
-        loadUserDetails(userId.value);
+    // Convert newStatus to a number
+    const numericStatus = parseInt(newStatus, 10);
+
+    if (!isNaN(numericStatus) && numericStatus === 200) {
+      loadUserDetails(userId.value);
         // Assuming you want to clear the saveProfileRes value after using it
       }
 
@@ -169,7 +202,7 @@
     // Clean up the watch effect when the component is unmounted
     watchResponse();
   });
-  
+
   
   // Define layout
   const layout = "monito";  

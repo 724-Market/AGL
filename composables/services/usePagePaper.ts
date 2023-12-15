@@ -1,5 +1,5 @@
 import { storeToRefs } from "pinia"
-import { CalculateGrandTotal, DeliveryAddressReq, ExchangeDataSummary, OrderExchangeCreateReq, OrderExchangeCreateRes, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
+import { CalculateGrandTotal, DeliveryAddressReq, ExchangeDataSummary, OrderExchangeCreateReq, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
 import { PaymentGetResponse } from "~/shared/entities/payment-entity"
 import { WrapperResponse } from "~/shared/entities/wrapper-response"
 import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo"
@@ -35,8 +35,8 @@ export default () => {
 
         return req
     }
-    const onContinue = async (req: OrderExchangeCreateReq): Promise<WrapperResponse<PaymentGetResponse[]>> => {
-        let res: WrapperResponse<PaymentGetResponse[]> = {
+    const onContinue = async (req: OrderExchangeCreateReq): Promise<WrapperResponse<OrderExchangeCreateRes[]>> => {
+        let res: WrapperResponse<OrderExchangeCreateRes[]> = {
             Status: "",
         }
         const orderExchange = await useRepository().paper.confirmOrderExchange(req)

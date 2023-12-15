@@ -22,19 +22,6 @@
         <OrderChecklist :list="props.checkList" @change-check-save="handlerCheckSave" />
       </aside>
 
-      <!-- <div class="formkit-outer form-actions" data-type="submit">
-        <div class="formkit-wrapper">
-          <button
-            loading="false"
-            class="formkit-input btn btn-primary btn-accept pledge-action"
-            type="button"
-            name="order-submit"
-            id="order-submit"
-          >
-            ไปต่อ
-          </button>
-        </div>
-      </div> -->
       <button
         loading="false"
         class="formkit-input btn-continue btn btn-primary btn-accept pledge-action"
@@ -101,7 +88,14 @@ const onContinue = async ()=>{
       await storeSearchMatchCompulsory.clearSearchMatch();
       await usePagePaper().onClearExchangePaper();
       const router = useRouter();
-      router.push({ path: "/papers/thanks" });
+      // Check if response.Data exists and is an array with at least one element
+      if (response.Data && Array.isArray(response.Data) && response.Data.length > 0) {
+        const orderNo = response.Data[0].OrderNo; 
+        console.log("OrderNo: " + response.Data[0].OrderNo);
+        router.push({ path: "/papers/thanks", query: { orderNo } });
+      } else {
+        console.log("No OrderNo available in the response");
+      }
     }
     else{
       errorRes.value = useMapData().mappingMessageError(response.ErrorCode ?? "",response.ErrorMessage ?? "")

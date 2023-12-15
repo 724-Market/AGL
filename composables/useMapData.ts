@@ -179,6 +179,7 @@ export default () => {
             { field: 'JobType', type: 'MATCH' },
             { field: 'CreateDate', type: 'DATE_LTE' },
             { field: 'CreateDate', type: 'DATE_GTE' },
+            { field: 'IsActive', type: 'LIKE' },
         ]
         let filter = filterMap.filter(x => x.field == searchKey)
         if (searchType && searchType != "") {
@@ -196,6 +197,7 @@ export default () => {
         }
         return data
     }
+    
     const mappingMessageError = (errorCode: string, errorMessage: string, options?: string): ErrorCodeRes => {
         // add mapping error Code Message here
         const data: ErrorCodeRes[] = [

@@ -19,13 +19,6 @@ export default () => {
 
             const jsonData = JSON.parse(response._data)
 
-            // console.log('%c' + params.URL + '%cresponseData.Status', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', jsonData.Status)
-            // console.log('%c' + params.URL + '%cresponseData.Message', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(130, 57, 53);padding:3px;border-radius:2px', jsonData.Message)
-            // console.log('%c' + params.URL + '%cresponseData.ErrorCode', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(251, 178, 23);padding:3px;border-radius:2px', jsonData.ErrorCode)
-            // console.log('%c' + params.URL + '%cresponseData.ErrorMessage', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(39, 72, 98);padding:3px;border-radius:2px', jsonData.ErrorMessage)
-            // console.log('%c' + params.URL + '%cresponseData.Options', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(237, 222, 139);padding:3px;border-radius:2px', jsonData.Options)
-            // console.log('%c' + params.URL + '%cresponseData.Data', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(20, 68, 106);padding:3px;border-radius:2px', jsonData.Data)
-
             if (jsonData.Status == 200) {
 
                 result.serverStatus = response.status
@@ -84,9 +77,6 @@ export default () => {
             method: "POST",
             body: params,
             onResponse({ request, response }) {
-                // console.log('%c' + params.URL + '%crequest', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', request)
-                // console.log('%c' + params.URL + '%cresponse', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(1, 77, 103);padding:3px;border-radius:2px', response)
-                // console.log('%c' + params.URL + '%cresponse.status', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', response.status)
 
                 result = getResponse<T>(response, params)
 
@@ -119,9 +109,6 @@ export default () => {
             method: "POST",
             body: params,
             onResponse({ request, response }) {
-                // console.log('%c' + params.URL + '%crequest', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', request)
-                // console.log('%c' + params.URL + '%cresponse', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(1, 77, 103);padding:3px;border-radius:2px', response)
-                // console.log('%c' + params.URL + '%cresponse.status', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', response.status)
 
                 result = getResponse<T>(response, params)
 
@@ -143,10 +130,6 @@ export default () => {
             method: "POST",
             body: params,
             onResponse({ request, response }) {
-                console.log('%c' + params.URL + '%crequest', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', request)
-                console.log('%c' + params.URL + '%cresponse', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(1, 77, 103);padding:3px;border-radius:2px', response)
-                console.log('%c' + params.URL + '%cresponse.status', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', response.status)
-
                 
                 if (response.status == 200) {
                     result.status = response._data.status
@@ -171,10 +154,6 @@ export default () => {
             method: "POST",
             body: params,
             onResponse({ request, response }) {
-                console.log('%c' + params.URL + '%crequest', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', request)
-                console.log('%c' + params.URL + '%cresponse', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(1, 77, 103);padding:3px;border-radius:2px', response)
-                console.log('%c' + params.URL + '%cresponse.status', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', response.status)
-
                 
                 if (response.status == 200) {
                     result.status = response._data.status
@@ -211,15 +190,12 @@ export default () => {
             method: "POST",
             body: params,
             onResponse({ request, response }) {
-                // console.log('%c' + params.URL + '%crequest', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', request)
-                // console.log('%c' + params.URL + '%cresponse', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(1, 77, 103);padding:3px;border-radius:2px', response)
-                // console.log('%c' + params.URL + '%cresponse.status', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', response.status)
 
                 result = getResponse<T>(response, params)
 
             }
         })
-        console.log('apiRepository',result)
+        // console.log('apiRepository',result)
         return result
 
     }

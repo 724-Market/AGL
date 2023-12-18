@@ -1,4 +1,3 @@
-import { stepNumber } from '~~/plugins/stepnumber';
 export interface UserResponse {
     ID: string
     Code: string
@@ -126,8 +125,8 @@ export interface UserProfileRes {
 }
 
 export interface UserLimitRes {
-  CurrentCount: string
-  MaxCount: string
+  CurrentCount: number
+  MaxCount: number
 }
 
 export interface UserCommissionListReq {

@@ -195,7 +195,6 @@ const datatableOptions = {
     const actionProfile = TdId1.querySelector('.action-profile')
     actionProfile.addEventListener('click', async () => {
       emit('onProfile', actionProfile.dataset.id)
-      console.log(actionProfile.dataset.id);
     })
 
     if (data.IsActive == false) {
@@ -204,7 +203,7 @@ const datatableOptions = {
         emit('onDelete', actionDelete.dataset.id)
       })
     }
-  },
+  }
 }
 
 watch(

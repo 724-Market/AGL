@@ -56,10 +56,11 @@ const onLoad = onMounted(async () => {
 })
 
 const loadProfileUser = async (UserID: string) => {
+  // console.log('%cloadProfileUser%cline:58%cUserID', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:#1f3c88;padding:3px;border-radius:2px', 'color:#fff;background:rgb(248, 147, 29);padding:3px;border-radius:2px', UserID)
   //ทำรายการต่อ
-  isLoading.value = true
+  // isLoading.value = true
   router.push("/users/profile/" + UserID)
-  isLoading.value = false
+  // isLoading.value = false
 }
 
 const deleteUsers = async (UserID: string) => {

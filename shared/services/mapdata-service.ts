@@ -11,7 +11,7 @@ class MapDataService {
         const jsonString = JSON.stringify(jsonData);
         const bodyObject = JSON.parse(jsonString)
 
-        console.log(jsonString)
+        // console.log(jsonString)
         return bodyObject
     }
     getJsonTableHistory(bodyObject:any){
@@ -68,7 +68,7 @@ class MapDataService {
             }
           }
           
-          console.log(convertedJSON)
+          // console.log(convertedJSON)
 
           return convertedJSON
     }

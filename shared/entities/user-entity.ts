@@ -135,10 +135,6 @@ export interface UserCommissionListReq {
 }
 
 export interface UserCommissionListRes {
-  Data?: CommissionList[];
-}
-
-export interface CommissionList {
   Commission: number;
   CreateDate: string;
 }

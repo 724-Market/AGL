@@ -1,5 +1,5 @@
 <template>
-  <div class="col col-sidebar">
+
     <section class="site-sidebar is-sticky">
       <aside class="card">
         <div class="card-header">
@@ -41,8 +41,9 @@
         @on-continue="handlerError"
       ></ElementsDialogModal>
     </section>
-  </div>
+
 </template>
+
 <script lang="ts" setup>
 import { IChecklist } from "~/shared/entities/checklist-entity"
 import { ErrorCodeRes } from "~/shared/entities/error-entity";

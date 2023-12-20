@@ -27,8 +27,8 @@
 // Define import
 import DataTable from "datatables.net-vue3"
 import DataTablesCore from "datatables.net-bs5"
-import UsersGridActions from "~/components/users/grid/actions.vue"
-import UsersGridColumn from "~/components/users/grid/column.vue"
+import UsersGridActions from "~/components/users/grid/Actions.vue"
+import UsersGridColumn from "~/components/users/grid/Column.vue"
 import { renderToString } from "@vue/server-renderer"
 import { Filter } from "~/shared/entities/table-option"
 

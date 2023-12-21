@@ -7,17 +7,25 @@
       <div class="row">
         <div class="col col-main">
 
-          <UsersProfileDetail @edit-user-confirm="handleUserEdit" :user-i-d="userId" :load-data="isLoading"
-            :get-user-password="newPassUser" :user-details="userDetails" :get-status="getStatus" :user-commission-list="userCommissionList" />
+          <UsersProfileDetail :key="renderKey" @edit-user-confirm="handleUserEdit" :user-i-d="userId" :load-data="isLoading"
+            :get-user-password="newPassUser" :user-details="userDetails" @on-delete-group="deleteGroup"
+            :user-commission-list="userCommissionList" v-if="userDetails"/>
 
         </div>
 
         <div class="col col-sidebar">
           <section class="site-sidebar is-sticky">
 
-            <UsersLogCommission />
+            <UsersLogCommission 
+              :user-commission-list="userCommissionList"
+              v-if="userCommissionList"/>
 
-            <UsersLogStatus />
+            <UsersLogStatus /> 
+
+            <UsersBranch 
+            :key="renderKey"
+            :user-id="userId"
+            v-if="userId" />
 
             <button type="submit" class="formkit-input btn btn-primary form-actions" @click="submitCreateUser"
               label="ไปเลือกวิธีชำระเงิน" name="user-submit" id="user-submit" :loading="isLoading">
@@ -42,6 +50,7 @@ import {
   UserDataReq,
   UserDataRes,
   UserSaveReq,
+  UserProfileReq,
   UserCommissionListRes,
   UserCommissionListReq,
 } from "~/shared/entities/user-entity";
@@ -51,6 +60,7 @@ import { useStoreUserSave } from "~/stores/user/storePasswordUser";
 import { ref, onMounted, watch } from 'vue';
 
 const userDetails: globalThis.Ref<UserDataRes | undefined> = ref();
+const userCommissionList: Ref<UserCommissionListRes[]> = ref([]);
 
 const userSave = useStoreUserSave();
 
@@ -64,16 +74,17 @@ const isError = ref(false);
 const messageError = ref("");
 const isLoading = ref(false);
 const userId = ref("");
-const getStatus = ref("");
 
-const saveProfileRes = ref("");
 const newPassUser = ref("");
 
 const route = useRoute()
 const router = useRouter();
 
-const onLoad = onMounted(async () => {
-  console.log("Profile page " + route.params.id)
+const renderKey = ref(0);
+
+onMounted(async () => {
+  //This console is for checking the latest code
+  console.log("Profile page4 " + route.params.id)
 
   if (AuthenInfo.value) {
     isLoading.value = true;
@@ -83,11 +94,9 @@ const onLoad = onMounted(async () => {
         ? route.params.id[0] // Use the first element if it's an array
         : route.params.id;
       //### Delete after validate complete ####
-      console.log("Before loadUserDetails");
-      console.log("userSave.Password " + userSave.Password)
       newPassUser.value = userSave.Password;
-      console.log("newPassUser " + newPassUser.value)
       await loadUserDetails(userId.value);
+      await loadUserCommission(userId.value);
     }
 
     isLoading.value = false;
@@ -95,6 +104,10 @@ const onLoad = onMounted(async () => {
     router.push("/login");
   }
 });
+
+const deleteGroup = async () => {
+    renderKey.value = renderKey.value + 1
+};
 
 const handleUserEdit = async (
   subUserID: string,
@@ -125,36 +138,11 @@ const handleUserEdit = async (
 
 
   const response = await useRepository().user.saveProfile(saveProfileReq);
-  const useCommisionReq: UserCommissionListReq = {
-    SubUserID: saveProfileReq.SubUserID,
-    Paging: {
-      Page: 0,
-      Length: 10,
-      TotalRecord: 0,
-    }
-  }
   if (response.apiResponse.Status &&
     response.apiResponse.Status == "200") {
     newPassUser.value = saveProfileReq.NewPassword;
     console.log("Save Profile Success!!! newPassUser.value" + newPassUser.value);
-    getStatus.value = response.apiResponse.Status;
-
-    const responseCom = await useRepository().user.getCommionList(useCommisionReq);
-    if (
-      responseCom.apiResponse.Status !== undefined &&
-      responseCom.apiResponse.Status === 200 &&
-      responseCom.apiResponse.Data
-    ) {
-      console.log("getCommissionList ", responseCom.apiResponse.Data)
-      userCommissionList.value = responseCom.apiResponse.Data!;
-
-    } else {
-      console.log("Load CommissionList fail!!!")
-      isError.value = true;
-      messageError.value = responseCom.apiResponse.ErrorMessage ?? "";
-    }
-
-    router.push("/users/profile/" + saveProfileReq.SubUserID);
+    await loadUserCommission(saveProfileReq.SubUserID);
   } else {
     isError.value = true;
     messageError.value = response.apiResponse.ErrorMessage ?? "";
@@ -162,6 +150,32 @@ const handleUserEdit = async (
 
   isLoading.value = false;
 };
+
+const loadUserCommission = async (userid: string) => {
+  const useCommisionReq: UserCommissionListReq = {
+      SubUserID: userid,
+      Paging: {
+        Page: 0,
+        Length: 10,
+        TotalRecord: 0,
+      }
+    }
+    console.log("load User Commisstion")
+    const responseCom = await useRepository().user.getCommionList(useCommisionReq);
+    if (
+      responseCom.apiResponse.Status !== undefined &&
+      responseCom.apiResponse.Status === 200 && 
+      responseCom.apiResponse.Data
+    ) {
+      console.log("getCommissionList ",responseCom.apiResponse.Data)
+      userCommissionList.value = responseCom.apiResponse.Data!;
+        
+    } else {
+      console.log("Load CommissionList fail!!!")
+      isError.value = true;
+      messageError.value = responseCom.apiResponse.ErrorMessage ?? "";
+    }
+}
 
 const loadUserDetails = async (userid: string) => {
   const userDetailReq: UserDataReq = {

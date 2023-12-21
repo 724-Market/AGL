@@ -24,7 +24,6 @@ import { UserLimitRes, delUserReq } from "~/shared/entities/user-entity"
 import { storeToRefs } from "pinia"
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth"
 import { Filter } from "~/shared/entities/table-option"
-import { useStoreStateOrder } from "~/stores/order/storeStateOrder"
 
 // Define variables
 const isLoading = ref(false)
@@ -32,22 +31,15 @@ const table = ref()
 const router = useRouter()
 const usersLimitRes: globalThis.Ref<UserLimitRes | any> = ref()
 
-const d = new Date()
-const getMonth = d.getMonth() + 1
-
-const filterOptionTable: globalThis.Ref<Filter[]> = ref([
-  { field: "IsActive", type: "LIKE", value: "" },
-])
+const filterOptionTable: globalThis.Ref<Filter[]> = ref([])
 
 const storeAuth = useStoreUserAuth()
 const { AuthenInfo } = storeToRefs(storeAuth)
-const storeState = useStoreStateOrder()
 const isError = ref(false)
 const messageError = ref("")
 
 // on Mounted
 const onLoad = onMounted(async () => {
-  storeState.clearState()
   if (AuthenInfo.value) {
     await loadUsersLimit()
   } else {
@@ -57,10 +49,8 @@ const onLoad = onMounted(async () => {
 
 const loadProfileUser = async (UserID: string) => {
   // console.log('%cloadProfileUser%cline:58%cUserID', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:#1f3c88;padding:3px;border-radius:2px', 'color:#fff;background:rgb(248, 147, 29);padding:3px;border-radius:2px', UserID)
-  //ทำรายการต่อ
-  // isLoading.value = true
-  router.push("/users/profile/" + UserID)
-  // isLoading.value = false
+  console.log("loadProfileUser3 " + UserID);
+  await router.push("/users/profile/" + UserID);
 }
 
 const deleteUsers = async (UserID: string) => {
@@ -74,9 +64,7 @@ const deleteUsers = async (UserID: string) => {
     }
     var response = await useRepository().user.deleteUser(req)
     if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-      const refreshPage = () => {
-        window.location.reload() // Reloads the current page
-      }
+      
     } else {
       alert(response.apiResponse.ErrorMessage)
     }

@@ -1,15 +1,9 @@
 <template>
-    <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+  <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
     :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
     <!-- Content -->
-    <FormKit
-      type="form"
-      @submit="submitOrder"
-      :actions="false"
-      id="form-order"
-      form-class="form-order form-theme"
-      :incomplete-message="false"
-    >
+    <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
+      :incomplete-message="false">
       <div class="row">
         <div class="col-lg-8 col-xl-9">
           <div class="card">
@@ -28,17 +22,9 @@
               </div>
             </div>
           </div>
-          <OrderCompulsoryPackagesList
-            :is-loading="isLoading"
-            :checklist="checklist"
-            :is-error="isError"
-            :message-error="messageError"
-            :package-list="packageList"
-            :pages="paging"
-            @change-checklist="handlerCheckList"
-            @change-select="handlerSelect"
-            @change-page="handlerChangePage"
-          ></OrderCompulsoryPackagesList>
+          <OrderCompulsoryPackagesList :is-loading="isLoading" :checklist="checklist" :is-error="isError"
+            :message-error="messageError" :package-list="packageList" :pages="paging" @change-checklist="handlerCheckList"
+            @change-select="handlerSelect" @change-page="handlerChangePage"></OrderCompulsoryPackagesList>
         </div>
 
         <!-- Sidebar -->
@@ -49,37 +35,21 @@
               <h3 class="card-title">รายการที่เลือก</h3>
             </div>
             <div class="card-body">
-              <OrderCartCar
-                v-if="informationSelect"
-                :car-detail="informationSelect.CarDetail"
-                :car-use="informationSelect.CarUse"
-                :is-car-red="false"
-                :effective-date="informationSelect.EffectiveDate"
-                :expire-date="informationSelect.ExpireDate"
-                :insurance-day="informationSelect.InsuranceDay"
-              ></OrderCartCar>
+              <OrderCartCar v-if="informationSelect" :car-detail="informationSelect.CarDetail"
+                :car-use="informationSelect.CarUse" :is-car-red="false" :effective-date="informationSelect.EffectiveDate"
+                :expire-date="informationSelect.ExpireDate" :insurance-day="informationSelect.InsuranceDay">
+              </OrderCartCar>
               <!-- <OrderCartPackage></OrderCartPackage> -->
-              <OrderCartPackage
-                v-if="packageSelect && packageSelect.CompanyName != ''"
-                :package-select="packageSelect"
-              />
+              <OrderCartPackage v-if="packageSelect && packageSelect.CompanyName != ''" :package-select="packageSelect" />
             </div>
 
             <OrderChecklist :list="checklist" />
           </aside>
 
-          <FormKit
-            type="submit"
-            label="ไปกรอกข้อมูลสั่งซื้อ"
-            name="order-submit"
-            id="order-submit"
-            :classes="{
-              input: 'btn-primary',
-              outer: 'form-actions',
-            }"
-            :disabled="!isSelect"
-            :loading="isLoading"
-          />
+          <FormKit type="submit" label="ไปกรอกข้อมูลสั่งซื้อ" name="order-submit" id="order-submit" :classes="{
+            input: 'btn-primary',
+            outer: 'form-actions',
+          }" :disabled="!isSelect" :loading="isLoading" />
 
           <NuxtLink @click="backStep()" class="btn btn-back">ย้อนกลับ</NuxtLink>
         </div>
@@ -148,7 +118,7 @@ const storeAuth = useStoreUserAuth();
 const storePackage = useStorePackage();
 // define getter in store
 const { AuthenInfo } = storeToRefs(storeAuth);
-const {PackageInfo} = storeToRefs(storePackage);
+const { PackageInfo } = storeToRefs(storePackage);
 
 
 
@@ -167,11 +137,11 @@ const onInit = async () => {
   // check login
   if (AuthenInfo.value) {
     await showPackageList();
-   
-  if(PackageInfo && PackageInfo.value && PackageInfo.value.CompanyCode != ''){
-    await handlerSelect(true, PackageInfo.value)
-  }
-    
+
+    if (PackageInfo && PackageInfo.value && PackageInfo.value.CompanyCode != '') {
+      await handlerSelect(true, PackageInfo.value)
+    }
+
 
   } else {
     isLoading.value = false;
@@ -209,7 +179,7 @@ const showPackageList = async () => {
           UseCarCode: info.CarUse,
           Paging: paging.value,
         };
-        
+
         const data = await store.getPackageList(request);
 
         if (data && data.Data) {
@@ -226,7 +196,7 @@ const showPackageList = async () => {
           isLoading.value = false;
           isError.value = true;
           messageError.value = data.ErrorMessage ? data.ErrorMessage : "";
-          if(data.ErrorMessage.split(' ')[0] == 'Effective') router.push("/order/compulsory/information");
+          if (data.ErrorMessage.split(' ')[0] == 'Effective') router.push("/order/compulsory/information");
         }
       } else {
         isLoading.value = false;
@@ -241,8 +211,8 @@ const showPackageList = async () => {
   }
 };
 const backStep = async () => {
-    useStateMenu().setStateMenu(1);
-    router.push('/order/compulsory/information');
+  useStateMenu().setStateMenu(1);
+  router.push('/order/compulsory/information');
 }
 // onmounted loading page
 const onLoad = onMounted(async () => {
@@ -254,7 +224,7 @@ const handlerCheckList = (_checklist: IChecklist[]) => {
 const handlerSelect = (select: Boolean, item: IPackageResponse) => {
   isSelect.value = select;
   packageSelect.value = item;
-  checklist.value[0].className='current'
+  checklist.value[0].className = 'current'
 };
 const handlerChangePage = async (page: number, lengthPage: number) => {
   if (page != -1) {
@@ -279,10 +249,10 @@ const submitOrder = async (formData: any) => {
   );
 
   if (packageSelect.value) {
-    if(AuthenInfo.value){
+    if (AuthenInfo.value) {
       packageSelect.value.AgentCode = AuthenInfo.value.userName
     }
-    
+
     let packageSelectT: IPackageResponse = {
       RefCompanyID: packageSelect.value.RefCompanyID,
       CompanyCode: packageSelect.value.CompanyCode,
@@ -308,8 +278,8 @@ const submitOrder = async (formData: any) => {
 
     submitted.value = false; // Form submitted status
     isLoading.value = false
-      // set state menu
-      useStateMenu().setStateMenu(3);
+    // set state menu
+    useStateMenu().setStateMenu(3);
 
     router.push("/order/compulsory/placeorder");
   }
@@ -340,7 +310,7 @@ const pageDescription = 'Compulsory เลือกแพ็คเกจ'
 // Define meta seo
 useHead({
   title: pageTitle,
-  meta: [{ name: "description", content:pageDescription  }],
+  meta: [{ name: "description", content: pageDescription }],
   bodyAttrs: {
     class: "page-order category-compulsory single-packages",
   },

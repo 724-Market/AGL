@@ -27,7 +27,6 @@ import {
 import { useStoreUserSave } from "~/stores/user/storePasswordUser";
 
 const emit = defineEmits(["checkProfileDetail", "createUserConfirm", "editUserConfirm", "reProfile"])
-const userDetails: globalThis.Ref<UserDataRes | undefined> = ref();
 const userGroupList: globalThis.Ref<UserGroupListRes[] | undefined> = ref();
 
 const userSave = useStoreUserSave();
@@ -155,6 +154,7 @@ const clearStore = async () => {
 };
 
 const loadGroupList = async () => {
+    console.log("load Group List!!! ")
 
     const response = await useRepository().user.getGroupList();
     if (

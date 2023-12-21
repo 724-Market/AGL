@@ -406,6 +406,16 @@
     </div>
 
   </div> -->
+    <ElementsModalDelGroup
+      v-if="isDelGroup" 
+      :modal-show="isDelGroup"
+      :modal-title="'ยืนยันการลบสาขา'" 
+      :modal-type="ModalType.Danger"
+      :reload="false" 
+      @on-close-Modal="handleCloseModal"
+      @on-confirm-modal="handleConfirmModal"
+    />
+    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
 </template>
 
 <script setup lang="ts">
@@ -416,13 +426,14 @@ import {
   UserGroupListRes,
   delGroupReq,
 } from "~/shared/entities/user-entity";
+import { ModalType } from "~/shared/entities/enum-entity";
 
 import { useStoreUserSave } from "~/stores/user/storePasswordUser";
 
 const route = useRoute()
 const profileID = route.params.id
 
-const emit = defineEmits(["checkProfileDetail", "createUserConfirm", "editUserConfirm", "reProfile"])
+const emit = defineEmits(["checkProfileDetail", "createUserConfirm", "editUserConfirm", "reProfile", "onDeleteGroup"])
 const userDetails: globalThis.Ref<UserDataRes | undefined> = ref();
 const userGroupList: globalThis.Ref<UserGroupListRes[] | undefined> = ref();
 
@@ -446,6 +457,8 @@ const limitMoney = ref(0);
 const commission = ref(0);
 var branchText = ref("");
 const isActive = ref(false);
+const isDelGroup = ref(false);
+const delGroupID = ref("");
 
 const props = defineProps({
   userProfile: {
@@ -459,13 +472,6 @@ const props = defineProps({
   },
   loadData: Boolean,
   getUserPassword: String,
-  getStatus: {
-    type: [Number, String],
-    default: 0,
-    validator: (value) => {
-      return typeof value === 'number' || (typeof value === 'string' && value.trim() === '') || value === null;
-    },
-  },
   userID: String,
 });
 
@@ -501,6 +507,31 @@ onMounted(() => {
 });
 
 const deleteBranch = async (branchid: string) => {
+    isDelGroup.value = true;
+    delGroupID.value = branchid;
+  //emit('onDeleteGroup', branchid);
+}
+
+const handleCloseModal = async () => {
+  isDelGroup.value = false;
+};
+
+const handleConfirmModal = async () => {
+  isLoading.value = true;
+  let req: delGroupReq = {
+      ID: delGroupID.value,
+  };
+  var response = await useRepository().user.deleteGroup(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+      emit('onDeleteGroup');
+    } else {
+      alert(response.apiResponse.ErrorMessage);
+    }
+  isLoading.value = false;
+};
+
+/*
+const deleteBranch = async (branchid: string) => {
   //ลบแบบร่างนี้
   let confirmAction = confirm("ต้องการลบรายการหรือไม่?");
   if (confirmAction) {
@@ -520,7 +551,7 @@ const deleteBranch = async (branchid: string) => {
     isLoading.value = false;
   }
 };
-
+*/
 const clearStore = async () => {
   const req: UserProfileReq = {
     Password: "",
@@ -607,17 +638,4 @@ const submitCreateUser = async (formData: any) => {
   }
 };
 
-// Watch for changes in response.apiResponse.Status
-watch(
-  () => props.getStatus,
-  async (newStatus) => {
-    if (newStatus == '200') {
-      console.log('User profile update!!!' + newStatus);
-      isLoading.value = true;
-      await loadGroupList();
-      isLoading.value = false;
-
-    }
-  }
-);
 </script>

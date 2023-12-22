@@ -83,25 +83,28 @@ const router = useRouter();
 const renderKey = ref(0);
 
 onMounted(async () => {
-  //This console is for checking the latest code
-  console.log("Profile page4 " + route.params.id)
+  try{
+    //This console is for checking the latest code
+    console.log("Profile page4 " + route.params.id)
+    if (AuthenInfo.value) {
+      isLoading.value = true;
 
-  if (AuthenInfo.value) {
-    isLoading.value = true;
+      if (route.params.id) {
+        userId.value = Array.isArray(route.params.id)
+          ? route.params.id[0] // Use the first element if it's an array
+          : route.params.id;
+        //### Delete after validate complete ####
+        newPassUser.value = userSave.Password;
+        await loadUserDetails(userId.value);
+        await loadUserCommission(userId.value);
+      }
 
-    if (route.params.id) {
-      userId.value = Array.isArray(route.params.id)
-        ? route.params.id[0] // Use the first element if it's an array
-        : route.params.id;
-      //### Delete after validate complete ####
-      newPassUser.value = userSave.Password;
-      await loadUserDetails(userId.value);
-      await loadUserCommission(userId.value);
+      isLoading.value = false;
+    } else {
+      router.push("/login");
     }
-
-    isLoading.value = false;
-  } else {
-    router.push("/login");
+  } catch (error) {
+      console.error('An error occurred while fetching user group list:', error);
   }
 });
 

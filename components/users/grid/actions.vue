@@ -7,11 +7,11 @@
 
     <ul class="dropdown-menu">
       <li class="d-none">
-        <a class="dropdown-item action-history" href="#" :data-id="$props.row.UserID" title="ดูประวัติ"><span class="icon-tracking emit-hitory"
+        <a class="dropdown-item action-history" :href="'/users/profile/' + $props.row.UserID" :data-id="$props.row.UserID" title="ดูประวัติ"><span class="icon-tracking emit-hitory"
             :data-id="$props.row.UserID">ดูประวัติ</span></a>
       </li>
       <li>
-        <a class="dropdown-item action-profile" href="#" :data-id="$props.row.UserID" title="แก้ไขข้อมูล"><span class="icon-edit emit-profile" :data-id="$props.row.UserID">แก้ไขข้อมูล</span></a>
+        <a class="dropdown-item action-profile" :href="'/users/profile/' + $props.row.UserID" :data-id="$props.row.UserID" title="แก้ไขข้อมูล"><span class="icon-edit emit-profile" :data-id="$props.row.UserID">แก้ไขข้อมูล</span></a>
       </li>
       <li>
         <hr class="dropdown-divider">

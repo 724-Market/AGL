@@ -411,11 +411,10 @@
       :modal-show="isDelGroup"
       :modal-title="'ยืนยันการลบสาขา'" 
       :modal-type="ModalType.Danger"
-      :reload="false" 
       @on-close-Modal="handleCloseModal"
       @on-confirm-modal="handleConfirmModal"
     />
-    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+    <!-- <ElementsModalLoading :loading="isLoading"></ElementsModalLoading> -->
 </template>
 
 <script setup lang="ts">
@@ -482,6 +481,8 @@ const originalUserPass = ref(props.getUserPassword);
 
 onMounted(() => {
   loadGroupList();
+  console.log("isDelGroup "+isDelGroup.value)
+  isDelGroup.value = false
 
   console.log("Commission list component ", props.userCommissionList)
 

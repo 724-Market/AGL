@@ -9,11 +9,19 @@
           <OrderHistoryCardsUsers v-if="usersLimitRes" :user-limit="usersLimitRes"></OrderHistoryCardsUsers>
         </div>
 
-        <UsersGridTable :filters="filterOptionTable" v-if="filterOptionTable.length >= 0"
+        <UsersGridTable :key="renderKey" :filters="filterOptionTable" v-if="filterOptionTable.length >= 0"
           @change-table="handlerChangeTable" @on-delete="deleteUsers" @on-profile="loadProfileUser"></UsersGridTable>
 
       </div>
     </div>
+    <ElementsModalDelUser
+      v-if="isDelUser" 
+      :modal-show="isDelUser"
+      :modal-title="'ยืนยันการลบผู้ช่วย'" 
+      :modal-type="ModalType.Danger"
+      @on-close-Modal="handleCloseModal"
+      @on-confirm-modal="handleConfirmModal"
+    />
 
   </NuxtLayout>
 </template>
@@ -22,6 +30,7 @@
 // Define import
 import { UserLimitRes, delUserReq } from "~/shared/entities/user-entity"
 import { storeToRefs } from "pinia"
+import { ModalType } from "~/shared/entities/enum-entity";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth"
 import { Filter } from "~/shared/entities/table-option"
 
@@ -37,6 +46,10 @@ const storeAuth = useStoreUserAuth()
 const { AuthenInfo } = storeToRefs(storeAuth)
 const isError = ref(false)
 const messageError = ref("")
+const isDelUser = ref(false);
+const delUserID = ref("");
+const renderKey = ref(0)
+
 
 // on Mounted
 const onLoad = onMounted(async () => {
@@ -45,31 +58,40 @@ const onLoad = onMounted(async () => {
   } else {
     router.push("/login")
   }
-})
+});
+
+const handleCloseModal = async () => {
+  isDelUser.value = false;
+};
+
+const deleteUsers = async (UserID: string) => {
+    isDelUser.value = true;
+    delUserID.value = UserID;
+};
+
+const updateComponent = () => {
+    renderKey.value = renderKey.value + 1
+}
+
+const handleConfirmModal = async () => {
+  isLoading.value = true;
+  let req: delUserReq = {
+      SubUserID: delUserID.value,
+  };
+  var response = await useRepository().user.deleteUser(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+      console.log("Reload");
+      await updateComponent();
+    } else {
+      alert(response.apiResponse.ErrorMessage);
+    }
+  isLoading.value = false;
+};
 
 const loadProfileUser = async (UserID: string) => {
   // console.log('%cloadProfileUser%cline:58%cUserID', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:#1f3c88;padding:3px;border-radius:2px', 'color:#fff;background:rgb(248, 147, 29);padding:3px;border-radius:2px', UserID)
   console.log("loadProfileUser3 " + UserID);
-  await router.push("/users/profile/" + UserID);
-}
-
-const deleteUsers = async (UserID: string) => {
-  console.log("deleteUsers" + UserID)
-  //ลบแบบร่างนี้
-  let confirmAction = confirm("ต้องการลบรายการหรือไม่?")
-  if (confirmAction) {
-    isLoading.value = true
-    let req: delUserReq = {
-      SubUserID: UserID,
-    }
-    var response = await useRepository().user.deleteUser(req)
-    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-      
-    } else {
-      alert(response.apiResponse.ErrorMessage)
-    }
-    isLoading.value = false
-  }
+  //await router.push("/users/profile/" + UserID);
 }
 
 const loadUsersLimit = async () => {

@@ -190,12 +190,13 @@ const datatableOptions = {
           emit('onProfile', menuProfile.dataset.id)
         }
       })
-      */
+      
     //Emit onProfile got bug when we use id to control it.
     const actionProfile = TdId1.querySelector('.action-profile')
     actionProfile.addEventListener('click', async () => {
       emit('onProfile', actionProfile.dataset.id)
     })
+    */
 
     if (data.IsActive == false) {
       const actionDelete = TdId1.querySelector('.action-delete')

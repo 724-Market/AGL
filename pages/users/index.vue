@@ -14,6 +14,7 @@
 
       </div>
     </div>
+    
     <ElementsModalDelUser
       v-if="isDelUser" 
       :modal-show="isDelUser"
@@ -30,7 +31,7 @@
 // Define import
 import { UserLimitRes, delUserReq } from "~/shared/entities/user-entity"
 import { storeToRefs } from "pinia"
-import { ModalType } from "~/shared/entities/enum-entity";
+import { ModalType } from "~/shared/entities/enum-entity"
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth"
 import { Filter } from "~/shared/entities/table-option"
 
@@ -46,8 +47,8 @@ const storeAuth = useStoreUserAuth()
 const { AuthenInfo } = storeToRefs(storeAuth)
 const isError = ref(false)
 const messageError = ref("")
-const isDelUser = ref(false);
-const delUserID = ref("");
+const isDelUser = ref(false)
+const delUserID = ref("")
 const renderKey = ref(0)
 
 
@@ -58,40 +59,38 @@ const onLoad = onMounted(async () => {
   } else {
     router.push("/login")
   }
-});
+})
 
 const handleCloseModal = async () => {
-  isDelUser.value = false;
-};
+  isDelUser.value = false
+}
 
 const deleteUsers = async (UserID: string) => {
-    isDelUser.value = true;
-    delUserID.value = UserID;
-};
+    isDelUser.value = true
+    delUserID.value = UserID
+}
 
 const updateComponent = () => {
     renderKey.value = renderKey.value + 1
 }
 
 const handleConfirmModal = async () => {
-  isLoading.value = true;
+  isLoading.value = true
   let req: delUserReq = {
       SubUserID: delUserID.value,
-  };
-  var response = await useRepository().user.deleteUser(req);
+  }
+  var response = await useRepository().user.deleteUser(req)
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-      console.log("Reload");
-      await updateComponent();
+      console.log("Reload")
+      await updateComponent()
     } else {
-      alert(response.apiResponse.ErrorMessage);
+      alert(response.apiResponse.ErrorMessage)
     }
-  isLoading.value = false;
-};
+  isLoading.value = false
+}
 
 const loadProfileUser = async (UserID: string) => {
-  // console.log('%cloadProfileUser%cline:58%cUserID', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:#1f3c88;padding:3px;border-radius:2px', 'color:#fff;background:rgb(248, 147, 29);padding:3px;border-radius:2px', UserID)
-  console.log("loadProfileUser3 " + UserID);
-  //await router.push("/users/profile/" + UserID);
+  console.log("loadProfileUser3 " + UserID)
 }
 
 const loadUsersLimit = async () => {
@@ -114,12 +113,6 @@ const loadUsersLimit = async () => {
 
 const handlerChangeTable = async (datatable: any) => {
   table.value = datatable
-  // console.log("datatable", table.value)
-}
-
-const continute = () => {
-  alert("ทำรายการต่อ")
-  console.log("ทำรายการต่อ")
 }
 
 // Define layout

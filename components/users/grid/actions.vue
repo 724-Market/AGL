@@ -31,7 +31,7 @@ import { UsersHistoryResponse } from "~/shared/entities/user-entity"
 // Define props
 const props = defineProps({
   row: {
-    type: Object as () => UsersHistoryResponse,
+    type: Object as () => UsersHistoryResponse
   }
 })
 </script>

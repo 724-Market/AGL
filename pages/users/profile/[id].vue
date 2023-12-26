@@ -32,7 +32,7 @@
               บันทึก
             </button>
 
-            <NuxtLink class="btn btn-back mt-3" to="/users">ย้อนกลับ</NuxtLink>
+            <NuxtLink class="btn-back btn-gray" to="/users">ย้อนกลับ</NuxtLink>
 
           </section>
         </div>
@@ -57,7 +57,7 @@ import {
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { storeToRefs } from "pinia";
 import { useStoreUserSave } from "~/stores/user/storePasswordUser";
-import { ref, onMounted, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 const userDetails: globalThis.Ref<UserDataRes | undefined> = ref();
 const userCommissionList: Ref<UserCommissionListRes[]> = ref([]);

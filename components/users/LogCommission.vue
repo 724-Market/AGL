@@ -1,14 +1,14 @@
 <template>
     <aside class="card">
         <div class="card-body">
-            <div class="status-list">
+            <div class="status-list table-view">
                 <figure class="status-icon">
                     <i class="fa-solid fa-percent fa-xl"></i>
                 </figure>
                 <h4 class="title">บันทึกรายการผลตอบแทน</h4>
                 <div class="status-item" v-for="(item, j) in props.userCommissionList" :key="j">
-                    <h5 class="topic">{{ item.Commission }}</h5>
-                    <p>{{ useUtility().formatDate(item.CreateDate, "DD MMMM BBBB HH: mm: ss") }}</p>
+                    <h5 class="topic">{{ useUtility().formatDate(item.CreateDate, "DD MMM BBBB HH:mm") }}</h5>
+                    <p>{{ item.Commission }}%</p>
                 </div>
             </div>
         </div>

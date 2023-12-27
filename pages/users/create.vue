@@ -22,7 +22,7 @@
               outer: 'form-actions',
             }" :disabled="isLoading" :loading="isLoading" />
 
-            <NuxtLink class="btn btn-back mt-3" to="/users">ย้อนกลับ</NuxtLink>
+            <NuxtLink class="btn-back btn-gray" to="/users">ย้อนกลับ</NuxtLink>
 
           </section>
         </div>

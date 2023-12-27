@@ -19,7 +19,6 @@ const props = defineProps({
 });
 
 onMounted(async () => {
-    console.log("Branch userID3 "+props.userId)
     try {
         const response = await useRepository().user.getGroupList();
         if (
@@ -27,7 +26,6 @@ onMounted(async () => {
             response.apiResponse.Status === 200 &&
             response.apiResponse.Data
         ) {
-            console.log("Call group list success ")
             userGroupList.value = response.apiResponse.Data;
         } else {
             console.error('Failed to fetch user group list:', response.apiResponse);

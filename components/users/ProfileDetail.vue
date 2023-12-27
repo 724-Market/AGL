@@ -28,7 +28,7 @@
 
                 <div class="row" v-if="!profileID">
                   <div class="col-md-6">
-                    <FormKit type="text" label="กำหนดรหัสผ่าน" name="password" placeholder="กรุณาใส่รหัสผ่าน" :validation="[['required'],
+                    <FormKit type="text" label="กำหนดรหัสผ่าน" v-model="passwordText" name="password" placeholder="กรุณาใส่รหัสผ่าน" :validation="[['required'],
                     ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:;,./|`'_+-]).*$/
                     ],
                     ['length', 8, 128],
@@ -46,7 +46,7 @@
                 </div>
                 <div class="row" v-else>
                     <div class="col-md-6">
-                      <FormKit type="text" label="กำหนดรหัสผ่านใหม่" name="password" placeholder="กรุณาใส่รหัสผ่าน" :validation="[
+                      <FormKit type="text" label="กำหนดรหัสผ่านใหม่" v-model="passwordText" name="password" placeholder="กรุณาใส่รหัสผ่าน" :validation="[
                       ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:;,./|`'_+-]).*$/
                       ],
                       ['length', 8, 128],
@@ -136,7 +136,7 @@
           </div>
           <div class="col-12">
             <FormKit type="text" label="สาขา" name="Branch" placeholder="x,xxx" v-model="branchText"
-              autocomplete="false" />
+            autocomplete="false" />
           </div>
           <div class="col-12">
             <div class="form-hide-label accept-box">
@@ -419,7 +419,6 @@
 
 <script setup lang="ts">
 import {
-  UserProfileReq,
   UserDataRes,
   UserCommissionListRes,
   UserGroupListRes,
@@ -427,42 +426,33 @@ import {
 } from "~/shared/entities/user-entity";
 import { ModalType } from "~/shared/entities/enum-entity";
 
-import { useStoreUserSave } from "~/stores/user/storePasswordUser";
-
 const route = useRoute()
 const profileID = route.params.id
 
-const emit = defineEmits(["checkProfileDetail", "createUserConfirm", "editUserConfirm", "reProfile", "onDeleteGroup"])
-const userDetails: globalThis.Ref<UserDataRes | undefined> = ref();
+const emit = defineEmits(["checkProfileDetail", "createUserConfirm", "editUserConfirm", "reProfile", "onDeleteGroup", "checkProfileDetail"])
 const userGroupList: globalThis.Ref<UserGroupListRes[] | undefined> = ref();
-
-const userSave = useStoreUserSave();
 
 const messageError = ref("");
 
-const dateNow: Date = new Date();
 
 const isError = ref(false);
 const isLoading = ref(false);
 
 var userIDRes = ref("");
-var passwordNumberText = ref("");
-var confirmPasswordText = ref("");
+var passwordText = ref("");
+var password_confirm = ref("");
 var firstNameText = ref("");
 var lastNameText = ref("");
 var phoneNumberText = ref("");
 var emailText = ref("");
-const limitMoney = ref(0);
-const commission = ref(0);
+var limitMoney = ref("");
+var commission = ref("");
 var branchText = ref("");
 const isActive = ref(false);
 const isDelGroup = ref(false);
 const delGroupID = ref("");
 
 const props = defineProps({
-  userProfile: {
-    type: Object as () => UserProfileReq,
-  },
   userDetails: {
     type: Object as () => UserDataRes,
   },
@@ -474,36 +464,30 @@ const props = defineProps({
   userID: String,
 });
 
-const userPassRes = toRef(props, 'getUserPassword');
-
-// Create a ref to store the initial value
-const originalUserPass = ref(props.getUserPassword);
-
 onMounted(() => {
   loadGroupList();
-  console.log("isDelGroup "+isDelGroup.value)
-  isDelGroup.value = false
 
   console.log("Commission list component ", props.userCommissionList)
 
-  if (props.userDetails && originalUserPass.value !== null) {
-
-    passwordNumberText.value = "";
-    confirmPasswordText.value = "";
+  //if (props.userDetails && originalUserPass.value !== null) {
+  if (props.userDetails) {
+    console.log("props.userDetails && originalUserPass.value !== null")
+    passwordText.value = "";
+    password_confirm.value = "";
     firstNameText.value = props.userDetails.FirstName;
     lastNameText.value = props.userDetails.LastName;
     phoneNumberText.value = props.userDetails.Phone;
     emailText.value = props.userDetails.Email;
 
     // Convert string values to numbers
-    limitMoney.value = parseFloat(props.userDetails.CreditLimitAmount);
+    limitMoney.value = props.userDetails.CreditLimitAmount;
     commission.value = props.userDetails.Commission;
     branchText.value = props.userDetails.UserGroupName;
     isActive.value = !!props.userDetails.IsActive;
     userIDRes.value = props.userDetails?.UserName;
     //userPassRes.value = originalUserPass.value ?? ''; 
 
-    clearStore()
+    //clearStore()
   }
 });
 
@@ -531,46 +515,6 @@ const handleConfirmModal = async () => {
   isLoading.value = false;
 };
 
-/*
-const deleteBranch = async (branchid: string) => {
-  //ลบแบบร่างนี้
-  let confirmAction = confirm("ต้องการลบรายการหรือไม่?");
-  if (confirmAction) {
-    isLoading.value = true;
-    let req: delGroupReq = {
-      ID: branchid,
-    };
-    var response = await useRepository().user.deleteGroup(req);
-    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-      //await loadHistoryStatus();
-      emit('reProfile', props.userID);
-
-    } else {
-      console.log("props.userID" + props.userID)
-      alert(response.apiResponse.ErrorMessage);
-    }
-    isLoading.value = false;
-  }
-};
-*/
-const clearStore = async () => {
-  const req: UserProfileReq = {
-    Password: "",
-    FirstName: "",
-    LastName: "",
-    PhoneNumber: "",
-    Email: "",
-    CreditLimit: 0,
-    Commission: 0,
-    BranchName: "",
-    IsActive: isActive.value,
-
-  }
-  console.log("submitCreateUser setUser store" + passwordNumberText.value);
-  userSave.setUserSave(req);
-
-};
-
 const loadGroupList = async () => {
 
   const response = await useRepository().user.getGroupList();
@@ -583,59 +527,6 @@ const loadGroupList = async () => {
   } else {
     isError.value = true;
     messageError.value = response.apiResponse.ErrorMessage ?? "";
-  }
-};
-
-
-// Submit form event
-const submitCreateUser = async (formData: any) => {
-  if (props.userID == null && passwordNumberText.value != null) {
-    const req: UserProfileReq = {
-      Password: passwordNumberText.value,
-      FirstName: firstNameText.value,
-      LastName: lastNameText.value,
-      PhoneNumber: phoneNumberText.value,
-      Email: emailText.value,
-      CreditLimit: limitMoney.value,
-      Commission: commission.value,
-      BranchName: branchText.value,
-      IsActive: isActive.value,
-
-    }
-    console.log("submitCreateUser setUser store" + passwordNumberText.value);
-    userSave.setUserSave(req);
-  }
-  if (props.userID == null) {
-    // Add waiting time for debug
-    emit("createUserConfirm",
-      passwordNumberText.value,
-      firstNameText.value,
-      lastNameText.value,
-      phoneNumberText.value,
-      emailText.value,
-      limitMoney.value,
-      commission.value,
-      branchText.value,
-      isActive.value
-    );
-  } else {
-    if (passwordNumberText.value == null) {
-      userSave.clearUserSave()
-    }
-    emit("editUserConfirm",
-      props.userDetails?.UserID,
-      passwordNumberText.value,
-      firstNameText.value,
-      lastNameText.value,
-      phoneNumberText.value,
-      emailText.value,
-      limitMoney.value,
-      commission.value,
-      branchText.value,
-      isActive.value
-    );
-    passwordNumberText.value = "";
-    confirmPasswordText.value = "";
   }
 };
 

@@ -2,13 +2,13 @@
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
     :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
 
-    <FormKit type="form" :actions="false" id="form-user" form-class="form-order form-theme" :incomplete-message="false">
+    <FormKit type="form" @submit="submitEditUser" :actions="false" id="form-user" form-class="form-order form-theme" :incomplete-message="false">
 
       <div class="row">
         <div class="col col-main">
 
-          <UsersProfileDetail :key="renderKey" @edit-user-confirm="handleUserEdit" :user-i-d="userId" :load-data="isLoading"
-            :get-user-password="newPassUser" :user-details="userDetails" @on-delete-group="deleteGroup"
+          <UsersProfileDetail :key="renderKey" :user-i-d="userId" 
+            :user-details="userDetails" @on-delete-group="updateProfile"
             :user-commission-list="userCommissionList" v-if="userDetails"/>
 
         </div>
@@ -18,7 +18,7 @@
 
             <UsersLogCommission 
               :user-commission-list="userCommissionList"
-              v-if="userCommissionList"/>
+            />
 
             <UsersLogStatus /> 
 
@@ -26,11 +26,11 @@
             :key="renderKey"
             :user-id="userId"
             v-if="userId" />
-
-            <button type="submit" class="formkit-input btn btn-primary form-actions" @click="submitCreateUser"
-              label="ไปเลือกวิธีชำระเงิน" name="user-submit" id="user-submit" :loading="isLoading">
-              บันทึก
-            </button>
+            
+            <FormKit type="submit" label="บันทึก" name="user-submit" id="user-submit" :classes="{
+              input: 'btn-primary',
+              outer: 'form-actions',
+            }" :disabled="isLoading" :loading="isLoading" />
 
             <NuxtLink class="btn btn-back mt-3" to="/users">ย้อนกลับ</NuxtLink>
 
@@ -42,10 +42,17 @@
 
     <ElementsModalLoading :loading="isLoading" />
 
+    <ElementsDialogShowpassword v-if="isPasswordChanged" :modal-show="isPasswordChanged" :modal-type="ModalType.Warning"
+      :modal-title="textUserID" :modal-text="textPassword" 
+      @on-close-modal="onCloseConfirm"></ElementsDialogShowpassword>
+
+
+
   </NuxtLayout>
 </template>
   
 <script lang="ts" setup>
+import { ModalType } from "~/shared/entities/enum-entity";
 import {
   UserDataReq,
   UserDataRes,
@@ -62,7 +69,6 @@ import { ref, onMounted, watch } from 'vue';
 const userDetails: globalThis.Ref<UserDataRes | undefined> = ref();
 const userCommissionList: Ref<UserCommissionListRes[]> = ref([]);
 
-const userSave = useStoreUserSave();
 
 const emit = defineEmits(["checkProfileDetail", "createUserConfirm", "editUserConfirm", "reProfile"])
 
@@ -75,17 +81,21 @@ const messageError = ref("");
 const isLoading = ref(false);
 const userId = ref("");
 
-const newPassUser = ref("");
+var isPasswordChanged = ref(false)
+var textPassword = ref('')
+var textUserID = ref('')
 
 const route = useRoute()
 const router = useRouter();
 
 const renderKey = ref(0);
+const getStorePassword = useStorePassword();
 
 onMounted(async () => {
   try{
     //This console is for checking the latest code
     console.log("Profile page4 " + route.params.id)
+    console.log("storePasswordB"+getStorePassword.value)
     if (AuthenInfo.value) {
       isLoading.value = true;
 
@@ -93,9 +103,8 @@ onMounted(async () => {
         userId.value = Array.isArray(route.params.id)
           ? route.params.id[0] // Use the first element if it's an array
           : route.params.id;
-        //### Delete after validate complete ####
-        newPassUser.value = userSave.Password;
         await loadUserDetails(userId.value);
+        await showPassword(getStorePassword.value);
         await loadUserCommission(userId.value);
       }
 
@@ -108,50 +117,8 @@ onMounted(async () => {
   }
 });
 
-const deleteGroup = async () => {
+const updateProfile = async () => {
     renderKey.value = renderKey.value + 1
-};
-
-const handleUserEdit = async (
-  subUserID: string,
-  Password: string,
-  FirstName: string,
-  LastName: string,
-  PhoneNumber: string,
-  Email: string,
-  LimitMoney: number,
-  Commission: number,
-  Branch: string,
-  IsActive: boolean
-) => {
-  isLoading.value = true;
-  console.log(subUserID, Password, FirstName, LastName, PhoneNumber, Email, LimitMoney, Commission, Branch, IsActive);
-  const saveProfileReq: UserSaveReq = {
-    SubUserID: subUserID,
-    NewPassword: Password,
-    FirstName: FirstName,
-    LastName: LastName,
-    PhoneNumber: PhoneNumber,
-    Email: Email,
-    CreditLimit: LimitMoney, // Provide a default value for LimitMoney
-    Commission: Commission,
-    BranchName: Branch,
-    IsActive: IsActive,
-  };
-
-
-  const response = await useRepository().user.saveProfile(saveProfileReq);
-  if (response.apiResponse.Status &&
-    response.apiResponse.Status == "200") {
-    newPassUser.value = saveProfileReq.NewPassword;
-    console.log("Save Profile Success!!! newPassUser.value" + newPassUser.value);
-    await loadUserCommission(saveProfileReq.SubUserID);
-  } else {
-    isError.value = true;
-    messageError.value = response.apiResponse.ErrorMessage ?? "";
-  }
-
-  isLoading.value = false;
 };
 
 const loadUserCommission = async (userid: string) => {
@@ -198,55 +165,31 @@ const loadUserDetails = async (userid: string) => {
     messageError.value = response.apiResponse.ErrorMessage ?? "";
   }
 };
-
-const oldStatus = ref("");
-
-const watchResponse = watch(
-  () => newPassUser.value,
-  (newStatus) => {
-    console.log("New Status:", newStatus);
-    console.log("Old Status:", oldStatus.value);
-
-    // Convert newStatus to a number
-    const numericStatus = parseInt(newStatus, 10);
-
-    if (!isNaN(numericStatus) && numericStatus === 200) {
-      loadUserDetails(userId.value);
-      // Assuming you want to clear the saveProfileRes value after using it
-    }
-
-    // Update oldStatus after processing the newStatus
-    oldStatus.value = newStatus;
-  },
-  { immediate: false }
-);
-
+/*
 onBeforeUnmount(() => {
   // Clean up the watch effect when the component is unmounted
   watchResponse();
 });
+*/
+const showPassword = async (getPassword: string) => {
+  if(getPassword){
+    console.log("Password changed!!!");
+    getStorePassword.value = '';
+    isPasswordChanged.value = true;
+    textUserID.value = userId.value;
+    textPassword.value = getPassword;
+  } else {
+    console.log("Password not update!!!")
+  }
+}
 
-var userIDRes = ref("");
-var passwordNumberText = ref("");
-var confirmPasswordText = ref("");
-var firstNameText = ref("");
-var lastNameText = ref("");
-var phoneNumberText = ref("");
-var emailText = ref("");
-const limitMoney = ref(0);
-const commission = ref(0);
-var branchText = ref("");
-const isActive = ref(false);
+const onCloseConfirm = async () => {
+  isPasswordChanged.value = false
+}
 
 const props = defineProps({
-  userProfile: {
-    type: Object as () => UserProfileReq,
-  },
   userDetails: {
     type: Object as () => UserDataRes,
-  },
-  userCommissionList: {
-    type: Object as () => UserCommissionListRes[],
   },
   loadData: Boolean,
   getUserPassword: String,
@@ -257,59 +200,43 @@ const props = defineProps({
       return typeof value === 'number' || (typeof value === 'string' && value.trim() === '') || value === null;
     },
   },
-  userID: String,
 });
 
 // Submit form event
-const submitCreateUser = async (formData: any) => {
-  if (props.userID == null && passwordNumberText.value != null) {
-    const req: UserProfileReq = {
-      Password: passwordNumberText.value,
-      FirstName: firstNameText.value,
-      LastName: lastNameText.value,
-      PhoneNumber: phoneNumberText.value,
-      Email: emailText.value,
-      CreditLimit: limitMoney.value,
-      Commission: commission.value,
-      BranchName: branchText.value,
-      IsActive: isActive.value,
+const submitEditUser = async (formData: any) => {
+  const isAct = ref(false);
+  if (formData.isActiveLog == 'active'){
+    isAct.value = true;
+  }
+  console.log("formData.emailText "+formData.Email)
+  const saveProfileReq: UserSaveReq = {
+    SubUserID: userId.value,
+    NewPassword: formData.password,
+    BranchName: formData.Branch,
+    Commission: formData.Commission,
+    Email: formData.Email,
+    FirstName: formData.FirstName,
+    LastName: formData.LastName, // Provide a default value for LimitMoney
+    CreditLimit: formData.LimitMoney,
+    PhoneNumber: formData.PhoneNumber,
+    IsActive: isAct.value,
+  };
+  console.log("saveProfileReq.Email "+saveProfileReq.Email)
+  isLoading.value = true;
 
-    }
-    console.log("submitCreateUser setUser store" + passwordNumberText.value);
-    userSave.setUserSave(req);
-  }
-  if (props.userID == null) {
-    // Add waiting time for debug
-    emit("createUserConfirm",
-      passwordNumberText.value,
-      firstNameText.value,
-      lastNameText.value,
-      phoneNumberText.value,
-      emailText.value,
-      limitMoney.value,
-      commission.value,
-      branchText.value,
-      isActive.value
-    );
+  const response = await useRepository().user.saveProfile(saveProfileReq);
+  if (response.apiResponse.Status &&
+    response.apiResponse.Status == "200") {
+    await showPassword(formData.password);
+    await updateProfile();
+    await loadUserCommission(saveProfileReq.SubUserID);
   } else {
-    if (passwordNumberText.value == null) {
-      userSave.clearUserSave()
-    }
-    emit("editUserConfirm",
-      props.userDetails?.UserID,
-      passwordNumberText.value,
-      firstNameText.value,
-      lastNameText.value,
-      phoneNumberText.value,
-      emailText.value,
-      limitMoney.value,
-      commission.value,
-      branchText.value,
-      isActive.value
-    );
-    passwordNumberText.value = "";
-    confirmPasswordText.value = "";
+    isError.value = true;
+    alert(response.apiResponse.ErrorMessage);
+    messageError.value = response.apiResponse.ErrorMessage ?? "";
   }
+
+  isLoading.value = false;
 };
 
 

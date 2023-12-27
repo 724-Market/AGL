@@ -70,7 +70,10 @@ const deleteUsers = async (UserID: string) => {
 };
 
 const updateComponent = () => {
-    renderKey.value = renderKey.value + 1
+  return new Promise<void>((resolve) => {
+    renderKey.value = renderKey.value + 1;
+    resolve();
+  });
 }
 
 const handleConfirmModal = async () => {
@@ -82,6 +85,7 @@ const handleConfirmModal = async () => {
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
       console.log("Reload");
       await updateComponent();
+      await loadUsersLimit();
     } else {
       alert(response.apiResponse.ErrorMessage);
     }

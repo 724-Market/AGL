@@ -7,18 +7,19 @@
 
     <ul class="dropdown-menu">
       <li class="d-none">
-        <NuxtLink class="dropdown-item action-history" :to="'/users/profile/' + $props.row.UserID" title="ดูประวัติ"><span class="icon-tracking emit-hitory"
-            :data-id="$props.row.UserID">ดูประวัติ</span></NuxtLink>
+        <NuxtLink class="dropdown-item action-history" :to="'/users/profile/' + $props.row.UserID" title="ดูประวัติ"><span
+            class="icon-tracking emit-hitory" :data-id="$props.row.UserID">ดูประวัติ</span></NuxtLink>
       </li>
       <li>
-        <a class="dropdown-item action-profile" :href="'/users/profile/' + $props.row.UserID" title="แก้ไขข้อมูล"><span class="icon-edit emit-profile">แก้ไขข้อมูล</span></a>
+        <a class="dropdown-item action-profile" :href="'/users/profile/' + $props.row.UserID" title="แก้ไขข้อมูล"><span
+            class="icon-edit emit-profile">แก้ไขข้อมูล</span></a>
       </li>
       <li>
         <hr class="dropdown-divider">
       </li>
       <li v-if="props.row?.IsActive == false">
-        <a class="dropdown-item action-delete" href="#" :data-id="$props.row.UserID" title="ลบผู้ช่วยนี้"><span class="icon-trash emit-delete"
-            :data-id="$props.row.UserID">ลบผู้ช่วยนี้</span></a>
+        <a class="dropdown-item action-delete" href="#" :data-id="$props.row.UserID" title="ลบผู้ช่วยนี้"><span
+            class="icon-trash emit-delete" :data-id="$props.row.UserID">ลบผู้ช่วยนี้</span></a>
       </li>
     </ul>
   </div>

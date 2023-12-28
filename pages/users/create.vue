@@ -2,20 +2,20 @@
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
     :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
 
-    <FormKit type="form" @submit="submitCreateUser" :actions="false" id="form-user" form-class="form-order form-theme" :incomplete-message="false"> 
+    <FormKit type="form" @submit="submitCreateUser" :actions="false" id="form-user" form-class="form-order form-theme"
+      :incomplete-message="false">
 
       <div class="row">
         <div class="col col-main">
 
-          <UsersProfileDetail v-if="usersLimitRes"/>
+          <UsersProfileDetail v-if="usersLimitRes" />
 
         </div>
 
         <div class="col col-sidebar">
           <section class="site-sidebar is-sticky">
 
-            <UsersLogStatus />
-            
+            <UsersLogStatus :user-details="userDetails" />
 
             <FormKit type="submit" label="บันทึก" name="user-submit" id="user-submit" :classes="{
               input: 'btn-primary',
@@ -28,7 +28,7 @@
         </div>
       </div>
 
-     </FormKit> 
+    </FormKit>
 
     <ElementsModalLoading :loading="isLoading" />
 
@@ -48,6 +48,7 @@ import { useStoreUserSave } from "~/stores/user/storePasswordUser"
 
 // Define variables
 const usersLimitRes: globalThis.Ref<UserLimitRes | any> = ref()
+// const userDetails: globalThis.Ref<UserDataRes | undefined> = ref()
 
 const emit = defineEmits(["checkProfileDetail", "createUserConfirm", "editUserConfirm", "reProfile"])
 
@@ -119,38 +120,41 @@ const props = defineProps({
 
 // Submit form event
 const submitCreateUser = async (formData: any) => {
-  const isAct = ref(false);
-  if (formData.isActiveLog == 'active'){
-    isAct.value = true;
-  }
-  const req: UserProfileReq = {
-    Password: formData.password,
-    BranchName: formData.Branch,
-    Commission: formData.Commission,
-    Email: formData.Email,
-    FirstName: formData.FirstName,
-    LastName: formData.LastName,
-    CreditLimit: formData.LimitMoney,
-    PhoneNumber: formData.PhoneNumber,
-    IsActive: isAct.value
-  }
-  
-    const resCreate = await useRepository().user.create(req)
-    if (
-      resCreate.apiResponse.Status &&
-      resCreate.apiResponse.Status == "200" &&
-      resCreate.apiResponse.Data
-    ) {
-      const UserID = resCreate.apiResponse.Data.UserID;
-      setPassword.value = req.Password;
+  // const isAct = ref(false);
+  // if (formData.isActiveLog == 'active') {
+  //   isAct.value = true;
+  // }
 
-      router.push("/users/profile/" + UserID)
-    } else {
-      isError.value = true
-      alert(resCreate.apiResponse.ErrorMessage);
-      messageError.value = resCreate.apiResponse.ErrorMessage ?? ""
-    } 
-  
+  console.log("Page " + formData.IsActive)
+
+  // const req: UserProfileReq = {
+  //   Password: formData.password,
+  //   BranchName: formData.Branch,
+  //   Commission: formData.Commission,
+  //   Email: formData.Email,
+  //   FirstName: formData.FirstName,
+  //   LastName: formData.LastName,
+  //   CreditLimit: formData.LimitMoney,
+  //   PhoneNumber: formData.PhoneNumber,
+  //   IsActive: isAct.value
+  // }
+
+  // const resCreate = await useRepository().user.create(req)
+  // if (
+  //   resCreate.apiResponse.Status &&
+  //   resCreate.apiResponse.Status == "200" &&
+  //   resCreate.apiResponse.Data
+  // ) {
+  //   const UserID = resCreate.apiResponse.Data.UserID;
+  //   setPassword.value = req.Password;
+
+  //   router.push("/users/profile/" + UserID)
+  // } else {
+  //   isError.value = true
+  //   alert(resCreate.apiResponse.ErrorMessage);
+  //   messageError.value = resCreate.apiResponse.ErrorMessage ?? ""
+  // }
+
 };
 
 // Define layout

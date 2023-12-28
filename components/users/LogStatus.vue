@@ -2,11 +2,10 @@
     <aside class="card">
         <div class="card-body">
             <div class="status-list">
-                <figure class="status-icon" v-if="props.userDetails && props.userDetails.IsActive === true">
-                    <div class="icon user success"></div>
-                </figure>
-                <figure class="status-icon" v-if="props.userDetails && props.userDetails.IsActive === false">
-                    <div class="icon user warning"></div>
+                <figure class="status-icon">
+                    <div class="icon user success" v-if="props.userDetails && props.userDetails.IsActive === true"></div>
+                    <div class="icon user warning" v-else-if="props.userDetails && props.userDetails.IsActive === false"></div>
+                    <div class="icon user" v-else></div>
                 </figure>
                 <h4 class="title">บันทึกรายการผู้ช่วย</h4>
                 <div class="status-item" v-if="props.userDetails && props.userDetails.UserName">
@@ -43,10 +42,10 @@
                 </div>
             </div>
         </div>
-        <div class="card-footer" v-if="props.userDetails">
+        <div class="card-footer">
             <div class="user-toggle-status">
-                <FormKit type="toggle" on-value="active" off-value="inactive" off-value-label="ปิดการใช้งาน"
-                    on-value-label="เปิดการใช้งาน" :value="isUserActive" @change="toggleUserActive" />
+                <FormKit type="toggle" on-value="true" off-value="false" off-value-label="ปิดการใช้งาน"
+                    on-value-label="เปิดการใช้งาน" name="IsActive" :value="isUserActive" @change="toggleUserActive" />
             </div>
         </div>
     </aside>
@@ -66,15 +65,16 @@ const props = defineProps({
 // Computed value from true/false to active/inactive
 const isUserActive = computed(() => {
     if (props.userDetails) {
-        return props.userDetails.IsActive ? 'active' : 'inactive'
+        return props.userDetails.IsActive ? 'true' : 'false'
     }
-    return 'inactive' // Default value if userDetails is null or undefined
+    return 'false' // Default value if userDetails is null or undefined
 })
 
 // onChange user active toggle
 const toggleUserActive = () => {
     if (props.userDetails) {
         props.userDetails.IsActive = !props.userDetails.IsActive
+        console.log("Component " + isUserActive.value)
     }
 }
 </script>

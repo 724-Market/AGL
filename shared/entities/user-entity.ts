@@ -145,6 +145,11 @@ export interface UserGroupListRes {
   Type: string;
 }
 
+export interface UserBranch {
+  ID: string;
+  Name: string;
+}
+
 export interface Paging {
   Page: number;
   Length: number;

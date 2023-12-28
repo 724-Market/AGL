@@ -37,20 +37,20 @@ const props = defineProps({
   filters: {
     type: Array<Filter>,
     default: Array<Filter>,
-  },
+  }
 })
 
+// Define emit
 const emit = defineEmits(["onDelete", "onProfile"])
+
+// Define variables
 const table = ref()
 const isLoading = ref(false)
-let dt
+let dt = null
 
 // on Mounted
-const onLoad = onMounted(async () => {
-  // console.log("Table onmound")
+onMounted(async () => {
   dt = table.value
-  // console.log(dt)
-  // emit('changeTable', table.value)
 })
 
 // DataTable
@@ -83,7 +83,6 @@ const datatableAjax = {
       URL: "/UserLevel/grid/full/list",
       Token: token,
       Filter: props.filters,
-      // order: [{ column: 2, dir: "desc" }], // Assuming "createdate" is the 6th column (0-indexed)
     }
   },
   dataSrc: function (json: any) {
@@ -114,7 +113,6 @@ const datatableOptions = {
   },
 
   createdRow: async function (row: any, data: any) {
-    //console.log("createdRow [data]=", data)
     const actions = await renderToString(
       h(UsersGridActions, {
         row: data,
@@ -173,31 +171,6 @@ const datatableOptions = {
     TdId6.innerHTML = creditlimitamount
     TdId7.innerHTML = isactive
 
-    // const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    // const tooltipList = [...tooltipTriggerList].map(
-    //   (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
-    // )
-    /*
-      const userProfile = document.getElementById('getProfile')
-      userProfile?.addEventListener('click', async () => {
-        emit('onProfile', userProfile.dataset.id)
-      })
-      let isUserProfileClickHandled = false
-      const menuProfile = document.getElementById('profile')
-      menuProfile?.addEventListener('click', async () => {
-        if (!isUserProfileClickHandled) {
-          isUserProfileClickHandled = true
-          emit('onProfile', menuProfile.dataset.id)
-        }
-      })
-      
-    //Emit onProfile got bug when we use id to control it.
-    const actionProfile = TdId1.querySelector('.action-profile')
-    actionProfile.addEventListener('click', async () => {
-      emit('onProfile', actionProfile.dataset.id)
-    })
-    */
-
     if (data.IsActive == false) {
       const actionDelete = TdId1.querySelector('.action-delete')
       actionDelete.addEventListener('click', async () => {
@@ -210,7 +183,6 @@ const datatableOptions = {
 watch(
   () => props.filters,
   () => {
-    // console.log('filter in table ', props.filters)
     table.value.dt.draw()
   }
 )

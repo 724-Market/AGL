@@ -1,23 +1,19 @@
 <template>
-    <FormKit type="form" #default="{ value }" :actions="false">
-        <!--Setting the `options` prop to async function `loadHorrorMovies`-->
-        <FormKit name="movie" type="taglist" label="Search for your favorite movie"
-            placeholder="Example: Shawshank Redemption" :options="searchMovies" 
-            :allow-new-values="true" max="1"/>
-        <pre wrap>{{ value }}</pre>
+    <FormKit type="form" :actions="false">
+        <FormKit name="Branch" type="taglist" label="สาขา" placeholder="ระบุสาขา" :options="searchBranch" :allow-new-values="true" max="1" v-model="branchText" autocomplete="off" />
     </FormKit>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineProps } from 'vue';
-import { UserGroupListRes } from '~/shared/entities/user-entity';
+import { UserGroupListRes } from '~/shared/entities/user-entity'
 
-const userGroupList = ref<UserGroupListRes[] | undefined>(undefined);
+const userGroupList = ref<UserGroupListRes[] | undefined>(undefined)
 
 const props = defineProps({
-    userId: String,
-});
+    userId: String
+})
 
+// Get branch value on Mounted
 onMounted(async () => {
     try {
         const response = await useRepository().user.getGroupList();
@@ -26,31 +22,28 @@ onMounted(async () => {
             response.apiResponse.Status === 200 &&
             response.apiResponse.Data
         ) {
-            userGroupList.value = response.apiResponse.Data;
+            userGroupList.value = response.apiResponse.Data
         } else {
-            console.error('Failed to fetch user group list:', response.apiResponse);
+            console.error('ไม่เจอสาขา:', response.apiResponse)
         }
     } catch (error) {
-        console.error('An error occurred while fetching user group list:', error);
+        console.error('เกิดข้อผิดพลาด:', error)
     }
-});
+})
 
-// Search movie receives FormKit's context object
-// which we are destructuring to get the search value.
-async function searchMovies({ search }: { search: string }) {
-    if (!search || !userGroupList.value) return [];
+// Search branch function
+async function searchBranch({ search }: { search: string }) {
+    if (!search || !userGroupList.value) return []
 
     const filteredList = userGroupList.value.filter((group) =>
         group.Name.toLowerCase().includes(search.toLowerCase())
-    );
+    )
 
-    // Iterating over results to set the required
-    // `label` and `value` keys.
     return filteredList.map((result) => {
         return {
             label: result.Name,
-            value: result.ID,
-        };
-    });
+            value: result.ID
+        }
+    })
 }
 </script>

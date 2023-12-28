@@ -5,6 +5,7 @@
         <div class="row">
             <div class="col col-main">
                 <ElementsUtilitiesTracking
+                v-if="orderTrack"
                 :order-track="orderTrack"
                 :index-sequence="sequenceIndex"
                 :index-current="currentIndex"
@@ -16,11 +17,11 @@
 
                 <section class="site-sidebar is-sticky">
 
-                    <PaperSuborder
+                    <PapersSuborder
                     :order-get="orderGet"
                     :order-sub="orderSub"
                     @on-orderdetail="orderDetail"
-                    ></PaperSuborder>
+                    ></PapersSuborder>
                 </section>
 
             </div>
@@ -134,12 +135,15 @@ const loadOrderDetail = async (orderNo: string) => {
                 const currentIndex2 = currentItem.Child?.findIndex(
                     item => item && (item.StatusCode === 'Success' || item.StatusCode === 'CancelByUser'));
                 if (currentIndex2 !== -1){
+                    console.log("if"+currentIndex)  
                     sequenceIndex = currentIndex; 
                     isShowChild = true;
                 } else if (currentIndex !== 0){
+                    console.log("Step else if"+currentIndex)  
                     sequenceIndex = currentIndex - 1; 
                     isShowChild = false;
-                } else {     
+                } else {   
+                    console.log("Step else"+currentIndex)  
                     sequenceIndex = currentIndex;  
                     isShowChild = false;
                 }

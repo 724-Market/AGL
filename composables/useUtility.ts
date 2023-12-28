@@ -17,6 +17,26 @@ export default () => {
 
     const config = useRuntimeConfig()
 
+    const getClassFromStatusOrder = (statusCode: string | undefined): string => {
+        // Define your classes based on the value of statusCode
+        if (statusCode === 'Success') {
+            return 'timeline-item is-success';
+        } if (statusCode === 'CancelByUser') {
+            return 'timeline-item is-cancel';
+        } else {
+            return 'timeline-item is-child';
+        }
+    };
+    const getIconFromStatusOrder = (statusCode: string | undefined): string => {
+        // Define your classes based on the value of statusCode
+        if (statusCode === 'Success') {
+            return 'icon check';
+        } else if (statusCode === 'CancelByUser') {
+            return 'icon cross';
+        } else {
+            return 'icon';
+        }
+    };
     const getToken = async (): Promise<string> => {
         let token = "";
         // check token expire
@@ -66,6 +86,21 @@ export default () => {
         return date.format(format);
 
     }
+    const formatText = (text: string): string => {
+        // Regular expression to find content between <strong> tags
+        const strongContentRegex = /<strong>(.*?)<\/strong>/g;
+    
+        // Replace <strong> tags with span and apply styles conditionally
+        const formattedText = text.replace(strongContentRegex, (match, p1) => {
+            if (p1) {
+                return `<span><strong>${p1}</strong></span>`;
+            } else {
+                return match; // Return unchanged if there's no content between <strong> tags
+            }
+        });
+    
+        return formattedText;
+    };
     const getStepMenuFromUri = (): number => {
         let step = 0
         if (process.client) {
@@ -253,12 +288,15 @@ export default () => {
     };
 
     return {
+        getClassFromStatusOrder,
+        getIconFromStatusOrder,
         getCompanyImage,
         getCurrency,
         getToken,
         getStepMenuFromUri,
         getPaging,
         formatDate,
+        formatText,
         downloadImage,
         getDeviceId,
         setStoretoStep

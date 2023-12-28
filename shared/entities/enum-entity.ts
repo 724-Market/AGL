@@ -4,3 +4,10 @@ export enum ModalType{
     Warning,
     Info
 }
+
+export enum IconType{
+    Success,
+    Danger,
+    Warning,
+    Info
+}

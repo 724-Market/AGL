@@ -50,3 +50,20 @@ export interface PaymentFeeLimitResponse {
 export interface PaymentFeeLimitRequest {
     PaymentType:string,
 }
+
+export interface PledgePaperOnhandBalanceReq {
+    ProductID?:string
+}
+export interface PledgePaperOnhandBalanceRes {
+    Quantity: number
+  OwnerID: string
+  ProductID: string
+  Brand: string
+  Category: string
+  SubCategory: string
+  Company: string
+  Type: string
+  Model: string
+  Name: string
+  Price: number
+}

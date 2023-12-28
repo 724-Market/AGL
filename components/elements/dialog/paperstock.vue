@@ -1,8 +1,14 @@
 <template>
-    <dialog id="papers-dialog">
+    <dialog id="papers-dialog" v-show="_show">
         <div class="dialog-card">
             <div class="card-header">
-                <button class="btn btn-close btn-close-papers">ปิด</button>
+                <button
+                    type="button"
+                    class="btn btn-close btn-close-wallet"
+                    @click="closeModal(false)"
+                    >
+                    ปิด
+                </button>
             </div>
             <div class="card-body">
                 <figure class="dialog-icon"><i class="fa-solid fa-layer-group"></i></figure>
@@ -33,50 +39,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="product">
+                                    <tr class="product" v-for="(item, i) in pledgePaperOnhandBalanceGet" v-bind:key="i" >
                                         <td>
                                             <div class="item">
                                                 <figure class="brand">
-                                                    <img src="https://724.co.th/image/logo_insurance_company/logo_TIP.png"
-                                                        alt="">
+                                                    <img :src="`https://724.co.th/image/logo_insurance_company/logo_${item.Company}.png`" alt="">
                                                 </figure>
                                                 <div class="info">
-                                                    <h6>ทิพยประกันภัย</h6>
-                                                    <p>ราคามัดจำ<span class="big">200</span></p>
+                                                    <h6> {{ item.Brand }} </h6>
+                                                    <p>ราคามัดจำ<span class="big"> {{ item.PaperValue }} </span></p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-end quantity">5</td>
-                                    </tr>
-                                    <tr class="product">
-                                        <td>
-                                            <div class="item">
-                                                <figure class="brand">
-                                                    <img src="https://724.co.th/image/logo_insurance_company/logo_BKI.png"
-                                                        alt="">
-                                                </figure>
-                                                <div class="info">
-                                                    <h6>กรุงเทพประกันภัย</h6>
-                                                    <p>ราคามัดจำ<span class="big">300</span></p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-end quantity">7</td>
-                                    </tr>
-                                    <tr class="product">
-                                        <td>
-                                            <div class="item">
-                                                <figure class="brand">
-                                                    <img src="https://724.co.th/image/logo_insurance_company/logo_DVS.png"
-                                                        alt="">
-                                                </figure>
-                                                <div class="info">
-                                                    <h6>เทเวศประกันภัย</h6>
-                                                    <p>ราคามัดจำ<span class="big">500</span></p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-end quantity">12</td>
+                                        <td class="text-end quantity"> {{ item.Quantity }} </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -108,8 +83,31 @@
     </dialog>
 </template>
 
-<script setup>
-onMounted(() => {
+<script setup lang="ts">
+
+import {
+    PledgePaperOnhandBalanceReq,
+    PledgePaperOnhandBalanceRes
+} from "~/shared/entities/pledge-entity";
+
+const emit = defineEmits(["closeWallet"]);
+const pledgePaperOnhandBalanceGet: globalThis.Ref<PledgePaperOnhandBalanceRes[] | undefined> = ref([]);
+
+const props = defineProps({
+  show: Boolean,
+
+});
+const _show = ref(false);
+
+const onLoad = onMounted(async () => {
+    await loadPledgeHistoryPaymentAddList();
+
+    if (props.show) {
+        openModal();
+    }
+
+    
+    /*
     const dialogPapers = document.getElementById('papers-dialog')
     const openDialogPapers = document.querySelector('.btn-open-papers')
     const closeDialogPapers = document.querySelector('.btn-close-papers')
@@ -121,5 +119,47 @@ onMounted(() => {
     closeDialogPapers.addEventListener('click', function () {
         dialogPapers.close()
     })
+    */
 })
+function openModal() {
+  //modal.show()
+  _show.value = props.show;
+  const dialogLoading = document.getElementById("papers-dialog");
+  if (dialogLoading) dialogLoading.showModal();
+}
+watch(
+  () => props.show,
+  () => {
+    console.log("prop value changed", props.show);
+    if (props.show) {
+      openModal();
+    } else {
+      closeModal(false);
+    }
+  }
+);
+async function closeModal(refresh: boolean) {
+  //modal.hide()
+  _show.value = false;
+  const dialogLoading = document.getElementById("wallet-dialog");
+  if (dialogLoading) dialogLoading.close();
+  emit("closeWallet", false, refresh);
+}
+
+const loadPledgeHistoryPaymentAddList = async (productID: string) => {
+    const req: PledgePaperOnhandBalanceReq = {
+        ProductID: productID,
+    };
+    const response = await useRepository().pledge.paperOnhandBalanceGet(req);
+    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+        if (response.apiResponse.Data) {
+            pledgePaperOnhandBalanceGet.value = response.apiResponse.Data;
+
+            return pledgePaperOnhandBalanceGet.value
+        } else {
+            // data not found
+        }
+    } else {
+    }
+};
 </script>

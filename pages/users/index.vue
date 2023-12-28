@@ -84,14 +84,9 @@ const handleConfirmModal = async () => {
   }
   var response = await useRepository().user.deleteUser(req)
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-<<<<<<< HEAD
       console.log("Reload");
       await updateComponent();
       await loadUsersLimit();
-=======
-      console.log("Reload")
-      await updateComponent()
->>>>>>> 9713154a74975f7049a2d759981ffb5f9d55df39
     } else {
       alert(response.apiResponse.ErrorMessage)
     }

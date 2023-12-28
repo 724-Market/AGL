@@ -22,11 +22,7 @@ import { UserCommissionListRes } from "~/shared/entities/user-entity"
 // Define props
 const props = defineProps({
     userCommissionList: {
-<<<<<<< HEAD
         type: Object as () => UserCommissionListRes[] | null
-=======
-        type: Object as () => UserCommissionListRes[]
->>>>>>> 9713154a74975f7049a2d759981ffb5f9d55df39
     }
 })
 </script>

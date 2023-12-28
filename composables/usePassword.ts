@@ -1,1 +1,1 @@
-export const useStorePassword = () => useState<string>('passwordStore', () => '111111')
+export const useStorePassword = () => useState<string>('passwordStore', () => '')

@@ -14,15 +14,11 @@
                 </div>
                 <div class="status-item" v-if="props.userDetails && props.userDetails.CreateDate">
                     <h5 class="topic">วันที่สร้าง</h5>
-                    <p>{{ useUtility().formatDate(props.userDetails.CreateDate, "DD MMM BBBB HH:mm") }}</p>
-                </div>
-                <div class="status-item">
-                    <h5 class="topic">สร้างโดย</h5>
-                    <p>{ParentID}</p>
+                    <p>{{ useUtility().formatDate(props.userDetails.CreateDate, "DD MMM BBBB • HH:mm") }}</p>
                 </div>
                 <div class="status-item" v-if="props.userDetails && props.userDetails.UpdateDate">
                     <h5 class="topic">อัปเดตข้อมูลเมื่อ</h5>
-                    <p>{{ useUtility().formatDate(props.userDetails.UpdateDate, "DD MMM BBBB HH:mm") }}</p>
+                    <p>{{ useUtility().formatDate(props.userDetails.UpdateDate, "DD MMM BBBB • HH:mm") }}</p>
                 </div>
                 <div class="status-item" v-if="props.userDetails && props.userDetails.CreditLimitAmount">
                     <h5 class="topic">วงเงินต่อวัน</h5>
@@ -74,7 +70,6 @@ const isUserActive = computed(() => {
 const toggleUserActive = () => {
     if (props.userDetails) {
         props.userDetails.IsActive = !props.userDetails.IsActive
-        console.log("Component " + isUserActive.value)
     }
 }
 </script>

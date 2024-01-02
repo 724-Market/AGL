@@ -3,17 +3,7 @@
         :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
         <div class="row">
             <div class="col">
-                <OrderHistorySearch @search-history="handleSearch" @clear-search-history="handleClearSearch">
-                </OrderHistorySearch>
-
-                <OrderHistoryStatus v-if="statusGroup" @change-status="handleChangeStatus" :status-group="statusGroup"
-                    :status-search="statusSearch"></OrderHistoryStatus>
-
-                <OrderHistoryGridTable :filters="filterOptionTable" v-if="filterOptionTable.length > 0"
-                    @change-table="handlerChangeTable" @on-resume="resume" @on-pay="pay" @on-tracking="trackStatus"
-                    @on-policy="policyDetail" @on-dowload="download" @on-help="contactStaff" @on-delete="deleteDraft">
-                </OrderHistoryGridTable>
-
+                <!-- 
                 <div id="transaction-stats-admin" class="card-stat-stack">
 
                     <div class="card-stat is-active">
@@ -80,13 +70,22 @@
                         </a>
                     </div>
 
-                </div>
+                </div> -->
+                <PapersHistorySearch v-if="statusGroup" @search-history="handleSearch"></PapersHistorySearch>
+
+                <PapersHistoryStatus v-if="statusGroup" @change-status="handleChangeStatus" :status-group="statusGroup"
+                    :status-search="statusSearch"></PapersHistoryStatus>
 
                 <div id="transaction-stats" class="card-stat-stack">
-                    <OrderHistoryCardsPledge />
-                    <OrderHistoryCardsPaperUsage />
+                    <OrderHistoryCardsPledge v-if="loadPBalance" :paper-balance="loadPBalance" />
+                    <OrderHistoryCardsPaperUsage v-if="loadPBalance" :paper-balance="loadPBalance" />
                 </div>
 
+                <PapersHistoryGridTable :filters="filterGridTable" v-if="filterGridTable.length > 0"
+                    @change-table="handlerChangeTable" @cancel-order="handleDelete">
+                </PapersHistoryGridTable>
+
+                <!-- 
                 <div class="card">
                     <div class="card-body card-table">
 
@@ -209,335 +208,93 @@
                         </table>
 
                     </div>
-                </div>
+                </div> -->
 
             </div>
         </div>
-        <OrderHistoryModalContactStaff @close-modal="handleCloasModal" :show="showModalStaff">
-        </OrderHistoryModalContactStaff>
-        <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
 
-        <ElementsDialogPaperstock />
+        <ElementsDialogConfirm v-if="isDeleteConfirm" :modal-show="isDeleteConfirm" :modal-type="ModalType.Warning"
+            :modal-title="'ยืนยันการลบรายการ'" :modal-text="textDeleteConfirm" @on-confirm-modal="onDeleteConfirm"
+            @on-close-modal="onCloseConfirm"></ElementsDialogConfirm>
 
     </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
-import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import { ModalType } from "~/shared/entities/enum-entity";
 import {
-    OrderDetailRequest,
-    StatusGroupResponse,
-    SubHistoryRequest,
-    HistoryResponse,
-    HistorySearch,
-    OrderResponse,
-    OrderDetails,
-    OptionsResponse,
-    PaymentDetails,
-} from "~/shared/entities/order-entity";
-
-import { storeToRefs } from "pinia";
-import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
-import { useStoreInformation } from "~/stores/order/storeInformation";
-import { useStorePackageList } from "~/stores/order/storePackageList";
-import { useStorePackage } from "~/stores/order/storePackage";
-import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
-import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
+    HistorySearch
+} from "~/shared/entities/order-entity"
+import {
+    BalanceRes,
+    RemarkListReq,
+    RemarkListRes,
+    StatusGroupResponse
+} from "~/shared/entities/paper-entity";
 import { Filter } from "~/shared/entities/table-option";
-import { IInformation } from "~/shared/entities/information-entity";
-import { IPackageRequest, Paging } from "~/shared/entities/packageList-entity";
-
-
-// Define Variables
-// Loading state after form submiting
+import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
+import { storeToRefs } from "pinia";
 
 const isLoading = ref(false);
 const table = ref();
-let values = reactive({});
-const router = useRouter();
-
-const d = new Date()
-const getMonth = d.getMonth() + 1
-const EffectiveDate = `${d.getFullYear()}-${getMonth > 9 ? getMonth : '0' + getMonth}-${d.getDate() > 9 ? d.getDate() : '0' + d.getDate()}`
-const ExpireDate = `${d.getFullYear() + 1}-${getMonth > 9 ? getMonth : '0' + getMonth}-${d.getDate() > 9 ? d.getDate() : '0' + d.getDate()}`
-
-const paging: globalThis.Ref<Paging> = ref({
-    Length: 100,
-    Page: 1,
-    TotalRecord: 0,
-    RedirectUrl: "/order/compulsory/packages",
-});
-
-const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
-const paymentDetail: globalThis.Ref<PaymentDetails | undefined> = ref();
-const optionDetail: globalThis.Ref<OptionsResponse | undefined> = ref();
-
-const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
+var isDeleteConfirm = ref(false)
+var textDeleteConfirm = ref('')
+var textPaperCancelOrder = ref('')
 const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
-const filterOption: globalThis.Ref<Filter[]> = ref([
+const filterOption: globalThis.Ref<Filter[]> = ref([]);
+const filterGridTable: globalThis.Ref<Filter[]> = ref([
+    { field: "OrderStatus", type: "MATCH", value: "Prepare" },
 ]);
-const filterOptionTable: globalThis.Ref<Filter[]> = ref([
-    { field: "Status", type: "MATCH", value: "Pending" },
-]);
+const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
+const loadPBalance: globalThis.Ref<BalanceRes | undefined> = ref();
+const cancelRemarkList: globalThis.Ref<RemarkListRes[] | undefined> = ref([]);
 var statusSearch = ref("");
-var statusSelect = ref("");
-
+const router = useRouter();
 const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
-
-const infomation = useStoreInformation();
-const storePackage = useStorePackage();
-const placeorder = useStorePlaceorder();
-const storeSummary = useStoreOrderSummary();
-
-const showModalStaff = ref(false);
 
 const onLoad = onMounted(async () => {
 
     if (AuthenInfo.value) {
         await loadHistoryStatus()
+        await loadPaperBalance()
         // await triggerEvent()
     } else {
         router.push("/login");
     }
 });
 
-const resume = async (OrderNo: string) => {
-    //ทำรายการต่อ
+const loadPaperBalance = async () => {
     isLoading.value = true;
-
-    // await loadOrderDetail(OrderNo); 
-    await loadOrderSummary(OrderNo);
-    router.push("/order/compulsory/payment");
+    const balanceRes = await useRepository().paper.getPaperBalance();
+    if (balanceRes.apiResponse.Status && balanceRes.apiResponse.Status == "200") {
+        if (balanceRes.apiResponse.Data) {
+            loadPBalance.value = balanceRes.apiResponse.Data[0];
+            console.log("loadPBalance.value", loadPBalance.value);
+        }
+    }
 
     isLoading.value = false;
-}
-
-const setStoretoStep = async (data: OrderResponse, orderNo: string) => {
-    if (data && data.Order) {
-        const order = data.Order;
-
-        const req: PlaceOrderRequest = {
-            OrderNo: orderNo,
-            Package: order.Package,
-            CarDetailsExtension: order.CarDetailsExtension,
-            Customer: order.Customer,
-            DeliveryMethod1: order.DeliveryMethod1,
-            DeliveryMethod2: order.DeliveryMethod2,
-            IsTaxInvoice: order.IsTaxInvoice,
-        };
-        console.log(req);
-        if (req.Customer && req.Customer.DefaultAddress) {
-            req.Customer.DefaultAddress.ZipCode = orderDetail.value?.AssuredDetails.ZipCode;
-        }
-        if (req.Customer && req.Customer.DeliveryAddress) {
-            req.Customer.DeliveryAddress.ZipCode =
-                orderDetail.value?.DeliveryPolicyDetails.ZipCode;
-        }
-        if (req.Customer && req.Customer.TaxInvoiceAddress) {
-            req.Customer.TaxInvoiceAddress.ZipCode =
-                orderDetail.value?.TaxInvoiceDetails.ZipCode;
-        }
-        if (req.Customer && req.Customer.TaxInvoiceDeliveryAddress) {
-            req.Customer.TaxInvoiceDeliveryAddress.ZipCode =
-                orderDetail.value?.DeliveryTaxInvoiceDetails.ZipCode;
-        }
-        placeorder.setOrder(req);
-
-        const reqInfo: IInformation = {
-            CarBrand: order.Package.CarBrandID,
-            CarCC: orderDetail.value?.CarDetails.CarCC.toFixed(0) ?? "",
-            CarDetail: getCarDetail(),
-            CarModel: order.Package.CarModelID,
-            CarSize: order.Package.CarCategoryID,
-            CarType: order.Package.CarTypeCode,
-            CarUse: order.Package.UseCarCode,
-            CarYear: order.CarDetails.CarSalesYear.toFixed(0),
-            customSubCarModel: "",
-            EffectiveDate: order.Package.EffectiveDate,
-            EffectiveType: order.Package.EffectiveType,
-            ExpireDate: order.Package.ExpireDate,
-            SubCarModel: order.Package.CarModelID,
-            InsuranceDay: getDayOfYear(order.Package.EffectiveDate, order.Package.ExpireDate),
-        };
-        infomation.setInformation(reqInfo);
-
-        const store = useStorePackageList();
-        const request: IPackageRequest = {
-            AgentCode: AuthenInfo.value.userName,
-            CarBrandID: reqInfo.CarBrand,
-            CarCategoryID: reqInfo.CarSize,
-            CarModelID: reqInfo.CarModel,
-            CarSalesYear: reqInfo.CarYear,
-            CarTypeCode: reqInfo.CarType,
-            EffectiveDate: EffectiveDate,
-            EffectiveType: reqInfo.EffectiveType,
-            ExpireDate: ExpireDate,
-            SubCarModelID: reqInfo.SubCarModel.split("|")[0],
-            UseCarCode: reqInfo.CarUse,
-            Paging: paging.value,
-        };
-        const packageList = await store.getPackageList(request);
-        const packageSelect = packageList.Data?.find(o => o.CompanyCode == order.Package.CompanyCode) as IPackageResponse
-        storePackage.setPackage(packageSelect);
-    }
-};
-
-// const loadOrderDetail = async (orderNo: string) => {
-//   const req: OrderDetailRequest = {
-//     OrderNo: orderNo,
-//   };
-
-//   const response = await useRepository().order.details(req);
-//   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-//     if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
-//       orderDetail.value = response.apiResponse.Data[0].OrderDetails;
-//       paymentDetail.value = response.apiResponse.Data[0].PaymentDetails;
-//       optionDetail.value = response.apiResponse.Options as OptionsResponse;
-//     } else {
-//       // data not found
-//     }
-//   } else {
-//   }
-// };
-
-const loadOrderSummary = async (orderNo: string) => {
-    const req: OrderDetailRequest = {
-        OrderNo: orderNo,
-    };
-    const response = await useRepository().order.summary(req);
-    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-        if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
-            // save to store
-            const data = response.apiResponse.Data[0];
-            if (data.Order != undefined) {
-                data.Order.OrderNo = orderNo;
-            }
-            storeSummary.setOrderSummary(data);
-            await setStoretoStep(data, orderNo);
-        }
-    }
-};
-
-const getDayOfYear = (EffectiveDate: string, ExpireDate: string): number => {
-    let days = 0;
-
-    const startDate = new Date(EffectiveDate);
-    const endDate = new Date(ExpireDate);
-    const diff = Math.abs(startDate.getTime() - endDate.getTime());
-    const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
-    days = diffDays - 1;
-
-    return days;
-};
-
-const getCarDetail = (): string => {
-    let carDetail = "";
-    if (orderDetail.value) {
-        carDetail = `${orderDetail.value.CarDetails.CarBrand} ${orderDetail.value.CarDetails.CarModel} ${orderDetail.value.CarDetails.SubCarModel}  ${orderDetail.value.CarDetails.CarYear}`;
-    }
-    return carDetail;
-};
-
-const pay = async (OrderNo: string) => {
-    //ชำระเงิน
-    router.push(`/order/compulsory/summary`);
-}
-
-const trackStatus = async (OrderNo: string) => {
-    //ติดตามสถานะ
-    alert("trackStatus " + OrderNo);
-}
-
-const policyDetail = async (OrderNo: string) => {
-    //รายละเอียดกรมธรรม์
-    alert("policyDetail : " + OrderNo);
-}
-
-const download = async (url: string) => {
-    //ดาวโหลดกรมธรรม์
-    if (url != '') window.open(url, "_blank");
-}
-
-const contactStaff = async () => {
-    //ติดต่อเจ้าหน้าที่
-    showModalStaff.value = false;
-    showModalStaff.value = true;
-}
-
-const deleteDraft = async (OrderNo: string) => {
-    //ลบแบบร่างนี้
-    let confirmAction = confirm("ต้องการลบรายการหรือไม่?");
-    if (confirmAction) {
-        isLoading.value = true;
-        let req: OrderDetailRequest = {
-            OrderNo: OrderNo,
-        };
-        var response = await useRepository().order.delete(req);
-        if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-            await loadHistoryStatus();
-            await onSearch()
-        }
-        else {
-            alert(response.apiResponse.ErrorMessage)
-        }
-        isLoading.value = false;
-    }
-}
-
-const handleCloasModal = async (refresh: Boolean) => {
-    showModalStaff.value = false;
-}
-
-const loadHistoryStatus = async (filter?: Filter[]) => {
-    isLoading.value = true;
-    var statusRes = await useRepository().order.statusGroup(filter);
-    if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
-        if (statusRes.apiResponse.Data) {
-            statusGroup.value = statusRes.apiResponse.Data;
-            console.log("statusGroup.value", statusGroup.value);
-        }
-    }
-    isLoading.value = false;
-};
-
-const onSearch = async () => {
-    let search = {
-        status: statusSelect.value,
-        SearchCategory: historySearch.value?.SearchCategory,
-        SearchText: historySearch.value?.SearchText,
-        orderType: historySearch.value?.orderType,
-    };
-
-    //console.log(table.value);
-    //table.value.dt.draw();
-    // console.log("search", search);
 };
 
 const handleChangeStatus = async (status: string) => {
     // console.log('handleChangeStatus', status)
-    filterOptionTable.value = [];
-    statusSearch.value = "";
-    statusSelect.value = status;
-    const filter = useMapData().getFilterSearchHistory("Status", status);
+    filterGridTable.value = [];
+
+    const filter = useMapData().getFilterSearchHistory("OrderStatus", status);
     if (filter.length > 0) {
-        filterOptionTable.value[0] = filter[0];
-        filterOption.value.forEach((value, index) => {
-            filterOptionTable.value = [...filterOptionTable.value, value];
-        });
-        // let arrFilter =  filterOptionTable.value;
-        // arrFilter.concat(filterOption.value);
-        // filterOptionTable.value = arrFilter
+        filterGridTable.value[0] = filter[0];
     }
-    console.log("handleChangeStatus filterOption", filterOption.value);
-    await onSearch();
+    filterGridTable.value.forEach((value, index) => {
+        filterGridTable.value = [...filterGridTable.value, value];
+    });
+
+    console.log("handleChangeStatus filterGridTable", filterOption.value);
 };
 
 const handleSearch = async (searchValue: HistorySearch) => {
-    console.log('handleSearch', searchValue)
-    filterOption.value = [];
-    filterOptionTable.value = [];
-    console.log("handleSearch", searchValue);
+    // console.log('handleSearch', searchValue)
+    filterGridTable.value = [];
     statusSearch.value = "clear";
     historySearch.value = searchValue;
     // ค้นหาทั่วไป
@@ -547,7 +304,7 @@ const handleSearch = async (searchValue: HistorySearch) => {
             searchValue.SearchText
         );
         if (filter.length > 0) {
-            filterOption.value = [...filterOption.value, filter[0]];
+            filterGridTable.value = [...filterGridTable.value, filter[0]];
         }
     }
     // ค้นหาขั้นสูงผลิตภัณฑ์
@@ -557,35 +314,88 @@ const handleSearch = async (searchValue: HistorySearch) => {
             searchValue.orderType.value
         );
         if (filter.length > 0) {
-            filterOption.value = [...filterOption.value, filter[0]];
+            filterGridTable.value = [...filterGridTable.value, filter[0]];
         }
     }
-    filterOptionTable.value = filterOption.value;
-    await loadHistoryStatus(filterOption.value);
+    // ค้นหาขั้นสูง ช่วงวันที่
+    if (searchValue.EffectiveDate && searchValue.ExpireDate) {
+        const filterStart = useMapData().getFilterSearchHistory(
+            "CreateDate",
+            useUtility().formatDate(searchValue.EffectiveDate, "YYYY-MM-DD"),
+            "DATE_GTE"
+        );
+        if (filterStart.length > 0) {
+            filterGridTable.value = [...filterGridTable.value, filterStart[0]];
+        }
+        const filterStop = useMapData().getFilterSearchHistory(
+            "CreateDate",
+            useUtility().formatDate(searchValue.ExpireDate, "YYYY-MM-DD"),
+            "DATE_LTE"
+        );
+        if (filterStop.length > 0) {
+            filterGridTable.value = [...filterGridTable.value, filterStop[0]];
+        }
+    }
+    filterGridTable.value = filterGridTable.value;
+    await loadHistoryStatus(filterGridTable.value);
 
-    await onSearch();
-
-    console.log("handleSearch filterOption", filterOption.value);
-};
-const handleClearSearch = async (status: boolean) => {
-    //filterOption.value = [{ field: "Status", type: "MATCH", value: "Pending" }];
-    // var clear: HistorySearch = {
-    //   SearchCategory: undefined,
-    //   SearchText: '',
-    //   orderType: undefined
-    // }
-    // await handleSearch(clear)
-};
-const handlerChangeTable = async (datatable: any) => {
-    table.value = datatable
-
-    console.log('datatable', table.value)
+    console.log("handleSearch filterOptionTable", filterGridTable.value);
 }
 
-const continute = () => {
-    alert("ทำรายการต่อ");
-    console.log('ทำรายการต่อ')
+const loadHistoryStatus = async (filter?: Filter[]) => {
+    isLoading.value = true;
+    var statusRes = await useRepository().paper.statusGroup(filter);
+    if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
+        if (statusRes.apiResponse.Data) {
+            statusGroup.value = statusRes.apiResponse.Data;
+            console.log("statusGroup.value", statusGroup.value);
+        }
+    }
+    isLoading.value = false;
 };
+
+const handlerChangeTable = async (datatable: any) => {
+    table.value = datatable;
+
+    console.log("datatable", table.value);
+}
+
+const trackStatus = async (OrderNo: string) => {
+    //ทำรายการต่อ
+    isLoading.value = true;
+
+    router.push("/papers/status/" + OrderNo);
+
+    isLoading.value = false;
+};
+
+const handleDelete = async (OrderNo: string) => {
+    isDeleteConfirm.value = true
+    textDeleteConfirm.value = `คุณต้องการยกเลิกรายการหรือไม่ ?` + OrderNo
+    textPaperCancelOrder.value = OrderNo
+}
+
+const onDeleteConfirm = async () => {
+    isLoading.value = true;
+    //ลบแบบร่างนี้
+    let req: RemarkListReq = {
+        Type: "PAPER_ORDER_USER",
+    };
+    var response = await useRepository().paper.remark(req);
+    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+        cancelRemarkList.value = response.apiResponse.Data;
+        await loadHistoryStatus();
+        //await handlePaperOrderDelete()
+    } else {
+        alert(response.apiResponse.ErrorMessage);
+    }
+
+    isLoading.value = false;
+}
+
+const onCloseConfirm = async () => {
+    isDeleteConfirm.value = false
+}
 
 // Define layout
 const layout = "monito"

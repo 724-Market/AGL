@@ -174,6 +174,8 @@ export default () => {
             { field: 'AssuredFullName', type: 'LIKE' },
             { field: 'Status', type: 'MATCH' },
             { field: 'Status', type: 'LIKE' },
+            { field: 'OrderStatus', type: 'MATCH' },
+            { field: 'OrderStatus', type: 'LIKE' },
             { field: 'IsDelivery', type: 'LIKE' },
             { field: 'CreateType', type: 'MATCH' },
             { field: 'JobType', type: 'MATCH' },

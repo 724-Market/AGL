@@ -1,13 +1,20 @@
 import { 
   AreaListRes,
+  BalanceRes,
   WarehouseAreaListReq,
   WarehouseAreaListRes,
   ProductsubcategoryAreaListReq,
   ProductsubcategoryAreaListRes,
   ProductcompanyAreaListReq,
   ProductcompanyAreaListRes,
+  OrderListReq,
+  OrderListRes,
   SearchMatchReq,
   SearchMatchRes,
+  SubOrderListReq,
+  SubOrderListRes,
+  StatusGroupRequest,
+  StatusGroupResponse,
   PaymentFeeLimitReq,
   PaymentFeeLimitRes,
   OrderExchangeCreateReq,
@@ -15,11 +22,14 @@ import {
   OrderListReq,
   OrderListRes,
   SubOrderListReq,
-  SubOrderListRes
+  SubOrderListRes,
+  RemarkListReq,
+  RemarkListRes
  } from './../entities/paper-entity';
 import {
   PaymentGetResponse
  } from "../entities/payment-entity";
+import { Filter } from "../entities/table-option";
 import { IAPIResponse } from "../entities/useApi-response";
 
 class PaperModule {
@@ -58,6 +68,28 @@ class PaperModule {
     
     async getSubOrderList(req:SubOrderListReq): Promise<IAPIResponse<SubOrderListRes[]>> {
       return await useCallApi().apiRepository<SubOrderListRes[]>(`${this.RESOURCE}/sub/order/list`, req)
+    }
+    
+    async statusGroup(filter?: Filter[]): Promise<IAPIResponse<StatusGroupResponse>> {
+      const req: StatusGroupRequest = {
+        Filter: filter
+      }
+      return await useCallApi().apiRepository<StatusGroupResponse>(`${this.RESOURCE}/status/group/get`, req)
+    }
+
+    async getPaperBalance(): Promise<IAPIResponse<BalanceRes[]>> {
+      return await useCallApi().apiRepository<BalanceRes[]>(`${this.RESOURCE}/overall/balance/get`, {})
+    }
+    
+    async getOrder(req:OrderListReq): Promise<IAPIResponse<OrderListRes[]>> {
+      return await useCallApi().apiRepository<OrderListRes[]>(`${this.RESOURCE}/order/get`, req)
+    }
+    
+    async getSubOrderList(req:SubOrderListReq): Promise<IAPIResponse<SubOrderListRes[]>> {
+      return await useCallApi().apiRepository<SubOrderListRes[]>(`${this.RESOURCE}/sub/order/list`, req)
+    }
+    async remark(req: RemarkListReq): Promise<IAPIResponse<RemarkListRes[]>> {
+      return await useCallApi().apiRepository<RemarkListRes[]>(`${this.RESOURCE}/remark/list`, req)
     }
 }
 

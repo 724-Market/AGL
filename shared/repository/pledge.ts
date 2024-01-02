@@ -1,6 +1,6 @@
 import { IAPIResponse } from "../entities/useApi-response";
 import { Paper, PaperRequest } from "../entities/packageList-entity";
-import {  CreditBalanceResponse, CreditHistoryPaymentAdd, CreditOrderPaymentCreateRequest, CreditOrderPaymentCreateResponse, CreditOrderPaymentGetRequest, PaymentFeeLimitRequest, PaymentFeeLimitResponse } from "../entities/pledge-entity";
+import {  CreditBalanceResponse, CreditHistoryPaymentAdd, CreditOrderPaymentCreateRequest, CreditOrderPaymentCreateResponse, PledgePaperOnhandBalanceReq, PledgePaperOnhandBalanceRes, PaymentFeeLimitRequest, PaymentFeeLimitResponse } from "../entities/pledge-entity";
 import { PaymentGetRequest, PaymentGetResponse } from "../entities/payment-entity";
 
 class PledgeModule {
@@ -23,6 +23,9 @@ class PledgeModule {
   }
   async paymentFeeLimit(req:PaymentFeeLimitRequest): Promise<IAPIResponse<PaymentFeeLimitResponse[]>> {
     return await useCallApi().apiRepository<PaymentFeeLimitResponse[]>(`${this.RESOURCE}/payment/fee/limit/get`, req)
+  }
+  async paperOnhandBalanceGet(req:PledgePaperOnhandBalanceReq): Promise<IAPIResponse<PledgePaperOnhandBalanceRes[]>> {
+    return await useCallApi().apiRepository<PledgePaperOnhandBalanceRes[]>(`${this.RESOURCE}/paperonhand/balance/get`, req)
   }
 }
 

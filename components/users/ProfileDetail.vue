@@ -27,7 +27,7 @@
                 <div class="row" v-if="!props.userDetails?.UserID">
                   <div class="col-md-6">
                     <FormKit type="text" label="กำหนดรหัสผ่าน" name="Password" placeholder="กรุณาใส่รหัสผ่าน" :validation="[['required'],
-                    ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:;,./|`'_+-]).*$/
+                    ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
                     ],
                     ['length', 8, 128],
                     ]"
@@ -37,7 +37,7 @@
                   <div class="col-md-6">
                     <FormKit type="text" label="ทวนรหัสผ่านอีกครั้ง" name="Password_confirm"
                       placeholder="กรุณาทวนรหัสผ่าน" :validation="[['required'],
-                      ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:;,./|`'_+-]).*$/
+                      ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
                       ],
                       ['length', 8, 128],
                       ['confirm'],
@@ -50,7 +50,7 @@
                   <div class="col-md-6">
                     <FormKit type="text" label="กำหนดรหัสผ่านใหม่" name="Password" placeholder="กรุณาใส่รหัสผ่าน"
                       :validation="[
-                        ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:;,./|`'_+-]).*$/
+                        ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
                         ],
                         ['length', 8, 128],
                       ]"
@@ -60,7 +60,7 @@
                   <div class="col-md-6">
                     <FormKit type="text" label="ทวนรหัสผ่านใหม่อีกครั้ง" name="Password_confirm"
                       placeholder="กรุณาทวนรหัสผ่าน" :validation="[
-                        ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:;,./|`'_+-]).*$/
+                        ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
                         ],
                         ['length', 8, 128],
                         ['confirm'],
@@ -180,64 +180,35 @@ import {
   UserGroupListRes,
   UserBranch,
   delGroupReq
-} from "~/shared/entities/user-entity";
-import { ModalType } from "~/shared/entities/enum-entity";
-import { useStoreUserSave } from "~/stores/user/storePasswordUser";
-
-// const route = useRoute()
-// const profileID = route.params.id
+} from "~/shared/entities/user-entity"
+import { ModalType } from "~/shared/entities/enum-entity"
+import { useStoreUserSave } from "~/stores/user/storePasswordUser"
 
 const emit = defineEmits(["checkProfileDetail", "createUserConfirm", "editUserConfirm", "reProfile", "onDeleteGroup", "checkProfileDetail"])
-const userGroupList: globalThis.Ref<UserGroupListRes | any> = ref();
+const userGroupList: globalThis.Ref<UserGroupListRes | any> = ref()
 
-const userSave = useStoreUserSave();
+const userSave = useStoreUserSave()
 
-const messageError = ref("");
+const messageError = ref("")
 
-const dateNow: Date = new Date();
+const dateNow: Date = new Date()
 
-const isError = ref(false);
-const isLoading = ref(false);
-// const isActive = ref(false);
-const isDelGroup = ref(false);
-const delGroupID = ref("");
+const isError = ref(false)
+const isLoading = ref(false)
+const isDelGroup = ref(false)
+const delGroupID = ref("")
 
 const props = defineProps({
   userDetails: {
     type: Object as () => UserDataRes | null
   },
-  // userCommissionList: {
-  //   type: Object as () => UserCommissionListRes[],
-  // },
   loadData: Boolean,
   getUserPassword: String,
   userID: String,
-});
+})
 
 onMounted(async () => {
   loadGroupList()
-
-  // console.log("Commission list component ", props.userCommissionList)
-
-  //if (props.userDetails && originalUserPass.value !== null) {
-  // if (props.userDetails) {
-  //   // console.log("props.userDetails && originalUserPass.value !== null")
-  //   //passwordText.value = "";
-  //   firstNameText.value = props.userDetails.FirstName;
-  //   lastNameText.value = props.userDetails.LastName;
-  //   phoneNumberText.value = props.userDetails.Phone;
-  //   emailText.value = props.userDetails.Email;
-
-  //   // Convert string values to numbers
-  //   limitMoney.value = props.userDetails.CreditLimitAmount;
-  //   commission.value = props.userDetails.Commission;
-  //   branchText.value = props.userDetails.UserGroupName;
-  //   // isActive.value = !!props.userDetails.IsActive;
-  //   userIDRes.value = props.userDetails?.UserName;
-  //   //userPassRes.value = originalUserPass.value ?? ''; 
-
-  //   //clearStore()
-  // }
 })
 
 // Search branch function
@@ -251,41 +222,41 @@ async function searchBranch({ search }: { search: string }): Promise<string[]> {
 }
 
 const deleteBranch = async (branchid: string) => {
-  isDelGroup.value = true;
-  delGroupID.value = branchid;
-  //emit('onDeleteGroup', branchid);
+  isDelGroup.value = true
+  delGroupID.value = branchid
+  //emit('onDeleteGroup', branchid)
 }
 
 const handleCloseModal = async () => {
-  isDelGroup.value = false;
-};
+  isDelGroup.value = false
+}
 
 const handleConfirmModal = async () => {
-  isLoading.value = true;
+  isLoading.value = true
   let req: delGroupReq = {
     ID: delGroupID.value,
-  };
-  var response = await useRepository().user.deleteGroup(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    emit('onDeleteGroup');
-  } else {
-    alert(response.apiResponse.ErrorMessage);
   }
-  isLoading.value = false;
-};
+  var response = await useRepository().user.deleteGroup(req)
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    emit('onDeleteGroup')
+  } else {
+    alert(response.apiResponse.ErrorMessage)
+  }
+  isLoading.value = false
+}
 
 const loadGroupList = async () => {
 
-  const response = await useRepository().user.getGroupList();
+  const response = await useRepository().user.getGroupList()
   if (
     response.apiResponse.Status &&
     response.apiResponse.Status == "200" &&
     response.apiResponse.Data
   ) {
-    userGroupList.value = response.apiResponse.Data;
+    userGroupList.value = response.apiResponse.Data
   } else {
-    isError.value = true;
-    messageError.value = response.apiResponse.ErrorMessage ?? "";
+    isError.value = true
+    messageError.value = response.apiResponse.ErrorMessage ?? ""
   }
 }
 

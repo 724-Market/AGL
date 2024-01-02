@@ -81,7 +81,7 @@ export default () => {
     const formatDate = (dateString: string, format: string): string => {
         dayjs.extend(buddhistEra)
         dayjs.locale('th')
-        const date = dayjs(dateString).locale('th');
+        const date = dayjs(dateString.replace('Z', '')).locale('th');
         // Then specify how you want your dates to be formatted
         return date.format(format);
 

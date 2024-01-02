@@ -35,8 +35,8 @@ export default () => {
 
         return req
     }
-    const onContinue = async (req: OrderExchangeCreateReq): Promise<WrapperResponse<PaymentGetResponse[]>> => {
-        let res: WrapperResponse<PaymentGetResponse[]> = {
+    const onContinue = async (req: OrderExchangeCreateReq): Promise<WrapperResponse<OrderExchangeCreateRes[]>> => {
+        let res: WrapperResponse<OrderExchangeCreateRes[]> = {
             Status: "",
         }
         const orderExchange = await useRepository().paper.confirmOrderExchange(req)

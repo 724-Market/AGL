@@ -48,3 +48,126 @@ export interface UserResponse {
     AgentStatement: string
     IsForceDelete: string
 }
+
+export interface UsersHistoryResponse {
+  Ind?: number;
+  UserID: string;
+  ParentID: string;
+  FirstName: string;
+  LastName: string;
+  UserName: string;
+  Email: string;
+  Phone: string;
+  UserGroupName: string;
+  UserGroupType: string;
+  CreditLimitAmount: string;
+  CreditLimitPeriodDay: string;
+  Commission: number;
+  IsActive: boolean;
+  CreateDate: string;
+  UpdateDate: string;
+}
+
+export interface UserDetailRequest {
+  SubUserID: string
+}
+
+export interface UserSaveReq {
+  SubUserID: string;
+  NewPassword: string;
+  FirstName: string;
+  LastName: string;
+  PhoneNumber: string;
+  Email: string;
+  CreditLimit: number;
+  Commission: number;
+  BranchName: string;
+  IsActive: boolean;
+}
+
+export interface UserProfileReq {
+  Password: string;
+  FirstName: string;
+  LastName: string;
+  PhoneNumber: string;
+  Email: string;
+  CreditLimit: number;
+  Commission: number;
+  BranchName: string;
+  IsActive: boolean;
+}
+
+export interface UserDataReq {
+  SubUserID: string;
+}
+
+export interface UserDataRes {
+  UserID: string;
+  ParentID: string;
+  FirstName: string;
+  LastName: string;
+  UserName: string;
+  Email: string;
+  Phone: string;
+  UserGroupName: string;
+  UserGroupType: string;
+  CreditLimitAmount: string;
+  CreditLimitPeriodDay: string;
+  Commission: number;
+  IsActive: boolean;
+  CreateDate: string;
+  UpdateDate: string;
+}
+
+export interface UserProfileRes {
+  UserName: string
+  UserID: string
+}
+
+export interface UserLimitRes {
+  CurrentCount: number
+  MaxCount: number
+}
+
+export interface UserCommissionListReq {
+  SubUserID: string;
+  Paging: Paging;
+}
+
+export interface UserCommissionListRes {
+  Commission: number;
+  CreateDate: string;
+}
+
+export interface UserGroupListRes {
+  ID: string;
+  Name: string;
+  Type: string;
+}
+
+export interface UserBranch {
+  ID: string;
+  Name: string;
+}
+
+export interface Paging {
+  Page: number;
+  Length: number;
+  TotalRecord: number;
+}
+
+export interface delGroupReq {
+  ID: string;
+}
+
+export interface delGroupRes {
+  ID: string;
+}
+
+export interface delUserReq {
+  SubUserID: string;
+}
+
+export interface delUserRes {
+  SubUserID: string;
+}

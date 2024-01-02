@@ -18,6 +18,11 @@ import {
   PaymentFeeLimitReq,
   PaymentFeeLimitRes,
   OrderExchangeCreateReq,
+  OrderExchangeCreateRes,
+  OrderListReq,
+  OrderListRes,
+  SubOrderListReq,
+  SubOrderListRes,
   RemarkListReq,
   RemarkListRes
  } from './../entities/paper-entity';
@@ -53,8 +58,16 @@ class PaperModule {
     async getPaymentDeliveryFeeLimitReq(req: PaymentFeeLimitReq): Promise<IAPIResponse<PaymentFeeLimitRes[]>> {
       return await useCallApi().apiRepository<PaymentFeeLimitRes[]>(`${this.RESOURCE}/payment/deliveryfee/limit/get`, req)
     }
-    async confirmOrderExchange(req:OrderExchangeCreateReq): Promise<IAPIResponse<PaymentGetResponse[]>> {
-      return await useCallApi().apiRepository<PaymentGetResponse[]>(`${this.RESOURCE}/order/exchange/create`, req)
+    async confirmOrderExchange(req:OrderExchangeCreateReq): Promise<IAPIResponse<OrderExchangeCreateRes[]>> {
+      return await useCallApi().apiRepository<OrderExchangeCreateRes[]>(`${this.RESOURCE}/order/exchange/create`, req)
+    }
+    
+    async getOrder(req:OrderListReq): Promise<IAPIResponse<OrderListRes[]>> {
+      return await useCallApi().apiRepository<OrderListRes[]>(`${this.RESOURCE}/order/get`, req)
+    }
+    
+    async getSubOrderList(req:SubOrderListReq): Promise<IAPIResponse<SubOrderListRes[]>> {
+      return await useCallApi().apiRepository<SubOrderListRes[]>(`${this.RESOURCE}/sub/order/list`, req)
     }
     
     async statusGroup(filter?: Filter[]): Promise<IAPIResponse<StatusGroupResponse>> {

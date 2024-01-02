@@ -1,12 +1,6 @@
 <template>
-  <NuxtLayout
-    :name="layout"
-    :layout-class="layoutClass"
-    :page-title="pageTitle"
-    :page-category="pageCategory"
-    :show-page-steps="showPageSteps"
-    :show-page-header="showPageHeader"
-  >
+  <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
     <div class="row">
       <div class="col">
         <OrderHistorySearch
@@ -15,31 +9,19 @@
           @clear-search-history="handleClearSearch"
         ></OrderHistorySearch>
 
-        <OrderHistoryStatus
-          v-if="statusGroup"
-          @change-status="handleChangeStatus"
-          :status-group="statusGroup"
-          :status-search="statusSearch"
-        ></OrderHistoryStatus>
+        <OrderHistorySearch v-if="statusGroup" @search-history="handleSearch" @clear-search-history="handleClearSearch">
+        </OrderHistorySearch>
 
-        <OrderHistoryGridTable
-          :filters="filterOptionTable"
-          v-if="filterOptionTable.length > 0"
-          @change-table="handlerChangeTable"
-          @on-resume="resume"
-          @on-pay="pay"
-          @on-tracking="trackStatus"
-          @on-policy="policyDetail"
-          @on-download="download"
-          @on-help="contactStaff"
-          @on-delete="deleteDraft"
-        ></OrderHistoryGridTable>
+        <OrderHistoryStatus v-if="statusGroup" @change-status="handleChangeStatus" :status-group="statusGroup"
+          :status-search="statusSearch"></OrderHistoryStatus>
+
+        <OrderHistoryGridTable :filters="filterOptionTable" v-if="filterOptionTable.length > 0"
+          @change-table="handlerChangeTable" @on-resume="resume" @on-pay="pay" @on-tracking="trackStatus"
+          @on-policy="policyDetail" @on-download="download" @on-help="contactStaff" @on-delete="deleteDraft">
+        </OrderHistoryGridTable>
       </div>
     </div>
-    <OrderHistoryModalContactStaff
-      @close-modal="handleCloasModal"
-      :show="showModalStaff"
-    ></OrderHistoryModalContactStaff>
+    <OrderHistoryModalContactStaff @close-modal="handleCloasModal" :show="showModalStaff"></OrderHistoryModalContactStaff>
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   </NuxtLayout>
 </template>
@@ -85,12 +67,10 @@ const router = useRouter();
 
 const d = new Date();
 const getMonth = d.getMonth() + 1;
-const EffectiveDate = `${d.getFullYear()}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
-  d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
-}`;
-const ExpireDate = `${d.getFullYear() + 1}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
-  d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
-}`;
+const EffectiveDate = `${d.getFullYear()}-${getMonth > 9 ? getMonth : "0" + getMonth}-${d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
+  }`;
+const ExpireDate = `${d.getFullYear() + 1}-${getMonth > 9 ? getMonth : "0" + getMonth}-${d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
+  }`;
 
 const paging: globalThis.Ref<Paging> = ref({
   Length: 100,
@@ -269,8 +249,8 @@ const handleChangeStatus = async (status: string) => {
     }
   }
   filterOption.value.forEach((value, index) => {
-        filterOptionTable.value = [...filterOptionTable.value, value];
-      });
+    filterOptionTable.value = [...filterOptionTable.value, value];
+  });
 
   console.log("handleChangeStatus filterOption", filterOption.value);
 };
@@ -363,7 +343,7 @@ useHead({
   title: pageTitle,
   meta: [{ name: "description", content: pageDescription }],
   bodyAttrs: {
-    class: "page-history category-datatable single-transaction",
+    class: "page-history single-history template-datatable",
   },
 });
 </script>

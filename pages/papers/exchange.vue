@@ -3,7 +3,7 @@
     :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
     <FormKit type="form" :actions="false" id="form-order" form-class="form-order form-theme" :incomplete-message="false">
       <div class="row">
-        <div class="col">
+        <div class="col col-main">
           <PapersExchangeHowToGetPaper @shipping-type-change="onChangeShippingPaperType"
             @change-delivery-channel="onChangeDeliveryChannel" @check-address="handleCheckAddress"
             :delivery-chanel="deliveryChanels" :shipping-paper-type="deliveryPaperTypes"
@@ -19,10 +19,12 @@
             @on-select-match="onSelectMatch"></PapersExchangeListPapers>
         </div>
 
-        <PapersExchangeSlideBar :check-list="checklist" :match-all-list="productSearchMatchAll"
-          :exchange-data="exchangeData" :shipping-fee="ShippingFee" :shipping-method="ShippingMethod"
-          :payment-fee-limit="paymentFeeLimit" :delivery-type="type" :addr-agent="addrAgent" @on-loading="onLoading"
-          @on-handle-error="handleError"></PapersExchangeSlideBar>
+        <div class="col col-sidebar">
+          <PapersExchangeSlideBar :check-list="checklist" :match-all-list="productSearchMatchAll"
+            :exchange-data="exchangeData" :shipping-fee="ShippingFee" :shipping-method="ShippingMethod"
+            :payment-fee-limit="paymentFeeLimit" :delivery-type="type" :addr-agent="addrAgent" @on-loading="onLoading"
+            @on-handle-error="handleError"></PapersExchangeSlideBar>
+        </div>
       </div>
     </FormKit>
 

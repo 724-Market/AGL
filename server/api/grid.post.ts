@@ -3,8 +3,8 @@ export default defineEventHandler(async (event) => {
     const mapData = new MapDataService();
     const body = await readBody(event)
     const config = useRuntimeConfig()
-    console.log('event=', event)
-    console.log('body=', body)
+    // console.log('event=', event)
+    // console.log('body=', body)
     //console.log('body=',body)
 
     const bodyObject = mapData.covertQueryStringToJsonHistory(body)

@@ -177,7 +177,6 @@
 import {
   UserDataRes,
   UserProfileReq,
-  UserCommissionListRes,
   UserGroupListRes,
   UserBranch,
   delGroupReq
@@ -189,7 +188,7 @@ import { useStoreUserSave } from "~/stores/user/storePasswordUser";
 // const profileID = route.params.id
 
 const emit = defineEmits(["checkProfileDetail", "createUserConfirm", "editUserConfirm", "reProfile", "onDeleteGroup", "checkProfileDetail"])
-const userGroupList: globalThis.Ref<UserGroupListRes[] | any> = ref();
+const userGroupList: globalThis.Ref<UserGroupListRes | any> = ref();
 
 const userSave = useStoreUserSave();
 
@@ -199,17 +198,6 @@ const dateNow: Date = new Date();
 
 const isError = ref(false);
 const isLoading = ref(false);
-
-var userIDRes = ref("");
-var passwordText = ref("");
-var confirmPasswordText = ref("");
-var firstNameText = ref("");
-var lastNameText = ref("");
-var phoneNumberText = ref("");
-var emailText = ref("");
-var limitMoney = ref("");
-var commission = ref("");
-var branchText = ref("");
 // const isActive = ref(false);
 const isDelGroup = ref(false);
 const delGroupID = ref("");
@@ -253,17 +241,13 @@ onMounted(async () => {
 })
 
 // Search branch function
-async function searchBranch({ search }: { search: string }): Promise<{ label: string; value: string }[]> {
+async function searchBranch({ search }: { search: string }): Promise<string[]> {
   if (!search || !userGroupList.value) return []
 
   const filteredList: UserBranch[] = userGroupList.value.filter((group: UserBranch) =>
     group.Name.toLowerCase().includes(search.toLowerCase())
   )
-
-  return filteredList.map((result: UserBranch) => ({
-    label: result.Name,
-    value: result.ID
-  }))
+  return filteredList.map((result: UserBranch) => result.Name)
 }
 
 const deleteBranch = async (branchid: string) => {
@@ -288,24 +272,6 @@ const handleConfirmModal = async () => {
     alert(response.apiResponse.ErrorMessage);
   }
   isLoading.value = false;
-};
-
-const clearStore = async () => {
-  const req: UserProfileReq = {
-    Password: "",
-    FirstName: "",
-    LastName: "",
-    PhoneNumber: "",
-    Email: "",
-    CreditLimit: 999,
-    Commission: 0,
-    BranchName: "",
-    IsActive: true,
-
-  }
-  // console.log("submitCreateUser setUser store" + passwordText.value);
-  userSave.setUserSave(req);
-
 };
 
 const loadGroupList = async () => {

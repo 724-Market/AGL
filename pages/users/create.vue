@@ -15,7 +15,7 @@
         <div class="col col-sidebar">
           <section class="site-sidebar is-sticky">
 
-            <UsersLogStatus :user-details="userDetails" />
+            <UsersLogStatus />
 
             <FormKit type="submit" label="บันทึก" name="user-submit" id="user-submit" :classes="{
               input: 'btn-primary',
@@ -37,14 +37,9 @@
 
 <script lang="ts" setup>
 // Define import
-import {
-  UserDataRes,
-  UserCommissionListRes,
-} from "~/shared/entities/user-entity"
-import { UserLimitRes, UserProfileReq } from "~/shared/entities/user-entity"
+import { UserLimitRes } from "~/shared/entities/user-entity"
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth"
 import { storeToRefs } from "pinia"
-import { useStoreUserSave } from "~/stores/user/storePasswordUser"
 
 // Define variables
 const usersLimitRes: globalThis.Ref<UserLimitRes | any> = ref()
@@ -58,6 +53,7 @@ const messageError = ref("")
 const isLoading = ref(false)
 const router = useRouter()
 const setPassword = useStorePassword()
+const renderKey = ref(0);
 
 // on Mounted
 onMounted(async () => {
@@ -94,29 +90,27 @@ const loadUsersLimit = async () => {
 
 
 const props = defineProps({
-  userProfile: {
-    type: Object as () => UserProfileReq,
-  },
-  userDetails: {
-    type: Object as () => UserDataRes,
-  },
-  userCommissionList: {
-    type: Object as () => UserCommissionListRes[],
-  },
-  loadData: Boolean,
-  getUserPassword: String,
-  getStatus: {
-    type: [Number, String],
-    default: 0,
-    validator: (value) => {
-      return typeof value === 'number' || (typeof value === 'string' && value.trim() === '') || value === null
-    },
-  },
-  userID: String,
 })
 
 // Submit form event
-const submitCreateUser = async (formData: any) => {}
+const submitCreateUser = async (formData: any) => {
+  const resCreate = await useRepository().user.create(formData)
+  if (
+    resCreate.apiResponse.Status &&
+    resCreate.apiResponse.Status == "200" &&
+    resCreate.apiResponse.Data
+  ) {
+    const UserID = resCreate.apiResponse.Data.UserID;
+    setPassword.value = formData.Password;
+    router.push("/users/profile/" + UserID)
+  } else {
+    console.log("formData.BranchName"+formData.BranchName)
+    isError.value = true
+    alert(resCreate.apiResponse.ErrorMessage);
+    messageError.value = resCreate.apiResponse.ErrorMessage ?? ""
+  } 
+  
+};
 
 // Define layout
 const layout = "monito"

@@ -40,7 +40,7 @@
 import {
   UserDataRes,
   UserCommissionListRes,
-} from "~/shared/entities/user-entity";
+} from "~/shared/entities/user-entity"
 import { UserLimitRes, UserProfileReq } from "~/shared/entities/user-entity"
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth"
 import { storeToRefs } from "pinia"
@@ -48,18 +48,16 @@ import { useStoreUserSave } from "~/stores/user/storePasswordUser"
 
 // Define variables
 const usersLimitRes: globalThis.Ref<UserLimitRes | any> = ref()
-// const userDetails: globalThis.Ref<UserDataRes | undefined> = ref()
 
 const emit = defineEmits(["checkProfileDetail", "createUserConfirm", "editUserConfirm", "reProfile"])
 
-const userSave = useStoreUserSave();
 const storeAuth = useStoreUserAuth()
 const { AuthenInfo } = storeToRefs(storeAuth)
 const isError = ref(false)
 const messageError = ref("")
 const isLoading = ref(false)
 const router = useRouter()
-const setPassword = useStorePassword();
+const setPassword = useStorePassword()
 
 // on Mounted
 onMounted(async () => {
@@ -88,7 +86,6 @@ const loadUsersLimit = async () => {
     response.apiResponse.Data.length > 0
   ) {
     usersLimitRes.value = response.apiResponse.Data[0] as UserLimitRes
-    //return usersLimitRes.value
   } else {
     isError.value = true
     messageError.value = response.apiResponse.ErrorMessage ?? ""
@@ -112,50 +109,14 @@ const props = defineProps({
     type: [Number, String],
     default: 0,
     validator: (value) => {
-      return typeof value === 'number' || (typeof value === 'string' && value.trim() === '') || value === null;
+      return typeof value === 'number' || (typeof value === 'string' && value.trim() === '') || value === null
     },
   },
   userID: String,
-});
+})
 
 // Submit form event
-const submitCreateUser = async (formData: any) => {
-  // const isAct = ref(false);
-  // if (formData.isActiveLog == 'active') {
-  //   isAct.value = true;
-  // }
-
-  console.log("Page " + formData.IsActive)
-
-  // const req: UserProfileReq = {
-  //   Password: formData.password,
-  //   BranchName: formData.Branch,
-  //   Commission: formData.Commission,
-  //   Email: formData.Email,
-  //   FirstName: formData.FirstName,
-  //   LastName: formData.LastName,
-  //   CreditLimit: formData.LimitMoney,
-  //   PhoneNumber: formData.PhoneNumber,
-  //   IsActive: isAct.value
-  // }
-
-  // const resCreate = await useRepository().user.create(req)
-  // if (
-  //   resCreate.apiResponse.Status &&
-  //   resCreate.apiResponse.Status == "200" &&
-  //   resCreate.apiResponse.Data
-  // ) {
-  //   const UserID = resCreate.apiResponse.Data.UserID;
-  //   setPassword.value = req.Password;
-
-  //   router.push("/users/profile/" + UserID)
-  // } else {
-  //   isError.value = true
-  //   alert(resCreate.apiResponse.ErrorMessage);
-  //   messageError.value = resCreate.apiResponse.ErrorMessage ?? ""
-  // }
-
-};
+const submitCreateUser = async (formData: any) => {}
 
 // Define layout
 const layout = "monito"

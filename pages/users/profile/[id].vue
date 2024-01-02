@@ -110,8 +110,8 @@ const loadUserCommission = async (userid: string) => {
   const responseCom = await useRepository().user.getCommionList(useCommisionReq)
 
   if (
-    typeof responseCom.apiResponse.Status === 'number' &&
-    responseCom.apiResponse.Status === 200 &&
+    responseCom.apiResponse.Status &&
+    responseCom.apiResponse.Status == "200" &&
     responseCom.apiResponse.Data
   ) {
     userCommissionList.value = responseCom.apiResponse.Data

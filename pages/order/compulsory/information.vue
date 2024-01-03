@@ -161,7 +161,7 @@
               <div class="form-inline">
                 <FormKit
                   type="radio"
-                  label="เลือกวันคุ้มครอง"
+                  label="เลือกวันคุ้มครอง"format="DD/MM/YYYY"
                   name="EffectiveType"
                   :options="{
                     FULLYEAR: 'คุ้มครอง 1 ปี',
@@ -180,7 +180,7 @@
                   label="เริ่มต้น"
                   name="EffectiveDate"
                   placeholder="วัน/เดือน/ปี ค.ศ."
-                  format="DD/MM/YYYY"
+                  format="DD/MM/YYYY" value-format="YYYY-MM-DD"
                   picker-only
                   :min-date="effectiveMinDate"
                   :max-date="effectiveMaxDate"
@@ -198,7 +198,7 @@
                   label="สิ้นสุด"
                   name="ExpireDate"
                   placeholder="วัน/เดือน/ปี ค.ศ"
-                  format="DD/MM/YYYY"
+                  format="DD/MM/YYYY" value-format="YYYY-MM-DD"
                   picker-only
                   :min-date="expireMinDate"
                   :max-date="expireMaxDate"
@@ -514,7 +514,7 @@ const handleEffectiveDateChange = async (value: string) => {
   console.log("handleEffectiveDateChange", value);
   if (value && value != "") {
     selectDate = new Date(value);
-    effectiveDateText.value = selectDate.toISOString();
+    effectiveDateText.value = selectDate.toISOString().split('T')[0];
     switch (effectiveType.value) {
       case "FULLYEAR":
         await setExpireDate(CoverageExpireDateFullYearMaxDay);
@@ -546,7 +546,7 @@ const handleEffectiveDateChange = async (value: string) => {
 // Event Handle ExpireDate Change Set Value To ExpireDate And Call Function checkFromDate
 const handleExpireDateChange = async (value: string) => {
   if (value && value != "") {
-    expireDateText.value = new Date(value).toISOString();
+    expireDateText.value = new Date(value).toISOString().split('T')[0];
     if (effectiveDateText && effectiveDateText.value) {
       let efDate = new Date(effectiveDateText.value.toString());
       let exDate = new Date(value);

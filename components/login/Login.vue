@@ -45,12 +45,10 @@
 </template>
 
 <script setup lang="ts">
-import { IUserAuthRequest } from "~/shared/entities/userAuth-entity";
+import type { IUserAuthRequest } from "~/shared/entities/userAuth-entity";
 // TODO Animating validate elements
 // TODO Middleware and navigation
 // TODO Page transition
-// TODO Page loading
-// TODO Create .env file
 
 // Define import
 // Import store

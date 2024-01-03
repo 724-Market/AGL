@@ -34,8 +34,8 @@ import OrderHistoryGridMenu from "~/components/order/history/grid/menu.vue";
 import OrderHistoryGridColumn from "~/components/order/history/grid/column.vue";
 import OrderHistoryGridSub from "~/components/order/history/grid/sub.vue";
 import { renderToString } from "@vue/server-renderer";
-import { Filter } from "~/shared/entities/table-option";
-import { SubHistoryRequest } from "~/shared/entities/order-entity";
+import type { Filter } from "~/shared/entities/table-option";
+import type { SubHistoryRequest } from "~/shared/entities/order-entity";
 
 const props = defineProps({
     filters: {

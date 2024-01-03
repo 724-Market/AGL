@@ -24,8 +24,8 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { UserResponse } from "~/shared/entities/user-entity";
-import {
+import type { UserResponse } from "~/shared/entities/user-entity";
+import type {
   NoticePaymentRequest,
   NoticePaymentData,
   PaymentGatewayResponse,

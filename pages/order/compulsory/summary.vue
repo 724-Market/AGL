@@ -107,22 +107,22 @@
 // using pinia
 import { isString } from "@vueuse/core";
 import { storeToRefs } from "pinia";
-import { IInformation } from "~/shared/entities/information-entity";
-import {
+import type { IInformation } from "~/shared/entities/information-entity";
+import type {
   OptionsResponse,
   OrderDetailRequest,
   OrderDetails,
   OrderResponse,
   PaymentDetails,
 } from "~/shared/entities/order-entity";
-import {
+import type {
   PaymentConfirmRequest,
   PaymentGatewayRequest,
   PaymentGatewayResponse,
   PaymentGetRequest,
 } from "~/shared/entities/payment-entity";
-import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
-import {
+import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import type {
   CreditBalanceResponse,
   CreditHistoryPaymentAdd,
   CreditOrderPaymentCreateRequest,
@@ -140,7 +140,7 @@ import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
 import { useStoreFeeLimit } from "~/stores/plege/storeFeeLimit";
 import { defineEventHandler } from "~/server/api/setting.post";
-import { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity";
+import type { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity";
 
 //define store
 const storeAuth = useStoreUserAuth();

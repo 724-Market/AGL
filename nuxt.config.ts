@@ -39,6 +39,7 @@ export default defineNuxtConfig({
 		}
 	},
 	modules: [
+		'@nuxt/devtools',
 		'@formkit/nuxt',
 		'@vueuse/nuxt',
 		'@pinia/nuxt',
@@ -49,8 +50,7 @@ export default defineNuxtConfig({
 	},
 	pinia: {
 		autoImports: [
-			'defineStore',
-			['defineStore', 'definePiniaStore'],
+			'defineStore'
 		],
 	},
-});
+})

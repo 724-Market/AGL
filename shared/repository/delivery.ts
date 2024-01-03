@@ -1,8 +1,8 @@
-import { 
+import type { 
   IDeliveryResponse,
   DeliveryPaperRes
  } from "../entities/delivery-entity";
-import { IAPIResponse } from "../entities/useApi-response";
+import type { IAPIResponse } from "../entities/useApi-response";
 
 class DeliveryModule {
   private RESOURCE = '/Delivery';

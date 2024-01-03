@@ -174,7 +174,7 @@
 </template>
 
 <script setup lang="ts">
-import {
+import type {
   UserDataRes,
   UserProfileReq,
   UserGroupListRes,

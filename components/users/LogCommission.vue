@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 // Define import
-import { UserCommissionListRes } from "~/shared/entities/user-entity"
+import type { UserCommissionListRes } from "~/shared/entities/user-entity"
 
 // Define props
 const props = defineProps({

@@ -40,14 +40,14 @@
 <script lang="ts" setup>
 
 import { storeToRefs } from "pinia";
-import {
+import type {
     OrderListReq,
     OrderListRes,
     SubOrderListRes
 
 } from "~/shared/entities/paper-entity";
 
-import {
+import type {
     TrackOrderReq, 
     TrackOrderRes
 } from "~/shared/entities/track-entity";

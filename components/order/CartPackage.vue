@@ -29,10 +29,7 @@
 </template>
 
 <script setup lang="ts">
-                  
-
-
-import { IPackageResponse } from '~/shared/entities/packageList-entity';
+import type { IPackageResponse } from '~/shared/entities/packageList-entity';
 
 const props = defineProps({
   packageSelect:Object,

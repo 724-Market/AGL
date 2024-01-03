@@ -91,7 +91,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { OptionsResponse, PaymentDetails } from "~/shared/entities/order-entity";
+import type { OptionsResponse, PaymentDetails } from "~/shared/entities/order-entity";
 
 const showWallet = ref(false);
 const emit = defineEmits(["openWallet"]);

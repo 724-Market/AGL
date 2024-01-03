@@ -1,5 +1,4 @@
-
-import { Pagination } from "./packageList-entity"
+import type { Pagination } from "./packageList-entity"
 
 export interface WrapperResponse<T> {
     Status: string

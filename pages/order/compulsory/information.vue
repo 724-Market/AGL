@@ -248,8 +248,8 @@
 </template>
 
 <script lang="ts" setup>
-import { SelectOption } from "~/shared/entities/select-option";
-import {
+import type { SelectOption } from "~/shared/entities/select-option";
+import type {
   IUseCarResponse,
   ICarTypeResponse,
   ICarCategoryResponse,
@@ -262,8 +262,7 @@ import { defineEventHandler } from "~/server/api/setting.post";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { storeToRefs } from "pinia";
-import { IChecklist } from "~/shared/entities/checklist-entity";
-import { info } from "console";
+import type { IChecklist } from "~/shared/entities/checklist-entity";
 
 // Define Store
 const storeAuth = useStoreUserAuth();

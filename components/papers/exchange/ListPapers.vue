@@ -125,7 +125,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {  ExchangeDataSummary, SearchMatchRes } from "~/shared/entities/paper-entity";
+import type { ExchangeDataSummary, SearchMatchRes } from "~/shared/entities/paper-entity";
 import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo";
 const emits = defineEmits(['onSelectMatch'])
 const props = defineProps({

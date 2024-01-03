@@ -31,7 +31,7 @@
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
 import { isString } from "@vueuse/core";
-import {
+import type {
   NoticePaymentData,
   PaymentGetRequest,
   PaymentGetResponse,

@@ -1,4 +1,4 @@
-import { 
+import type { 
   UserResponse,
   UserProfileReq,
   UserProfileRes,
@@ -14,7 +14,7 @@ import {
   delUserReq,
   delUserRes,
  } from "../entities/user-entity";
-import { IAPIResponse } from "../entities/useApi-response";
+import type { IAPIResponse } from "../entities/useApi-response";
 
 class UserModule {
   private RESOURCE = '/User';

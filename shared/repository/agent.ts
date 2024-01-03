@@ -1,4 +1,4 @@
-import { 
+import type { 
   AgentInfo,
   AgentAddressListRes,
   AgentAddressCreateReq,
@@ -8,7 +8,7 @@ import {
   AgentAddressDeleteReq,
   AgentAddressDeleteRes
  } from "../entities/agent-entity";
-import { IAPIResponse } from "../entities/useApi-response";
+import type { IAPIResponse } from "../entities/useApi-response";
 
 class AgentModule {
   private RESOURCE = '/Agent';

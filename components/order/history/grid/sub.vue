@@ -16,7 +16,7 @@
           </tr>
 </template>
 <script lang="ts" setup>
-import { HistoryResponse } from "~/shared/entities/order-entity";
+import type { HistoryResponse } from "~/shared/entities/order-entity";
 
 const props = defineProps({
   row: {

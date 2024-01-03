@@ -3,10 +3,9 @@
 
   <div class="layout-login">
 
-    <DevOnly>
-      <!-- DEV: open menu for all Login series pages -->
+    <!-- <DevOnly>
       <DevMenuCheck />
-    </DevOnly>
+    </DevOnly> -->
 
     <header class="header-login">
       <div class="logo">

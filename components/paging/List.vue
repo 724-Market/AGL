@@ -56,7 +56,7 @@
   </div> -->
 </template>
 <script setup lang="ts">
-import { Pages } from '~/shared/entities/pages-entity';
+import type { Pages } from '~/shared/entities/pages-entity';
 
 
 const emit = defineEmits(["ChangePage"])

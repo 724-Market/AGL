@@ -1,13 +1,13 @@
 import { isString } from "@vueuse/core";
 import { storeToRefs } from "pinia";
-import { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity";
+import type { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity";
 import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
 import dayjs from 'dayjs';
 import 'dayjs/locale/th' // import locale
 import buddhistEra from 'dayjs/plugin/buddhistEra' // import locale
-import { OrderDetails, OrderResponse } from "~/shared/entities/order-entity";
-import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
-import { IInformation } from "~/shared/entities/information-entity";
+import type { OrderDetails, OrderResponse } from "~/shared/entities/order-entity";
+import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import type { IInformation } from "~/shared/entities/information-entity";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStorePackageList } from "~/stores/order/storePackageList";
 import { useStorePackage } from "~/stores/order/storePackage";

@@ -544,8 +544,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { DefaultAddress,CustomerOrderRequest, LegalPersonProfile, PersonProfile, PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
-import { SelectOption } from "~/shared/entities/select-option";
+import type { DefaultAddress, CustomerOrderRequest, LegalPersonProfile, PersonProfile, PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import type { SelectOption } from "~/shared/entities/select-option";
 
 const emit = defineEmits(['changeCustomerType','changeProvince','changeDistrict','changeSubDistrict','changeFullAddress','changeInsureDetail'])
 const props = defineProps({

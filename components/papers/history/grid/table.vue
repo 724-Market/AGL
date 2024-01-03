@@ -29,10 +29,10 @@
   // Define import
   import DataTable from "datatables.net-vue3";
   import DataTablesCore from "datatables.net-bs5";
-  import PapersHistoryGridMenu from "~/components/papers/history/grid/menu.vue";
-  import PapersHistoryGridColumn from "~/components/papers/history/grid/column.vue";
+  import PapersHistoryGridMenu from "~/components/papers/history/grid/Menu.vue";
+  import PapersHistoryGridColumn from "~/components/papers/history/grid/Column.vue";
   import { renderToString } from "@vue/server-renderer";
-  import { Filter } from "~/shared/entities/table-option";
+  import type { Filter } from "~/shared/entities/table-option";
   //import { SubHistoryRequest } from "~/shared/entities/order-entity";
   
   const props = defineProps({

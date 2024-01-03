@@ -43,8 +43,8 @@
 </template>
 
 <script setup lang="ts">
-import { IChecklist } from "~/shared/entities/checklist-entity";
-import { IPackageResponse, Paging } from "~/shared/entities/packageList-entity";
+import type { IChecklist } from "~/shared/entities/checklist-entity";
+import type { IPackageResponse, Paging } from "~/shared/entities/packageList-entity";
 
 const emit = defineEmits(["changeChecklist", "changeSelect","changePage"])
 const props = defineProps({

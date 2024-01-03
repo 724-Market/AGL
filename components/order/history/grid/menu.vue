@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import {
+import type {
   HistoryResponse
 } from "~/shared/entities/order-entity";
 

@@ -222,16 +222,16 @@
 
 <script lang="ts" setup>
 import { ModalType } from "~/shared/entities/enum-entity";
-import {
+import type {
     HistorySearch
 } from "~/shared/entities/order-entity"
-import {
+import type {
     BalanceRes,
     RemarkListReq,
     RemarkListRes,
     StatusGroupResponse
 } from "~/shared/entities/paper-entity";
-import { Filter } from "~/shared/entities/table-option";
+import type { Filter } from "~/shared/entities/table-option";
 import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
 import { storeToRefs } from "pinia";
 

@@ -1,7 +1,6 @@
-// import { HubConnectionBuilder } from '@microsoft/signalr';
 import * as signalR from '@microsoft/signalr';
 import { storeToRefs } from "pinia";
-import { NoticePaymentRequest, NoticePaymentData, PaymentGatewayResponse, PaymentGetRequest }  from "../entities/payment-entity";
+import type { NoticePaymentRequest, NoticePaymentData, PaymentGatewayResponse, PaymentGetRequest }  from "../entities/payment-entity";
 import { useStorePaymentGet } from '~/stores/order/storePaymentGet';
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 

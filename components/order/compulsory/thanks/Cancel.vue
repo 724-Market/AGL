@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { PaymentGetResponse }  from "~/shared/entities/payment-entity"
+import type { PaymentGetResponse }  from "~/shared/entities/payment-entity"
 
 const paymentGetInfo: globalThis.Ref<PaymentGetResponse | undefined> = ref()
 var PaymentNo = ref('')

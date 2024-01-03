@@ -84,10 +84,9 @@
 </template>
 
 <script setup lang="ts">
-
-import {
-    PledgePaperOnhandBalanceReq,
-    PledgePaperOnhandBalanceRes
+import type {
+PledgePaperOnhandBalanceReq,
+PledgePaperOnhandBalanceRes
 } from "~/shared/entities/pledge-entity";
 
 const emit = defineEmits(["closeWallet"]);

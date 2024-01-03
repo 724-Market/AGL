@@ -81,13 +81,6 @@ class PaperModule {
       return await useCallApi().apiRepository<BalanceRes[]>(`${this.RESOURCE}/overall/balance/get`, {})
     }
     
-    async getOrder(req:OrderListReq): Promise<IAPIResponse<OrderListRes[]>> {
-      return await useCallApi().apiRepository<OrderListRes[]>(`${this.RESOURCE}/order/get`, req)
-    }
-    
-    async getSubOrderList(req:SubOrderListReq): Promise<IAPIResponse<SubOrderListRes[]>> {
-      return await useCallApi().apiRepository<SubOrderListRes[]>(`${this.RESOURCE}/sub/order/list`, req)
-    }
     async remark(req: RemarkListReq): Promise<IAPIResponse<RemarkListRes[]>> {
       return await useCallApi().apiRepository<RemarkListRes[]>(`${this.RESOURCE}/remark/list`, req)
     }

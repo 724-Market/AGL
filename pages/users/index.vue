@@ -29,11 +29,11 @@
 
 <script lang="ts" setup>
 // Define import
-import { UserLimitRes, delUserReq } from "~/shared/entities/user-entity"
+import type { UserLimitRes, delUserReq } from "~/shared/entities/user-entity"
 import { storeToRefs } from "pinia"
 import { ModalType } from "~/shared/entities/enum-entity"
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth"
-import { Filter } from "~/shared/entities/table-option"
+import type { Filter } from "~/shared/entities/table-option"
 
 // Define variables
 const isLoading = ref(false)

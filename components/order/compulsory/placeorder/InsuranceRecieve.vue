@@ -173,10 +173,10 @@
 </style>
 
 <script setup lang="ts">
-import { IInformation } from "~~/shared/entities/information-entity";
-import { IPackageResponse } from "~/shared/entities/packageList-entity";
-import { SelectOption, RadioOption } from "~/shared/entities/select-option";
-import { DefaultAddress, DeliveryAddress, InsuranceRecieveObject } from "~/shared/entities/placeorder-entity";
+import type { IInformation } from "~~/shared/entities/information-entity";
+import type { IPackageResponse } from "~/shared/entities/packageList-entity";
+import type { SelectOption, RadioOption } from "~/shared/entities/select-option";
+import type { DefaultAddress, DeliveryAddress, InsuranceRecieveObject } from "~/shared/entities/placeorder-entity";
 
 const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict','checkInsuranceRecieve'])
 

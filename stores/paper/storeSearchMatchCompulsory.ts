@@ -1,5 +1,5 @@
-import { SearchMatchReq, SearchMatchRes } from "~/shared/entities/paper-entity"
-import { WrapperResponse } from "~/shared/entities/wrapper-response"
+import type { SearchMatchReq, SearchMatchRes } from "~/shared/entities/paper-entity"
+import type { WrapperResponse } from "~/shared/entities/wrapper-response"
 
 export const useStoreSearchMatchCompulsory = defineStore('useStoreSearchMatchCompulsory', {
     state: (): WrapperResponse<SearchMatchRes[]> => {

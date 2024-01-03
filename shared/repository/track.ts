@@ -1,8 +1,8 @@
-import { 
+import type { 
     TrackOrderReq, 
     TrackOrderRes 
 } from "../entities/track-entity";
-import { IAPIResponse } from "../entities/useApi-response";
+import type { IAPIResponse } from "../entities/useApi-response";
 
 class TrackModule {
     private RESOURCE = '/track';

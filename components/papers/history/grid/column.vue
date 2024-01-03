@@ -29,7 +29,7 @@
     </div>
   </template>
   <script lang="ts" setup>
-  import { PaperHistoryResponse } from "~/shared/entities/paper-entity";
+  import type { PaperHistoryResponse } from "~/shared/entities/paper-entity";
   
   const props = defineProps({
     row: {

@@ -1,5 +1,5 @@
-import { PlaceOrderRequest, PlaceOrderResponse } from "../entities/placeorder-entity";
-import {
+import type { PlaceOrderRequest, PlaceOrderResponse } from "../entities/placeorder-entity";
+import type {
   OrderDetailRequest,
   OrderDetailResponse,
   OrderResponse,
@@ -9,8 +9,8 @@ import {
   HistoryResponse,
   StatusGroupRequest
 } from "../entities/order-entity";
-import { Filter, TableRequest } from "../entities/table-option";
-import { IAPIResponse, IDataTableResponse } from "../entities/useApi-response";
+import type { Filter, TableRequest } from "../entities/table-option";
+import type { IAPIResponse, IDataTableResponse } from "../entities/useApi-response";
 
 class OrderModule {
   private RESOURCE = '/OrderCMI';

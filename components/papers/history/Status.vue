@@ -70,7 +70,7 @@
 
 <script lang="ts" setup>
 
-import {
+import type {
     StatusGroupResponse
 } from "~/shared/entities/paper-entity";
 

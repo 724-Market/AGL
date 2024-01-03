@@ -36,8 +36,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { PaymentDetails } from "~/shared/entities/order-entity";
-import { CreditBalanceResponse } from "~/shared/entities/pledge-entity";
+import type { PaymentDetails } from "~/shared/entities/order-entity";
+import type { CreditBalanceResponse } from "~/shared/entities/pledge-entity";
 
 const props = defineProps({
   orderNo: String,

@@ -1,4 +1,4 @@
-import { StateOrder } from "~/shared/entities/state-entity";
+import type { StateOrder } from "~/shared/entities/state-entity";
 
 export const useStoreStateOrder = defineStore('useStoreStateOrder', {
     state: (): StateOrder => {

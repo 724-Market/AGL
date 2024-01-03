@@ -1,4 +1,4 @@
-import { PaymentGatewayResponse }  from "~/shared/entities/payment-entity";
+import type { PaymentGatewayResponse }  from "~/shared/entities/payment-entity";
 
 export const useStorePaymentGateway = defineStore('useStorePaymentGateway', {
     state: (): PaymentGatewayResponse => {

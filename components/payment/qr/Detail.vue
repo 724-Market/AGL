@@ -63,9 +63,9 @@
 </style>
 
 <script setup lang="ts">
-import {
-  PaymentGatewayResponse,
-  PaymentGetRequest,
+import type {
+PaymentGatewayResponse,
+PaymentGetRequest,
 } from "~/shared/entities/payment-entity";
 import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
 

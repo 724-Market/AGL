@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 // Define import
-import { UserDataRes } from "~/shared/entities/user-entity"
+import type { UserDataRes } from "~/shared/entities/user-entity"
 
 // Define props
 const props = defineProps({

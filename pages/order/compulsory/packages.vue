@@ -61,9 +61,9 @@
 
 <script setup lang="ts">
 // Define import
-import { IInformation } from "~~/shared/entities/information-entity";
-import { IChecklist } from "~/shared/entities/checklist-entity";
-import {
+import type { IInformation } from "~~/shared/entities/information-entity";
+import type { IChecklist } from "~/shared/entities/checklist-entity";
+import type {
   IPackageRequest,
   IPackageResponse,
   PackageResult,
@@ -77,7 +77,7 @@ import { useStoreInformation } from "~/stores/order/storeInformation";
 
 // using pinia
 import { storeToRefs } from "pinia";
-import { AgentInfo } from "~/shared/entities/agent-entity";
+import type { AgentInfo } from "~/shared/entities/agent-entity";
 
 // Define Variables
 // Loading state after form submiting

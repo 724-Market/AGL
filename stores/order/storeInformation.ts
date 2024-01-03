@@ -1,4 +1,4 @@
-import { IInformation } from "~/shared/entities/information-entity"
+import type { IInformation } from "~/shared/entities/information-entity"
 
 export const useStoreInformation = defineStore('useStoreInformation', {
     state: (): IInformation => {

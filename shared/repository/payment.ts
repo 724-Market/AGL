@@ -1,5 +1,4 @@
-import { mock } from "node:test";
-import { CalculateRequest, 
+import type { CalculateRequest, 
   CalculateResponse, 
   PaymentConfirmRequest, 
   PaymentConfirmResponse,
@@ -10,14 +9,11 @@ import { CalculateRequest,
   PaymentGetRequest,
   PaymentGetResponse
 } from "../entities/payment-entity";
-import { IAPIResponse, IAPIPaymentGatewayResponse } from "../entities/useApi-response";
+import type { IAPIResponse, IAPIPaymentGatewayResponse } from "../entities/useApi-response";
 
 class PaymentModule {
   private RESOURCE = '/Payment';
 
-  // async get(req:CalculateRequest): Promise<IAPIResponse<CalculateResponse[]>> {
-  //   return await useCallApi().apiRepository<CalculateResponse[]>(`${this.RESOURCE}/calculate`, req)
-  // }
   async calculate(req:CalculateRequest): Promise<IAPIResponse<CalculateResponse[]>> {
     return await useCallApi().apiRepository<CalculateResponse[]>(`${this.RESOURCE}/calculate`, req)
   }

@@ -11,7 +11,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { IChecklist } from "~~/shared/entities/checklist-entity";
+import type { IChecklist } from "~~/shared/entities/checklist-entity";
 
 const emit = defineEmits(['changeCheckSave'])
 

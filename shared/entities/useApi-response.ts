@@ -1,4 +1,4 @@
-import { WrapperResponse } from '~/shared/entities/wrapper-response'
+import type { WrapperResponse } from '~/shared/entities/wrapper-response'
 export interface IAPIResponse<T> {
     serverStatus: number
     apiStatus: string

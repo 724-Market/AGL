@@ -1,6 +1,6 @@
-import { ICarBrandResponse, ICarCategoryResponse, ICarModelResponse, ICarTypeResponse, ISubCarModelResponse, IUseCarResponse } from "../entities/information-entity";
-import { DistrictReq, ICarColorReq, ICarColorResponse, INationalityResponse, MasterResponse, PrefixReq, SubDistrictReq } from "../entities/master-entity";
-import { IAPIResponse } from "../entities/useApi-response";
+import type { ICarBrandResponse, ICarCategoryResponse, ICarModelResponse, ICarTypeResponse, ISubCarModelResponse, IUseCarResponse } from "../entities/information-entity";
+import type { DistrictReq, ICarColorReq, ICarColorResponse, INationalityResponse, MasterResponse, PrefixReq, SubDistrictReq } from "../entities/master-entity";
+import type { IAPIResponse } from "../entities/useApi-response";
 
 class MasterModule {
   private RESOURCE = '/Master';
@@ -27,20 +27,20 @@ class MasterModule {
   async usecar(): Promise<IAPIResponse<IUseCarResponse[]>> {
     return await useCallApi().apiRepository<IUseCarResponse[]>(`${this.RESOURCE}/usecar/list`, {})
   }
-  async cartype(req:any): Promise<IAPIResponse<ICarTypeResponse[]>> {
+  async cartype(req:unknown): Promise<IAPIResponse<ICarTypeResponse[]>> {
     return await useCallApi().apiRepository<ICarTypeResponse[]>(`${this.RESOURCE}/cartype/list`, req)
   }
-  async carcategory(req:any): Promise<IAPIResponse<ICarCategoryResponse[]>> {
+  async carcategory(req:unknown): Promise<IAPIResponse<ICarCategoryResponse[]>> {
     console.log('carcategory', req)
     return await useCallApi().apiRepository<ICarCategoryResponse[]>(`${this.RESOURCE}/carcategory/list`, req)
   }
-  async carbrand(req:any): Promise<IAPIResponse<ICarBrandResponse[]>> {
+  async carbrand(req:unknown): Promise<IAPIResponse<ICarBrandResponse[]>> {
     return await useCallApi().apiRepository<ICarBrandResponse[]>(`${this.RESOURCE}/carbrand/list`, req)
   }
-  async carmodel(req:any): Promise<IAPIResponse<ICarModelResponse[]>> {
+  async carmodel(req:unknown): Promise<IAPIResponse<ICarModelResponse[]>> {
     return await useCallApi().apiRepository<ICarModelResponse[]>(`${this.RESOURCE}/carmodel/list`, req)
   }
-  async subcarmodel(req:any): Promise<IAPIResponse<ISubCarModelResponse[]>> {
+  async subcarmodel(req:unknown): Promise<IAPIResponse<ISubCarModelResponse[]>> {
     return await useCallApi().apiRepository<ISubCarModelResponse[]>(`${this.RESOURCE}/subcarmodel/list`, req)
   }
 }

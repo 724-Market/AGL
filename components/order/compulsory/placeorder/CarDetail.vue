@@ -167,10 +167,10 @@
 
 <script setup lang="ts">
 import { defineEventHandler } from "~/server/api/setting.post";
-import { SelectOption } from "~/shared/entities/select-option";
-import { IInformation } from "~~/shared/entities/information-entity";
-import { CarDetailsExtension } from "~~/shared/entities/placeorder-entity";
-import { UploadFileRequest, UploadFileResponse } from "~~/shared/entities/file-entity";
+import type { SelectOption } from "~/shared/entities/select-option";
+import type { IInformation } from "~~/shared/entities/information-entity";
+import type { CarDetailsExtension } from "~~/shared/entities/placeorder-entity";
+import type { UploadFileRequest, UploadFileResponse } from "~~/shared/entities/file-entity";
 
 const emit = defineEmits(['checkCarDetail'])
 

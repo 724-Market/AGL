@@ -1,4 +1,4 @@
-import { Filter } from "./table-option"
+import type { Filter } from "./table-option"
 export interface AreaListRes {
     ID: string
     Name: string

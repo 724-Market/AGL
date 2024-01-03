@@ -111,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { 
+import type { 
   StatusGroupResponse
 } from "~/shared/entities/order-entity";
 

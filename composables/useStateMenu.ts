@@ -1,7 +1,7 @@
 
 import { storeToRefs } from "pinia";
 import { useStoreStateOrder } from "~/stores/order/storeStateOrder";
-import { StateOrder } from "~/shared/entities/state-entity";
+import type { StateOrder } from "~/shared/entities/state-entity";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
 

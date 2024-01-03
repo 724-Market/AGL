@@ -1,5 +1,4 @@
-
-import { IPackageResponse } from '~/shared/entities/packageList-entity'
+import type { IPackageResponse } from '~/shared/entities/packageList-entity'
 
 export const useStorePackage = defineStore('useStorePackage', {
     state: (): IPackageResponse => {

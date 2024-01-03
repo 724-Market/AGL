@@ -30,7 +30,7 @@ import DataTablesCore from "datatables.net-bs5"
 import UsersGridActions from "~/components/users/grid/Actions.vue"
 import UsersGridColumn from "~/components/users/grid/Column.vue"
 import { renderToString } from "@vue/server-renderer"
-import { Filter } from "~/shared/entities/table-option"
+import type { Filter } from "~/shared/entities/table-option"
 
 // Define props
 const props = defineProps({

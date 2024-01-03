@@ -82,8 +82,8 @@
 </template>
 
 <script setup lang="ts">
-import { DefaultAddress } from "~/shared/entities/placeorder-entity";
-import { SelectOption } from "~/shared/entities/select-option";
+import type { DefaultAddress } from "~/shared/entities/placeorder-entity";
+import type { SelectOption } from "~/shared/entities/select-option";
 
 const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict','changeFullAddress'])
 

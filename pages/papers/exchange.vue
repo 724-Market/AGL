@@ -37,8 +37,8 @@
 </template>
 
 <script setup lang="ts">
-import { IDeliveryResponse, DeliveryPaperRes } from "~/shared/entities/delivery-entity";
-import {
+import type { IDeliveryResponse, DeliveryPaperRes } from "~/shared/entities/delivery-entity";
+import type {
   AreaListRes,
   ExchangeDataSummary,
   PaymentFeeLimitReq,
@@ -57,7 +57,7 @@ import { storeToRefs } from "pinia";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStoreSearchMatchCompulsory } from "~~/stores/paper/storeSearchMatchCompulsory";
 import { useStoreSearchMatchInsurance } from "~~/stores/paper/storeSearchMatchInsurance";
-import { IChecklist } from "~/shared/entities/checklist-entity";
+import type { IChecklist } from "~/shared/entities/checklist-entity";
 import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo";
 
 const deliveryChanels: globalThis.Ref<IDeliveryResponse[] | undefined> = ref();

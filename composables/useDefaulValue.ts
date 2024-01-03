@@ -1,4 +1,4 @@
-import { IPackageResponse } from "~/shared/entities/packageList-entity"
+import type { IPackageResponse } from "~/shared/entities/packageList-entity"
 
 export default () => {
     const config = useRuntimeConfig()

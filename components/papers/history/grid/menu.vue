@@ -11,7 +11,7 @@
   </template>
     
     <script setup lang="ts">
-    import { PaperHistoryResponse } from "~/shared/entities/paper-entity";
+    import type { PaperHistoryResponse } from "~/shared/entities/paper-entity";
   
     const props = defineProps({
       row: {

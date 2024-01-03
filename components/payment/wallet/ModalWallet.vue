@@ -193,18 +193,18 @@
 </template>
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import {
+import type {
   NoticePaymentRequest,
   PaymentGatewayResponse,
   PaymentGetRequest,
   PaymentGetResponse,
 } from "~/shared/entities/payment-entity";
-import {
+import type {
   CreditHistoryPaymentAdd,
   CreditOrderPaymentCreateResponse,
   PaymentFeeLimitRequest,
 } from "~/shared/entities/pledge-entity";
-import { UserResponse } from "~/shared/entities/user-entity";
+import type { UserResponse } from "~/shared/entities/user-entity";
 import PaymentNoticeService from "~/shared/services/payment-notice-service";
 import { useStoreNoticePayment } from "~/stores/order/storeNoticePayment";
 import { useStoreUserAuth } from "~/stores/user/storeUserAuth";

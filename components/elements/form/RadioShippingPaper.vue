@@ -16,7 +16,7 @@
 </style>
 
 <script setup lang="ts">
-import { RadioOption } from "~/shared/entities/select-option";
+import type { RadioOption } from "~/shared/entities/select-option";
 
 const props = defineProps({
   option: {

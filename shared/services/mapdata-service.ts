@@ -1,4 +1,4 @@
-import { TableRequest } from "../entities/table-option";
+import type { TableRequest } from "../entities/table-option";
 
 class MapDataService {
     covertQueryStringToJsonHistory(query:string){

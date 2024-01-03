@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 
-import {
+import type {
     BalanceRes
 } from "~/shared/entities/paper-entity";
 const props = defineProps({

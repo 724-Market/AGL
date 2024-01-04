@@ -1,6 +1,6 @@
 <template>
     <div v-if="props.field && props.field == 'order' && props.row">
-      #{{ props.row.OrderNo }}<time datetime="2023-05-05 08:08">{{ useUtility().formatDate(props.row.CreateDate,"D MMM BBBB HH:mm") }}</time>
+      #{{ props.row.OrderNo }}<time datetime="2023-05-05 08:08">{{ useUtility().formatDate(props.row.CreateDate) }}</time>
     </div>
     <div v-if="props.field && props.field == 'agent' && props.row">
       #{{ props.row.AgentCode

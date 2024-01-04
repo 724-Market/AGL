@@ -1,17 +1,21 @@
-import { isString } from "@vueuse/core";
-import { storeToRefs } from "pinia";
-import type { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity";
-import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
-import dayjs from 'dayjs';
+// Import type
+import type { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity"
+import type { OrderDetails, OrderResponse } from "~/shared/entities/order-entity"
+import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity"
+import type { IInformation } from "~/shared/entities/information-entity"
+
+import { isString } from "@vueuse/core"
+import { storeToRefs } from "pinia"
+import { useStoreUserAuth } from "~/stores/user/storeUserAuth"
+import { useStoreInformation } from "~/stores/order/storeInformation"
+import { useStorePackageList } from "~/stores/order/storePackageList"
+import { useStorePackage } from "~/stores/order/storePackage"
+import { useStorePlaceorder } from "~/stores/order/storePlaceorder"
+
+// Import DayJS library
+import dayjs from 'dayjs'
 import 'dayjs/locale/th' // import locale
 import buddhistEra from 'dayjs/plugin/buddhistEra' // import locale
-import type { OrderDetails, OrderResponse } from "~/shared/entities/order-entity";
-import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
-import type { IInformation } from "~/shared/entities/information-entity";
-import { useStoreInformation } from "~/stores/order/storeInformation";
-import { useStorePackageList } from "~/stores/order/storePackageList";
-import { useStorePackage } from "~/stores/order/storePackage";
-import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 
 export default () => {
 
@@ -20,27 +24,29 @@ export default () => {
     const getClassFromStatusOrder = (statusCode: string | undefined): string => {
         // Define your classes based on the value of statusCode
         if (statusCode === 'Success') {
-            return 'timeline-item is-success';
+            return 'timeline-item is-success'
         } if (statusCode === 'CancelByUser') {
-            return 'timeline-item is-cancel';
+            return 'timeline-item is-cancel'
         } else {
-            return 'timeline-item is-child';
+            return 'timeline-item is-child'
         }
-    };
+    }
+
     const getIconFromStatusOrder = (statusCode: string | undefined): string => {
         // Define your classes based on the value of statusCode
         if (statusCode === 'Success') {
-            return 'icon check';
+            return 'icon check'
         } else if (statusCode === 'CancelByUser') {
-            return 'icon cross';
+            return 'icon cross'
         } else {
-            return 'icon';
+            return 'icon'
         }
-    };
+    }
+
     const getToken = async (): Promise<string> => {
-        let token = "";
+        let token = ""
         // check token expire
-        const store = useStoreUserAuth();
+        const store = useStoreUserAuth()
         const { AuthenInfo } = storeToRefs(store)
 
         const checkToken = store.checkTokenExpire()
@@ -63,6 +69,7 @@ export default () => {
         }
         return token
     }
+
     const getCompanyImage = (): string => {
         const image = config.public.CompanyImage
         return image
@@ -78,40 +85,66 @@ export default () => {
         const formattedCurrency = numberFormat.format(currency)
         return formattedCurrency
     }
-    const formatDate = (dateString: string, format: string): string => {
+
+    // Format date value
+    const formatDate = (dateString: string, format?: string): string => {
         dayjs.extend(buddhistEra)
         dayjs.locale('th')
-        const date = dayjs(dateString.replace('Z', '')).locale('th');
-        // Then specify how you want your dates to be formatted
-        return date.format(format);
+        const date = dayjs(dateString.replace('Z', '')).locale('th')
 
+        switch (format) {
+            case 'FullTime' : format = 'HH:mm:ss'
+                break
+            case 'ShortTime' : format = 'HH:mm'
+                break
+            case 'FullDate' : format = 'D MMMM BBBB'
+                break
+            case 'ShortDate' : format = 'D MMM BBBB'
+                break
+            case 'FullDateFullTime' : format = 'D MMMM BBBB • HH:mm:ss'
+                break
+            case 'ShortDateFullTime' : format = 'D MMM BBBB • HH:mm:ss'
+                break
+            case 'YYYY-MM-DD' : format = 'YYYY-MM-DD'
+                break
+            default: format = 'D MMM BBBB • HH:mm'
+        }
+
+        return date.format(format)
     }
+
     const formatText = (text: string): string => {
         // Regular expression to find content between <strong> tags
-        const strongContentRegex = /<strong>(.*?)<\/strong>/g;
+        const strongContentRegex = /<strong>(.*?)<\/strong>/g
     
         // Replace <strong> tags with span and apply styles conditionally
         const formattedText = text.replace(strongContentRegex, (match, p1) => {
             if (p1) {
-                return `<span><strong>${p1}</strong></span>`;
+                return `<span><strong>${p1}</strong></span>`
             } else {
-                return match; // Return unchanged if there's no content between <strong> tags
+                return match // Return unchanged if there's no content between <strong> tags
             }
-        });
+        })
     
-        return formattedText;
-    };
+        return formattedText
+    }
+
     const getStepMenuFromUri = (): number => {
         let step = 0
         if (process.client) {
             const menu = window.location.pathname
 
             switch (menu) {
-                case '/order/compulsory/information': step = 1; break
-                case '/order/compulsory/packages': step = 2; break
-                case '/order/compulsory/placeorder': step = 3; break
-                case '/order/compulsory/payment': step = 4; break
-                case '/order/compulsory/summary': step = 5; break
+                case '/order/compulsory/information': step = 1
+                    break
+                case '/order/compulsory/packages': step = 2
+                    break
+                case '/order/compulsory/placeorder': step = 3
+                    break
+                case '/order/compulsory/payment': step = 4
+                    break
+                case '/order/compulsory/summary': step = 5
+                    break
             }
 
         }
@@ -126,50 +159,51 @@ export default () => {
             }
 
         }
-
         return page
     }
+
     const downloadImage = (base64Image: string,filename:string) => {
         // Convert the Base64 image to Blob
-        const byteString = atob(base64Image.split(',')[1]);
-        const mimeString = base64Image.split(',')[0].split(':')[1].split(';')[0];
-        const arrayBuffer = new ArrayBuffer(byteString.length);
-        const uintArray = new Uint8Array(arrayBuffer);
+        const byteString = atob(base64Image.split(',')[1])
+        const mimeString = base64Image.split(',')[0].split(':')[1].split('')[0]
+        const arrayBuffer = new ArrayBuffer(byteString.length)
+        const uintArray = new Uint8Array(arrayBuffer)
 
         for (let i = 0; i < byteString.length; i++) {
-            uintArray[i] = byteString.charCodeAt(i);
+            uintArray[i] = byteString.charCodeAt(i)
         }
 
-        const blob = new Blob([arrayBuffer], { type: mimeString });
+        const blob = new Blob([arrayBuffer], { type: mimeString })
 
         // Create a temporary link element
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(blob)
 
         // Set the filename for the downloaded image
-        link.download = filename //'qr.png';
+        link.download = filename //'qr.png'
 
         // Programmatically click the link to trigger the download
-        link.click();
+        link.click()
 
         // Clean up the temporary link object
-        URL.revokeObjectURL(link.href);
+        URL.revokeObjectURL(link.href)
     }
+
     const getDeviceId = async () => {
-        const ua= navigator.userAgent;
-        let tem; 
-        let M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+        const ua= navigator.userAgent
+        let tem 
+        let M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []
         if(/trident/i.test(M[1])){
-            tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
-            return 'IE '+(tem[1] || '');
+            tem=  /\brv[ :]+(\d+)/g.exec(ua) || []
+            return 'IE '+(tem[1] || '')
         }
         if(M[1]=== 'Chrome'){
-            tem= ua.match(/\b(OPR|Edge)\/(\d+)/);
-            if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+            tem= ua.match(/\b(OPR|Edge)\/(\d+)/)
+            if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera')
         }
-        M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
-        if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
-        return M.join(' ');
+        M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?']
+        if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1])
+        return M.join(' ')
     }
 
     const setStoretoStep = async (data: OrderResponse, orderNo: string, orderDetail: OrderDetails) => {
@@ -179,26 +213,26 @@ export default () => {
                 Page: 1,
                 TotalRecord: 0,
                 RedirectUrl: "/order/compulsory/packages",
-            });
+            })
 
-            const d = new Date();
-            const getMonth = d.getMonth() + 1;
+            const d = new Date()
+            const getMonth = d.getMonth() + 1
             const EffectiveDate = `${d.getFullYear()}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
                 d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
-            }`;
+            }`
             const ExpireDate = `${d.getFullYear() + 1}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
                 d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
-            }`;
+            }`
 
-            const infomation = useStoreInformation();
-            const storePackage = useStorePackage();
-            const placeorder = useStorePlaceorder();
+            const infomation = useStoreInformation()
+            const storePackage = useStorePackage()
+            const placeorder = useStorePlaceorder()
 
-            const storeAuth = useStoreUserAuth();
+            const storeAuth = useStoreUserAuth()
             const { AuthenInfo } = storeToRefs(storeAuth)
 
-            const order = data.Order;
-      
+            const order = data.Order
+
             const req: PlaceOrderRequest = {
                 OrderNo: orderNo,
                 Package: order.Package,
@@ -207,24 +241,24 @@ export default () => {
                 DeliveryMethod1: order.DeliveryMethod1,
                 DeliveryMethod2: order.DeliveryMethod2,
                 IsTaxInvoice: order.IsTaxInvoice,
-            };
+            }
             if(orderDetail) {
                 if (req.Customer && req.Customer.DefaultAddress) {
-                    req.Customer.DefaultAddress.ZipCode = orderDetail.AssuredDetails.ZipCode;
+                    req.Customer.DefaultAddress.ZipCode = orderDetail.AssuredDetails.ZipCode
                 }
                 if (req.Customer && req.Customer.DeliveryAddress) {
-                    req.Customer.DeliveryAddress.ZipCode = orderDetail.DeliveryPolicyDetails.ZipCode;
+                    req.Customer.DeliveryAddress.ZipCode = orderDetail.DeliveryPolicyDetails.ZipCode
                 }
                 if (req.Customer && req.Customer.TaxInvoiceAddress) {
-                    req.Customer.TaxInvoiceAddress.ZipCode = orderDetail.TaxInvoiceDetails.ZipCode;
+                    req.Customer.TaxInvoiceAddress.ZipCode = orderDetail.TaxInvoiceDetails.ZipCode
                 }
                 if (req.Customer && req.Customer.TaxInvoiceDeliveryAddress) {
-                    req.Customer.TaxInvoiceDeliveryAddress.ZipCode = orderDetail.DeliveryTaxInvoiceDetails.ZipCode;
+                    req.Customer.TaxInvoiceDeliveryAddress.ZipCode = orderDetail.DeliveryTaxInvoiceDetails.ZipCode
                 }
             }
             
-            placeorder.setOrder(req);
-      
+            placeorder.setOrder(req)
+
             const reqInfo: IInformation = {
                 CarBrand: order.Package.CarBrandID,
                 CarCC: orderDetail ? orderDetail.CarDetails.CarCC.toFixed(0) ?? "" : '',
@@ -240,10 +274,10 @@ export default () => {
                 ExpireDate: order.Package.ExpireDate,
                 SubCarModel: order.Package.CarModelID,
                 InsuranceDay: getDayOfYear(order.Package.EffectiveDate, order.Package.ExpireDate),
-            };
-            infomation.setInformation(reqInfo);
-      
-            const store = useStorePackageList();
+            }
+            infomation.setInformation(reqInfo)
+
+            const store = useStorePackageList()
             const request: IPackageRequest = {
                 AgentCode: AuthenInfo.value.userName,
                 CarBrandID: reqInfo.CarBrand,
@@ -257,35 +291,37 @@ export default () => {
                 SubCarModelID: reqInfo.SubCarModel.split("|")[0],
                 UseCarCode: reqInfo.CarUse,
                 Paging: paging.value,
-            };
-            const packageList = await store.getPackageList(request);
+            }
+            const packageList = await store.getPackageList(request)
             const packageSelect = packageList.Data?.find(
                 (o) => o.CompanyCode == order.Package.CompanyCode
-            ) as IPackageResponse;
-            packageSelect.Price = order.InsureDetails.Total;
-            packageSelect.PackageResult[0].PriceACT = order.InsureDetails.Total;
-            packageSelect.PackageResult[0].AgentComDiscount = order.InsureDetails.ComValue;
-            storePackage.setPackage(packageSelect);
+            ) as IPackageResponse
+            packageSelect.Price = order.InsureDetails.Total
+            packageSelect.PackageResult[0].PriceACT = order.InsureDetails.Total
+            packageSelect.PackageResult[0].AgentComDiscount = order.InsureDetails.ComValue
+            storePackage.setPackage(packageSelect)
         }
-    };
+    }
+
     const getDayOfYear = (EffectiveDate: string, ExpireDate: string): number => {
-        let days = 0;
-      
-        const startDate = new Date(EffectiveDate);
-        const endDate = new Date(ExpireDate);
-        const diff = Math.abs(startDate.getTime() - endDate.getTime());
-        const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
-        days = diffDays - 1;
-      
-        return days;
-    };
+        let days = 0
+
+        const startDate = new Date(EffectiveDate)
+        const endDate = new Date(ExpireDate)
+        const diff = Math.abs(startDate.getTime() - endDate.getTime())
+        const diffDays = Math.ceil(diff / (1000 * 3600 * 24))
+        days = diffDays - 1
+
+        return days
+    }
+
     const getCarDetail = (orderDetail: OrderDetails): string => {
-        let carDetail = "";
+        let carDetail = ""
         if (orderDetail) {
-          carDetail = `${orderDetail.CarDetails.CarBrand} ${orderDetail.CarDetails.CarModel} ${orderDetail.CarDetails.SubCarModel}  ${orderDetail.CarDetails.CarYear}`;
+            carDetail = `${orderDetail.CarDetails.CarBrand} ${orderDetail.CarDetails.CarModel} ${orderDetail.CarDetails.SubCarModel}  ${orderDetail.CarDetails.CarYear}`
         }
-        return carDetail;
-    };
+        return carDetail
+    }
 
     return {
         getClassFromStatusOrder,

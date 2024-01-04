@@ -9,26 +9,21 @@
             </div>
 
             <div class="col col-sidebar">
-
                 <section class="site-sidebar is-sticky">
-                    <PapersOrderDetail :order-get="orderGet" v-if="orderGet">
-                    </PapersOrderDetail>
+                    
+                    <PapersOrderDetail :order-get="orderGet" v-if="orderGet" />
+                    
                     <PapersSuborder :order-get="orderGet" :ordersub-feedelivery="ordersubFeeDel" :order-sub="orderSubAll" v-if="orderSubAll"></PapersSuborder>
 
                     <NuxtLink to="/papers" class="btn btn-back">ย้อนกลับ</NuxtLink>
 
                 </section>
-
             </div>
 
         </div>
-        <!--   
-        <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+        
+        <ElementsModalLoading :loading="isLoading" />
 
-        <ElementsDialogPaperscancellation />
-
-        <ElementsDialogSupport />
-     -->
     </NuxtLayout>
 </template>
 
@@ -82,6 +77,8 @@ const onLoad = onMounted(async () => {
     }
 });
 const loadTrackOrderPaper = async (orderNo: string) => {
+    isLoading.value = true
+
     const treq: TrackOrderReq = {
         ReferenceID: orderNo,
     };
@@ -119,7 +116,10 @@ const loadTrackOrderPaper = async (orderNo: string) => {
             console.log("No item with IsCurrent: true found");
         }
     }
-};
+
+    isLoading.value = false
+}
+
 const loadSubDetail = async (orderNo: string) => {
     const req: OrderListReq = {
         OrderNo: orderNo,

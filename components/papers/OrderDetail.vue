@@ -13,7 +13,7 @@
                 </div>
                 <div class="status-item" v-if="$props.orderGet">
                     <h5 class="topic">วันที่ทำรายการ</h5>
-                    <p>{{ formatDate($props.orderGet.CreateDate) }}</p>
+                    <p>{{ useUtility().formatDate($props.orderGet.CreateDate) }}</p>
                 </div>
                 <div class="status-item" v-if="$props.orderGet">
                     <h5 class="topic">ยอดชำระทั้งหมด</h5>
@@ -39,12 +39,6 @@ const props = defineProps({
         type: Object as () => OrderListRes
     }
 })
-
-// useUtility change date format
-const formatDate = (date: string) => {
-    const format = useUtility().formatDate(date, 'DD MMM BBBB • HH:mm')
-    return format
-}
 
 // useUtility change currency format
 const formatCurrency = (currency: number) => {

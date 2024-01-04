@@ -8,7 +8,7 @@
                 <h4 class="title">บันทึกรายการผลตอบแทน</h4>
                 <div class="status-item" v-for="(item, j) in props.userCommissionList" :key="j">
                     <h5 class="topic"><span class="badge-bg-dark">{{ item.Commission }}%</span></h5>
-                    <p>เมื่อ {{ useUtility().formatDate(item.CreateDate, "DD MMM BBBB • HH:mm") }}</p>
+                    <p>เมื่อ {{ useUtility().formatDate(item.CreateDate) }}</p>
                 </div>
             </div>
         </div>

@@ -12,7 +12,7 @@
       </div>
       <div class="status-item text-warning" v-if="$props.paymenGatewayInfo.payment_expired != ''">
         <h5 class="topic">กรุณาชำระภายใน</h5>
-        <p>{{ useUtility().formatDate($props.paymenGatewayInfo.payment_expired,"D MMMM BBBB HH:mm:ss") }}</p>
+        <p>{{ useUtility().formatDate($props.paymenGatewayInfo.payment_expired, 'FullDateFullTime') }}</p>
       </div>
       <div class="status-item" v-if="$props.paymentType=='wallet'">
         <h5 class="topic">ค่าธรรมเนียม</h5>

@@ -9,7 +9,6 @@
                 <h4 class="title">รายละเอียดคำสั่งซื้อ</h4>
                 <div class="status-item">
                     <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
-                    <!--<p>{{$route.params.id}}</p>-->
                     <p>{{ $props.orderGet?.OrderNo }}</p>
                 </div>
                 <div class="status-item">
@@ -42,7 +41,7 @@ import type {
 } from "~/shared/entities/paper-entity";
 import type { SubOrderListRes } from "~/shared/entities/paper-entity";
 
-// Loading state after form submiting
+// Loading state after form submitting
 const isLoading = ref(false);
 // Define Variables
 //const orderGet: globalThis.Ref<OrderListRes | undefined> = ref();

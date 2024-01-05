@@ -29,7 +29,7 @@
 
 // Define import
 import DataTable from "datatables.net-vue3";
-import DataTablesCore from "datatab-les.net-bs5";
+import DataTablesCore from "datatables.net-bs5";
 import OrderHistoryGridActions from "~/components/order/history/grid/Actions.vue";
 import OrderHistoryGridColumn from "~/components/order/history/grid/Column.vue";
 import OrderHistoryGridSub from "~/components/order/history/grid/Sub.vue";

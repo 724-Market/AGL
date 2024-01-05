@@ -1,6 +1,7 @@
 <template>
+  <Teleport to="body">
   <dialog id="modal-dialog">
-    <div class="dialog-card">
+    <div :class="['dialog-card', 'is-'+$props.modalType]">
       <!-- Add class 'is-info', 'is-success', 'is-warning', 'is-danger' for color styling -->
       <div class="card-header">
         <button type="button" class="btn btn-close btn-close-modal">ปิด</button>
@@ -24,42 +25,37 @@
         <h5>{{ $props.modalTitle }}</h5>
         <p>{{ $props.modalText }}</p>
       </div>
-      <!-- <div class="card-footer">
-                <button class="btn-primary">ตกลง</button>
-                <button class="btn-gray btn-cancel-modal">ยกเลิก</button>
-            </div> -->
-      <!-- <div class="card-footer">
-                <button class="btn-danger">ยืนยันการลบ</button>
-                <button class="btn-gray btn-cancel-modal">ยกเลิก</button>
-            </div>-->
       <div class="card-footer">
         <button type="button" class="btn-primary btn-cancel-modal">ตกลง</button>
       </div>
     </div>
   </dialog>
+  </Teleport>
 </template>
 
 <script setup>
-const emit = defineEmits(['onContinue'])
+
+const emit = defineEmits(['onCloseModal'])
 
 const props = defineProps({
   modalType: String,
   modalTitle: String,
   modalText: String,
-  modalShow: Boolean,
+  dialogModal: Boolean,
 });
 
 onMounted(() => {
+
   const closeDialogModal = document.querySelector(".btn-close-modal");
   const cancelDialogModal = document.querySelector(".btn-cancel-modal");
-  console.log(props.modalShow);
 
   closeDialogModal.addEventListener("click", hiddenDialogModal);
   cancelDialogModal.addEventListener("click", hiddenDialogModal);
 
-  if (props.modalShow) {
+  if (props.dialogModal) {
     showDialogModal();
   }
+
 });
 
 function showDialogModal() {
@@ -68,16 +64,15 @@ function showDialogModal() {
 }
 
 function hiddenDialogModal() {
-  emit('onContinue')
+  emit('onCloseModal')
   const dialogModal = document.getElementById("modal-dialog");
   if (dialogModal) dialogModal.close();
-
 }
+
 watch(
-  () => props.modalShow,
+  () => props.dialogModal,
   () => {
-    console.log('modal change values',props.modalShow)
-    if (props.modalShow) {
+    if (props.dialogModal) {
       showDialogModal();
     } else {
       hiddenDialogModal();

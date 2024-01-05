@@ -9,8 +9,8 @@
             </div>
 
             <div class="col col-sidebar">
-
                 <section class="site-sidebar is-sticky">
+                    
                     <OrderTrackingDetail :payment="paymentDetail" :order-get="orderDetail" :current-status="currentStatus" />
                     
                     <OrderTrackingSubDetail :order-get="orderDetail" v-if="orderDetail" />
@@ -18,10 +18,10 @@
                     <NuxtLink to="/papers" class="btn btn-back">ย้อนกลับ</NuxtLink>
 
                 </section>
-
             </div>
 
         </div>
+        
         <ElementsModalLoading :loading="isLoading" />
         
     </NuxtLayout>
@@ -137,7 +137,7 @@ const showPageHeader = true
 
 // Define page meta
 const pageTitle = "ติดตามสถานะ"
-const pageCategory = "แลกกระดาษ"
+const pageCategory = "พ.ร.บ."
 const pageDescription = ""
 
 // Define meta seo
@@ -145,7 +145,7 @@ useHead({
     title: pageTitle,
     meta: [{ name: "description", content: pageDescription }],
     bodyAttrs: {
-        class: "page-papers single-status template-timeline"
+        class: "page-order single-status template-timeline"
     }
 })
 </script>

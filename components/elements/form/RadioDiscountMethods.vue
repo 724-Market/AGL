@@ -23,8 +23,8 @@
 </style>
 
 <script lang="ts" setup>
-import { Max } from "~/shared/entities/payment-entity";
-import { RadioOption } from "~/shared/entities/select-option";
+import type { Max } from "~/shared/entities/payment-entity";
+import type { RadioOption } from "~/shared/entities/select-option";
 
 const props = defineProps({
   max: {

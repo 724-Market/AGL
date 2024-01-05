@@ -1,5 +1,5 @@
-import { IAPIResponse, IAPIPaymentGatewayResponse, IDataTableResponse } from "~/shared/entities/useApi-response"
-import { WrapperResponse } from "~/shared/entities/wrapper-response"
+import type { IAPIResponse, IAPIPaymentGatewayResponse, IDataTableResponse } from "~/shared/entities/useApi-response"
+import type { WrapperResponse } from "~/shared/entities/wrapper-response"
 
 export default () => {
     const getResponse = <T>(response: any, params: any): IAPIResponse<T> => {

@@ -103,21 +103,21 @@
 
 <script setup lang="ts">
 import { ModalType } from "~/shared/entities/enum-entity";
-import { AgentAddressDeleteReq, AgentAddressListRes, AgentAddressSaveReq } from "~/shared/entities/agent-entity";
-import {
+import type { AgentAddressDeleteReq, AgentAddressListRes, AgentAddressSaveReq } from "~/shared/entities/agent-entity";
+import type {
   IDeliveryResponse,
   DeliveryPaperRes
 } from "~/shared/entities/delivery-entity";
-import { DistrictReq, PrefixReq, SubDistrictReq } from "~/shared/entities/master-entity";
-import {
+import type { DistrictReq, PrefixReq, SubDistrictReq } from "~/shared/entities/master-entity";
+import type {
   PaymentFeeLimitRes,
   DeliveryAddressReq
 } from '~/shared/entities/paper-entity';
-import {
+import type {
   AgentAddressCreateReq,
 } from "~/shared/entities/agent-entity";
-import { DefaultAddress } from "~/shared/entities/placeorder-entity";
-import { RadioOption, SelectOption } from "~/shared/entities/select-option";
+import type { DefaultAddress } from "~/shared/entities/placeorder-entity";
+import type { RadioOption, SelectOption } from "~/shared/entities/select-option";
 
 const emit = defineEmits(['shippingTypeChange', 'changeDeliveryChannel', 'checkAddress'])
 

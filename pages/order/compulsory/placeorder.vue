@@ -172,8 +172,8 @@
 
 <script lang="ts" setup>
 // Define import
-import { IInformation } from "~~/shared/entities/information-entity";
-import {
+import type { IInformation } from "~~/shared/entities/information-entity";
+import type {
   IPackageRequest,
   IPackageResponse,
   PaperRequest,
@@ -184,8 +184,8 @@ import { useStorePackageList } from "~/stores/order/storePackageList";
 
 // using pinia
 import { storeToRefs } from "pinia";
-import { IChecklist } from "~~/shared/entities/checklist-entity";
-import {
+import type { IChecklist } from "~~/shared/entities/checklist-entity";
+import type {
   DistrictReq,
   ICarColorReq,
   ICarColorResponse,
@@ -193,11 +193,11 @@ import {
   PrefixReq,
   SubDistrictReq,
 } from "~/shared/entities/master-entity";
-import { SelectOption } from "~/shared/entities/select-option";
+import type { SelectOption } from "~/shared/entities/select-option";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStorePackage } from "~/stores/order/storePackage";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
-import {
+import type {
   DefaultAddress,
   CarDetailsExtension,
   DeliveryAddress,
@@ -209,7 +209,7 @@ import {
   TaxInvoiceDeliveryAddress,
   DeliveryMethod,
 } from "~/shared/entities/placeorder-entity";
-import { Order, OrderDetailRequest, OrderResponse } from "~/shared/entities/order-entity";
+import type { Order, OrderDetailRequest, OrderResponse } from "~/shared/entities/order-entity";
 
 // Define Variables
 // Loading state after form submiting

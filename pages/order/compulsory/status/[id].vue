@@ -11,9 +11,9 @@
             <div class="col col-sidebar">
                 <section class="site-sidebar is-sticky">
                     
-                    <PapersOrderDetail :order-get="orderGet" v-if="orderGet" />
+                    <OrderTrackingDetail :payment="paymentDetail" :order-get="orderDetail" :current-status="currentStatus" />
                     
-                    <PapersSuborder :order-get="orderGet" :ordersub-feedelivery="ordersubFeeDel" :order-sub="orderSubAll" v-if="orderSubAll"></PapersSuborder>
+                    <OrderTrackingSubDetail :order-get="orderDetail" v-if="orderDetail" />
 
                     <NuxtLink to="/papers" class="btn btn-back">ย้อนกลับ</NuxtLink>
 
@@ -23,7 +23,7 @@
         </div>
         
         <ElementsModalLoading :loading="isLoading" />
-
+        
     </NuxtLayout>
 </template>
 
@@ -31,11 +31,11 @@
 
 import { storeToRefs } from "pinia";
 import type {
-    OrderListReq,
-    OrderListRes,
-    SubOrderListRes
+  OrderDetailRequest,
+  OrderDetails,
+  PaymentDetails,
 
-} from "~/shared/entities/paper-entity";
+} from "~/shared/entities/order-entity";
 
 import type {
     TrackOrderReq,
@@ -47,11 +47,10 @@ import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 // Define Variables
 // Loading state after form submiting
 const isLoading = ref(false);
-const orderGet: globalThis.Ref<OrderListRes | undefined> = ref();
-const orderSub: globalThis.Ref<SubOrderListRes[] | undefined> = ref([]);
+const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
+const paymentDetail: globalThis.Ref<PaymentDetails | undefined> = ref();
 const orderTrack: globalThis.Ref<TrackOrderRes[] | undefined> = ref([]);
-const ordersubFeeDel: globalThis.Ref<SubOrderListRes[] | undefined> = ref([]);
-const orderSubAll: globalThis.Ref<SubOrderListRes[] | undefined> = ref([]);
+const currentStatus = ref('');
 let sequenceIndex: number = 0;
 let currentIndex: number = 0;
 let isShowChild: boolean;
@@ -67,9 +66,8 @@ const onLoad = onMounted(async () => {
         isLoading.value = true;
         // Handle the possibility of route.params.id being an array
         const orderId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
-
-        await loadTrackOrderPaper(orderId);
-        await loadSubDetail(orderId);
+        await loadTrackOrderPaper("PO2311000038");
+        
         await loadOrderDetail(orderId);
         isLoading.value = false;
     } else {
@@ -77,8 +75,6 @@ const onLoad = onMounted(async () => {
     }
 });
 const loadTrackOrderPaper = async (orderNo: string) => {
-    isLoading.value = true
-
     const treq: TrackOrderReq = {
         ReferenceID: orderNo,
     };
@@ -94,6 +90,7 @@ const loadTrackOrderPaper = async (orderNo: string) => {
         currentIndex = resTrackOrder.apiResponse.Data.findIndex(
             item => item && item.IsCurrent === true
         );
+        currentStatus.value = orderTrack.value[currentIndex]?.Parent?.Type ?? '';
         if (currentIndex !== -1) {
             const currentItem = resTrackOrder.apiResponse.Data[currentIndex];
             if (currentItem && currentItem.Parent) {
@@ -110,52 +107,25 @@ const loadTrackOrderPaper = async (orderNo: string) => {
                     isShowChild = false;
                 }
             }
-
-
         } else {
             console.log("No item with IsCurrent: true found");
         }
     }
-
-    isLoading.value = false
-}
-
-const loadSubDetail = async (orderNo: string) => {
-    const req: OrderListReq = {
-        OrderNo: orderNo,
-    };
-    const resPSubOrder = await useRepository().paper.getSubOrderList(req);
-    if (
-        resPSubOrder.apiResponse.Status &&
-        resPSubOrder.apiResponse.Status == "200" &&
-        resPSubOrder.apiResponse.Data
-    ) {
-        orderSub.value = resPSubOrder.apiResponse.Data;
-        ordersubFeeDel.value = orderSub.value.filter((order: SubOrderListRes) => order.UseType === 'DeliveryFee');
-        orderSubAll.value = orderSub.value.filter((order: SubOrderListRes) => order.UseType !== 'DeliveryFee');
-    } else {
-        alert(resPSubOrder.apiResponse.Status);
-    }
-        
-    
 };
-
 const loadOrderDetail = async (orderNo: string) => {
-    const req: OrderListReq = {
-        OrderNo: orderNo,
-    };
+  const req: OrderDetailRequest = {
+    OrderNo: orderNo,
+  };
 
-    const resPOrder = await useRepository().paper.getOrder(req);
-    if (
-        resPOrder.apiResponse.Status &&
-        resPOrder.apiResponse.Status == "200" &&
-        resPOrder.apiResponse.Data
-    ) {
-        orderGet.value = resPOrder.apiResponse.Data[0];
+  const response = await useRepository().order.details(req);
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if (response.apiResponse.Data && response.apiResponse.Data.length > 0) {
+      orderDetail.value = response.apiResponse.Data[0].OrderDetails;
+      paymentDetail.value = response.apiResponse.Data[0].PaymentDetails;
     } else {
-        alert(resPOrder.apiResponse.ErrorMessage);
+      alert(response.apiResponse.ErrorMessage)
     }
-
+  } 
 };
 
 
@@ -167,7 +137,7 @@ const showPageHeader = true
 
 // Define page meta
 const pageTitle = "ติดตามสถานะ"
-const pageCategory = "แลกกระดาษ"
+const pageCategory = "พ.ร.บ."
 const pageDescription = ""
 
 // Define meta seo
@@ -175,7 +145,7 @@ useHead({
     title: pageTitle,
     meta: [{ name: "description", content: pageDescription }],
     bodyAttrs: {
-        class: "page-papers single-status template-timeline"
+        class: "page-order single-status template-timeline"
     }
 })
 </script>

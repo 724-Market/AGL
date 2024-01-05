@@ -2,7 +2,7 @@ export interface SelectOption {
     label: string
     value: string
     option?:string
-    attrs?: any
+    attrs?: unknown
 }
 
 export interface RadioOption {
@@ -10,5 +10,5 @@ export interface RadioOption {
     value: string
     help?:string
     option?:string
-    attrs?: any
+    attrs?: unknown
 }

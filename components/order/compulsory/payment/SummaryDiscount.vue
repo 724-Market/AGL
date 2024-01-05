@@ -57,10 +57,10 @@
 </template>
 
 <script lang="ts" setup>
-import { SelectOption } from "~/shared/entities/select-option";
-import { IPackageResponse } from "~~/shared/entities/packageList-entity";
-import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
-import { CalculateResponse, SummaryDiscountObject } from "~/shared/entities/payment-entity";
+import type { SelectOption } from "~/shared/entities/select-option";
+import type { IPackageResponse } from "~~/shared/entities/packageList-entity";
+import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import type { CalculateResponse, SummaryDiscountObject } from "~/shared/entities/payment-entity";
 
 type StringArray = {
   [key: string]: string;

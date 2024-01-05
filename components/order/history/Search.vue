@@ -159,8 +159,8 @@
 </template>
 
 <script setup lang="ts">
-import { SelectOption } from "~/shared/entities/select-option";
-import { HistorySearch } from "~/shared/entities/order-entity";
+import type { SelectOption } from "~/shared/entities/select-option";
+import type { HistorySearch } from "~/shared/entities/order-entity";
 
 const emit = defineEmits(["searchHistory", "clearSearchHistory"]);
 

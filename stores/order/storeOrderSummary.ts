@@ -1,5 +1,4 @@
-
-import { OrderResponse } from '~/shared/entities/order-entity'
+import type { OrderResponse } from '~/shared/entities/order-entity'
 
 export const useStoreOrderSummary = defineStore('useStoreOrderSummary', {
     state: (): OrderResponse => {

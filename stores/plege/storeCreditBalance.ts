@@ -1,4 +1,4 @@
-import { CreditBalanceResponse } from "~/shared/entities/pledge-entity"
+import type { CreditBalanceResponse } from "~/shared/entities/pledge-entity"
 
 export const useStoreCreditBalance = defineStore('useStoreCreditBalance', {
     state: (): CreditBalanceResponse => {

@@ -291,13 +291,13 @@
   </div>
 </template>
 <script setup lang="ts">
-import { OrderDetails } from "~/shared/entities/order-entity";
+import type { OrderDetails } from "~/shared/entities/order-entity";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import { storeToRefs } from "pinia";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
-import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
-import { IInformation } from "~/shared/entities/information-entity";
+import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import type { IInformation } from "~/shared/entities/information-entity";
 //define store
 const store = useStoreOrderSummary();
 

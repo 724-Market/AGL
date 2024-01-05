@@ -82,7 +82,7 @@
 <script lang="ts" setup>
 // Define Variables
 import { useRouter } from 'vue-router';
-import  {
+import type {
     OrderListReq,
     OrderListRes,
     SubOrderListRes,

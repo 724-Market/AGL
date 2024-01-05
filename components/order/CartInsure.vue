@@ -26,10 +26,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import {
-  CustomerOrderRequest,
-  PersonProfile,
-  LegalPersonProfile,
+import type {
+CustomerOrderRequest,
+PersonProfile,
+LegalPersonProfile,
 } from "~/shared/entities/placeorder-entity";
 
 const fullName = ref("");

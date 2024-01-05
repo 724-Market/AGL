@@ -27,8 +27,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
-import {
+import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import type {
   OrderDetailRequest,
   StatusGroupResponse,
   SubHistoryRequest,
@@ -47,9 +47,9 @@ import { useStorePackageList } from "~/stores/order/storePackageList";
 import { useStorePackage } from "~/stores/order/storePackage";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
-import { Filter } from "~/shared/entities/table-option";
-import { IInformation } from "~/shared/entities/information-entity";
-import {
+import type { Filter } from "~/shared/entities/table-option";
+import type { IInformation } from "~/shared/entities/information-entity";
+import type {
   IPackageRequest,
   IPackageResponse,
   Paging,
@@ -155,11 +155,6 @@ const pay = async (OrderNo: string) => {
   await paymentGateway.clearPaymenGateway()
   useStateMenu().setStateMenu(5)
   router.push(`/order/compulsory/summary`);
-};
-
-const trackStatus = async (OrderNo: string) => {
-  //ติดตามสถานะ
-  alert("trackStatus " + OrderNo);
 };
 
 const policyDetail = async (OrderNo: string) => {

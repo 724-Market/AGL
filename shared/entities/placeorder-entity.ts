@@ -1,4 +1,3 @@
-
 export interface PlaceOrderRequest {
   OrderNo?:string
   Package?: PackageOrderRequest

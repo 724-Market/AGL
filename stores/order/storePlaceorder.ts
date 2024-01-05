@@ -1,4 +1,4 @@
-import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
 
 export const useStorePlaceorder = defineStore('useStorePlaceorder', {
     state: (): PlaceOrderRequest => {

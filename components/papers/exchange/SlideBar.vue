@@ -45,9 +45,9 @@
 </template>
 
 <script lang="ts" setup>
-import { IChecklist } from "~/shared/entities/checklist-entity"
-import { ErrorCodeRes } from "~/shared/entities/error-entity";
-import {  CalculateGrandTotal, DeliveryAddressReq, ExchangeDataSummary, OrderExchangeCreateReq, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
+import type { IChecklist } from "~/shared/entities/checklist-entity"
+import type { ErrorCodeRes } from "~/shared/entities/error-entity";
+import type {  CalculateGrandTotal, DeliveryAddressReq, ExchangeDataSummary, OrderExchangeCreateReq, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
 import { useStoreSearchMatchCompulsory } from "~/stores/paper/storeSearchMatchCompulsory";
 
 const messageError = ref('')

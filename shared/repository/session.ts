@@ -1,6 +1,5 @@
-
-import { IAPIResponse } from "../entities/useApi-response";
-import { IUserAuthRequest, IUserAuthResponse } from "../entities/userAuth-entity";
+import type { IAPIResponse } from "../entities/useApi-response";
+import type { IUserAuthRequest, IUserAuthResponse } from "../entities/userAuth-entity";
 
 class SessionModule {
     private RESOURCE = '/Session';

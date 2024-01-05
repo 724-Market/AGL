@@ -128,17 +128,17 @@
 
 <script lang="ts" setup>
 // Define import
-import {
+import type {
   CalculateRequest,
   CalculateResponse,
   SummaryDiscountObject,
   PaymentSaveRequest,
   PaymentSaveResponse,
 } from "~/shared/entities/payment-entity";
-import { CreditBalanceResponse } from "~/shared/entities/pledge-entity";
-import { IInformation } from "~~/shared/entities/information-entity";
-import { IPackageResponse } from "~~/shared/entities/packageList-entity";
-import {
+import type { CreditBalanceResponse } from "~/shared/entities/pledge-entity";
+import type { IInformation } from "~~/shared/entities/information-entity";
+import type { IPackageResponse } from "~~/shared/entities/packageList-entity";
+import type {
   CarDetailsExtension,
   PlaceOrderRequest,
   InsuranceRecieveObject,
@@ -156,7 +156,7 @@ import { useStorePayment } from "~/stores/order/storePayments";
 
 // using pinia
 import { storeToRefs } from "pinia";
-import { IChecklist } from "~~/shared/entities/checklist-entity";
+import type { IChecklist } from "~~/shared/entities/checklist-entity";
 import { useStoreCreditBalance } from "~/stores/plege/storeCreditBalance";
 
 type StringArray = {

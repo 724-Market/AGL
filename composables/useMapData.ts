@@ -1,6 +1,6 @@
 import { ModalType } from "~/shared/entities/enum-entity";
-import { ErrorCodeRes, ErrorMessageReplace } from "~/shared/entities/error-entity";
-import { Filter } from "~/shared/entities/table-option";
+import type { ErrorCodeRes, ErrorMessageReplace } from "~/shared/entities/error-entity";
+import type { Filter } from "~/shared/entities/table-option";
 
 export default () => {
     const getStyleIconColor = (modalType: ModalType): string => {

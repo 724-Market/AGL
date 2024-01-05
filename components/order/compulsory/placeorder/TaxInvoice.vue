@@ -248,8 +248,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { CustomerOrderRequest, DefaultAddress, PlaceOrderRequest, TaxInvoiceAddress, TaxInvoiceDeliveryAddress } from "~/shared/entities/placeorder-entity"
-import { RadioOption, SelectOption } from "~/shared/entities/select-option"
+import type { CustomerOrderRequest, DefaultAddress, PlaceOrderRequest, TaxInvoiceAddress, TaxInvoiceDeliveryAddress } from "~/shared/entities/placeorder-entity"
+import type { RadioOption, SelectOption } from "~/shared/entities/select-option"
 
 const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict','changeProvince2', 'changeDistrict2', 'changeSubDistrict2','changeTaxInvoice'])
 

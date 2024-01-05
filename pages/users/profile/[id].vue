@@ -43,7 +43,7 @@
   
 <script lang="ts" setup>
 import { ModalType } from "~/shared/entities/enum-entity"
-import {
+import type {
   UserDataReq,
   UserDataRes,
   UserCommissionListRes,

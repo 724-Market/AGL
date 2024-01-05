@@ -1,4 +1,4 @@
-import { ExchangeDataSummary, SearchMatchRes } from "~/shared/entities/paper-entity"
+import type { ExchangeDataSummary, SearchMatchRes } from "~/shared/entities/paper-entity"
 
 export const useStoreExchangeDataInfo = defineStore('useStoreExchangeDataInfo', {
     state: (): ExchangeDataSummary[] => {

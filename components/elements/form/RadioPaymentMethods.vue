@@ -28,9 +28,9 @@
 </style>
 
 <script lang="ts" setup>
-import { Fee, RadiioPaymentObject } from "~/shared/entities/payment-entity";
-import { RadioOption } from "~/shared/entities/select-option";
-import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import type { Fee, RadiioPaymentObject } from "~/shared/entities/payment-entity";
+import type { RadioOption } from "~/shared/entities/select-option";
+import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
 
 const props = defineProps({
   order: {

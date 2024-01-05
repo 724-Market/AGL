@@ -1,7 +1,7 @@
 import { storeToRefs } from "pinia"
-import { CalculateGrandTotal, DeliveryAddressReq, ExchangeDataSummary, OrderExchangeCreateReq, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
-import { PaymentGetResponse } from "~/shared/entities/payment-entity"
-import { WrapperResponse } from "~/shared/entities/wrapper-response"
+import type { CalculateGrandTotal, DeliveryAddressReq, ExchangeDataSummary, OrderExchangeCreateReq, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
+import type { PaymentGetResponse } from "~/shared/entities/payment-entity"
+import type { WrapperResponse } from "~/shared/entities/wrapper-response"
 import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo"
 import { useStoreCreditBalance } from "~/stores/plege/storeCreditBalance"
 

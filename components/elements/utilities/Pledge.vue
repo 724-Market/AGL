@@ -28,15 +28,15 @@
 
 <script setup lang="ts">
 import { defineEventHandler } from "~/server/api/setting.post";
-import {
-    CreditBalanceResponse,
-    CreditHistoryPaymentAdd,
-    CreditOrderPaymentCreateRequest,
-    CreditOrderPaymentCreateResponse
+import type {
+CreditBalanceResponse,
+CreditHistoryPaymentAdd,
+CreditOrderPaymentCreateRequest,
+CreditOrderPaymentCreateResponse
 } from "~/shared/entities/pledge-entity";
-import {
-    PaymentGatewayRequest,
-    PaymentGatewayResponse
+import type {
+PaymentGatewayRequest,
+PaymentGatewayResponse
 } from "~/shared/entities/payment-entity";
 import { useStoreCreditBalance } from "~/stores/plege/storeCreditBalance";
 import { storeToRefs } from "pinia";

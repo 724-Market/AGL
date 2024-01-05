@@ -161,7 +161,7 @@
               <div class="form-inline">
                 <FormKit
                   type="radio"
-                  label="เลือกวันคุ้มครอง"
+                  label="เลือกวันคุ้มครอง"format="DD/MM/YYYY"
                   name="EffectiveType"
                   :options="{
                     FULLYEAR: 'คุ้มครอง 1 ปี',
@@ -180,7 +180,7 @@
                   label="เริ่มต้น"
                   name="EffectiveDate"
                   placeholder="วัน/เดือน/ปี ค.ศ."
-                  format="DD/MM/YYYY"
+                  format="DD/MM/YYYY" value-format="YYYY-MM-DD"
                   picker-only
                   :min-date="effectiveMinDate"
                   :max-date="effectiveMaxDate"
@@ -198,7 +198,7 @@
                   label="สิ้นสุด"
                   name="ExpireDate"
                   placeholder="วัน/เดือน/ปี ค.ศ"
-                  format="DD/MM/YYYY"
+                  format="DD/MM/YYYY" value-format="YYYY-MM-DD"
                   picker-only
                   :min-date="expireMinDate"
                   :max-date="expireMaxDate"
@@ -248,8 +248,8 @@
 </template>
 
 <script lang="ts" setup>
-import { SelectOption } from "~/shared/entities/select-option";
-import {
+import type { SelectOption } from "~/shared/entities/select-option";
+import type {
   IUseCarResponse,
   ICarTypeResponse,
   ICarCategoryResponse,
@@ -262,8 +262,7 @@ import { defineEventHandler } from "~/server/api/setting.post";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { storeToRefs } from "pinia";
-import { IChecklist } from "~/shared/entities/checklist-entity";
-import { info } from "console";
+import type { IChecklist } from "~/shared/entities/checklist-entity";
 
 // Define Store
 const storeAuth = useStoreUserAuth();
@@ -515,7 +514,7 @@ const handleEffectiveDateChange = async (value: string) => {
   console.log("handleEffectiveDateChange", value);
   if (value && value != "") {
     selectDate = new Date(value);
-    effectiveDateText.value = selectDate.toISOString();
+    effectiveDateText.value = selectDate.toISOString().split('T')[0];
     switch (effectiveType.value) {
       case "FULLYEAR":
         await setExpireDate(CoverageExpireDateFullYearMaxDay);
@@ -547,7 +546,7 @@ const handleEffectiveDateChange = async (value: string) => {
 // Event Handle ExpireDate Change Set Value To ExpireDate And Call Function checkFromDate
 const handleExpireDateChange = async (value: string) => {
   if (value && value != "") {
-    expireDateText.value = new Date(value).toISOString();
+    expireDateText.value = new Date(value).toISOString().split('T')[0];
     if (effectiveDateText && effectiveDateText.value) {
       let efDate = new Date(effectiveDateText.value.toString());
       let exDate = new Date(value);
@@ -771,11 +770,11 @@ const getCarDetail = async () => {
   if (carBrandText.value && carBrandText.value != "") {
     carDetail = carBrand.value.find((e) => e.value == carBrandText.value)?.label ?? "";
   }
-  if (carModelText.value && carModelText.value != "") {
-    carDetail =
-      `${carDetail} ` +
-        carModel.value.find((e) => e.value == carModelText.value)?.label ?? "";
+  if (carModelText.value && carModelText.value !== "") {
+    const foundCar = carModel.value.find((e) => e.value === carModelText.value);
+    carDetail = `${carDetail} ${foundCar?.label ?? ""}`;
   }
+
   if (subcarModelText.value && subcarModelText.value != "") {
     if (!otherSubcarModel.includes(subcarModelText.value)) {
       carDetail = `${carDetail} ${

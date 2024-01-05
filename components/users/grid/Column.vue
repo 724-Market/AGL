@@ -1,6 +1,6 @@
 <template>
   <div v-if="props.field && props.field == 'createdate' && props.row">
-    <time :datetime="props.row.CreateDate">{{ useUtility().formatDate(props.row.CreateDate, "D MMM BBBB • HH:mm") }}</time>
+    <time :datetime="props.row.CreateDate">{{ useUtility().formatDate(props.row.CreateDate) }}</time>
   </div>
 
   <div v-if="props.field && props.field == 'username' && props.row">
@@ -54,7 +54,7 @@
 
 <script lang="ts" setup>
 // Define import
-import { UsersHistoryResponse } from "~/shared/entities/user-entity"
+import type { UsersHistoryResponse } from "~/shared/entities/user-entity"
 
 // Define props
 const props = defineProps({

@@ -1,4 +1,4 @@
-import { UserProfileReq } from "~/shared/entities/user-entity"
+import type { UserProfileReq } from "~/shared/entities/user-entity"
 
 export const useStoreUserSave = defineStore('useStoreUserSave',{
     state: (): UserProfileReq => {

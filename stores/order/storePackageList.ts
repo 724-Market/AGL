@@ -1,6 +1,5 @@
-
-import { IPackageResponse, IPackageRequest } from '~/shared/entities/packageList-entity'
-import { WrapperResponse } from '~/shared/entities/wrapper-response'
+import type { IPackageResponse, IPackageRequest } from '~/shared/entities/packageList-entity'
+import type { WrapperResponse } from '~/shared/entities/wrapper-response'
 
 export const useStorePackageList = defineStore('useStorePackageList', {
     state: (): WrapperResponse<IPackageResponse[]> => {

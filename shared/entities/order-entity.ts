@@ -1,6 +1,6 @@
-import { LegalPersonProfile } from "./placeorder-entity"
-import { SelectOption } from "./select-option"
-import { Filter } from "./table-option"
+import type { LegalPersonProfile } from "./placeorder-entity"
+import type { SelectOption } from "./select-option"
+import type { Filter } from "./table-option"
 
 export interface OrderDetailRequest {
   OrderNo: string

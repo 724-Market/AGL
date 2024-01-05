@@ -1,7 +1,7 @@
-import { IAPIResponse } from "../entities/useApi-response";
-import { Paper, PaperRequest } from "../entities/packageList-entity";
-import {  CreditBalanceResponse, CreditHistoryPaymentAdd, CreditOrderPaymentCreateRequest, CreditOrderPaymentCreateResponse, PledgePaperOnhandBalanceReq, PledgePaperOnhandBalanceRes, PaymentFeeLimitRequest, PaymentFeeLimitResponse } from "../entities/pledge-entity";
-import { PaymentGetRequest, PaymentGetResponse } from "../entities/payment-entity";
+import type { IAPIResponse } from "../entities/useApi-response";
+import type { Paper, PaperRequest } from "../entities/packageList-entity";
+import type {  CreditBalanceResponse, CreditHistoryPaymentAdd, CreditOrderPaymentCreateRequest, CreditOrderPaymentCreateResponse, PledgePaperOnhandBalanceReq, PledgePaperOnhandBalanceRes, PaymentFeeLimitRequest, PaymentFeeLimitResponse } from "../entities/pledge-entity";
+import type { PaymentGetRequest, PaymentGetResponse } from "../entities/payment-entity";
 
 class PledgeModule {
   private RESOURCE = '/Pledge';

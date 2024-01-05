@@ -14,11 +14,11 @@
                 </div>
                 <div class="status-item" v-if="props.userDetails && props.userDetails.CreateDate">
                     <h5 class="topic">วันที่สร้าง</h5>
-                    <p>{{ useUtility().formatDate(props.userDetails.CreateDate, "DD MMM BBBB • HH:mm") }}</p>
+                    <p>{{ useUtility().formatDate(props.userDetails.CreateDate) }}</p>
                 </div>
                 <div class="status-item" v-if="props.userDetails && props.userDetails.UpdateDate">
-                    <h5 class="topic">อัปเดตข้อมูลเมื่อ</h5>
-                    <p>{{ useUtility().formatDate(props.userDetails.UpdateDate, "DD MMM BBBB • HH:mm") }}</p>
+                    <h5 class="topic">อัปเดตข้อมูลล่าสุดเมื่อ</h5>
+                    <p>{{ useUtility().formatDate(props.userDetails.UpdateDate) }}</p>
                 </div>
                 <div class="status-item" v-if="props.userDetails && props.userDetails.CreditLimitAmount">
                     <h5 class="topic">วงเงินต่อวัน</h5>
@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 // Define import
-import { UserDataRes } from "~/shared/entities/user-entity"
+import type { UserDataRes } from "~/shared/entities/user-entity"
 
 // Define props
 const props = defineProps({

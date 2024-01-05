@@ -1,5 +1,5 @@
-import { PaymentFeeLimitRequest, PaymentFeeLimitResponse } from "~/shared/entities/pledge-entity"
-import { WrapperResponse } from "~/shared/entities/wrapper-response"
+import type { PaymentFeeLimitRequest, PaymentFeeLimitResponse } from "~/shared/entities/pledge-entity"
+import type { WrapperResponse } from "~/shared/entities/wrapper-response"
 
 
 export const useStoreFeeLimit = defineStore('useStoreFeeLimit', {

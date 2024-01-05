@@ -83,9 +83,9 @@
 </template>
 <script lang="ts" setup>
 import { ModalType } from "~/shared/entities/enum-entity";
-import { CalculateGrandTotal, ExchangeDataSummary, PaymentFeeLimitRes } from "~/shared/entities/paper-entity";
+import type { CalculateGrandTotal, ExchangeDataSummary, PaymentFeeLimitRes } from "~/shared/entities/paper-entity";
 
-import { SearchMatchRes } from "~/shared/entities/paper-entity";
+import type { SearchMatchRes } from "~/shared/entities/paper-entity";
 import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo";
 
 const isDeleteConfirm = ref(false)

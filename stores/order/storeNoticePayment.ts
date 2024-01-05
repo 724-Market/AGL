@@ -1,4 +1,4 @@
-import { NoticePaymentData }  from "~/shared/entities/payment-entity";
+import type { NoticePaymentData }  from "~/shared/entities/payment-entity";
 
 export const useStoreNoticePayment = defineStore('useStoreNoticePayment', {
     state: (): NoticePaymentData => {

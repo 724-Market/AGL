@@ -27,7 +27,7 @@
   
 <script setup lang="ts">
 // Define import
-import { UsersHistoryResponse } from "~/shared/entities/user-entity"
+import type { UsersHistoryResponse } from "~/shared/entities/user-entity"
 
 // Define props
 const props = defineProps({

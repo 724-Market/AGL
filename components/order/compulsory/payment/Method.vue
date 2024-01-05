@@ -56,19 +56,19 @@
 </style>
 
 <script lang="ts" setup>
-import { 
-  CalculateRequest, 
-  CalculateResponse, 
-  DebitCredit,
-  BillPayment,
-  Pledge,
-  Fee, 
-  Max,
-  RadiioPaymentObject,
-  SummaryDiscountObject
+import type {
+CalculateRequest,
+CalculateResponse,
+DebitCredit,
+BillPayment,
+Pledge,
+Fee,
+Max,
+RadiioPaymentObject,
+SummaryDiscountObject
 } from "~/shared/entities/payment-entity";
-import { CreditBalanceResponse } from '~/shared/entities/pledge-entity'
-import { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
+import type { CreditBalanceResponse } from '~/shared/entities/pledge-entity';
+import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
 
 const emit = defineEmits(['passSummary'])
 

@@ -47,13 +47,13 @@
 </template>
 
 <script setup lang="ts">
-import {
-    AreaListRes,
-    ProductcompanyAreaListRes,
-    ProductsubcategoryAreaListRes,
-    WarehouseAreaListRes
+import type {
+AreaListRes,
+ProductcompanyAreaListRes,
+ProductsubcategoryAreaListRes,
+WarehouseAreaListRes
 } from '~/shared/entities/paper-entity';
-import { SelectOption } from '~/shared/entities/select-option';
+import type { SelectOption } from '~/shared/entities/select-option';
 
 const emit = defineEmits(['areaChange', 'wareHouseChange', 'productSubChange', 'productCompanyChange'])
 

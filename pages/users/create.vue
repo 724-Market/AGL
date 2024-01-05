@@ -37,7 +37,7 @@
 
 <script lang="ts" setup>
 // Define import
-import { UserLimitRes } from "~/shared/entities/user-entity"
+import type { UserLimitRes } from "~/shared/entities/user-entity"
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth"
 import { storeToRefs } from "pinia"
 

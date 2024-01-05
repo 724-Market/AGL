@@ -1,5 +1,5 @@
-import { UploadFileRequest, UploadFileResponse, GetFileResponse } from "../entities/file-entity";
-import { IAPIResponse } from "../entities/useApi-response";
+import type { UploadFileRequest, UploadFileResponse, GetFileResponse } from "../entities/file-entity";
+import type { IAPIResponse } from "../entities/useApi-response";
 
 class FileModule {
   private RESOURCE = '/Files';

@@ -1,5 +1,5 @@
-import { IUserAuthResponse, IUserAuthRequest, IUserAuth } from '~/shared/entities/userAuth-entity'
-import { WrapperResponse } from '~~/shared/entities/wrapper-response'
+import type { IUserAuthResponse, IUserAuthRequest, IUserAuth } from '~/shared/entities/userAuth-entity'
+import type { WrapperResponse } from '~~/shared/entities/wrapper-response'
 
 export const useStoreUserAuth = defineStore('useStoreUserAuth', {
     state: (): IUserAuth => {

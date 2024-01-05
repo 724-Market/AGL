@@ -770,11 +770,11 @@ const getCarDetail = async () => {
   if (carBrandText.value && carBrandText.value != "") {
     carDetail = carBrand.value.find((e) => e.value == carBrandText.value)?.label ?? "";
   }
-  if (carModelText.value && carModelText.value != "") {
-    carDetail =
-      `${carDetail} ` +
-        carModel.value.find((e) => e.value == carModelText.value)?.label ?? "";
+  if (carModelText.value && carModelText.value !== "") {
+    const foundCar = carModel.value.find((e) => e.value === carModelText.value);
+    carDetail = `${carDetail} ${foundCar?.label ?? ""}`;
   }
+
   if (subcarModelText.value && subcarModelText.value != "") {
     if (!otherSubcarModel.includes(subcarModelText.value)) {
       carDetail = `${carDetail} ${

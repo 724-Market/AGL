@@ -103,7 +103,7 @@ const datatableAjax = {
       Filter: props.filters, //filterOption.value,
     };
   },
-  dataSrc: function ( json ) {
+  dataSrc: function ( json: { data: any; } ) {
    //Make your callback here.
   isLoading.value = false
   return json.data;
@@ -260,7 +260,7 @@ const datatableOptions = {
     //   // console.log(tr)
     // })
 
-    TdId2.addEventListener('click',async function() {
+    TdId2.addEventListener('click',async () => {
         if(data.OrderGroupNo!='')
         {
             const req: SubHistoryRequest = {

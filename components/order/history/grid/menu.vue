@@ -2,7 +2,7 @@
 <template>
   <div class="dropdown" v-if="$props.row">
     <a
-      class="btn btn-ellipsis dropdown-toggle"
+      class="btn btn-actions dropdown-toggle"
       role="button"
       title="เครื่องมือจัดการเพิ่มเติม"
       data-bs-toggle="dropdown"

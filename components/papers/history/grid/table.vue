@@ -29,7 +29,7 @@
   // Define import
   import DataTable from "datatables.net-vue3";
   import DataTablesCore from "datatables.net-bs5";
-  import PapersHistoryGridMenu from "~/components/papers/history/grid/Menu.vue";
+  import PapersHistoryGridActions from "~/components/papers/history/grid/Actions.vue";
   import PapersHistoryGridColumn from "~/components/papers/history/grid/Column.vue";
   import { renderToString } from "@vue/server-renderer";
   import type { Filter } from "~/shared/entities/table-option";
@@ -48,7 +48,7 @@
   const isLoading = ref(false)
   const onLoad = onMounted(async () => {
     dt = table.value;
-    console.log(dt);
+    // console.log(dt);
     emit('changeTable',table.value)
 
   });
@@ -100,7 +100,7 @@
         Filter: props.filters, //filterOption.value,
       };
     },
-    dataSrc: function ( json ) {
+    dataSrc: function ( json: { data: any; } ) {
      //Make your callback here.
     isLoading.value = false
     return json.data;
@@ -133,9 +133,9 @@
   
     // },
     createdRow: async function (row: any, data: any) {
-      console.log("createdRow [data]=", data);
+      // console.log("createdRow [data]=", data);
       const menu = await renderToString(
-        h(PapersHistoryGridMenu, { 
+        h(PapersHistoryGridActions, { 
             row: data 
         })
       );

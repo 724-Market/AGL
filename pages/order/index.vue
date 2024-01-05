@@ -157,11 +157,6 @@ const pay = async (OrderNo: string) => {
   router.push(`/order/compulsory/summary`);
 };
 
-const trackStatus = async (OrderNo: string) => {
-  //ติดตามสถานะ
-  alert("trackStatus " + OrderNo);
-};
-
 const policyDetail = async (OrderNo: string) => {
   //รายละเอียดกรมธรรม์
   alert("policyDetail : " + OrderNo);

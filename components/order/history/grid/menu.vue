@@ -24,13 +24,13 @@
       </li>
 
       <li v-if="props.row.Status == 'Delivery' || props.row.Status == 'Process' || (props.row.Status == 'Cancel' && props.row.IsCancel && props.row.IsCancelComplete)">
-        <a class="dropdown-item"  title="ติดตามสถานะ"
+        <a class="dropdown-item" :href="'/order/compulsory/status/' + $props.row.OrderNo" title="ติดตามสถานะ"
           ><span class="icon-tracking" :data-id="$props.row.OrderNo">ติดตามสถานะ</span></a
         >
       </li>
 
       <li v-if="props.row.Status == 'Success'">
-        <a class="dropdown-item" title="รายละเอียดกรมธรรม์"
+        <a class="dropdown-item" :href="'/order/compulsory/status/' + $props.row.OrderNo" title="รายละเอียดกรมธรรม์"
           ><span class="icon-policy" :data-id="$props.row.OrderNo">รายละเอียดกรมธรรม์</span></a
         >
       </li>

@@ -13,7 +13,7 @@
                 </div>
                 <div class="status-item" v-if="$props.orderGet">
                     <h5 class="topic">วันที่ทำรายการ</h5>
-                    <p>{{ formatDate($props.orderGet.OrderDate ?? "") }}</p>
+                    <p>{{ useUtility().formatDate($props.orderGet.OrderDate) }}</p>
                 </div>
                 <div class="status-item" v-if="$props.payment">
                     <h5 class="topic">ยอดชำระทั้งหมด</h5>
@@ -30,10 +30,10 @@
 </template>
 
 <script setup lang="ts">
-// // Define import
+// Define import
 import type { OrderDetails, PaymentDetails } from "~/shared/entities/order-entity"
 
-// // Define props
+// Define props
 const props = defineProps({
     orderGet: {
         type: Object as () => OrderDetails
@@ -43,12 +43,6 @@ const props = defineProps({
     },
     currentStatus: String
 })
-
-// useUtility change date format
-const formatDate = (date: string) => {
-    const format = useUtility().formatDate(date, 'DD MMM BBBB • HH:mm')
-    return format
-}
 
 // useUtility change currency format
 const formatCurrency = (currency: number) => {

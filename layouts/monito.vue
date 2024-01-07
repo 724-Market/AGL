@@ -78,13 +78,14 @@
 </template>
 
 <script setup>
+
 // Props from page setup
 const props = defineProps({
     pageTitle: String,
     pageCategory: String,
     layoutClass: String,
     showPageSteps: Boolean,
-    showPageHeader: Boolean
+    showPageHeader: Boolean,
 })
 
 const showComponent = ref(true)

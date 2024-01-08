@@ -10,7 +10,7 @@
             <div :class="['icon', iconClasses[modalTypeClass]]"></div>
           </figure>
           <figure v-else class="dialog-icon">
-            <i class="fa-regular fa-thumbs-up"></i>
+            <i class="fa-regular fa-circle-question"></i>
           </figure>
           <h5 v-if="modalTitle">{{ modalTitle }}</h5>
           <p v-if="modalText">{{ modalText }}</p>
@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-// Define emit function to emit events
+// Define emit function to emit events on modal
 const emit = defineEmits(['onCloseModal'])
 
 // Define props for the component
@@ -56,7 +56,7 @@ const modalTypeClass = computed(() => {
 
 // Mapping icons class based on modalType 
 const iconClasses = {
-  info: 'question',
+  info: 'info',
   warning: 'exclamation',
   success: 'check',
   danger: 'cross',

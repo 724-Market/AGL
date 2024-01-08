@@ -50,21 +50,26 @@
 
         </FormKit>
 
-        <ElementsModalLoading :loading="isLoading" />
+        <!-- <ElementsModalLoading :loading="isLoading" /> -->
+        <ElementsDialogLoading :isShowLoading="isShowLoading" />
 
         <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
-            :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal"></ElementsDialogModal>
+            :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
 
     </NuxtLayout>
 </template>
 
 <script setup lang="ts">
-
-const emit = defineEmits(['onContinue'])
 const route = useRoute()
 
-// Modal Loading
+// Button Loading
 const isLoading = ref(false)
+
+// Modal Loading
+const isShowLoading = ref(false)
+
+// Define emit function to emit events on modal
+const emit = defineEmits(['onContinue'])
 
 // Modal Dialog
 const isShowModal = ref(false)
@@ -73,20 +78,21 @@ const modalTitle = ref('')
 const modalText = ref('')
 const modalButton = ref('')
 
-const isAgent = ref(false)
-
+// Function to handle close modal events
 const handleCloseModal = async () => {
     isShowModal.value = false
-};
+}
+
+const isAgent = ref(false)
 
 // Submit form event
 const submitRegister = async (formData: any) => {
 
-    isLoading.value = true
+    isShowLoading.value = true
     const response = await useRepository().user.create(formData)
 
     if (response.apiResponse.Status == "200") {
-        isLoading.value = false
+        isShowLoading.value = false
         isShowModal.value = true
         modalType.value = 'success'
         modalTitle.value = 'ลงทะเบียนสำเร็จ'
@@ -94,7 +100,7 @@ const submitRegister = async (formData: any) => {
         //response.apiResponse.Data.UserID;
     }
     else {
-        isLoading.value = false
+        isShowLoading.value = false
         isShowModal.value = true
         modalType.value = 'danger'
         modalTitle.value = 'ไม่สามารถลงทะเบียนได้'

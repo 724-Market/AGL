@@ -55,6 +55,9 @@
         <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
             :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
 
+        <ElementsDialogConfirms :isShowConfirm="isShowConfirm" :confirm-type="confirmType" :confirm-title="confirmTitle"
+            :confirm-text="confirmText" :confirm-button="confirmButton" :confirm-cancel-button="confirmCancelButton" @on-accept-confirm="handleAcceptConfirm" @on-close-confirm="handleCloseConfirm" />
+
     </NuxtLayout>
 </template>
 
@@ -64,11 +67,13 @@ const route = useRoute()
 // Button Loading
 const isLoading = ref(false)
 
+/////////////////////////////////////////
 // Modal Loading
 const isShowLoading = ref(false)
 const loadingLogo = ref(false)
 const loadingText = ref(true)
 
+/////////////////////////////////////////
 // Modal Dialog
 const isShowModal = ref(false)
 const modalType = ref('')
@@ -76,13 +81,37 @@ const modalTitle = ref('')
 const modalText = ref('')
 const modalButton = ref('')
 
-// Define emit function to emit events on modal
-const emit = defineEmits(['onCloseModal'])
-
 // Function to handle close modal events
 const handleCloseModal = async () => {
     isShowModal.value = false
 }
+
+/////////////////////////////////////////
+// Confirm Dialog
+const isShowConfirm = ref(false)
+const confirmType = ref('')
+const confirmTitle = ref('')
+const confirmText = ref('')
+const confirmButton = ref('')
+const confirmCancelButton = ref('')
+
+// Function to handle close confirm events
+const handleCloseConfirm = async () => {
+    isShowConfirm.value = false
+}
+
+// Function to handle accept confirm events
+const handleAcceptConfirm = async () => {
+    isShowConfirm.value = false
+    await new Promise((r) => setTimeout(r, 1000))
+    isShowModal.value = true
+}
+
+/////////////////////////////////////////
+// Define emit function to emit events on all dialog
+const emit = defineEmits(['onCloseModal', 'onCloseConfirm', 'onAcceptConfirm'])
+
+/////////////////////////////////////////
 
 const isAgent = ref(false)
 
@@ -105,10 +134,19 @@ const submitRegister = async (formData: any) => {
     }
     else {
         isShowLoading.value = false
-        isShowModal.value = true
-        modalType.value = 'danger'
+
+        isShowConfirm.value = true
+        confirmType.value = 'danger'
+        confirmTitle.value = 'แน่ใจ?'
+        confirmText.value = 'It is advised to wrap your plugins as in the future this may enable enhancements.'
+        confirmButton.value = 'ไปโลดดดด'
+        confirmCancelButton.value = 'อุ่ยยยย'
+
+        // isShowModal.value = true
+        modalType.value = 'warning'
         modalTitle.value = 'ไม่สามารถลงทะเบียนได้'
         modalButton.value = 'รับทราบ'
+        
         modalText.value = response.apiResponse.ErrorMessage || 'string'
     }
 

@@ -50,8 +50,7 @@
 
         </FormKit>
 
-        <!-- <ElementsModalLoading :loading="isLoading" /> -->
-        <ElementsDialogLoading :isShowLoading="isShowLoading" />
+        <ElementsDialogLoading :isShowLoading="isShowLoading" :loadingLogo="loadingLogo" :loadingText="loadingText" />
 
         <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
             :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
@@ -67,9 +66,8 @@ const isLoading = ref(false)
 
 // Modal Loading
 const isShowLoading = ref(false)
-
-// Define emit function to emit events on modal
-const emit = defineEmits(['onContinue'])
+const loadingLogo = ref(false)
+const loadingText = ref(true)
 
 // Modal Dialog
 const isShowModal = ref(false)
@@ -77,6 +75,9 @@ const modalType = ref('')
 const modalTitle = ref('')
 const modalText = ref('')
 const modalButton = ref('')
+
+// Define emit function to emit events on modal
+const emit = defineEmits(['onCloseModal'])
 
 // Function to handle close modal events
 const handleCloseModal = async () => {
@@ -89,6 +90,9 @@ const isAgent = ref(false)
 const submitRegister = async (formData: any) => {
 
     isShowLoading.value = true
+
+    await new Promise((r) => setTimeout(r, 3000))
+
     const response = await useRepository().user.create(formData)
 
     if (response.apiResponse.Status == "200") {

@@ -91,11 +91,8 @@ function showDialogModal() {
 function hiddenDialogModal() {
   const dialogModal = document.getElementById('modal-dialog')
 
-  // Check if the dialogModal exists, close it, and emit the 'onCloseModal' event
-  if (dialogModal) {
-    dialogModal.close()
-    emit('onCloseModal')
-  }
+  // Check if the dialogModal exists and close it
+  if (dialogModal) dialogModal.close()
 }
 
 // Watcher to detect changes in isShowModal prop

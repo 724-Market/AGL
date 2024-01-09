@@ -2,7 +2,6 @@
 <template>
   <dialog id="modal-dialog" v-if="props.modalShow">
     <div class="dialog-card">
-      <!-- Add class 'is-info', 'is-success', 'is-warning', 'is-danger' for color styling -->
       <div class="card-header">
         <button class="btn btn-close btn-close-modal">ปิด</button>
       </div>
@@ -68,7 +67,6 @@ function showDialogModal() {
 function hiddenDialogModal() {
   const dialogModal = document.getElementById("modal-dialog");
   if (dialogModal) dialogModal.close();
-  emits('onCloseModal')
 
 }
 watch(

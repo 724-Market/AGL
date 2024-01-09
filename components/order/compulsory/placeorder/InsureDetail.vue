@@ -519,15 +519,19 @@
 
                 <section class="insured-address">
                   <h3>ที่อยู่ผู้เอาประกันภัย</h3>
-
+                <button type="button" class="btn-gray btn-open-papers" @click="onModalEditAddress(true)"><i
+                        class="fa-solid fa-layer-group"></i>Edit</button>
+                 
                   <div class="row">
                     <ElementsFormAddress
                       element-key="insured"
+                      :order-No="props.cacheOrderRequest?.OrderNo"
                       :addr-province="addrProvince"
                       :addr-district="addrDistrict"
                       :addr-sub-district="addrSubDistrict"
                       :addr-zip-code="addrZipCode"
                       :default-address-cache="defaultAddress"
+                      :default-address-customer="defaultAddressCustomer"
                       @change-province="handlerChangeProvince"
                       @change-district="handlerChangeDistrict"
                       @change-sub-district="handlerChangeSubDistrict"
@@ -542,10 +546,27 @@
       </div>
     </div>
   </div>
+  <ElementsDialogEditAddress 
+  v-if="isEditAddress"
+   element-key="insured"
+  :customer-i-d="props.customerId"
+  :address-i-d="insureDetail.DefaultAddress?.AddressID"
+  :order-No="props.cacheOrderRequest?.OrderNo"
+  :addr-province="addrProvince"
+  :addr-district="addrDistrict"
+  :addr-sub-district="addrSubDistrict"
+  :addr-zip-code="addrZipCode"
+  :default-address-customer="defaultAddressCustomer"
+  :customer-profile-details="insureDetail"
+  :show="isEditAddress" 
+  @close-address="closeModalAddress" 
+  @on-edit-address="updateAddress"   
+  ></ElementsDialogEditAddress>
 </template>
 <script setup lang="ts">
 import type { DefaultAddress, CustomerOrderRequest, LegalPersonProfile, PersonProfile, PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
 import type { SelectOption } from "~/shared/entities/select-option";
+import type { CustomerIDReq, CustomerAddressListRes } from "~/shared/entities/customer-entity";
 
 const emit = defineEmits(['changeCustomerType','changeProvince','changeDistrict','changeSubDistrict','changeFullAddress','changeInsureDetail'])
 const props = defineProps({
@@ -555,6 +576,7 @@ const props = defineProps({
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
   addrZipCode:String,
+  customerId:String,
   cacheOrderRequest:{
     type:Object as ()=> PlaceOrderRequest
   }
@@ -589,6 +611,7 @@ const legalPersonProfile:globalThis.Ref<LegalPersonProfile> = ref({
 })
 // const legalPersonProfile:globalThis.Ref<LegalPersonProfile|undefined> = ref()
 const defaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref()
+const defaultAddressCustomer:globalThis.Ref<CustomerAddressListRes|undefined> = ref()
 
 const InsuredTypeText:globalThis.Ref<String> = ref('person')
 const InsuredClassifierText:globalThis.Ref<String> = ref('thai')
@@ -600,12 +623,19 @@ const addrDistrict:globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict:globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode=ref('')
 const prefixID = ref('')
+const renderKey = ref(0)
+
+var isEditAddress = ref(false)
 
 const dateNow: Date = new Date()
 const effectiveMinDate: string = dateNow.toLocaleDateString("en-CA") // en-CA or sv => yyyy-MM-dd
 
 const values = reactive({})
 const onLoad = onMounted(()=>{
+    if(props.customerId){
+      updateAddress(props.customerId);
+
+    }
   if(props.prefix){
     Prefix.value = props.prefix
   }
@@ -657,8 +687,43 @@ const onLoad = onMounted(()=>{
     }
     }
     handlerChangeInsureDetail()
+    
   }
 })
+
+const onModalEditAddress = (open: boolean) => {
+  isEditAddress.value = false;
+  isEditAddress.value = open;
+}
+
+const closeModalAddress = async (refresh: boolean) => {
+    if (refresh) {
+      isEditAddress.value = true;
+      isEditAddress.value = false;
+    }
+    isEditAddress.value = false;
+}
+
+// Update profile after save
+const updateAddress = async (e: string) => {
+  // get order after save or create
+  const req: CustomerIDReq = {
+    CustomerID: e ?? "",
+  };
+  
+  const getData = await useRepository().customer.AddressList(req);
+  if (
+    getData.apiResponse.Status &&
+    getData.apiResponse.Status == "200" &&
+    getData.apiResponse.Data 
+  ) {
+    defaultAddressCustomer.value = getData.apiResponse.Data[0];
+    emit('changeProvince',defaultAddressCustomer.value?.ProvinceID)
+    emit('changeDistrict',defaultAddressCustomer.value?.DistrictID)
+    emit('changeSubDistrict',defaultAddressCustomer.value?.SubDistrictID)
+  }
+}
+
 // handler validate function
 const special_characters = function ({value}) {
 

@@ -3,12 +3,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const token = await useUtility().getToken()
 
     // Define routes that are publicly accessible
-    const publicRoutes = ['login', 'register']
+    const publicRoutes = ['/', 'login', 'register']
 
     // Check token existence and validate access to private routes
     if (!token && typeof to.name === 'string' && !publicRoutes.includes(to.name)) {
         // Prevent navigation
-        abortNavigation()
+        // abortNavigation()
 
         // Redirect to the login page and set a query parameter to redirect back after successful login
         return navigateTo(`/login?redirectTo=${to.path}`)

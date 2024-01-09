@@ -42,9 +42,10 @@
 </template>
 
 <script setup>
-// import { useRouter } from 'vue-router'
+// Import
 import { getActivePinia } from "pinia"
 
+// Define router
 const router = useRouter()
 
 // Function to handle logout
@@ -53,7 +54,20 @@ const logout = (event) => {
 
     // Perform logout operations, clear tokens, user data, etc.
     // Reset Pinia store
-    getActivePinia()._s.forEach(store => store.$reset())
+    getActivePinia()._s.forEach(store => {
+        store.$reset() // Reset the store's state
+        store.$dispose() // Dispose of the store instance
+        sessionStorage.removeItem(store.$id) // Remove sessionStorage of the store instance
+        
+        // Remove sessionStorage
+        sessionStorage.removeItem('useStoreNoticePayment') 
+        sessionStorage.removeItem('useStorePayment')
+        sessionStorage.removeItem('useStorePackageList')
+        sessionStorage.removeItem('useStoreFeeLimit')
+
+        // Remove localStorage
+        localStorage.removeItem('useStoreInformation')
+    })
 
     // Redirect to the login page after logout
     router.push('/login')

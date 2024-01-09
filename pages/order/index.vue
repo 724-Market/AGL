@@ -3,11 +3,6 @@
     :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
     <div class="row">
       <div class="col">
-        <OrderHistorySearch
-          v-if="statusGroup"
-          @search-history="handleSearch"
-          @clear-search-history="handleClearSearch"
-        ></OrderHistorySearch>
 
         <OrderHistorySearch v-if="statusGroup" @search-history="handleSearch" @clear-search-history="handleClearSearch">
         </OrderHistorySearch>

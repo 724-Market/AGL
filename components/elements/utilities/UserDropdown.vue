@@ -36,7 +36,26 @@
             <li>
                 <hr class="dropdown-divider">
             </li>
-            <li><a class="dropdown-item" href="#"><span class="icon-run">ออกจากระบบ</span></a></li>
+            <li><a class="dropdown-item" href="#" @click="logout"><span class="icon-run">ออกจากระบบ</span></a></li>
         </ul>
     </div>
 </template>
+
+<script setup>
+// import { useRouter } from 'vue-router'
+import { getActivePinia } from "pinia"
+
+const router = useRouter()
+
+// Function to handle logout
+const logout = (event) => {
+    event.preventDefault() // Prevent the default behavior of the anchor tag
+
+    // Perform logout operations, clear tokens, user data, etc.
+    // Reset Pinia store
+    getActivePinia()._s.forEach(store => store.$reset())
+
+    // Redirect to the login page after logout
+    router.push('/login')
+}
+</script>

@@ -1,21 +1,16 @@
-export default defineNuxtRouteMiddleware(async (to, from) => {
-    console.log('From auth middleware', to, from)
-    const token = await useUtility().getToken();
-    if ((!token || token == "") && to?.name !== 'login') {
-        abortNavigation();
-        return navigateTo('/login');
+export default defineNuxtRouteMiddleware(async (to) => {
+    // Retrieve the authentication token
+    const token = await useUtility().getToken()
 
-    }
-    else {
-        const path = to.path
-        const step = useStateMenu().getStepMenuFromUriReq(path);
-        console.log(step)
-        if (step > 0) {
-            const redirect = useStateMenu().checkStateMenu(step, path)
-            if (redirect != "" && path!=redirect) {
-                abortNavigation();
-                return navigateTo(redirect);
-            }
-        }
+    // Define routes that are publicly accessible
+    const publicRoutes = ['login', 'register']
+
+    // Check token existence and validate access to private routes
+    if (!token && typeof to.name === 'string' && !publicRoutes.includes(to.name)) {
+        // Prevent navigation
+        abortNavigation()
+
+        // Redirect to the login page and set a query parameter to redirect back after successful login
+        return navigateTo(`/login?redirectTo=${to.path}`)
     }
 })

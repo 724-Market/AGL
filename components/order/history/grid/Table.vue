@@ -4,7 +4,7 @@
       <DataTable
         id="datatables"
         class="table table-transaction nowrap"
-        data-order='[[ 2, "asc" ]]'
+        data-order='[[ 2, "desc" ]]'
         :options="datatableOptions"
         ref="table"
       >

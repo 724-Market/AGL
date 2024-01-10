@@ -116,11 +116,11 @@ const resume = async (OrderNo: string) => {
   isLoading.value = true;
 
   // await loadOrderDetail(OrderNo);
-  await paymentGateway.clearPaymenGateway()
+  await paymentGateway.clearPaymenGateway();
   await loadOrderSummary(OrderNo);
   // set statte menu to store
-  useStateMenu().setStateMenu(4)
-  router.push("/order/compulsory/payment");
+  useStateMenu().setStateMenu(4);
+  router.push("/order/compulsory/placeorder");
 
   isLoading.value = false;
 };

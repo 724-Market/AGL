@@ -13,8 +13,8 @@
               <h3 class="card-title">Main content</h3>
             </div>
             <div class="card-body">
-            
-              <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum culpa nisi quasi necessitatibus doloremque expedita ex, rem fugit velit voluptas explicabo molestias deleniti placeat laborum sunt cupiditate officia distinctio quaerat.</p>
+
+              <RegisterFormRegister />
 
             </div>
           </div>
@@ -25,13 +25,25 @@
           <section class="site-sidebar is-sticky">
 
             <aside class="card">
-              <div class="card-header">
-                <h3 class="card-title">Sidebar</h3>
-              </div>
               <div class="card-body">
-            
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum culpa nisi quasi necessitatibus doloremque expedita ex, rem fugit velit voluptas explicabo molestias deleniti placeat laborum sunt cupiditate officia distinctio quaerat.</p>
+                <div class="status-list">
+                  <figure class="status-icon">
+                    <div class="icon user"></div>
+                  </figure>
+                  <h4 class="title">ผู้แนะนำ</h4>
 
+                  <div class="status-item" v-if="isAgent">
+                    <h5 class="topic">ชื่อผู้แนะนำ</h5>
+                    <p>{{ route.params.id }}</p>
+                  </div>
+
+                  <div class="status-item" v-else>
+                    <h5 class="topic">ระบุผู้แนะนำ</h5>
+                    <p>
+                      <FormKit type="text" name="AgentCode" placeholder="ระบุรหัสผู้แนะนำ" autocomplete="off" />
+                    </p>
+                  </div>
+                </div>
               </div>
             </aside>
 
@@ -61,6 +73,7 @@
 <script setup lang="ts">
 // Define router
 const router = useRouter()
+const route = useRoute()
 
 // Button Loading
 const isLoading = ref(false)
@@ -141,8 +154,23 @@ const submitRegister = async (formData: any) => {
   confirmButton.value = 'ไปต่อโลดดดด' // After confirm then goto `handleAcceptConfirm` function
 }
 
+// Check affiliate from route param
+const isAgent = ref(false)
+
+if (route.params.id != 'new') {
+  // Call Check Agent Info API
+  isAgent.value = true
+}
+else {
+  isAgent.value = false
+}
+
 // Function `goNext` push route go to next step
 const goNext = async () => {
+  // Define and check 'isOTP' status
+  const isOTP = useState('otp')
+  isOTP.value = true
+
   router.push({ path: 'otp' })
 }
 
@@ -159,10 +187,10 @@ const pageDescription = ''
 
 // Define meta seo
 useHead({
-    title: pageTitle,
-    meta: [{ name: 'description', content: pageDescription }],
-    bodyAttrs: {
-        class: 'page-register single-register template-login'
-    }
+  title: pageTitle,
+  meta: [{ name: 'description', content: pageDescription }],
+  bodyAttrs: {
+    class: 'page-register single-register template-login'
+  }
 })
 </script>

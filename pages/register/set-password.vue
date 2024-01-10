@@ -2,8 +2,8 @@
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
     :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
 
-    <FormKit type="form" @submit="submitSetPassword" :actions="false" id="form-register" form-class="form-register form-theme"
-      :incomplete-message="false">
+    <FormKit type="form" @submit="submitSetPassword" :actions="false" id="form-register"
+      form-class="form-register form-theme" :incomplete-message="false">
 
       <div class="row">
         <div class="col col-main">

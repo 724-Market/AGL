@@ -2,8 +2,8 @@
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
     :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
 
-    <FormKit type="form" @submit="submitOTP" :actions="false" id="form-register"
-      form-class="form-register form-theme" :incomplete-message="false">
+    <FormKit type="form" @submit="submitOTP" :actions="false" id="form-register" form-class="form-register form-theme"
+      :incomplete-message="false">
 
       <div class="row">
         <div class="col col-main">
@@ -63,6 +63,11 @@
 </template>
 
 <script setup lang="ts">
+// Define page meta
+definePageMeta({
+  middleware: 'otp'
+})
+
 // Define router
 const router = useRouter()
 

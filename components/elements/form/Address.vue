@@ -1,6 +1,6 @@
 <template>
-  <div v-if="ObjectAddress" class="row">
-    <div class="col-6">
+  <div v-if="ObjectAddress && props.orderNo==null" class="row" >
+    <div class="col-6" >
       <FormKit
         type="text"
         label="บ้านเลขที่"
@@ -17,6 +17,7 @@
         autocomplete="false"
       />
     </div>
+    
     <div class="col-6">
       <FormKit
         type="text"
@@ -125,27 +126,47 @@
       />
     </div>
   </div>
+  
+  <div v-else class="row" >
+    <div > 
+      บ้านเลขที่ {{ props.defaultAddressCustomer?.No }} 
+      หมู่ที่ {{ props.defaultAddressCustomer?.Moo }} 
+      {{ props.defaultAddressCustomer?.Place }} 
+      หมู่บ้าน/อาคาร {{ props.defaultAddressCustomer?.Building }} 
+      ซอย/ตรอก/แยก {{ props.defaultAddressCustomer?.Alley }} 
+      ถนน {{ props.defaultAddressCustomer?.Road }} 
+      {{ props.defaultAddressCustomer?.DistrictName }} 
+      {{ props.defaultAddressCustomer?.SubDistrictName }}
+      {{ props.defaultAddressCustomer?.ProvinceName }} 
+      {{ props.defaultAddressCustomer?.ZipCode }} 
+    </div>
+  </div>
+
 </template>
 <script setup lang="ts">
 import type { DefaultAddress } from "~/shared/entities/placeorder-entity";
 import type { SelectOption } from "~/shared/entities/select-option";
+import type {  CustomerAddressListRes } from "~/shared/entities/customer-entity";
 
 const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict', 'changeFullAddress'])
 
 const props = defineProps({
   elementKey:String,
+  orderNo: String,
   addrProvince: Array<SelectOption>,
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
   addrZipCode: String,
   defaultAddressCache:Object,
+  defaultAddressCustomer: {
+    type: Object as () => CustomerAddressListRes
+  },
 })
 
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
-let elementKey= ''
 
 const ObjectAddress: globalThis.Ref<DefaultAddress> = ref({
     AddressID: '',
@@ -196,6 +217,7 @@ const onLoad = onMounted(() => {
     emit('changeProvince', ObjectAddress.value.ProvinceID)
   }
 })
+
 // handler validate function
 const address_characters = function ({value}) {
 

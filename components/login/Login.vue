@@ -106,7 +106,7 @@ const submitLogin = async () => {
     const auth = data.value.Data;
     if (data.value.Status == "200") {
       const router = useRouter();
-      router.push({ path: "/order/compulsory/information" });
+      router.push({ path: "/order" });
     } else {
       statusMessageType.value = "notice-warning";
       statusMessage.value = data.value.ErrorMessage;

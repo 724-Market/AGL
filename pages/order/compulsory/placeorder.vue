@@ -28,13 +28,14 @@
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลผู้เอาประกันภัย # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderInsureDetail
-            v-if="prefix.length > 0 && nationality.length > 0 && addrProvince.length > 0"
+            v-if="prefix.length > 0 && nationality.length > 0 && addrProvince.length > 0 "
             @change-province="handlerChangeProvince"
             @change-district="handlerChangeDistrict"
             @change-sub-district="handlerChangeSubDistrictForInsured"
             @change-customer-type="handlerChangeCustomerType"
             @change-full-address="handlerChangeFullAddress"
             @change-insure-detail="handlerChangeInsureDetail"
+            :customer-id="OrderInfo.Customer?.PersonProfile?.CustomerID"
             :prefix="prefix"
             :nationality="nationality"
             :addr-province="addrProvince"
@@ -43,6 +44,7 @@
             :addr-zip-code="addrZipCodeForInsured"
             :cache-order-request="insureDetailCache"
           ></OrderCompulsoryPlaceorderInsureDetail>
+
 
           <!-- # # # # # # # # # # # # # # # # # # # # # วิธีการรับกรมธรรม์ # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderInsuranceRecieve
@@ -335,7 +337,7 @@ const onLoad = onMounted(async () => {
       useStateMenu().setStateMenu(1);
       router.push("/order/compulsory/information");
     }
-
+    
     if (OrderInfo.value && OrderInfo.value.OrderNo != "") {
       let insuranceRecieve: InsuranceRecieveObject = {
         ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? "",
@@ -716,7 +718,7 @@ const loadSubDistrict = async (distId: string): Promise<SelectOption[]> => {
     if (response.apiResponse.Data) {
       options = response.apiResponse.Data.map((x) => {
         const options: SelectOption = {
-          label: x.Name,
+          label: `${x.Name} : ${x.ZipCode}`,
           value: x.ID,
           option: x.ZipCode ?? "",
         };

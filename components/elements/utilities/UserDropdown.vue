@@ -36,7 +36,40 @@
             <li>
                 <hr class="dropdown-divider">
             </li>
-            <li><a class="dropdown-item" href="#"><span class="icon-run">ออกจากระบบ</span></a></li>
+            <li><a class="dropdown-item" href="#" @click="logout"><span class="icon-run">ออกจากระบบ</span></a></li>
         </ul>
     </div>
 </template>
+
+<script setup>
+// Import
+import { getActivePinia } from "pinia"
+
+// Define router
+const router = useRouter()
+
+// Function to handle logout
+const logout = (event) => {
+    event.preventDefault() // Prevent the default behavior of the anchor tag
+
+    // Perform logout operations, clear tokens, user data, etc.
+    // Reset Pinia store
+    getActivePinia()._s.forEach(store => {
+        store.$reset() // Reset the store's state
+        store.$dispose() // Dispose of the store instance
+        sessionStorage.removeItem(store.$id) // Remove sessionStorage of the store instance
+        
+        // Remove sessionStorage
+        sessionStorage.removeItem('useStoreNoticePayment') 
+        sessionStorage.removeItem('useStorePayment')
+        sessionStorage.removeItem('useStorePackageList')
+        sessionStorage.removeItem('useStoreFeeLimit')
+
+        // Remove localStorage
+        localStorage.removeItem('useStoreInformation')
+    })
+
+    // Redirect to the login page after logout
+    router.push('/login')
+}
+</script>

@@ -56,7 +56,8 @@
             :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
 
         <ElementsDialogConfirms :isShowConfirm="isShowConfirm" :confirm-type="confirmType" :confirm-title="confirmTitle"
-            :confirm-text="confirmText" :confirm-button="confirmButton" :confirm-cancel-button="confirmCancelButton" @on-accept-confirm="handleAcceptConfirm" @on-close-confirm="handleCloseConfirm" />
+            :confirm-text="confirmText" :confirm-button="confirmButton" :confirm-cancel-button="confirmCancelButton"
+            @on-accept-confirm="handleAcceptConfirm" @on-close-confirm="handleCloseConfirm" />
 
     </NuxtLayout>
 </template>
@@ -146,7 +147,7 @@ const submitRegister = async (formData: any) => {
         modalType.value = 'warning'
         modalTitle.value = 'ไม่สามารถลงทะเบียนได้'
         modalButton.value = 'รับทราบ'
-        
+
         modalText.value = response.apiResponse.ErrorMessage || 'string'
     }
 

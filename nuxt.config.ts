@@ -49,8 +49,6 @@ export default defineNuxtConfig({
 		enabled: false,
 	},
 	pinia: {
-		autoImports: [
-			'defineStore'
-		],
+		storesDirs: ['./stores/**'],
 	},
 })

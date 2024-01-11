@@ -65,7 +65,20 @@
 <script setup lang="ts">
 // Define page meta
 definePageMeta({
-  middleware: 'otp'
+  middleware: [
+    function (to, from) {
+      // Define and check 'isOTP' status
+      const isOTP = useState('otp')
+
+      // Abort navigation if 'isOTP' is false
+      if (!isOTP.value) {
+        return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
+      }
+
+      // Set 'isOTP' to false after check
+      isOTP.value = false
+    }
+  ]
 })
 
 // Define router
@@ -152,6 +165,10 @@ const submitOTP = async (formData: any) => {
 
 // Function `goNext` push route go to next step
 const goNext = async () => {
+  // Define and check 'isSetPassword' status
+  const isSetPassword = useState('set-password')
+  isSetPassword.value = true
+
   router.push({ path: 'set-password' })
 }
 

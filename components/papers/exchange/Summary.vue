@@ -127,7 +127,6 @@ const onDeleteConfirm = async () => {
     list.value = exchangeData
     onCalculate()
   }
-  isDeleteConfirm.value = false
 
 }
 const onCloseConfirm = async () => {

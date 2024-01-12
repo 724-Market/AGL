@@ -445,7 +445,6 @@ const onDeleteConfirm = async () => {
     }
   }
   isLoading.value = false;
-  isDeleteConfirm.value = false
 }
 
 const onCloseConfirm = async () => {

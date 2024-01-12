@@ -1,69 +1,118 @@
 <template>
-    <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-        :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
+  <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
 
-        <FormKit type="form" @submit="submitRegister" :actions="false" id="form-register"
-            form-class="form-register form-theme" :incomplete-message="false">
+    <FormKit type="form" @submit="submitSurvey" #default="{ value }" :actions="false" id="form-register"
+      form-class="form-register form-theme" :incomplete-message="false">
 
-            <div class="row">
-                <div class="col col-main">
+      <div class="row">
+        <div class="col col-main">
 
-                    <RegisterFormRegister />
+          <div class="card">
+            <div class="card-body">
 
+              <section class="surveys">
+                <div class="survey-item">
+                  <header class="question">
+                    <h3 class="topic">ท่านเป็นสมาชิกของ บริษัท ศรีกรุงโบรคเกอร์ จำกัด หรือไม่?</h3>
+                    <p class="hint">รหัสสมาชิกขึ้นต้นด้วย AM</p>
+                  </header>
+                  <div class="answer">
+                    <div class="choice">
+                      <FormKit type="togglebuttons" name="isSKMember" enforced :options="{
+                        'notMember': 'ไม่ได้เป็นสมาชิก',
+                        'isMember': 'เป็นสมาชิก',
+                      }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                    </div>
+                    <div class="option" v-if="value && value.isSKMember === 'isMember'">
+                      <ElementsFormAgentCode />
+                      <ElementsFormIdCard />
+                      <FormKit type="button" label="ตรวจสอบสถานะ" name="agent-check-submit" :classes="{
+                        input: 'btn-primary',
+                        outer: 'form-actions',
+                      }" :disabled="isLoading" :loading="isLoading" />
+                    </div>
+                  </div>
                 </div>
 
-                <div class="col col-sidebar">
-                    <section class="site-sidebar is-sticky">
-
-                        <aside class="card">
-                            <div class="card-body">
-                                <div class="status-list">
-                                    <figure class="status-icon">
-                                        <div class="icon user"></div>
-                                    </figure>
-                                    <h4 class="title">ผู้แนะนำ</h4>
-
-                                    <div class="status-item" v-if="isAgent">
-                                        <h5 class="topic">ชื่อผู้แนะนำ</h5>
-                                        <p>{{ route.params.id }}</p>
-                                    </div>
-
-                                    <div class="status-item" v-else>
-                                        <h5 class="topic">ระบุผู้แนะนำ</h5>
-                                        <p>
-                                            <FormKit type="text" name="AgentCode" placeholder="ระบุรหัสผู้แนะนำ"
-                                                autocomplete="off" />
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </aside>
-
-                        <FormKit type="submit" label="บันทึก" name="register-submit" :classes="{
-                            input: 'btn-primary',
-                            outer: 'form-actions',
-                        }" :disabled="isLoading" :loading="isLoading" />
-
-                    </section>
+                <div class="survey-item" v-if="value && value.isSKMember === 'notMember'">
+                  <header class="question">
+                    <h3 class="topic">ท่านมีใบอนุญาตเป็น นายหน้า/ตัวแทน ประกันวินาศภัยหรือไม่?</h3>
+                  </header>
+                  <div class="answer">
+                    <div class="choice">
+                      <FormKit type="togglebuttons" name="isNonLifeLicense" enforced :options="{
+                        'notHasNonLifeLicense': 'ไม่มีใบอนุญาตฯ',
+                        'hasNonLifeLicense': 'มีใบอนุญาตฯ',
+                      }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                    </div>
+                    <div class="option" v-if="value && value.isNonLifeLicense === 'hasNonLifeLicense'">
+                      <FormKit type="text" label="เลขที่ใบอนุญาต" name="nonLifeLicense" validation="required"
+                        :validation-messages="{
+                          required: 'กรุณาใส่รหัสสมาชิก'
+                        }
+                          " autocomplete="off" />
+                      <FormKit type="button" label="ตรวจสอบสถานะ" name="agent-check-submit" :classes="{
+                        input: 'btn-primary',
+                        outer: 'form-actions',
+                      }" :disabled="isLoading" :loading="isLoading" />
+                    </div>
+                  </div>
                 </div>
+
+              </section>
+
             </div>
+          </div>
 
-        </FormKit>
+        </div>
 
-        <ElementsDialogLoading :isShowLoading="isShowLoading" :loadingLogo="loadingLogo" :loadingText="loadingText" />
+        <div class="col col-sidebar">
+          <section class="site-sidebar is-sticky">
 
-        <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
-            :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
+            <aside class="card" v-if="recommender">
+              <div class="card-header">
+                <h3 class="card-title">ผู้แนะนำ</h3>
+              </div>
+              <div class="card-body">
 
-        <ElementsDialogConfirms :isShowConfirm="isShowConfirm" :confirm-type="confirmType" :confirm-title="confirmTitle"
-            :confirm-text="confirmText" :confirm-button="confirmButton" :confirm-cancel-button="confirmCancelButton"
-            @on-accept-confirm="handleAcceptConfirm" @on-close-confirm="handleCloseConfirm" />
+                <p>{{ recommender }}</p>
+                <FormKit type="hidden" name="reference" :value="recommender" />
 
-    </NuxtLayout>
+              </div>
+            </aside>
+
+            <FormKit type="submit" label="บันทึก" name="register-submit" :classes="{
+              input: 'btn-primary',
+              outer: 'form-actions',
+            }" :disabled="isLoading" :loading="isLoading" />
+
+          </section>
+        </div>
+      </div>
+
+    </FormKit>
+
+    <ElementsDialogLoading :isShowLoading="isShowLoading" :loadingLogo="loadingLogo" :loadingText="loadingText" />
+
+    <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
+      :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
+
+    <ElementsDialogConfirms :isShowConfirm="isShowConfirm" :confirm-type="confirmType" :confirm-title="confirmTitle"
+      :confirm-text="confirmText" :confirm-button="confirmButton" :confirm-cancel-button="confirmCancelButton"
+      @on-accept-confirm="handleAcceptConfirm" @on-close-confirm="handleCloseConfirm" />
+
+  </NuxtLayout>
 </template>
 
 <script setup lang="ts">
+
+// Define router and route
+const router = useRouter()
 const route = useRoute()
+
+// Use ref to create a reactive property and assign route.query.ref to it
+const recommender = ref(route.params.id || '')
 
 // Button Loading
 const isLoading = ref(false)
@@ -72,7 +121,7 @@ const isLoading = ref(false)
 // Modal Loading
 const isShowLoading = ref(false)
 const loadingLogo = ref(false)
-const loadingText = ref(true)
+const loadingText = ref(false)
 
 /////////////////////////////////////////
 // Modal Dialog
@@ -84,7 +133,7 @@ const modalButton = ref('')
 
 // Function to handle close modal events
 const handleCloseModal = async () => {
-    isShowModal.value = false
+  isShowModal.value = false
 }
 
 /////////////////////////////////////////
@@ -98,14 +147,26 @@ const confirmCancelButton = ref('')
 
 // Function to handle close confirm events
 const handleCloseConfirm = async () => {
-    isShowConfirm.value = false
+  isShowConfirm.value = false
 }
 
 // Function to handle accept confirm events
 const handleAcceptConfirm = async () => {
-    isShowConfirm.value = false
-    await new Promise((r) => setTimeout(r, 1000))
-    isShowModal.value = true
+  // Close confirm dialog
+  isShowConfirm.value = false
+
+  await new Promise((r) => setTimeout(r, 1000))
+
+  // Open modal dialog
+  isShowModal.value = true
+  modalType.value = 'success'
+  modalTitle.value = 'ทำงานได้ตามปกติเนอะ'
+  modalText.value = 'ราบรื่นนนนนนนนนน'
+  modalButton.value = 'รับทราบจ้าาาา'
+
+  await new Promise((r) => setTimeout(r, 1000))
+
+  await goNext()
 }
 
 /////////////////////////////////////////
@@ -114,75 +175,67 @@ const emit = defineEmits(['onCloseModal', 'onCloseConfirm', 'onAcceptConfirm'])
 
 /////////////////////////////////////////
 
-const isAgent = ref(false)
-
 // Submit form event
-const submitRegister = async (formData: any) => {
+const submitSurvey = async (formData: any) => {
 
-    isShowLoading.value = true
+  isShowLoading.value = true
 
-    await new Promise((r) => setTimeout(r, 3000))
+  await new Promise((r) => setTimeout(r, 1000))
 
-    const response = await useRepository().user.create(formData)
+  isShowLoading.value = false
 
-    if (response.apiResponse.Status == "200") {
-        isShowLoading.value = false
-        isShowModal.value = true
-        modalType.value = 'success'
-        modalTitle.value = 'ลงทะเบียนสำเร็จ'
-        modalText.value = ''
-        //response.apiResponse.Data.UserID;
-    }
-    else {
-        isShowLoading.value = false
+  console.log(formData)
 
-        isShowConfirm.value = true
-        confirmType.value = 'danger'
-        confirmTitle.value = 'แน่ใจ?'
-        confirmText.value = 'It is advised to wrap your plugins as in the future this may enable enhancements.'
-        confirmButton.value = 'ไปโลดดดด'
-        confirmCancelButton.value = 'อุ่ยยยย'
-
-        // isShowModal.value = true
-        modalType.value = 'warning'
-        modalTitle.value = 'ไม่สามารถลงทะเบียนได้'
-        modalButton.value = 'รับทราบ'
-
-        modalText.value = response.apiResponse.ErrorMessage || 'string'
-    }
-
-};
-
-if (route.params.id != 'new') {
-    // Call Check Agent Info API
-    isAgent.value = true
-}
-else {
-    isAgent.value = false
+  // Open confirm dialog
+  isShowConfirm.value = true
+  confirmType.value = 'danger'
+  confirmTitle.value = 'แน่ใจ?'
+  confirmText.value = 'It is advised to wrap your plugins as in the future this may enable enhancements.'
+  confirmCancelButton.value = 'อุ่ยยยย กดผิด'
+  confirmButton.value = 'ไปต่อโลดดดด' // After confirm then goto `handleAcceptConfirm` function
 }
 
-
-
-
-
+// Function `goNext` push route go to next step
+const goNext = async () => {
+  router.push({ path: '/register/form' })
+}
 
 // Define layout
-const layout = "monito"
-const layoutClass = "layout-monito"
+const layout = 'monito'
+const layoutClass = 'layout-monito'
 const showPageSteps = false
 const showPageHeader = true
 
 // Define page meta
-const pageTitle = "ลงทะเบียน"
-const pageCategory = "ลงทะเบียนสมาชิกใหม่"
-const pageDescription = ""
+const pageTitle = 'แบบสำรวจก่อนลงทะเบียน'
+const pageCategory = 'ลงทะเบียนสมาชิกใหม่'
+const pageDescription = ''
 
 // Define meta seo
 useHead({
-    title: pageTitle,
-    meta: [{ name: "description", content: pageDescription }],
-    bodyAttrs: {
-        class: "page-users single-history template-datatable"
-    }
+  title: pageTitle,
+  meta: [{ name: 'description', content: pageDescription }],
+  bodyAttrs: {
+    class: 'page-register single-register template-login'
+  }
 })
 </script>
+
+<style>
+.topic {
+  margin-bottom: 0.25em;
+}
+
+.hint {
+  margin-bottom: 1em !important;
+}
+
+.answer {
+  margin-bottom: 2em;
+}
+
+.option {
+  background-color: #fcfcfc;
+  padding: 1em;
+}
+</style>

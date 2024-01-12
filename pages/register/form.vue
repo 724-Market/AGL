@@ -82,7 +82,7 @@ const isLoading = ref(false)
 // Modal Loading
 const isShowLoading = ref(false)
 const loadingLogo = ref(false)
-const loadingText = ref(true)
+const loadingText = ref(false)
 
 /////////////////////////////////////////
 // Modal Dialog

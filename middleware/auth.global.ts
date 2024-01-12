@@ -3,7 +3,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const token = await useUtility().getToken()
 
     // Define routes that are publicly accessible
-    const publicRoutes = ['index', 'login', 'register', 'register-form', 'register-otp', 'register-set-password']
+    const publicRoutes = ['index', 'login', 'register', 'register-id', 'register-form', 'register-otp', 'register-set-password']
 
     // Check token existence and validate access to private routes
     if (!token && typeof to.name === 'string' && !publicRoutes.includes(to.name)) {

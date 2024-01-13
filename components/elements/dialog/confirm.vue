@@ -67,6 +67,7 @@ function showDialogModal() {
 function hiddenDialogModal() {
   const dialogModal = document.getElementById("modal-dialog");
   if (dialogModal) dialogModal.close();
+  emits('onCloseModal')
 
 }
 watch(

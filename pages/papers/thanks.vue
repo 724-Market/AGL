@@ -19,7 +19,7 @@
                             </div>
                             <div class="status-item">
                                 <h5 class="topic">วันที่ทำรายการสำเร็จ</h5>
-                                <p>{{ useUtility().formatDate(orderGet?.CreateDate,"D MMM BBBB HH:mm") }}</p>
+                                <p>{{ useUtility().formatDate(orderGet?.CreateDate ?? "", "D MMM BBBB HH:mm") }}</p>
                             </div>
                             <div class="status-item text-warning">
                                 <h5 class="topic">ยอดชำระทั้งหมด</h5>

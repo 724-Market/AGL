@@ -32,9 +32,8 @@
                       <FormKit name="checkSKMember" type="group" #default="{ state: { valid } }">
                         <div :class="'notice-' + statusMessageType" v-if="statusMessage">{{ statusMessage }}</div>
 
-                        <FormKit type="text" label="รหัสสมาชิก" id="agentCode" name="agentCode"
-                          placeholder="AM – – – – – – – –" validation="required|matches:/^[aA][mM][0-9]{8}$/|length:10"
-                          :validation-messages="{
+                        <FormKit type="mask" label="รหัสสมาชิก" id="agentCode" name="agentCode" mask="AM########"
+                          validation="required|matches:/^[aA][mM][0-9]{8}$/|length:10" :validation-messages="{
                             required: 'กรุณาใส่รหัสสมาชิก',
                             matches: 'รูปแบบของรหัสสมาชิกไม่ถูกต้อง',
                             length: 'รหัสสมาชิกควรมี 10 ตัวอักษร และขึ้นต้นด้วย AM'

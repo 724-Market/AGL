@@ -38,13 +38,13 @@
                             required: 'กรุณาใส่รหัสสมาชิก',
                             matches: 'รูปแบบของรหัสสมาชิกไม่ถูกต้อง',
                             length: 'รหัสสมาชิกควรมี 10 ตัวอักษร และขึ้นต้นด้วย AM'
-                          }" autocomplete="off" />
-                        <FormKit type="text" label="เลขบัตรประชาชน" id="idCard" name="idCard"
+                          }" inputmode="numeric" autocomplete="off" />
+                        <FormKit type="number" label="เลขบัตรประชาชน" id="idCard" name="idCard"
                           placeholder="เลขบัตรประชาชน 13 หลัก" validation="required|matches:/^[0-9]{13}$/"
                           :validation-messages="{
                             required: 'กรุณาใส่เลขบัตรประชาชน',
                             matches: 'เลขบัตรประชาชนควรเป็นตัวเลข 13 หลัก'
-                          }" autocomplete="off" />
+                          }" inputmode="numeric" autocomplete="off" />
                         <FormKit type="button" class="btn-primary" label="ตรวจสอบสถานะสมาชิก" name="agent-check-submit"
                           @click="submitCheckSKMember" :disabled="!valid" />
 
@@ -74,12 +74,12 @@
                       <FormKit name="saveNonLifeLicense" type="group" #default="{ state: { valid } }">
                         <div :class="'notice-' + statusMessageTypeQ2" v-if="statusMessageQ2">{{ statusMessageQ2 }}</div>
 
-                        <FormKit type="text" label="เลขที่ใบอนุญาตประกันวินาศภัย" id="nonLifeLicense"
+                        <FormKit type="number" label="เลขที่ใบอนุญาตประกันวินาศภัย" id="nonLifeLicense"
                           name="nonLifeLicense" placeholder="หมายเลข 10 หลัก" validation="required|matches:/^[0-9]{10}$/"
                           :validation-messages="{
                             required: 'กรุณาใส่เลขที่ใบอนุญาตฯ',
                             matches: 'เลขที่ใบอนุญาตฯ ควรเป็นตัวเลข 10 หลัก'
-                          }" autocomplete="off" />
+                          }" inputmode="numeric" autocomplete="off" />
                         <FormKit type="button" class="btn-primary" label="บันทึก" name="nonlifelicence-save-submit"
                           @click="submitSaveNonLifeLicense" :disabled="!valid" />
 
@@ -313,5 +313,10 @@ useHead({
 .option {
   background-color: #fcfcfc;
   padding: 1em;
+}
+
+[data-type="number"] input::-webkit-outer-spin-button,
+[data-type="number"] input::-webkit-inner-spin-button {
+  appearance: none;
 }
 </style>

@@ -61,8 +61,8 @@
       maxlength="10"
       v-model="PhoneNumberText"
       @change="handlePhoneNumberChange"
-      validation="required"
-      :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
+      validation="required|matches:/^[0-9]{10}$/"
+      :validation-messages="{ required: 'กรุณาใส่ข้อมูล', matches: 'หมายเลขโทรศัพท์ควรเป็นตัวเลข 10 หลัก' }"
       autocomplete="false"
     />
   </div>

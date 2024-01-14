@@ -12,11 +12,13 @@
             <div class="card-body">
 
               <section class="surveys">
+
                 <div class="survey-item">
                   <header class="question">
                     <h3 class="topic">ท่านเป็นสมาชิกของ บริษัท ศรีกรุงโบรคเกอร์ จำกัด หรือไม่?</h3>
                     <p class="hint">รหัสสมาชิกขึ้นต้นด้วย AM</p>
                   </header>
+
                   <div class="answer">
                     <div class="choice">
                       <FormKit type="togglebuttons" name="isSKMember" enforced :options="{
@@ -24,15 +26,32 @@
                         'isMember': 'เป็นสมาชิก',
                       }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
                     </div>
+
                     <div class="option" v-if="value && value.isSKMember === 'isMember'">
-                      <ElementsFormAgentCode />
-                      <ElementsFormIdCard />
-                      <FormKit type="button" label="ตรวจสอบสถานะ" name="agent-check-submit" :classes="{
-                        input: 'btn-primary',
-                        outer: 'form-actions',
-                      }" :disabled="isLoading" :loading="isLoading" />
+
+                      <FormKit name="checkSKMember" type="group" #default="{ state: { valid } }">
+                        <div :class="'notice-' + statusMessageType" v-if="statusMessage">{{ statusMessage }}</div>
+
+                        <FormKit type="text" label="รหัสสมาชิก" id="agentCode" name="agentCode"
+                          placeholder="AM – – – – – – – –" validation="required|matches:/^[aA][mM][0-9]{8}$/|length:10"
+                          :validation-messages="{
+                            required: 'กรุณาใส่รหัสสมาชิก',
+                            matches: 'รูปแบบของรหัสสมาชิกไม่ถูกต้อง',
+                            length: 'รหัสสมาชิกควรมี 10 ตัวอักษร และขึ้นต้นด้วย AM'
+                          }" autocomplete="off" />
+                        <FormKit type="text" label="เลขบัตรประชาชน" id="idCard" name="idCard" placeholder="เลขบัตรประชาชน"
+                          validation="required|matches:/^[0-9]{13}$/" :validation-messages="{
+                            required: 'กรุณาใส่เลขบัตรประชาชน',
+                            matches: 'เลขบัตรประชาชนควรเป็นตัวเลข 13 หลัก'
+                          }" autocomplete="off" />
+                        <FormKit type="button" class="btn-primary" label="ตรวจสอบสถานะสมาชิก" name="agent-check-submit"
+                          @click="submitCheckSKMember" :disabled="!valid" />
+
+                      </FormKit>
+
                     </div>
                   </div>
+
                 </div>
 
                 <div class="survey-item" v-if="value && value.isSKMember === 'notMember'">
@@ -82,7 +101,7 @@
               </div>
             </aside>
 
-            <FormKit type="submit" label="บันทึก" name="register-submit" :classes="{
+            <FormKit type="submit" label="เข้าสู่การสมัครสมาชิก" name="register-submit" :classes="{
               input: 'btn-primary',
               outer: 'form-actions',
             }" :disabled="isLoading" :loading="isLoading" />
@@ -106,7 +125,9 @@
 </template>
 
 <script setup lang="ts">
+import { getNode } from '@formkit/core'
 
+/////////////////////////////////////////
 // Define router and route
 const router = useRouter()
 const route = useRoute()
@@ -114,6 +135,12 @@ const route = useRoute()
 // Use ref to create a reactive property and assign route.query.ref to it
 const recommender = ref(route.params.id || '')
 
+/////////////////////////////////////////
+// Status for notice user
+const statusMessage = ref('')
+const statusMessageType = ref('')
+
+/////////////////////////////////////////
 // Button Loading
 const isLoading = ref(false)
 
@@ -174,8 +201,35 @@ const handleAcceptConfirm = async () => {
 const emit = defineEmits(['onCloseModal', 'onCloseConfirm', 'onAcceptConfirm'])
 
 /////////////////////////////////////////
+// Submit checkSKMember group
+const submitCheckSKMember = async () => {
 
-// Submit form event
+  isShowLoading.value = true
+
+  await new Promise((r) => setTimeout(r, 1000))
+
+  const agentCode = getNode('agentCode')
+  const idCard = getNode('idCard')
+
+  if (agentCode && idCard) {
+    statusMessageType.value = 'success'
+    statusMessage.value = 'ยืนยันการเป็นสมาชิกศรีกรุง'
+
+    // console.log('agenCode is: ' + agentCode.value)
+    // console.log('idCard is: ' + idCard.value)
+  } else {
+    statusMessageType.value = 'warning'
+    statusMessage.value = 'ไม่สามารถยืนยันการเป็นสมาชิกศรีกรุงได้'
+
+    agentCode?.reset()
+    idCard?.reset()
+  }
+
+  isShowLoading.value = false
+}
+
+/////////////////////////////////////////
+// Submit page
 const submitSurvey = async (formData: any) => {
 
   isShowLoading.value = true
@@ -195,11 +249,13 @@ const submitSurvey = async (formData: any) => {
   confirmButton.value = 'ไปต่อโลดดดด' // After confirm then goto `handleAcceptConfirm` function
 }
 
+/////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
   router.push({ path: '/register/form' })
 }
 
+/////////////////////////////////////////
 // Define layout
 const layout = 'monito'
 const layoutClass = 'layout-monito'

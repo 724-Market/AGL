@@ -1,6 +1,5 @@
 import { storeToRefs } from "pinia"
-import type { CalculateGrandTotal, DeliveryAddressReq, ExchangeDataSummary, OrderExchangeCreateReq, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
-import type { PaymentGetResponse } from "~/shared/entities/payment-entity"
+import type { CalculateGrandTotal, DeliveryAddressReq, ExchangeDataSummary, OrderExchangeCreateReq, OrderExchangeCreateRes, PaymentFeeLimitRes, SearchMatchRes } from "~/shared/entities/paper-entity"
 import type { WrapperResponse } from "~/shared/entities/wrapper-response"
 import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo"
 import { useStoreCreditBalance } from "~/stores/plege/storeCreditBalance"
@@ -9,6 +8,20 @@ import { useStoreCreditBalance } from "~/stores/plege/storeCreditBalance"
 export default () => {
     const storeExchange = useStoreExchangeDataInfo()
 
+    const getPaperList = (productMatchList: SearchMatchRes[]): SearchMatchRes[] => {
+        const tempExchangeDataList: SearchMatchRes[] = []
+        for (let i = 0; i < productMatchList.length; i++) {
+            const value = productMatchList[i]
+            const filter = storeExchange.$state.filter(x => x.Item.ProductID === value.ProductID && x.Item.WarehouseID === value.WarehouseID)
+            const temp = { ...value }
+            if (filter.length > 0) {
+                temp.ProductOnHandAmount = value.ProductOnHandAmount - filter[0].Item.Amount
+                temp.Amount = 1;
+            }
+            tempExchangeDataList.push(temp)
+        }
+        return tempExchangeDataList;
+    }
     const onSelectExchangePaper = async (item: SearchMatchRes) => {
         await storeExchange.setExchangeData(item)
     }
@@ -84,17 +97,16 @@ export default () => {
         return list
 
     }
-    const setClassExchangeList = ():string=>{
+    const setClassExchangeList = (): string => {
         let className = "";
         const exhangeList = storeExchange.$state
-        if(exhangeList.length>0)
-        {
-            className="cart-not-empty";
+        if (exhangeList.length > 0) {
+            className = "cart-not-empty";
         }
-        else{
-            className="";
+        else {
+            className = "";
         }
-        
+
         return className;
     }
     return {
@@ -105,6 +117,7 @@ export default () => {
         onDeleteConfirm,
         onContinue,
         mappingExchangeConfirmRequest,
-        setClassExchangeList
+        setClassExchangeList,
+        getPaperList
     }
 }

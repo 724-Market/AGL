@@ -97,11 +97,13 @@ if (props.layoutClass === '-monito-minimal') {
 }
 
 const getToken = async () => {
+    console.log('Get Token',new Date())
     const token = await useUtility().getToken()
+    setTimeout(getToken, 1000 * 60)
 }
 
 const onLoad = onMounted(async () => {
-    getToken()
+    //getToken()
     setTimeout(getToken, 1000 * 60)
 })
 

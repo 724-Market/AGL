@@ -76,9 +76,11 @@ export interface ProductsubcategoryAreaListRes {
     ProductName: string;
     ProductPrice: number;
     ProductOnHandAmount: number;
+    ProductOnHandAmountTotal: number;
     CompanyName: string;
     FriendlyName: string;
     Amount:number | undefined;
+
   }
 
   export interface PaymentFeeLimitReq {

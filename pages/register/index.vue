@@ -11,6 +11,8 @@ definePageMeta({
   middleware: [
     function () {
       const router = useRouter()
+
+      // Redirect to `724` if no reference id
       router.push({ path: '/register/724' })
     }
   ]

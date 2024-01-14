@@ -12,50 +12,79 @@
             <div class="card-body">
 
               <section class="surveys">
+
                 <div class="survey-item">
                   <header class="question">
                     <h3 class="topic">ท่านเป็นสมาชิกของ บริษัท ศรีกรุงโบรคเกอร์ จำกัด หรือไม่?</h3>
                     <p class="hint">รหัสสมาชิกขึ้นต้นด้วย AM</p>
                   </header>
+
                   <div class="answer">
                     <div class="choice">
                       <FormKit type="togglebuttons" name="isSKMember" enforced :options="{
                         'notMember': 'ไม่ได้เป็นสมาชิก',
                         'isMember': 'เป็นสมาชิก',
-                      }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                      }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                        @click="clearStatusMessage" />
                     </div>
+
                     <div class="option" v-if="value && value.isSKMember === 'isMember'">
-                      <ElementsFormAgentCode />
-                      <ElementsFormIdCard />
-                      <FormKit type="button" label="ตรวจสอบสถานะ" name="agent-check-submit" :classes="{
-                        input: 'btn-primary',
-                        outer: 'form-actions',
-                      }" :disabled="isLoading" :loading="isLoading" />
+
+                      <FormKit name="checkSKMember" type="group" #default="{ state: { valid } }">
+                        <div :class="'notice-' + statusMessageTypeQ1" v-if="statusMessageQ1">{{ statusMessageQ1 }}</div>
+
+                        <FormKit type="mask" label="รหัสสมาชิก" id="agentCode" name="agentCode" mask="AM########"
+                          validation="required|matches:/^[aA][mM][0-9]{8}$/|length:10" :validation-messages="{
+                            required: 'กรุณาใส่รหัสสมาชิก',
+                            matches: 'รูปแบบของรหัสสมาชิกไม่ถูกต้อง',
+                            length: 'รหัสสมาชิกควรมี 10 ตัวอักษร และขึ้นต้นด้วย AM'
+                          }" autocomplete="off" />
+                        <FormKit type="text" label="เลขบัตรประชาชน" id="idCard" name="idCard"
+                          placeholder="เลขบัตรประชาชน 13 หลัก" validation="required|matches:/^[0-9]{13}$/"
+                          :validation-messages="{
+                            required: 'กรุณาใส่เลขบัตรประชาชน',
+                            matches: 'เลขบัตรประชาชนควรเป็นตัวเลข 13 หลัก'
+                          }" autocomplete="off" />
+                        <FormKit type="button" class="btn-primary" label="ตรวจสอบสถานะสมาชิก" name="agent-check-submit"
+                          @click="submitCheckSKMember" :disabled="!valid" />
+
+                      </FormKit>
+
                     </div>
                   </div>
+
                 </div>
 
                 <div class="survey-item" v-if="value && value.isSKMember === 'notMember'">
                   <header class="question">
                     <h3 class="topic">ท่านมีใบอนุญาตเป็น นายหน้า/ตัวแทน ประกันวินาศภัยหรือไม่?</h3>
                   </header>
+
                   <div class="answer">
                     <div class="choice">
                       <FormKit type="togglebuttons" name="isNonLifeLicense" enforced :options="{
                         'notHasNonLifeLicense': 'ไม่มีใบอนุญาตฯ',
                         'hasNonLifeLicense': 'มีใบอนุญาตฯ',
-                      }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+                      }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                        @click="clearStatusMessage" />
                     </div>
+
                     <div class="option" v-if="value && value.isNonLifeLicense === 'hasNonLifeLicense'">
-                      <FormKit type="text" label="เลขที่ใบอนุญาต" name="nonLifeLicense" validation="required"
-                        :validation-messages="{
-                          required: 'กรุณาใส่รหัสสมาชิก'
-                        }
-                          " autocomplete="off" />
-                      <FormKit type="button" label="ตรวจสอบสถานะ" name="agent-check-submit" :classes="{
-                        input: 'btn-primary',
-                        outer: 'form-actions',
-                      }" :disabled="isLoading" :loading="isLoading" />
+
+                      <FormKit name="saveNonLifeLicense" type="group" #default="{ state: { valid } }">
+                        <div :class="'notice-' + statusMessageTypeQ2" v-if="statusMessageQ2">{{ statusMessageQ2 }}</div>
+
+                        <FormKit type="text" label="เลขที่ใบอนุญาตประกันวินาศภัย" id="nonLifeLicense"
+                          name="nonLifeLicense" placeholder="หมายเลข 10 หลัก" validation="required|matches:/^[0-9]{10}$/"
+                          :validation-messages="{
+                            required: 'กรุณาใส่เลขที่ใบอนุญาตฯ',
+                            matches: 'เลขที่ใบอนุญาตฯ ควรเป็นตัวเลข 10 หลัก'
+                          }" autocomplete="off" />
+                        <FormKit type="button" class="btn-primary" label="บันทึก" name="nonlifelicence-save-submit"
+                          @click="submitSaveNonLifeLicense" :disabled="!valid" />
+
+                      </FormKit>
+
                     </div>
                   </div>
                 </div>
@@ -82,7 +111,7 @@
               </div>
             </aside>
 
-            <FormKit type="submit" label="บันทึก" name="register-submit" :classes="{
+            <FormKit type="submit" label="เข้าสู่การสมัครสมาชิก" name="register-submit" :classes="{
               input: 'btn-primary',
               outer: 'form-actions',
             }" :disabled="isLoading" :loading="isLoading" />
@@ -95,9 +124,6 @@
 
     <ElementsDialogLoading :isShowLoading="isShowLoading" :loadingLogo="loadingLogo" :loadingText="loadingText" />
 
-    <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
-      :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
-
     <ElementsDialogConfirms :isShowConfirm="isShowConfirm" :confirm-type="confirmType" :confirm-title="confirmTitle"
       :confirm-text="confirmText" :confirm-button="confirmButton" :confirm-cancel-button="confirmCancelButton"
       @on-accept-confirm="handleAcceptConfirm" @on-close-confirm="handleCloseConfirm" />
@@ -106,7 +132,10 @@
 </template>
 
 <script setup lang="ts">
+// Define import
+import { getNode } from '@formkit/core'
 
+/////////////////////////////////////////
 // Define router and route
 const router = useRouter()
 const route = useRoute()
@@ -114,6 +143,14 @@ const route = useRoute()
 // Use ref to create a reactive property and assign route.query.ref to it
 const recommender = ref(route.params.id || '')
 
+/////////////////////////////////////////
+// Status for notice user
+const statusMessageQ1 = ref('')
+const statusMessageTypeQ1 = ref('')
+const statusMessageQ2 = ref('')
+const statusMessageTypeQ2 = ref('')
+
+/////////////////////////////////////////
 // Button Loading
 const isLoading = ref(false)
 
@@ -122,19 +159,6 @@ const isLoading = ref(false)
 const isShowLoading = ref(false)
 const loadingLogo = ref(false)
 const loadingText = ref(false)
-
-/////////////////////////////////////////
-// Modal Dialog
-const isShowModal = ref(false)
-const modalType = ref('')
-const modalTitle = ref('')
-const modalText = ref('')
-const modalButton = ref('')
-
-// Function to handle close modal events
-const handleCloseModal = async () => {
-  isShowModal.value = false
-}
 
 /////////////////////////////////////////
 // Confirm Dialog
@@ -152,17 +176,8 @@ const handleCloseConfirm = async () => {
 
 // Function to handle accept confirm events
 const handleAcceptConfirm = async () => {
-  // Close confirm dialog
+
   isShowConfirm.value = false
-
-  await new Promise((r) => setTimeout(r, 1000))
-
-  // Open modal dialog
-  isShowModal.value = true
-  modalType.value = 'success'
-  modalTitle.value = 'ทำงานได้ตามปกติเนอะ'
-  modalText.value = 'ราบรื่นนนนนนนนนน'
-  modalButton.value = 'รับทราบจ้าาาา'
 
   await new Promise((r) => setTimeout(r, 1000))
 
@@ -171,11 +186,70 @@ const handleAcceptConfirm = async () => {
 
 /////////////////////////////////////////
 // Define emit function to emit events on all dialog
-const emit = defineEmits(['onCloseModal', 'onCloseConfirm', 'onAcceptConfirm'])
+const emit = defineEmits(['onCloseConfirm', 'onAcceptConfirm'])
 
 /////////////////////////////////////////
+// Clear status message after change toggle
+const clearStatusMessage = () => {
+  statusMessageQ1.value = ''
+  statusMessageQ2.value = ''
+}
 
-// Submit form event
+/////////////////////////////////////////
+// Submit checkSKMember group
+const submitCheckSKMember = async () => {
+
+  isShowLoading.value = true
+
+  await new Promise((r) => setTimeout(r, 1000))
+
+  const agentCode = getNode('agentCode')
+  const idCard = getNode('idCard')
+
+  if (agentCode && idCard) {
+    statusMessageTypeQ1.value = 'success'
+    statusMessageQ1.value = 'ยืนยันการเป็นสมาชิกศรีกรุง'
+
+    // console.log('agenCode is: ' + agentCode.value)
+    // console.log('idCard is: ' + idCard.value)
+  } else {
+    statusMessageTypeQ1.value = 'warning'
+    statusMessageQ1.value = 'ไม่สามารถยืนยันการเป็นสมาชิกศรีกรุงได้'
+
+    agentCode?.reset()
+    idCard?.reset()
+  }
+
+  isShowLoading.value = false
+}
+
+/////////////////////////////////////////
+// Submit saveNonLifeLicense group
+const submitSaveNonLifeLicense = async () => {
+
+  isShowLoading.value = true
+
+  await new Promise((r) => setTimeout(r, 1000))
+
+  const nonLifeLicense = getNode('nonLifeLicense')
+
+  if (nonLifeLicense) {
+    statusMessageTypeQ2.value = 'success'
+    statusMessageQ2.value = 'บันทึกสำเร็จ'
+
+    // console.log('nonLifeLicense is: ' + nonLifeLicense.value)
+  } else {
+    statusMessageTypeQ2.value = 'warning'
+    statusMessageQ2.value = 'ไม่สามารถบันทึกได้'
+
+    nonLifeLicense?.reset()
+  }
+
+  isShowLoading.value = false
+}
+
+/////////////////////////////////////////
+// Submit page
 const submitSurvey = async (formData: any) => {
 
   isShowLoading.value = true
@@ -188,18 +262,20 @@ const submitSurvey = async (formData: any) => {
 
   // Open confirm dialog
   isShowConfirm.value = true
-  confirmType.value = 'danger'
-  confirmTitle.value = 'แน่ใจ?'
-  confirmText.value = 'It is advised to wrap your plugins as in the future this may enable enhancements.'
-  confirmCancelButton.value = 'อุ่ยยยย กดผิด'
-  confirmButton.value = 'ไปต่อโลดดดด' // After confirm then goto `handleAcceptConfirm` function
+  confirmType.value = 'warning'
+  confirmTitle.value = 'แน่ใจที่จะสมัครสมาชิก?'
+  confirmText.value = 'คิดดีๆ นะ คิดให้รอบคอบก่อน'
+  confirmCancelButton.value = 'อุ่ยย ขอคิดอีกที'
+  confirmButton.value = 'โอเค ไปต่อโลดด' // After confirm then goto `handleAcceptConfirm` function
 }
 
+/////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
   router.push({ path: '/register/form' })
 }
 
+/////////////////////////////////////////
 // Define layout
 const layout = 'monito'
 const layoutClass = 'layout-monito'

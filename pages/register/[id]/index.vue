@@ -33,18 +33,10 @@
                       <FormKit name="checkSKMember" type="group" #default="{ state: { valid } }">
                         <div :class="'notice-' + statusMessageTypeQ1" v-if="statusMessageQ1">{{ statusMessageQ1 }}</div>
 
-                        <FormKit type="mask" label="รหัสสมาชิก" id="agentCode" name="agentCode" mask="AM########"
-                          validation="required|matches:/^[aA][mM][0-9]{8}$/|length:10" :validation-messages="{
-                            required: 'กรุณาใส่รหัสสมาชิก',
-                            matches: 'รูปแบบของรหัสสมาชิกไม่ถูกต้อง',
-                            length: 'รหัสสมาชิกควรมี 10 ตัวอักษร และขึ้นต้นด้วย AM'
-                          }" inputmode="numeric" autocomplete="off" />
-                        <FormKit type="number" label="เลขบัตรประชาชน" id="idCard" name="idCard"
-                          placeholder="เลขบัตรประชาชน 13 หลัก" validation="required|matches:/^[0-9]{13}$/"
-                          :validation-messages="{
-                            required: 'กรุณาใส่เลขบัตรประชาชน',
-                            matches: 'เลขบัตรประชาชนควรเป็นตัวเลข 13 หลัก'
-                          }" inputmode="numeric" autocomplete="off" />
+                        <ElementsFormAgentCode label="รหัสสมาชิก" id="agentCode" name="agentCode" />
+
+                        <ElementsFormIdCard label="เลขบัตรประชาชน" id="idCard" name="idCard" />
+
                         <FormKit type="button" class="btn-primary" label="ตรวจสอบสถานะสมาชิก" name="agent-check-submit"
                           @click="submitCheckSKMember" :disabled="!valid" />
 
@@ -80,6 +72,7 @@
                             required: 'กรุณาใส่เลขที่ใบอนุญาตฯ',
                             matches: 'เลขที่ใบอนุญาตฯ ควรเป็นตัวเลข 10 หลัก'
                           }" inputmode="numeric" autocomplete="off" />
+
                         <FormKit type="button" class="btn-primary" label="บันทึก" name="nonlifelicence-save-submit"
                           @click="submitSaveNonLifeLicense" :disabled="!valid" />
 
@@ -124,6 +117,9 @@
 
     <ElementsDialogLoading :isShowLoading="isShowLoading" :loadingLogo="loadingLogo" :loadingText="loadingText" />
 
+    <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
+      :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
+
     <ElementsDialogConfirms :isShowConfirm="isShowConfirm" :confirm-type="confirmType" :confirm-title="confirmTitle"
       :confirm-text="confirmText" :confirm-button="confirmButton" :confirm-cancel-button="confirmCancelButton"
       @on-accept-confirm="handleAcceptConfirm" @on-close-confirm="handleCloseConfirm" />
@@ -161,6 +157,19 @@ const loadingLogo = ref(false)
 const loadingText = ref(false)
 
 /////////////////////////////////////////
+// Modal Dialog
+const isShowModal = ref(false)
+const modalType = ref('')
+const modalTitle = ref('')
+const modalText = ref('')
+const modalButton = ref('')
+
+// Function to handle close modal events
+const handleCloseModal = async () => {
+  isShowModal.value = false
+}
+
+/////////////////////////////////////////
 // Confirm Dialog
 const isShowConfirm = ref(false)
 const confirmType = ref('')
@@ -186,7 +195,7 @@ const handleAcceptConfirm = async () => {
 
 /////////////////////////////////////////
 // Define emit function to emit events on all dialog
-const emit = defineEmits(['onCloseConfirm', 'onAcceptConfirm'])
+const emit = defineEmits(['onCloseModal', 'onCloseConfirm', 'onAcceptConfirm'])
 
 /////////////////////////////////////////
 // Clear status message after change toggle
@@ -313,10 +322,5 @@ useHead({
 .option {
   background-color: #fcfcfc;
   padding: 1em;
-}
-
-[data-type="number"] input::-webkit-outer-spin-button,
-[data-type="number"] input::-webkit-inner-spin-button {
-  appearance: none;
 }
 </style>

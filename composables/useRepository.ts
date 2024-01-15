@@ -1,4 +1,5 @@
 import AgentModule from "~/shared/repository/agent";
+import BackendPaperModule from "~/shared/repository/backendpaper";
 import CustomerModule from "~/shared/repository/customer";
 import DeliveryModule from "~/shared/repository/delivery";
 import FileModule from "~/shared/repository/file";
@@ -15,6 +16,7 @@ import UserModule from "~/shared/repository/user";
 /** ApiInstance interface provides us with good typing */
 interface IApiInstance {
     agent: AgentModule,
+    backendpaper: BackendPaperModule,
     customer: CustomerModule,
     delivery: DeliveryModule,
     file: FileModule,
@@ -34,6 +36,7 @@ export default  () => {
   
     const modules: IApiInstance = {
         agent: new AgentModule(),
+        backendpaper: new BackendPaperModule(),
         customer: new CustomerModule(),
         delivery: new DeliveryModule(),
         file: new FileModule(),

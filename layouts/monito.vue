@@ -2,7 +2,7 @@
     <div class="layout-monito">
 
         <!--  Sidenav -->
-        <nav class="sidenav navbar fixed-left navbar-expand" id="sidenav-main" v-if="showComponent">
+        <nav class="sidenav navbar fixed-left navbar-expand" id="sidenav-main" v-if="!layoutMinimalStyle">
             <div class="scrollbar-inner">
                 <header class="sidenav-header">
 
@@ -26,13 +26,13 @@
             </div>
         </nav>
 
-        <div class="sidenav-backdrop"></div>
+        <div class="sidenav-backdrop" v-if="!layoutMinimalStyle"></div>
 
         <!-- Main content-->
         <main class="main-content" id="panel">
 
             <!--  Topbar -->
-            <div class="navbar-top" v-if="showComponent">
+            <div class="navbar-top" v-if="!layoutMinimalStyle">
                 <div class="container-fluid">
                     <div class="row">
 
@@ -62,7 +62,7 @@
             </article>
 
             <!-- Footer -->
-            <footer class="site-footer" v-if="showComponent">
+            <footer class="site-footer" v-if="!layoutMinimalStyle">
                 <div class="container-fluid">
                     <div class="row">
 
@@ -77,8 +77,7 @@
     </div>
 </template>
 
-<script setup>
-
+<script setup lang="ts">
 // Props from page setup
 const props = defineProps({
     pageTitle: String,
@@ -88,48 +87,47 @@ const props = defineProps({
     showPageHeader: Boolean,
 })
 
-const showComponent = ref(true)
+// Layout style
+const layoutMinimalStyle = ref(false)
 
-if (props.layoutClass === '-monito-minimal') {
-    showComponent.value = false
-} else {
-    showComponent.value = true
-}
-
+// Function get token
 const getToken = async () => {
     const token = await useUtility().getToken()
 }
 
-const onLoad = onMounted(async () => {
+// Mounted
+onMounted(async () => {
+
+    // Get token first
     getToken()
     setTimeout(getToken, 1000 * 60)
-})
 
-onMounted(() => {
+    // Apply layout style
+    if (props.layoutClass === '-monito-minimal') {
+        layoutMinimalStyle.value = true
+    } else {
+        layoutMinimalStyle.value = false
+    }
+
+    // Close sidenav by default
     document.body.classList.remove('sidenav-show')
 
     const sideNavOpen = document.getElementById('btn-sidenav-open')
     const sideNavClose = document.getElementById('btn-sidenav-close')
 
-    sideNavOpen.addEventListener('click', (e) => {
+    sideNavOpen?.addEventListener('click', (e) => {
         document.body.classList.add('sidenav-show')
         e.preventDefault()
     })
 
-    sideNavClose.addEventListener('click', (e) => {
+    sideNavClose?.addEventListener('click', (e) => {
         document.body.classList.remove('sidenav-show')
         e.preventDefault()
     })
 })
 
-// Define style
+// Define head
 useHead({
-    // link: [{ rel: 'stylesheet', href: '/assets/css/monito.css' }],
-    // script: [
-    //     { src: '/assets/js/popper.min.js' },
-    //     { src: '/assets/js/bootstrap.min.js' },
-    //     { src: 'https://kit.fontawesome.com/285262ebb5.js', crossorigin: 'anonymous', 'data-search-pseudo-elements': true, defer: true },
-    // ],
     bodyAttrs: {
         class: props.layoutClass
     }

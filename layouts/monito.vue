@@ -94,14 +94,13 @@ const layoutMinimalStyle = ref(false)
 // Function get token
 const getToken = async () => {
   const token = await useUtility().getToken()
+  setTimeout(getToken, 1000 * 60)
 }
 
 // Mounted
 onMounted(async () => {
 
-  // Get token first
-  getToken()
-  setTimeout(getToken, 1000 * 60)
+  setTimeout(getToken, 1000 * 60)0
 
   // Apply layout style
   if (props.layoutClass === '-monito-minimal') {

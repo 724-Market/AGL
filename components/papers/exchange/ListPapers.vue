@@ -129,7 +129,9 @@ import type { ExchangeDataSummary, SearchMatchRes } from "~/shared/entities/pape
 import { useStoreExchangeDataInfo } from "~/stores/paper/storeExchangeDataInfo";
 const emits = defineEmits(['onSelectMatch'])
 const props = defineProps({
+  productCompany:String,
 	productMatchList: Array<SearchMatchRes>,
+  productMatchListAll: Array<SearchMatchRes>,
 
 })
 
@@ -137,7 +139,7 @@ const storeExchange = useStoreExchangeDataInfo();
 
 const storeExchangeInfo:globalThis.Ref<ExchangeDataSummary[]> = ref([])
 const exchangeDataList:globalThis.Ref<SearchMatchRes[]> =ref([])
-  const tempExchangeDataList:globalThis.Ref<SearchMatchRes[]> =ref([])
+const tempExchangeDataList:globalThis.Ref<SearchMatchRes[]> =ref([])
 const onLoad = onMounted(()=>{
   storeExchangeInfo.value = storeExchange.$state
   //loadExchangeDataList()
@@ -152,16 +154,7 @@ const onSelection = async(item:SearchMatchRes)=>{
   item.Amount = item.Amount ?? 1
   emits('onSelectMatch',item);
 }
-watch(()=>props.productMatchList,()=>{
-  if(props.productMatchList)
-  {
-    exchangeDataList.value =[]
-    exchangeDataList.value = props.productMatchList
-  }
-
-  //loadExchangeDataList()
-},{deep:true})
-watch(()=>storeExchange.$state,()=>{
+const getAmountCurrentList =  ()=>{
   storeExchangeInfo.value = storeExchange.$state
   console.log(storeExchange.$state)
   tempExchangeDataList.value = [];
@@ -176,7 +169,7 @@ watch(()=>storeExchange.$state,()=>{
       const temp = {...value}
       if(filter.length>0)
       {
-        temp.ProductOnHandAmount = value.ProductOnHandAmount - filter[0].Item.Amount
+        temp.ProductOnHandAmount = value.ProductOnHandAmountTotal - filter[0].Item.Amount
         temp.Amount=1;
       }
         tempExchangeDataList.value.push(temp)
@@ -184,10 +177,28 @@ watch(()=>storeExchange.$state,()=>{
     //exchangeDataList.value = productMatchList
 
   }
+}
+watch(()=>props.productMatchList,()=>{
+  if(props.productMatchList)
+  {
+    exchangeDataList.value =[]
+    exchangeDataList.value = props.productMatchList
+  }
+
+  //loadExchangeDataList()
+},{deep:true})
+watch(()=>storeExchange.$state,()=>{
+  getAmountCurrentList();
 },{deep:true})
 watch(tempExchangeDataList,()=>{
   exchangeDataList.value = tempExchangeDataList.value
-
+  const filter =  exchangeDataList.value.filter(x=>x.ProductCompany == props.productCompany || props.productCompany == "-")
+exchangeDataList.value = filter
+})
+watch(()=>props.productCompany,()=>{
+  getAmountCurrentList()
+const filter =  exchangeDataList.value.filter(x=>x.ProductCompany == props.productCompany || props.productCompany == "-")
+exchangeDataList.value = filter
 })
 // watch(
 //   () => storeExchange.$state,

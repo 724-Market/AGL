@@ -342,6 +342,7 @@ const handleSave = async (event: any) => {
 
   isLoading.value = true;
   if (isSubmit) {
+    isSubmit.value = false
     if (agentAddressText.value == 'addnew') {
       let address = newAddressObject.value as AgentAddressCreateReq
       var resCreate = await useRepository().agent.CreateAddress(address);
@@ -365,6 +366,7 @@ const handleSave = async (event: any) => {
     isEditMode.value = false
     isAcdordian.value = true
     isShowComponentAddress.value = false
+    isSubmit.value = true
   }
   isLoading.value = false;
 }

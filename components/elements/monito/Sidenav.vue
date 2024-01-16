@@ -115,6 +115,11 @@
                         <i class="fa-duotone fa-users"></i><span class="nav-link-text">ผู้ช่วย</span>
                     </NuxtLink>
                 </li>
+                <li class="nav-item">
+                    <NuxtLink class="nav-link" to="/backend/papers" title="เจ้าหน้าที่">
+                        <i class="fa-regular fa-user-tie"></i><span class="nav-link-text">เจ้าหน้าที่</span>
+                    </NuxtLink>
+                </li>
             </ul>
         </div>
     </div>

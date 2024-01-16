@@ -3,7 +3,7 @@
    <div class="has-child" @click="props.click"></div>
   </div>
   <div v-if="props.field && props.field == 'order' && props.row">
-    #{{ props.row.OrderNo
+    {{ props.row.OrderNo
     }}<time datetime="2023-05-05 08:08">{{ useUtility().formatDate(props.row.CreateDate) }}</time>
   </div>
   <div v-if="props.field && props.field == 'subject' && props.row">
@@ -13,7 +13,10 @@
     <span v-else-if="props.row.OrderType=='VOLUNTARY'">(ภาคสมัครใจ)</span>
     
   </div>
-  <div v-if="props.field && props.field == 'amount' && props.row">
+  <div v-if="props.field && props.field == 'amount' && props.row?.Status == 'Draft' && props.row">
+    {{ useUtility().getCurrency(props.row.Total,2) }}<span>ยังไม่มีส่วนลด</span>
+  </div>
+  <div v-else-if="props.field && props.field == 'amount' && props.row">
     {{ useUtility().getCurrency(props.row.OrderAmount,2) }}<span>ส่วนลด {{ useUtility().getCurrency(props.row.DiscountAmount,2) }}</span>
   </div>
   <div v-if="props.field && props.field == 'name' && props.row">

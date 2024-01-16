@@ -3,7 +3,7 @@
     <div class="stat-wrapper">
       <div class="stat-header">
         <h5 class="topic">เงินมัดจำที่ใช้ได้ <small>(บาท)</small></h5>
-        <span class="value">{{ paperBalanceRes?.CreditAvailable }}</span>
+        <span class="value">{{ paperBalanceRes?.CreditAvailable ? paperBalanceRes?.CreditAvailable : "-" }}</span>
       </div>
       <div class="stat-action">
         <figure class="figure">

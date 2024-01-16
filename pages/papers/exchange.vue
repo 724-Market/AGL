@@ -1,29 +1,66 @@
 <template>
-  <NuxtLayout :name="layout" :layout-class="`${layoutClass}`" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
-    <FormKit type="form" :actions="false" id="form-order" form-class="form-order form-theme" :incomplete-message="false">
+  <NuxtLayout
+    :name="layout"
+    :layout-class="`${layoutClass}`"
+    :page-title="pageTitle"
+    :page-category="pageCategory"
+    :show-page-steps="showPageSteps"
+    :show-page-header="showPageHeader"
+  >
+    <FormKit
+      type="form"
+      :actions="false"
+      id="form-order"
+      form-class="form-order form-theme"
+      :incomplete-message="false"
+    >
       <div class="row">
         <div class="col col-main">
-          <PapersExchangeHowToGetPaper @shipping-type-change="onChangeShippingPaperType"
-            @change-delivery-channel="onChangeDeliveryChannel" @check-address="handleCheckAddress"
-            :delivery-chanel="deliveryChanels" :shipping-paper-type="deliveryPaperTypes"
-            :payment-fee-limit="paymentFeeLimit" :is-submit="isSubmit"></PapersExchangeHowToGetPaper>
+          <PapersExchangeHowToGetPaper
+            @shipping-type-change="onChangeShippingPaperType"
+            @change-delivery-channel="onChangeDeliveryChannel"
+            @check-address="handleCheckAddress"
+            :delivery-chanel="deliveryChanels"
+            :shipping-paper-type="deliveryPaperTypes"
+            :payment-fee-limit="paymentFeeLimit"
+            :is-submit="isSubmit"
+          ></PapersExchangeHowToGetPaper>
 
-          <ElementsFormPaperBranchStock v-if="type != ''" @area-change="onChangePaperArea"
-            @ware-house-change="onChangeWareHouse" @product-sub-change="onChangeProductSubcategory"
-            @product-company-change="onChangeProductCompany" :area="paperAreas" :ware-house="warehouses"
-            :product-sub-category="productsubcategorys" :product-company="productCompanys" :shipping-type="type">
+          <ElementsFormPaperBranchStock
+            v-if="type != ''"
+            @area-change="onChangePaperArea"
+            @ware-house-change="onChangeWareHouse"
+            @product-sub-change="onChangeProductSubcategory"
+            @product-company-change="onChangeProductCompany"
+            :area="paperAreas"
+            :ware-house="warehouses"
+            :product-sub-category="productsubcategorys"
+            :product-company="productCompanys"
+            :shipping-type="type"
+          >
           </ElementsFormPaperBranchStock>
 
-          <PapersExchangeListPapers v-if="productSearchMatch" :product-match-list="productSearchMatch"
-            @on-select-match="onSelectMatch"></PapersExchangeListPapers>
+          <PapersExchangeListPapers
+            v-if="productSearchMatch"
+            :product-company="textProductCompany"
+            :product-match-list="productSearchMatch"
+            @on-select-match="onSelectMatch"
+          ></PapersExchangeListPapers>
         </div>
 
         <div class="col col-sidebar">
-          <PapersExchangeSlideBar :check-list="checklist" :match-all-list="productSearchMatchAll"
-            :exchange-data="exchangeData" :shipping-fee="ShippingFee" :shipping-method="ShippingMethod"
-            :payment-fee-limit="paymentFeeLimit" :delivery-type="type" :addr-agent="addrAgent" @on-loading="onLoading"
-            @on-handle-error="handleError"></PapersExchangeSlideBar>
+          <PapersExchangeSlideBar
+            :check-list="checklist"
+            :match-all-list="productSearchMatchAll"
+            :exchange-data="exchangeData"
+            :shipping-fee="ShippingFee"
+            :shipping-method="ShippingMethod"
+            :payment-fee-limit="paymentFeeLimit"
+            :delivery-type="type"
+            :addr-agent="addrAgent"
+            @on-loading="onLoading"
+            @on-handle-error="handleError"
+          ></PapersExchangeSlideBar>
         </div>
       </div>
     </FormKit>
@@ -37,7 +74,10 @@
 </template>
 
 <script setup lang="ts">
-import type { IDeliveryResponse, DeliveryPaperRes } from "~/shared/entities/delivery-entity";
+import type {
+  IDeliveryResponse,
+  DeliveryPaperRes,
+} from "~/shared/entities/delivery-entity";
 import type {
   AreaListRes,
   ExchangeDataSummary,
@@ -282,7 +322,7 @@ const onChangeProductSubcategory = async (
       });
       productSearchMatchAll.value = MatchCompulsoryInfo.value.Data;
     } else {
-      console.log("elseeeeee");
+      console.log("elseeeeee")
       productSearchMatchAll.value = (
         await storeSearchMatchCompulsory.getSearchMatch(reqSearchMatch)
       ).Data;
@@ -292,6 +332,7 @@ const onChangeProductSubcategory = async (
         productSearchMatchAll.value = productSearchMatchAll.value.map((item, index) => {
           let data = item;
           data.Amount = 1;
+          data.ProductOnHandAmountTotal = data.ProductOnHandAmount
           return item;
         });
       }
@@ -318,9 +359,19 @@ const onChangeProductSubcategory = async (
 const onChangeProductCompany = async (productCompany: string) => {
   isLoading.value = true;
   textProductCompany.value = productCompany;
-  productSearchMatch.value = productSearchMatchAll.value?.filter((obj) => {
-    return obj.ProductCompany == productCompany || productCompany == "-";
-  });
+  // if (storeExchange.$state.length > 0 && storeExchange.$state) {
+  //   const paperListtoStore = usePagePaper().getPaperList(
+  //     productSearchMatchAll.value ?? []
+  //   );
+  //   productSearchMatch.value = paperListtoStore.filter((obj) => {
+  //     return obj.ProductCompany == productCompany || productCompany == "-";
+  //   });
+  // } else {
+  //   productSearchMatch.value = productSearchMatchAll.value?.filter((obj) => {
+  //     return obj.ProductCompany == productCompany || productCompany == "-";
+  //   });
+  // }
+  productSearchMatch.value = productSearchMatchAll.value
   console.log("productSearchMatch.value", productSearchMatch.value);
 
   isLoading.value = false;
@@ -447,7 +498,6 @@ useHead({
     class: computed(() => {
       const className = `page-papers single-exchange ${classNameExchange.value}`;
       return className;
-
     }),
   },
 });

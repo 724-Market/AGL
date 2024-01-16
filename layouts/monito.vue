@@ -100,7 +100,7 @@ const getToken = async () => {
 // Mounted
 onMounted(async () => {
 
-  setTimeout(getToken, 1000 * 60)0
+  setTimeout(getToken, 1000 * 60)
 
   // Apply layout style
   if (props.layoutClass === '-monito-minimal') {

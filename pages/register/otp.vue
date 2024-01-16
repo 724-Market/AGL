@@ -174,7 +174,7 @@ const goNext = async () => {
 
 // Define layout
 const layout = 'monito'
-const layoutClass = 'layout-monito'
+const layoutClass = '-monito-minimal'
 const showPageSteps = false
 const showPageHeader = true
 

@@ -6,39 +6,22 @@
       <div :class="statusMessageType" v-if="statusMessage">{{ statusMessage }}</div>
     </header>
 
-    <FormKit
-      type="form"
-      :actions="false"
-      id="form-login"
-      @submit="submitLogin"
-      form-class="form-login form-theme"
-      #default="{ value }"
-      v-model="values"
-      :incomplete-message="false"
-    >
+    <FormKit type="form" :actions="false" id="form-login" @submit="submitLogin" form-class="form-login form-theme"
+      #default="{ value }" v-model="values" :incomplete-message="false">
       <ElementsFormUsername v-model="username" />
 
       <ElementsFormPasswordWithForgot v-model="password" />
 
-      <FormKit
-        type="submit"
-        label="เข้าใช้งานระบบ"
-        name="login-submit"
-        id="login-submit"
-        :classes="{
-          input: 'btn-primary',
-          outer: 'form-actions',
-        }"
-        :loading="isLoading"
-      />
+      <FormKit type="submit" label="เข้าใช้งานระบบ" name="login-submit" id="login-submit" :classes="{
+        input: 'btn-primary',
+        outer: 'form-actions',
+      }" :loading="isLoading" />
     </FormKit>
 
     <footer class="form-footer">
       <p>
         ยังไม่เคยลงทะเบียน ?
-        <NuxtLink to="/register" title="ลงทะเบียนเพื่อเปิดใช้งานที่นี่"
-          >ลงทะเบียนเพื่อเปิดใช้งานที่นี่</NuxtLink
-        >
+        <NuxtLink to="/register" title="ลงทะเบียนเพื่อเปิดใช้งานที่นี่">ลงทะเบียนเพื่อเปิดใช้งานที่นี่</NuxtLink>
       </p>
     </footer>
   </div>
@@ -84,7 +67,6 @@ const password = ref();
 // Binding default value
 const values = reactive({
   username: "AM00000003",
-  //username:"AM00125633",
   password: "Qwerty1234@",
 });
 

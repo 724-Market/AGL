@@ -221,6 +221,7 @@ const submitCheckSKMember = async () => {
 
     // console.log('agenCode is: ' + agentCode.value)
     // console.log('idCard is: ' + idCard.value)
+
   } else {
     statusMessageTypeQ1.value = 'warning'
     statusMessageQ1.value = 'ไม่สามารถยืนยันการเป็นสมาชิกศรีกรุงได้'
@@ -287,14 +288,14 @@ const goNext = async () => {
 /////////////////////////////////////////
 // Define layout
 const layout = 'monito'
-const layoutClass = 'layout-monito -monito-minimal'
+const layoutClass = '-monito-minimal'
 const showPageSteps = false
 const showPageHeader = true
 
 // Define page meta
 const pageTitle = 'แบบสำรวจก่อนลงทะเบียน'
 const pageCategory = 'ลงทะเบียนสมาชิกใหม่'
-const pageDescription = ''
+const pageDescription = 'แบบสำรวจก่อนลงทะเบียนสมาชิกใหม่'
 
 // Define meta seo
 useHead({

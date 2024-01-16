@@ -33,7 +33,7 @@
 <script setup>
 // Define layout
 const layout = 'monito'
-const layoutClass = 'layout-monito -monito-minimal'
+const layoutClass = '-monito-minimal'
 const showPageSteps = false
 const showPageHeader = false
 

@@ -262,6 +262,7 @@ const submitSurvey = async (formData: any) => {
 
   // Open confirm dialog
   isShowConfirm.value = true
+  console.log("confirms:submitSurvey "+isShowConfirm.value)
   confirmType.value = 'warning'
   confirmTitle.value = 'แน่ใจที่จะสมัครสมาชิก?'
   confirmText.value = 'คิดดีๆ นะ คิดให้รอบคอบก่อน'

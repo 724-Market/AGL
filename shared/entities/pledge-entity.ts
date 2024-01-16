@@ -38,32 +38,32 @@ export interface CreditOrderPaymentCreateResponse {
     OrderAmount: number
 }
 export interface CreditOrderPaymentGetRequest {
-    PaymentNo:string
+    PaymentNo: string
 }
 
 export interface PaymentFeeLimitResponse {
-    Type:string,
-    Amount:number,
-    Max:number,
-    Min:number
+    Type: string,
+    Amount: number,
+    Max: number,
+    Min: number
 }
 export interface PaymentFeeLimitRequest {
-    PaymentType:string,
+    PaymentType: string,
 }
 
 export interface PledgePaperOnhandBalanceReq {
-    ProductID?:string
+    ProductID?: string
 }
 export interface PledgePaperOnhandBalanceRes {
     Quantity: number
-  OwnerID: string
-  ProductID: string
-  Brand: string
-  Category: string
-  SubCategory: string
-  Company: string
-  Type: string
-  Model: string
-  Name: string
-  Price: number
+    OwnerID: string
+    ProductID: string
+    Brand: string
+    Category: string
+    SubCategory: string
+    Company: string
+    Type: string
+    Model: string
+    Name: string
+    Price: number
 }

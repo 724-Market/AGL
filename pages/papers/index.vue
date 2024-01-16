@@ -22,7 +22,6 @@
                 <PapersHistoryGridTable :filters="filterGridTable" v-if="filterGridTable.length > 0"
                     @change-table="handlerChangeTable" @cancel-order="handleDelete">
                 </PapersHistoryGridTable>
-                
 
             </div>
         </div>

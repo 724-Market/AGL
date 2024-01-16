@@ -10,15 +10,18 @@
                     :status-search="statusSearch"></PapersHistoryStatus>
 
                 <div id="transaction-stats" class="card-stat-stack">
-                    <OrderHistoryCardsPledge v-if="loadPBalance" :paper-balance="loadPBalance" />
-                    <OrderHistoryCardsPaperUsage v-if="loadPBalance" :paper-balance="loadPBalance" />
+                    <OrderHistoryCardsPledge v-if="statusPaperbalance" :paper-balance="loadPBalance" />
+                    <OrderHistoryCardsPaperUsage v-if="statusPaperbalance" :paper-balance="loadPBalance" /><ElementsDialogPaperstock 
+            v-if="showPaper" 
+            :show="showPaper" 
+            @close-wallet="handleCloseWallet"                 
+            @close-paper="handlerOpenPaperStock"
+        ></ElementsDialogPaperstock>
                 </div>
 
                 <PapersHistoryGridTable :filters="filterGridTable" v-if="filterGridTable.length > 0"
                     @change-table="handlerChangeTable" @cancel-order="handleDelete">
                 </PapersHistoryGridTable>
-
-                
 
             </div>
         </div>
@@ -58,6 +61,7 @@ const filterGridTable: globalThis.Ref<Filter[]> = ref([
 const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
 const loadPBalance: globalThis.Ref<BalanceRes | undefined> = ref();
 const cancelRemarkList: globalThis.Ref<RemarkListRes[] | undefined> = ref([]);
+const statusPaperbalance = ref('')
 var statusSearch = ref("");
 const router = useRouter();
 const storeAuth = useStoreUserAuth();
@@ -80,9 +84,9 @@ const loadPaperBalance = async () => {
     if (balanceRes.apiResponse.Status && balanceRes.apiResponse.Status == "200") {
         if (balanceRes.apiResponse.Data) {
             loadPBalance.value = balanceRes.apiResponse.Data[0];
-            console.log("loadPBalance.value", loadPBalance.value);
         }
     }
+    statusPaperbalance.value = balanceRes.apiResponse.Status;
 
     isLoading.value = false;
 };

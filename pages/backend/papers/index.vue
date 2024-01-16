@@ -3,25 +3,21 @@
         :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
         <div class="row">
             <div class="col">
-                
-                <PapersHistorySearch v-if="statusGroup" @search-history="handleSearch"></PapersHistorySearch>
 
-                <PapersHistoryStatus v-if="statusGroup" @change-status="handleChangeStatus" :status-group="statusGroup"
-                    :status-search="statusSearch"></PapersHistoryStatus>
+                <BackendPapersHistorySearch v-if="statusGroup" @search-history="handleSearch"></BackendPapersHistorySearch>
 
+                <BackendPapersHistoryStatus v-if="statusGroup" @change-status="handleChangeStatus"
+                    :status-group="statusGroup" :status-search="statusSearch"></BackendPapersHistoryStatus>
+<!-- 
                 <div id="transaction-stats" class="card-stat-stack">
-                    <OrderHistoryCardsPledge v-if="statusPaperbalance" :paper-balance="loadPBalance" />
-                    <OrderHistoryCardsPaperUsage v-if="statusPaperbalance" :paper-balance="loadPBalance" /><ElementsDialogPaperstock 
-            v-if="showPaper" 
-            :show="showPaper" 
-            @close-wallet="handleCloseWallet"                 
-            @close-paper="handlerOpenPaperStock"
-        ></ElementsDialogPaperstock>
-                </div>
+                    <OrderHistoryCardsPledge v-if="loadPBalance" :paper-balance="loadPBalance" />
+                    <OrderHistoryCardsPaperUsage v-if="loadPBalance" :paper-balance="loadPBalance" />
+                </div> -->
 
-                <PapersHistoryGridTable :filters="filterGridTable" v-if="filterGridTable.length > 0"
+                <BackendPapersHistoryGridTable :filters="filterGridTable" v-if="filterGridTable.length > 0"
                     @change-table="handlerChangeTable" @cancel-order="handleDelete">
-                </PapersHistoryGridTable>
+                </BackendPapersHistoryGridTable>
+
 
             </div>
         </div>
@@ -34,16 +30,16 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue'
 import { ModalType } from "~/shared/entities/enum-entity";
 import type {
     HistorySearch
 } from "~/shared/entities/order-entity"
 import type {
-    BalanceRes,
-    RemarkListReq,
-    RemarkListRes,
-    StatusGroupResponse
-} from "~/shared/entities/paper-entity";
+    getRemarkListReq,
+    getRemarkListRes,
+    getStatusGroupRes
+} from "~/shared/entities/backendpaper-entity";
 import type { Filter } from "~/shared/entities/table-option";
 import { useStoreUserAuth } from "~/stores/user/storeUserAuth";
 import { storeToRefs } from "pinia";
@@ -53,15 +49,13 @@ const table = ref();
 var isDeleteConfirm = ref(false)
 var textDeleteConfirm = ref('')
 var textPaperCancelOrder = ref('')
-const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
+const statusGroup: globalThis.Ref<getStatusGroupRes | undefined> = ref();
 const filterOption: globalThis.Ref<Filter[]> = ref([]);
 const filterGridTable: globalThis.Ref<Filter[]> = ref([
-    { field: "OrderStatus", type: "MATCH", value: "Prepare" },
+    { field: "OrderStatus", type: "MATCH", value: "Receive" },
 ]);
 const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
-const loadPBalance: globalThis.Ref<BalanceRes | undefined> = ref();
-const cancelRemarkList: globalThis.Ref<RemarkListRes[] | undefined> = ref([]);
-const statusPaperbalance = ref('')
+const cancelRemarkList: globalThis.Ref<getRemarkListRes[] | undefined> = ref([]);
 var statusSearch = ref("");
 const router = useRouter();
 const storeAuth = useStoreUserAuth();
@@ -71,25 +65,12 @@ const onLoad = onMounted(async () => {
 
     if (AuthenInfo.value) {
         await loadHistoryStatus()
-        await loadPaperBalance()
+        //await loadPaperBalance()
         // await triggerEvent()
     } else {
         router.push("/login");
     }
 });
-
-const loadPaperBalance = async () => {
-    isLoading.value = true;
-    const balanceRes = await useRepository().paper.getPaperBalance();
-    if (balanceRes.apiResponse.Status && balanceRes.apiResponse.Status == "200") {
-        if (balanceRes.apiResponse.Data) {
-            loadPBalance.value = balanceRes.apiResponse.Data[0];
-        }
-    }
-    statusPaperbalance.value = balanceRes.apiResponse.Status;
-
-    isLoading.value = false;
-};
 
 const handleChangeStatus = async (status: string) => {
     // console.log('handleChangeStatus', status)
@@ -158,7 +139,7 @@ const handleSearch = async (searchValue: HistorySearch) => {
 
 const loadHistoryStatus = async (filter?: Filter[]) => {
     isLoading.value = true;
-    var statusRes = await useRepository().paper.statusGroup(filter);
+    var statusRes = await useRepository().backendpaper.statusGroup(filter);
     if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
         if (statusRes.apiResponse.Data) {
             statusGroup.value = statusRes.apiResponse.Data;
@@ -178,7 +159,7 @@ const trackStatus = async (OrderNo: string) => {
     //ทำรายการต่อ
     isLoading.value = true;
 
-    router.push("/papers/status/" + OrderNo);
+    router.push("/backend/papers/status/" + OrderNo);
 
     isLoading.value = false;
 };
@@ -192,7 +173,7 @@ const handleDelete = async (OrderNo: string) => {
 const onDeleteConfirm = async () => {
     isLoading.value = true;
     //ลบแบบร่างนี้
-    let req: RemarkListReq = {
+    let req: getRemarkListReq = {
         Type: "PAPER_ORDER_USER",
     };
     var response = await useRepository().paper.remark(req);
@@ -218,7 +199,7 @@ const showPageSteps = false
 const showPageHeader = true
 
 // Define page meta
-const pageTitle = "ประวัติการแลกกระดาษ"
+const pageTitle = "รายการแลกกระดาษ"
 const pageCategory = "แลกกระดาษ"
 const pageDescription = ""
 

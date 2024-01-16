@@ -2,12 +2,18 @@
     <div class="col">
         <div class="header">
 
+            <header class="head-logo" v-if="showLogoHeader">
+                <div class="logo">
+                    <NuxtLink to="/" title="724 Market">724 Market</NuxtLink>
+                </div>
+            </header>
+
             <header class="head-group" v-if="showPageHeader">
                 <h1 class="page-title">{{ props.pageTitle }}</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb fa-divider">
                         <li class="visited">
-                            <NuxtLink to="/">หน้าหลัก</NuxtLink>
+                            <NuxtLink to="/main" title="หน้าหลัก">หน้าหลัก</NuxtLink>
                         </li>
                         <li><em>{{ props.pageCategory }}</em></li>
                     </ol>
@@ -19,7 +25,8 @@
                     <li v-for="item in menus" :key="item.step" :class="getClassName(step, item)"
                         :aria-current="step == item.step ? 'page' : undefined">
                         <!-- <NuxtLink :to="item.url" v-if="item.step <= step">{{ item.name }}</NuxtLink> -->
-                        <NuxtLink :to="item.url" v-if="item.step <= step" @click="clickStep(item.step, item.url)">{{ item.name }}</NuxtLink>
+                        <NuxtLink :to="item.url" v-if="item.step <= step" @click="clickStep(item.step, item.url)">{{
+                            item.name }}</NuxtLink>
                         <em v-else>{{ item.name }}</em>
                     </li>
                 </ol>
@@ -35,7 +42,8 @@ const props = defineProps({
     pageTitle: String,
     pageCategory: String,
     showPageSteps: Boolean,
-    showPageHeader: Boolean
+    showPageHeader: Boolean,
+    showLogoHeader: Boolean
 })
 const router = useRouter();
 const step = ref(0)
@@ -49,7 +57,7 @@ const menus = ref([
 const onLoad = onMounted(() => {
     const menu_step = useStateMenu().getStepMenuFromUri()
     step.value = menu_step
-    
+
     // validate State 
     //useStateMenu().checkStateMenu(menu_step)
 })

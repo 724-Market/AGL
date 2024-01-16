@@ -1,20 +1,15 @@
 <template>
-    <div :class="{ 'd-none': isLoading }">
-        <ElementsDialogPaperstock 
-            v-if="showPaper" 
-            :show="showPaper" 
-            @close-wallet="handleCloseWallet"                 
-            @close-paper="handlerOpenPaperStock"
-        ></ElementsDialogPaperstock>
-    </div>
+    <ElementsDialogPaperstock      
+        :isShowPaper="showPaper"           
+        @on-close-confirm="handleCloseConfirm"
+    ></ElementsDialogPaperstock> 
 
-    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
 
     <div class="card-stat is-success is-small-warning">
         <div class="stat-wrapper has-info">
             <div class="stat-header">
                 <h5 class="topic">มูลค่ากระดาษที่ใช้ได้<small>/ดำเนินการอยู่ (บาท)</small></h5>
-                <span class="value">{{ paperBalanceRes?.PaperOnHandAvailable }}<small>/{{ paperBalanceRes?.PaperPending }}</small></span>
+                <span class="value">{{ paperBalanceRes?.PaperOnHandAvailable ? paperBalanceRes?.PaperOnHandAvailable : "-" }}<small>/{{ paperBalanceRes?.PaperPending ? paperBalanceRes?.PaperPending : "-"}}</small></span>
             </div>
             <div class="stat-action">
                 <figure class="figure">
@@ -22,7 +17,7 @@
                 </figure>
             </div>
             <div class="stat-info">
-                <button type="button" class="btn-gray btn-open-papers" @click="handlerOpenPaperStock(true)"><i
+                <button type="button" class="btn-gray btn-open-papers" @click="handlerOpenPaperStock()"><i
                         class="fa-solid fa-layer-group"></i>คลังกระดาษ</button>
                 <NuxtLink class="btn-secondary" to="/papers/exchange"><i
                         class="fa-solid fa-file-circle-plus"></i>แลกกระดาษ
@@ -45,6 +40,7 @@ const props = defineProps({
 const paperBalanceRes: globalThis.Ref<BalanceRes | undefined> = ref();
 const showPaper = ref(false);
 const isLoading = ref(false);
+const router = useRouter();
 
 const onLoad = onMounted(()=>{
   
@@ -55,15 +51,11 @@ const onLoad = onMounted(()=>{
   }
 })
 
-const handlerOpenPaperStock = (open: boolean) => {
-    showPaper.value = false;
-    showPaper.value = open;
+const handlerOpenPaperStock = () => {
+    showPaper.value = true;
 };
-const handleCloseWallet = async (status: boolean, refresh: boolean) => {
-    if (refresh) {
-        isLoading.value = true;
-        isLoading.value = false;
-    }
+const handleCloseConfirm = async () => {
+    router.push("/papers/exchange");
     showPaper.value = false;
 };
 

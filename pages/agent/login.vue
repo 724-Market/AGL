@@ -62,7 +62,7 @@
 
     </FormKit>
 
-    <ElementsDialogLoading :isShowLoading="isShowLoading" :loadingLogo="loadingLogo" :loadingText="loadingText" />
+    <ElementsDialogLoading :propsLoading="loadingProps" />
 
   </NuxtLayout>
 </template>
@@ -84,14 +84,15 @@ const isLoading = ref(false)
 
 /////////////////////////////////////////
 // Modal Loading
-const isShowLoading = ref(false)
-const loadingLogo = ref(false)
-const loadingText = ref(false)
+const loadingProps = ref({})
+const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = false) => {
+  loadingProps.value = useUtility().createLoadingProps(isShowLoading, showLogo, showText)
+}
 
 /////////////////////////////////////////
 // Submit page
 const submitLogin = async (formData: any) => {
-  isShowLoading.value = true
+  openLoadingDialog(true)
 
   console.log(formData)
 
@@ -139,7 +140,7 @@ const submitLogin = async (formData: any) => {
 
   }
 
-  isShowLoading.value = false
+  openLoadingDialog(false)
 }
 
 /////////////////////////////////////////

@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
 
     <FormKit type="form" @submit="submitSurvey" #default="{ value }" :actions="false" id="form-register"
       form-class="form-register form-theme" :incomplete-message="false">
@@ -115,8 +115,6 @@
 
     </FormKit>
 
-    <button @click="openLoadingDialog(true, true, true)">Open Loading Dialog</button>
-
     <ElementsDialogLoading :propsLoading="loadingProps" />
 
     <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
@@ -211,7 +209,7 @@ const clearStatusMessage = () => {
 // Submit checkSKMember group
 const submitCheckSKMember = async () => {
 
-  openLoadingDialog(true, false, true)
+  openLoadingDialog(true)
 
   await new Promise((r) => setTimeout(r, 1000))
 
@@ -265,7 +263,7 @@ const submitSaveNonLifeLicense = async () => {
 // Submit page
 const submitSurvey = async (formData: any) => {
 
-  openLoadingDialog(true, true)
+  openLoadingDialog(true)
 
   await new Promise((r) => setTimeout(r, 1000))
 
@@ -294,6 +292,7 @@ const layout = 'monito'
 const layoutClass = '-monito-minimal'
 const showPageSteps = false
 const showPageHeader = true
+const showLogoHeader = true
 
 // Define page meta
 const pageTitle = 'แบบสำรวจก่อนลงทะเบียน'

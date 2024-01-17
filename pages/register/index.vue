@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
 
   </NuxtLayout>
 </template>
@@ -23,6 +23,7 @@ const layout = 'monito'
 const layoutClass = '-monito-minimal'
 const showPageSteps = false
 const showPageHeader = true
+const showLogoHeader = true
 
 // Define page meta
 const pageTitle = 'ลงทะเบียน'

@@ -1,7 +1,6 @@
 <template>
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
-
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
 
     <div class="row">
       <div class="col col-main">
@@ -40,12 +39,10 @@
       </div>
     </div>
 
-    <ElementsDialogLoading :isShowLoading="isShowLoading" :loadingLogo="loadingLogo" :loadingText="loadingText" />
+    <ElementsDialogLoading :propsLoading="loadingProps" />
 
     <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
-        :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
-
-    <ElementsDialogModaltest :resp="resp" />
+      :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
 
   </NuxtLayout>
 </template>
@@ -53,15 +50,15 @@
 <script setup lang="ts">
 
 // Define import
-
 const affiliateProductPlanList = ref()
 const affiliateProductPlanDetails = ref()
 
 /////////////////////////////////////////
 // Modal Loading
-const isShowLoading = ref(false)
-const loadingLogo = ref(false)
-const loadingText = ref(false)
+const loadingProps = ref({})
+const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = false) => {
+  loadingProps.value = useUtility().createLoadingProps(isShowLoading, showLogo, showText)
+}
 
 /////////////////////////////////////////
 // Modal Dialog
@@ -77,20 +74,15 @@ const handleCloseModal = async () => {
   isShowModal.value = false
 }
 
-const serverModal = async (serverCheck: any) => {
-  resp = serverCheck
-}
-
-const dialogModal = async (serverCheck: any) => {
-  resp = useUtility().responseCheck2(serverCheck)
-}
+// const serverModal = async (serverCheck: any) => {
+//   resp = serverCheck
+// }
 
 onMounted(async () => {
-  isShowLoading.value = true
+  openLoadingDialog(true)
   await loadAffiliateProductList()
-  await loadAffiliateProductPlan('EBE5C549694847E7AE579AB5135312C2','00177311')
-  dialogModal(['danger','error123456',null,'รับทราบจ้าาาา123456'])
-  isShowLoading.value = false
+  await loadAffiliateProductPlan('EBE5C549694847E7AE579AB5135312C2', '00177311')
+  openLoadingDialog(false)
 })
 
 const loadAffiliateProductList = async () => {
@@ -104,11 +96,11 @@ const loadAffiliateProductList = async () => {
 
   if (resultCheck.status == 'error') {
     //resultCheck.modalTitle = 'xxxxx'
-    serverModal(resultCheck)
+    // serverModal(resultCheck)
   }
 
   if (resultCheck.status == 'server-error') {
-    serverModal(resultCheck)
+    // serverModal(resultCheck)
   }
 
 }
@@ -129,11 +121,11 @@ const loadAffiliateProductPlan = async (ProductPlanID: string, AgentID: string) 
 
   if (resultCheck.status == 'error') {
     //resultCheck.modalTitle = 'xxxxx'
-    serverModal(resultCheck)
+    // serverModal(resultCheck)
   }
 
   if (resultCheck.status == 'server-error') {
-    serverModal(resultCheck)
+    // serverModal(resultCheck)
   }
 
 }
@@ -145,6 +137,7 @@ const layout = 'monito'
 const layoutClass = 'layout-monito'
 const showPageSteps = false
 const showPageHeader = true
+const showLogoHeader = false
 
 // Define page meta
 const pageTitle = 'หน้าหลัก'

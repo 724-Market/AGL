@@ -323,6 +323,51 @@ export default () => {
         return carDetail
     }
 
+    // API Response
+    const responseCheck = (res: any) => {
+
+        const resp = ref<any>({});
+
+        if(res.serverStatus==200) {
+            if(res.apiStatus==200) {
+                resp.value.status = 'pass';
+                resp.value.isShowModal = false
+            }
+            else {
+                resp.value.status = 'error';
+                resp.value.isShowModal = true
+                resp.value.modalType = 'danger'
+                resp.value.modalTitle = 'ทำงานได้ตามปกติเนอะ'
+                resp.value.modalText = 'ราบรื่นนนนนนนนนน'
+                resp.value.modalButton = 'รับทราบจ้าาาา'
+            }
+        }
+        else {
+            resp.value.status = 'server-error';
+            resp.value.isShowModal = true
+            resp.value.modalType = 'danger'
+            resp.value.modalTitle = 'ทำงานได้ตามปกติเนอะ'
+            resp.value.modalText = 'ราบรื่นนนนนนนนนน'
+            resp.value.modalButton = 'รับทราบจ้าาาา'
+        }
+
+        return resp.value
+    }
+
+    const responseCheck2 = (res: any) => {
+
+        const resp = ref<any>({});
+
+        resp.value.status = 'error';
+        resp.value.isShowModal = true
+        resp.value.modalType = res[0]?res[0]:'modalType'
+        resp.value.modalTitle = res[1]?res[1]:'modalTitle'
+        resp.value.modalText = res[2]?res[2]:'modalText'
+        resp.value.modalButton = res[3]?res[3]:'modalButton'
+
+        return resp.value
+    }
+
     return {
         getClassFromStatusOrder,
         getIconFromStatusOrder,
@@ -335,6 +380,8 @@ export default () => {
         formatText,
         downloadImage,
         getDeviceId,
-        setStoretoStep
+        setStoretoStep,
+        responseCheck,
+        responseCheck2
     }
 }

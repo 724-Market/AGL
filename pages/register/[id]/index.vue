@@ -115,7 +115,9 @@
 
     </FormKit>
 
-    <ElementsDialogLoading :isShowLoading="isShowLoading" :loadingLogo="loadingLogo" :loadingText="loadingText" />
+    <button @click="openLoadingDialog(true, true, true)">Open Loading Dialog</button>
+
+    <ElementsDialogLoading :propsLoading="loadingProps" />
 
     <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
       :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
@@ -152,9 +154,10 @@ const isLoading = ref(false)
 
 /////////////////////////////////////////
 // Modal Loading
-const isShowLoading = ref(false)
-const loadingLogo = ref(false)
-const loadingText = ref(false)
+const loadingProps = ref({})
+const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = false) => {
+  loadingProps.value = useUtility().createLoadingProps(isShowLoading, showLogo, showText)
+}
 
 /////////////////////////////////////////
 // Modal Dialog
@@ -208,7 +211,7 @@ const clearStatusMessage = () => {
 // Submit checkSKMember group
 const submitCheckSKMember = async () => {
 
-  isShowLoading.value = true
+  openLoadingDialog(true, false, true)
 
   await new Promise((r) => setTimeout(r, 1000))
 
@@ -230,14 +233,14 @@ const submitCheckSKMember = async () => {
     idCard?.reset()
   }
 
-  isShowLoading.value = false
+  openLoadingDialog(false)
 }
 
 /////////////////////////////////////////
 // Submit saveNonLifeLicense group
 const submitSaveNonLifeLicense = async () => {
 
-  isShowLoading.value = true
+  openLoadingDialog(true)
 
   await new Promise((r) => setTimeout(r, 1000))
 
@@ -255,24 +258,23 @@ const submitSaveNonLifeLicense = async () => {
     nonLifeLicense?.reset()
   }
 
-  isShowLoading.value = false
+  openLoadingDialog(false)
 }
 
 /////////////////////////////////////////
 // Submit page
 const submitSurvey = async (formData: any) => {
 
-  isShowLoading.value = true
+  openLoadingDialog(true, true)
 
   await new Promise((r) => setTimeout(r, 1000))
 
-  isShowLoading.value = false
+  openLoadingDialog(false)
 
   console.log(formData)
 
   // Open confirm dialog
   isShowConfirm.value = true
-  console.log("confirms:submitSurvey "+isShowConfirm.value)
   confirmType.value = 'warning'
   confirmTitle.value = 'แน่ใจที่จะสมัครสมาชิก?'
   confirmText.value = 'คิดดีๆ นะ คิดให้รอบคอบก่อน'

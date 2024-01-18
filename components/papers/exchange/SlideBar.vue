@@ -27,6 +27,7 @@
   </section>
   <ElementsDialogPaperstock
       :isShowPaper="showPaper" 
+      @on-confirm-and-go="handleGotoExchange"    
       @on-close-confirm="handleCloseConfirm"
   ></ElementsDialogPaperstock>
 </template>
@@ -118,6 +119,9 @@ const handlerOpenPaperStock = () => {
     showPaper.value = true;
 };
 const handleCloseConfirm = async () => {
+    showPaper.value = false;
+};
+const handleGotoExchange = async () => {
     showPaper.value = false;
 };
 </script>

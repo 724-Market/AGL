@@ -141,10 +141,10 @@ const recommender = ref(route.params.id || '')
 
 /////////////////////////////////////////
 // Status for notice user
-const statusMessageQ1 = ref('')
-const statusMessageTypeQ1 = ref('')
-const statusMessageQ2 = ref('')
-const statusMessageTypeQ2 = ref('')
+const statusMessageQ1 = ref()
+const statusMessageTypeQ1 = ref()
+const statusMessageQ2 = ref()
+const statusMessageTypeQ2 = ref()
 
 /////////////////////////////////////////
 // Button Loading
@@ -272,7 +272,7 @@ const submitSurvey = async (formData: any) => {
 
   // Open confirm dialog
   isShowConfirm.value = true
-  console.log("confirms:submitSurvey "+isShowConfirm.value)
+  console.log("confirms:submitSurvey " + isShowConfirm.value)
   confirmType.value = 'warning'
   confirmTitle.value = 'แน่ใจที่จะสมัครสมาชิก?'
   confirmText.value = 'คิดดีๆ นะ คิดให้รอบคอบก่อน'

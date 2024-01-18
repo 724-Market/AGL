@@ -58,9 +58,9 @@ const logout = (event) => {
         store.$reset() // Reset the store's state
         store.$dispose() // Dispose of the store instance
         sessionStorage.removeItem(store.$id) // Remove sessionStorage of the store instance
-        
+
         // Remove sessionStorage
-        sessionStorage.removeItem('useStoreNoticePayment') 
+        sessionStorage.removeItem('useStoreNoticePayment')
         sessionStorage.removeItem('useStorePayment')
         sessionStorage.removeItem('useStorePackageList')
         sessionStorage.removeItem('useStoreFeeLimit')
@@ -70,6 +70,6 @@ const logout = (event) => {
     })
 
     // Redirect to the login page after logout
-    router.push('/login')
+    router.push('/agent/login')
 }
 </script>

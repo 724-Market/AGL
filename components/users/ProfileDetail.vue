@@ -128,29 +128,33 @@
               }" autocomplete="off" />
           </div>
           <div class="col-md-6">
-            <FormKit type="number" label="ผลตอบแทน (%)" name="Commission" placeholder="ระบุผลตอบแทน" :value="props.userDetails?.Commission" min="0"
-              max="99" validation="required|min:0|max:99|number" :validation-messages="{
+            <FormKit type="number" label="ผลตอบแทน (%)" name="Commission" placeholder="ระบุผลตอบแทน"
+              :value="props.userDetails?.Commission" min="0" max="99" validation="required|min:0|max:99|number"
+              :validation-messages="{
                 required: 'กรุณาระบุผลตอบแทน',
                 min: 'ผลตอบแทนต่ำสุด 0%',
                 max: 'ผลตอบแทนสูงสุดไม่เกิน 99%',
                 number: 'กรุณาใส่เป็นตัวเลขเท่านั้น',
               }" autocomplete="off" />
           </div>
+
+          <FormKit type="hidden" name="BranchName" value="" />
+
           <!-- <div class="col-12">
             <FormKit type="text" label="สาขา" name="Branch" placeholder="x,xxx" v-model="branchText" autocomplete="off" />
           </div> -->
-          <div class="col-12">
-            <!-- <FormKit type="form" :actions="false"> -->
+          <!-- <div class="col-12">
+            
             <FormKit name="BranchName" type="taglist" label="สาขา (optional)" :value="props.userDetails?.UserGroupName"
               placeholder="ระบุสาขา" :options="searchBranch" :allow-new-values="true" max="1" autocomplete="off" />
-            <!-- </FormKit> -->
-          </div>
+
+          </div> -->
           <!-- <div class="col-12 d-none">
             <div class="form-hide-label accept-box">
               <FormKit type="checkbox" value="accept" name="terms-conditions" label="เปิดใช้งาน" v-model="isActive" />
             </div>
           </div> -->
-          <div class="col-12">
+          <!-- <div class="col-12">
             <h5 class="tags-label">รายชื่อสาขาที่มีอยู่</h5>
             <div class="tags-list">
               <template v-for="(item, i) in userGroupList" :key="i">
@@ -160,7 +164,7 @@
                 </span>
               </template>
             </div>
-          </div>
+          </div> -->
 
         </div>
 

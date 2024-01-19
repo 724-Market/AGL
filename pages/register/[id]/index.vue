@@ -104,7 +104,7 @@
               </div>
             </aside>
 
-            <FormKit type="submit" label="เข้าสู่การสมัครสมาชิก" name="register-submit" :classes="{
+            <FormKit type="submit" label="เข้าสู่การสมัครสมาชิก" name="survey-submit" :classes="{
               input: 'btn-primary',
               outer: 'form-actions',
             }" :disabled="isLoading" :loading="isLoading" />

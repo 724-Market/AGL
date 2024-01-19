@@ -93,7 +93,7 @@ const submitForgotpassword = async (formData: any) => {
 
   if (data && data.value) {
 
-    if (data.value.Status == '200') {
+    if (data.value.Status !== '200') {
 
       await goNext()
 
@@ -118,7 +118,11 @@ const submitForgotpassword = async (formData: any) => {
 /////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
-  router.push({ path: '/main' })
+  // Define and check 'isOTP' status
+  const isOTP = useState('otp')
+  isOTP.value = true
+
+  router.push({ path: 'otp' })
 }
 
 /////////////////////////////////////////

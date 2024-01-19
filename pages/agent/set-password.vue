@@ -2,8 +2,8 @@
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
     :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
 
-    <FormKit type="form" @submit="submitRegister" :actions="false" id="form-register"
-      form-class="form-register form-theme" :incomplete-message="false">
+    <FormKit type="form" @submit="submitSetPassword" :actions="false" id="form-login" form-class="form-login form-theme"
+      :incomplete-message="false">
 
       <div class="row">
         <div class="col col-main">
@@ -14,7 +14,9 @@
             </div>
             <div class="card-body">
 
-              <RegisterFormRegister />
+              <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum culpa nisi quasi necessitatibus
+                doloremque expedita ex, rem fugit velit voluptas explicabo molestias deleniti placeat laborum sunt
+                cupiditate officia distinctio quaerat.</p>
 
             </div>
           </div>
@@ -25,29 +27,19 @@
           <section class="site-sidebar is-sticky">
 
             <aside class="card">
+              <div class="card-header">
+                <h3 class="card-title">Sidebar</h3>
+              </div>
               <div class="card-body">
-                <div class="status-list">
-                  <figure class="status-icon">
-                    <div class="icon user"></div>
-                  </figure>
-                  <h4 class="title">ผู้แนะนำ</h4>
 
-                  <div class="status-item" v-if="isAgent">
-                    <h5 class="topic">ชื่อผู้แนะนำ</h5>
-                    <p>{{ route.params.id }}</p>
-                  </div>
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum culpa nisi quasi necessitatibus
+                  doloremque expedita ex, rem fugit velit voluptas explicabo molestias deleniti placeat laborum sunt
+                  cupiditate officia distinctio quaerat.</p>
 
-                  <div class="status-item" v-else>
-                    <h5 class="topic">ระบุผู้แนะนำ</h5>
-                    <p>
-                      <FormKit type="text" name="AgentCode" placeholder="ระบุรหัสผู้แนะนำ" autocomplete="off" />
-                    </p>
-                  </div>
-                </div>
               </div>
             </aside>
 
-            <FormKit type="submit" label="บันทึก" name="register-submit" :classes="{
+            <FormKit type="submit" label="บันทึก" name="setpassword-submit" :classes="{
               input: 'btn-primary',
               outer: 'form-actions',
             }" :disabled="isLoading" :loading="isLoading" />
@@ -71,9 +63,26 @@
 </template>
 
 <script setup lang="ts">
+// Define page meta
+definePageMeta({
+  middleware: [
+    function (to, from) {
+      // Define and check 'isSetPassword' status
+      const isSetPassword = useState('set-password')
+
+      // Abort navigation if 'isSetPassword' is false
+      if (!isSetPassword.value) {
+        return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
+      }
+
+      // Set 'isSetPassword' to false after check
+      isSetPassword.value = false
+    }
+  ]
+})
+
 // Define router
 const router = useRouter()
-const route = useRoute()
 
 // Button Loading
 const isLoading = ref(false)
@@ -138,7 +147,7 @@ const emit = defineEmits(['onCloseModal', 'onCloseConfirm', 'onAcceptConfirm'])
 /////////////////////////////////////////
 
 // Submit form event
-const submitRegister = async (formData: any) => {
+const submitSetPassword = async (formData: any) => {
 
   openLoadingDialog(true)
 
@@ -155,25 +164,10 @@ const submitRegister = async (formData: any) => {
   confirmButton.value = 'ไปต่อโลดดดด' // After confirm then goto `handleAcceptConfirm` function
 }
 
-// Check affiliate from route param
-const isAgent = ref(false)
-
-if (route.params.id != 'new') {
-  // Call Check Agent Info API
-  isAgent.value = true
-}
-else {
-  isAgent.value = false
-}
-
 /////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
-  // Define and check 'isOTP' status
-  const isOTP = useState('otp')
-  isOTP.value = true
-
-  router.push({ path: 'otp' })
+  router.push({ path: '/agent' })
 }
 
 /////////////////////////////////////////
@@ -185,8 +179,8 @@ const showPageHeader = true
 const showLogoHeader = true
 
 // Define page meta
-const pageTitle = 'แบบฟอร์มลงทะเบียน'
-const pageCategory = 'ลงทะเบียนสมาชิกใหม่'
+const pageTitle = 'กำหนดรหัสผ่าน'
+const pageCategory = 'ลืมรหัสผ่าน'
 const pageDescription = ''
 
 // Define meta seo
@@ -194,7 +188,7 @@ useHead({
   title: pageTitle,
   meta: [{ name: 'description', content: pageDescription }],
   bodyAttrs: {
-    class: 'page-register single-register template-login'
+    class: 'page-register single-set-password template-login'
   }
 })
 </script>

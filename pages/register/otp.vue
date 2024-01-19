@@ -39,7 +39,7 @@
               </div>
             </aside>
 
-            <FormKit type="submit" label="บันทึก" name="register-submit" :classes="{
+            <FormKit type="submit" label="บันทึก" name="otp-submit" :classes="{
               input: 'btn-primary',
               outer: 'form-actions',
             }" :disabled="isLoading" :loading="isLoading" />
@@ -164,6 +164,7 @@ const submitOTP = async (formData: any) => {
   confirmButton.value = 'ไปต่อโลดดดด' // After confirm then goto `handleAcceptConfirm` function
 }
 
+/////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
   // Define and check 'isSetPassword' status
@@ -173,6 +174,7 @@ const goNext = async () => {
   router.push({ path: 'set-password' })
 }
 
+/////////////////////////////////////////
 // Define layout
 const layout = 'monito'
 const layoutClass = '-monito-minimal'

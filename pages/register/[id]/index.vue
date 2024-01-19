@@ -141,10 +141,10 @@ const recommender = ref(route.params.id || '')
 
 /////////////////////////////////////////
 // Status for notice user
-const statusMessageQ1 = ref('')
-const statusMessageTypeQ1 = ref('')
-const statusMessageQ2 = ref('')
-const statusMessageTypeQ2 = ref('')
+const statusMessageQ1 = ref()
+const statusMessageTypeQ1 = ref()
+const statusMessageQ2 = ref()
+const statusMessageTypeQ2 = ref()
 
 /////////////////////////////////////////
 // Button Loading

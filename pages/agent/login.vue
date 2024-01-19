@@ -8,7 +8,7 @@
       <div class="row">
         <div class="col">
 
-          <div class="card card-login">
+          <div class="card card-center">
 
             <div class="card-header">
               <h1 class="title">เข้าสู่ระบบ</h1>
@@ -16,7 +16,6 @@
             </div>
 
             <div class="card-body">
-              <div :class="statusMessageType" v-if="statusMessage">{{ statusMessage }}</div>
 
               <div class="form-area">
 
@@ -27,12 +26,16 @@
 
                 <div class="option" v-if="value && value.isAgentType === true">
 
+                  <div :class="statusMessageTypeQ1" v-if="statusMessageQ1">{{ statusMessageQ1 }}</div>
+
                   <ElementsFormAgentCode label="รหัสสมาชิก AM00000003" id="username" name="username" />
 
                   <ElementsFormPasswordWithForgot label="รหัสผ่าน Qwerty1234@" id="password" name="password" />
 
                 </div>
                 <div class="option" v-else>
+
+                  <div :class="statusMessageTypeQ2" v-if="statusMessageQ2">{{ statusMessageQ2 }}</div>
 
                   <ElementsFormUserId label="ชื่อผู้ใช้งาน" id="userid" name="userid" />
 
@@ -75,8 +78,10 @@ const router = useRouter()
 
 /////////////////////////////////////////
 // Status for notice user
-const statusMessage = ref()
-const statusMessageType = ref()
+const statusMessageQ1 = ref()
+const statusMessageTypeQ1 = ref()
+const statusMessageQ2 = ref()
+const statusMessageTypeQ2 = ref()
 
 /////////////////////////////////////////
 // Button Loading
@@ -110,22 +115,20 @@ const submitLogin = async (formData: any) => {
 
     if (data && data.value) {
 
-      // const auth = data.value.Data;
-
       if (data.value.Status == '200') {
 
         await goNext()
 
       } else {
 
-        statusMessageType.value = 'notice-warning'
-        statusMessage.value = data.value.ErrorMessage
+        statusMessageTypeQ1.value = 'notice-warning'
+        statusMessageQ1.value = data.value.ErrorMessage
 
         if (data.value.ErrorCode == '90000999') {
 
-          statusMessage.value = 'Username หรือ Password ไม่ถูกต้อง'
+          statusMessageQ1.value = 'Username หรือ Password ไม่ถูกต้อง'
 
-          return statusMessage.value
+          return statusMessageQ1.value
 
         }
       }
@@ -136,6 +139,29 @@ const submitLogin = async (formData: any) => {
     const formRequest = {
       username: formData.userid,
       password: formData.userpassword
+    }
+
+    const { data } = await useAsyncData('userAuth', () => store.authLogin(formRequest))
+
+    if (data && data.value) {
+
+      if (data.value.Status == '200') {
+
+        await goNext()
+
+      } else {
+
+        statusMessageTypeQ2.value = 'notice-warning'
+        statusMessageQ2.value = data.value.ErrorMessage
+
+        if (data.value.ErrorCode == '90000999') {
+
+          statusMessageQ2.value = 'Username หรือ Password ไม่ถูกต้อง'
+
+          return statusMessageQ2.value
+
+        }
+      }
     }
 
   }

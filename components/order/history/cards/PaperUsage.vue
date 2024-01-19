@@ -1,7 +1,8 @@
 <template>
-    <ElementsDialogPaperstock      
-        :isShowPaper="showPaper"           
-        @on-close-confirm="handleCloseConfirm"
+    <ElementsDialogPaperstock
+      :isShowPaper="showPaper" 
+      @on-confirm-and-go="handleGotoExchange"    
+      @on-close-confirm="handleCloseConfirm"
     ></ElementsDialogPaperstock> 
 
 
@@ -55,9 +56,14 @@ const handlerOpenPaperStock = () => {
     showPaper.value = true;
 };
 const handleCloseConfirm = async () => {
+    showPaper.value = false;
+};
+const handleGotoExchange = async () => {
     router.push("/papers/exchange");
     showPaper.value = false;
 };
+
+
 
 watch(
   ()=>props.paperBalance,

@@ -10,7 +10,7 @@
         </div>
 
         <UsersGridTable :key="renderKey" :filters="filterOptionTable" v-if="filterOptionTable.length >= 0"
-          @change-table="handlerChangeTable" @on-delete="deleteUsers" @on-profile="loadProfileUser"></UsersGridTable>
+          @change-table="handlerChangeTable" @on-delete="handleConfirmModal" @on-profile="loadProfileUser"></UsersGridTable>
 
       </div>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
 
     <FormKit type="form" @submit="submitSurvey" #default="{ value }" :actions="false" id="form-register"
       form-class="form-register form-theme" :incomplete-message="false">
@@ -115,7 +115,7 @@
 
     </FormKit>
 
-    <ElementsDialogLoading :isShowLoading="isShowLoading" :loadingLogo="loadingLogo" :loadingText="loadingText" />
+    <ElementsDialogLoading :propsLoading="loadingProps" />
 
     <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
       :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
@@ -141,10 +141,10 @@ const recommender = ref(route.params.id || '')
 
 /////////////////////////////////////////
 // Status for notice user
-const statusMessageQ1 = ref('')
-const statusMessageTypeQ1 = ref('')
-const statusMessageQ2 = ref('')
-const statusMessageTypeQ2 = ref('')
+const statusMessageQ1 = ref()
+const statusMessageTypeQ1 = ref()
+const statusMessageQ2 = ref()
+const statusMessageTypeQ2 = ref()
 
 /////////////////////////////////////////
 // Button Loading
@@ -152,9 +152,10 @@ const isLoading = ref(false)
 
 /////////////////////////////////////////
 // Modal Loading
-const isShowLoading = ref(false)
-const loadingLogo = ref(false)
-const loadingText = ref(false)
+const loadingProps = ref({})
+const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = false) => {
+  loadingProps.value = useUtility().createLoadingProps(isShowLoading, showLogo, showText)
+}
 
 /////////////////////////////////////////
 // Modal Dialog
@@ -208,7 +209,7 @@ const clearStatusMessage = () => {
 // Submit checkSKMember group
 const submitCheckSKMember = async () => {
 
-  isShowLoading.value = true
+  openLoadingDialog(true)
 
   await new Promise((r) => setTimeout(r, 1000))
 
@@ -230,14 +231,14 @@ const submitCheckSKMember = async () => {
     idCard?.reset()
   }
 
-  isShowLoading.value = false
+  openLoadingDialog(false)
 }
 
 /////////////////////////////////////////
 // Submit saveNonLifeLicense group
 const submitSaveNonLifeLicense = async () => {
 
-  isShowLoading.value = true
+  openLoadingDialog(true)
 
   await new Promise((r) => setTimeout(r, 1000))
 
@@ -255,24 +256,23 @@ const submitSaveNonLifeLicense = async () => {
     nonLifeLicense?.reset()
   }
 
-  isShowLoading.value = false
+  openLoadingDialog(false)
 }
 
 /////////////////////////////////////////
 // Submit page
 const submitSurvey = async (formData: any) => {
 
-  isShowLoading.value = true
+  openLoadingDialog(true)
 
   await new Promise((r) => setTimeout(r, 1000))
 
-  isShowLoading.value = false
+  openLoadingDialog(false)
 
   console.log(formData)
 
   // Open confirm dialog
   isShowConfirm.value = true
-  console.log("confirms:submitSurvey "+isShowConfirm.value)
   confirmType.value = 'warning'
   confirmTitle.value = 'แน่ใจที่จะสมัครสมาชิก?'
   confirmText.value = 'คิดดีๆ นะ คิดให้รอบคอบก่อน'
@@ -292,6 +292,7 @@ const layout = 'monito'
 const layoutClass = '-monito-minimal'
 const showPageSteps = false
 const showPageHeader = true
+const showLogoHeader = true
 
 // Define page meta
 const pageTitle = 'แบบสำรวจก่อนลงทะเบียน'

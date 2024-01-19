@@ -79,7 +79,7 @@
         </div>
 
         <div class="card-footer">
-          <button type="button" class="btn-secondary" @click="hideModal">
+          <button type="button" class="btn-secondary" @click="hideNext">
             <i class="fa-solid fa-file-circle-plus"></i>แลกกระดาษ
           </button>
 
@@ -95,7 +95,7 @@ import type {
   PledgePaperOnhandBalanceRes
 } from "~/shared/entities/pledge-entity";
 // Define emit function to emit events on confirm
-const emit = defineEmits(['onCloseConfirm', 'onAcceptConfirm'])
+const emit = defineEmits(['onCloseConfirm', 'onAcceptConfirm', 'onConfirmAndGo'])
 const pledgePaperOnhandBalanceGet: globalThis.Ref<PledgePaperOnhandBalanceRes[] | undefined> = ref([]);
 
 
@@ -109,6 +109,10 @@ const confirmModal = () => emit('onAcceptConfirm')
 
 // Function to emit the 'onCloseConfirm' event
 const hideModal = () => emit('onCloseConfirm')
+
+// Function to emit the 'onCloseConfirm' event
+const hideNext = () => emit('onConfirmAndGo')
+
 
 // on Mounted
 onMounted(() => {

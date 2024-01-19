@@ -11,12 +11,7 @@
 
                 <div id="transaction-stats" class="card-stat-stack">
                     <OrderHistoryCardsPledge v-if="statusPaperbalance" :paper-balance="loadPBalance" />
-                    <OrderHistoryCardsPaperUsage v-if="statusPaperbalance" :paper-balance="loadPBalance" /><ElementsDialogPaperstock 
-            v-if="showPaper" 
-            :show="showPaper" 
-            @close-wallet="handleCloseWallet"                 
-            @close-paper="handlerOpenPaperStock"
-        ></ElementsDialogPaperstock>
+                    <OrderHistoryCardsPaperUsage v-if="statusPaperbalance" :paper-balance="loadPBalance" />
                 </div>
 
                 <PapersHistoryGridTable :filters="filterGridTable" v-if="filterGridTable.length > 0"

@@ -77,10 +77,10 @@ const updateComponent = () => {
   });
 }
 
-const handleConfirmModal = async () => {
+const handleConfirmModal = async (UserID: string) => {
   isLoading.value = true
   let req: delUserReq = {
-      SubUserID: delUserID.value,
+      SubUserID: UserID,
   }
   var response = await useRepository().user.deleteUser(req)
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {

@@ -4,8 +4,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   // Define routes that are publicly accessible
   const publicRoutes = [
-    'index', 'login',
-    'agent', 'agent-login',
+    'index', 'login', 'forgot-password',
+    'agent', 'agent-login', 'agent-forgot-password',
     'register', 'register-id', 'register-form', 'register-otp', 'register-set-password'
   ]
 

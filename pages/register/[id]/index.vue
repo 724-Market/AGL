@@ -321,9 +321,4 @@ useHead({
 .answer {
   margin-bottom: 2em;
 }
-
-.option {
-  background-color: #fcfcfc;
-  padding: 1em;
-}
 </style>

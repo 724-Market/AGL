@@ -7,7 +7,7 @@
 }" autocomplete="off">
     <template #help="context">
       <div :class="context.classes.help">
-        <NuxtLink to="/forgot-password" class="forgot-password-link help-text-right" title="ลืมรหัสผ่าน">ลืมรหัสผ่าน?
+        <NuxtLink to="forgot-password" class="forgot-password-link help-text-right" title="ลืมรหัสผ่าน">ลืมรหัสผ่าน?
         </NuxtLink>
       </div>
     </template>

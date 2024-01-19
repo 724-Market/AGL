@@ -104,7 +104,7 @@
               </div>
             </aside>
 
-            <FormKit type="submit" label="เข้าสู่การสมัครสมาชิก" name="register-submit" :classes="{
+            <FormKit type="submit" label="เข้าสู่การสมัครสมาชิก" name="survey-submit" :classes="{
               input: 'btn-primary',
               outer: 'form-actions',
             }" :disabled="isLoading" :loading="isLoading" />
@@ -320,10 +320,5 @@ useHead({
 
 .answer {
   margin-bottom: 2em;
-}
-
-.option {
-  background-color: #fcfcfc;
-  padding: 1em;
 }
 </style>

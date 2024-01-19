@@ -39,7 +39,7 @@
               </div>
             </aside>
 
-            <FormKit type="submit" label="บันทึก" name="register-submit" :classes="{
+            <FormKit type="submit" label="บันทึก" name="setpassword-submit" :classes="{
               input: 'btn-primary',
               outer: 'form-actions',
             }" :disabled="isLoading" :loading="isLoading" />
@@ -164,11 +164,13 @@ const submitSetPassword = async (formData: any) => {
   confirmButton.value = 'ไปต่อโลดดดด' // After confirm then goto `handleAcceptConfirm` function
 }
 
+/////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
-  router.push({ path: '/agent/login' })
+  router.push({ path: '/agent' })
 }
 
+/////////////////////////////////////////
 // Define layout
 const layout = 'monito'
 const layoutClass = '-monito-minimal'

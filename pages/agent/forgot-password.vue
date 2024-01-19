@@ -35,8 +35,8 @@
 
             <div class="card-footer">
               <p>
-                จำรหัสผ่านได้แล้ว?
-                <NuxtLink to="login" title="กลับไปเข้าสู่ระบบ">กลับไปเข้าสู่ระบบ</NuxtLink>
+                มีรหัสผ่านใหม่แล้ว
+                <NuxtLink to="login" title="เข้าสู่ระบบได้เลย">เข้าสู่ระบบได้เลย</NuxtLink>
               </p>
             </div>
 

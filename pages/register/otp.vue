@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
 
     <FormKit type="form" @submit="submitOTP" :actions="false" id="form-register" form-class="form-register form-theme"
       :incomplete-message="false">
@@ -50,7 +50,7 @@
 
     </FormKit>
 
-    <ElementsDialogLoading :isShowLoading="isShowLoading" :loadingLogo="loadingLogo" :loadingText="loadingText" />
+    <ElementsDialogLoading :propsLoading="loadingProps" />
 
     <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
       :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
@@ -89,9 +89,10 @@ const isLoading = ref(false)
 
 /////////////////////////////////////////
 // Modal Loading
-const isShowLoading = ref(false)
-const loadingLogo = ref(false)
-const loadingText = ref(false)
+const loadingProps = ref({})
+const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = false) => {
+  loadingProps.value = useUtility().createLoadingProps(isShowLoading, showLogo, showText)
+}
 
 /////////////////////////////////////////
 // Modal Dialog
@@ -148,11 +149,11 @@ const emit = defineEmits(['onCloseModal', 'onCloseConfirm', 'onAcceptConfirm'])
 // Submit form event
 const submitOTP = async (formData: any) => {
 
-  isShowLoading.value = true
+  openLoadingDialog(true)
 
   await new Promise((r) => setTimeout(r, 1000))
 
-  isShowLoading.value = false
+  openLoadingDialog(false)
 
   // Open confirm dialog
   isShowConfirm.value = true
@@ -177,6 +178,7 @@ const layout = 'monito'
 const layoutClass = '-monito-minimal'
 const showPageSteps = false
 const showPageHeader = true
+const showLogoHeader = true
 
 // Define page meta
 const pageTitle = 'ยืนยันด้วย OTP'

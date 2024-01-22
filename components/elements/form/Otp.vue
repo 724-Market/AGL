@@ -1,11 +1,11 @@
 <template>
-  <FormKit type="number" placeholder="กรอกรหัส OTP 6 หลัก" validation="required|matches:/^[0-9]{6}$/|number|length"
-    :validation-messages="{
+  <FormKit type="number" mask="######" placeholder="กรอกรหัส OTP 6 หลัก"
+    validation="required|matches:/^[0-9]{6}$/|number|length" :validation-messages="{
       required: 'กรุณาใส่รหัส OTP',
       matches: 'รหัสต้องมี 6 หลัก',
       number: 'รหัสต้องเป็นตัวเลข',
       length: 'รหัสต้องมี 6 หลัก'
-    }" inputmode="numeric" autocomplete="off" :readonly="countdown <= 0">
+    }" show-mask="false" inputmode="numeric" autocomplete="off" :readonly="countdown <= 0">
     <template #help="context">
       <div :class="context.classes.help">
         <button type="button" class="send-otp-link text-end" title="ส่งรหัส OTP อีกครั้ง" @click="resendOTP"

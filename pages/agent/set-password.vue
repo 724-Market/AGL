@@ -48,22 +48,22 @@
 
 <script setup lang="ts">
 // Define page meta
-// definePageMeta({
-//   middleware: [
-//     function (to, from) {
-//       // Define and check 'isSetPassword' status
-//       const isSetPassword = useState('set-password')
+definePageMeta({
+  middleware: [
+    function (to, from) {
+      // Define and check 'isSetPassword' status
+      const isSetPassword = useState('set-password')
 
-//       // Abort navigation if 'isSetPassword' is false
-//       if (!isSetPassword.value) {
-//         return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
-//       }
+      // Abort navigation if 'isSetPassword' is false
+      if (!isSetPassword.value) {
+        return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
+      }
 
-//       // Set 'isSetPassword' to false after check
-//       isSetPassword.value = false
-//     }
-//   ]
-// })
+      // Set 'isSetPassword' to false after check
+      isSetPassword.value = false
+    }
+  ]
+})
 
 /////////////////////////////////////////
 // Define router and route

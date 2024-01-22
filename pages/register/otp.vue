@@ -52,22 +52,22 @@ import { getNode } from '@formkit/core'
 
 /////////////////////////////////////////
 // Define page meta
-// definePageMeta({
-//   middleware: [
-//     function (to, from) {
-//       // Define and check 'isOTP' status
-//       const isOTP = useState('otp')
+definePageMeta({
+  middleware: [
+    function (to, from) {
+      // Define and check 'isOTP' status
+      const isOTP = useState('otp')
 
-//       // Abort navigation if 'isOTP' is false
-//       if (!isOTP.value) {
-//         return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
-//       }
+      // Abort navigation if 'isOTP' is false
+      if (!isOTP.value) {
+        return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
+      }
 
-//       // Set 'isOTP' to false after check
-//       isOTP.value = false
-//     }
-//   ]
-// })
+      // Set 'isOTP' to false after check
+      isOTP.value = false
+    }
+  ]
+})
 
 /////////////////////////////////////////
 // Define variables
@@ -162,8 +162,6 @@ const submitOTP = async (formData: any) => {
   // Reset OTP field
   await resetOTPField()
 
-  openLoadingDialog(false)
-
   if (formData) {
 
     if (formRequest.otp === '555555') {
@@ -172,6 +170,9 @@ const submitOTP = async (formData: any) => {
 
     } else {
 
+      openLoadingDialog(false)
+
+      // Open modal dialog
       isShowModal.value = true
       modalType.value = 'danger'
       modalTitle.value = 'รหัส OTP ไม่ถูกต้อง'

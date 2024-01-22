@@ -54,8 +54,10 @@ const statusMessageType = ref()
 
 // Binding default value
 const values = reactive({
-  phoneNumber: registerData.value.Phone,
-  refCode: registerData.value.CodeReference
+  // phoneNumber: registerData.value.Phone,
+  // refCode: registerData.value.CodeReference
+  phoneNumber: '0890435478',
+  refCode: 'EDXJ'
 })
 
 // Submit form event
@@ -63,21 +65,21 @@ const submitOtp = async (formData) => {
 
   const response = await useCallApi().get({
     URL: '/Agent/register/otp/verify',
-    CodeVerify: formData.otp, 
-    CodeReference: registerData.value.CodeReference, 
+    CodeVerify: formData.otp,
+    CodeReference: registerData.value.CodeReference,
     Token: registerData.value.Token
   })
 
-  statusMessage.value           = response.statusMessage
-  statusMessageType.value       = response.statusMessageType
-  completedOtp.value            = false // Form completed status
-  submitted.value               = false // Form submitted status
+  statusMessage.value = response.statusMessage
+  statusMessageType.value = response.statusMessageType
+  completedOtp.value = false // Form completed status
+  submitted.value = false // Form submitted status
 
   if (response.serverStatus === 200) {
     if (response.status === 200) {
 
-        registerData.value.ReferenceID  = response.respData.ReferenceID
-        completedOtp.value = true
+      registerData.value.ReferenceID = response.respData.ReferenceID
+      completedOtp.value = true
 
     }
     submitted.value = true
@@ -85,4 +87,4 @@ const submitOtp = async (formData) => {
 
 }
 
-</script>-
+</script>

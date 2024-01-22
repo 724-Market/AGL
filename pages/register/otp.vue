@@ -21,8 +21,6 @@
 
               <div class="form-area">
 
-                <div :class="statusMessageType" v-if="statusMessage">{{ statusMessage }}</div>
-
                 <ElementsFormOtp label="OTP" name="otp" id="otp" :propsOTP="getRefOTP" @on-resend-OTP="handleResendOTP" />
 
               </div>
@@ -54,22 +52,22 @@ import { getNode } from '@formkit/core'
 
 /////////////////////////////////////////
 // Define page meta
-definePageMeta({
-  middleware: [
-    function (to, from) {
-      // Define and check 'isOTP' status
-      const isOTP = useState('otp')
+// definePageMeta({
+//   middleware: [
+//     function (to, from) {
+//       // Define and check 'isOTP' status
+//       const isOTP = useState('otp')
 
-      // Abort navigation if 'isOTP' is false
-      if (!isOTP.value) {
-        return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
-      }
+//       // Abort navigation if 'isOTP' is false
+//       if (!isOTP.value) {
+//         return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
+//       }
 
-      // Set 'isOTP' to false after check
-      isOTP.value = false
-    }
-  ]
-})
+//       // Set 'isOTP' to false after check
+//       isOTP.value = false
+//     }
+//   ]
+// })
 
 /////////////////////////////////////////
 // Define variables
@@ -81,11 +79,6 @@ const getRefOTP = ref({
 /////////////////////////////////////////
 // Define router and route
 const router = useRouter()
-
-/////////////////////////////////////////
-// Status for notice user
-const statusMessage = ref()
-const statusMessageType = ref()
 
 /////////////////////////////////////////
 // Button Loading
@@ -101,7 +94,7 @@ const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = fa
 /////////////////////////////////////////
 // Modal Dialog
 const isShowModal = ref(false)
-const modalType = ref('')
+const modalType = ref('danger')
 const modalTitle = ref('')
 const modalText = ref('')
 const modalButton = ref('')

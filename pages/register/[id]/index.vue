@@ -43,43 +43,23 @@
                       </FormKit>
 
                     </div>
-                  </div>
 
-                </div>
+                    <div class="option" v-if="value && value.isSKMember === 'notMember'">
 
-                <div class="survey-item" v-if="value && value.isSKMember === 'notMember'">
-                  <header class="question">
-                    <h3 class="topic">ท่านมีใบอนุญาตเป็น นายหน้า/ตัวแทน ประกันวินาศภัยหรือไม่?</h3>
-                  </header>
-
-                  <div class="answer">
-                    <div class="choice">
-                      <FormKit type="togglebuttons" name="isNonLifeLicense" enforced :options="{
-                        'notHasNonLifeLicense': 'ไม่มีใบอนุญาตฯ',
-                        'hasNonLifeLicense': 'มีใบอนุญาตฯ',
-                      }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                        @click="clearStatusMessage" />
-                    </div>
-
-                    <div class="option" v-if="value && value.isNonLifeLicense === 'hasNonLifeLicense'">
-
-                      <FormKit name="saveNonLifeLicense" type="group" #default="{ state: { valid } }">
+                      <FormKit name="checkIdCard" type="group" #default="{ state: { valid } }">
                         <div :class="'notice-' + statusMessageTypeQ2" v-if="statusMessageQ2">{{ statusMessageQ2 }}</div>
 
-                        <FormKit type="number" label="เลขที่ใบอนุญาตประกันวินาศภัย" id="nonLifeLicense"
-                          name="nonLifeLicense" placeholder="หมายเลข 10 หลัก" validation="required|matches:/^[0-9]{10}$/"
-                          :validation-messages="{
-                            required: 'กรุณาใส่เลขที่ใบอนุญาตฯ',
-                            matches: 'เลขที่ใบอนุญาตฯ ควรเป็นตัวเลข 10 หลัก'
-                          }" inputmode="numeric" autocomplete="off" />
+                        <ElementsFormIdCard label="เลขบัตรประชาชน" id="idCard" name="idCard" />
 
-                        <FormKit type="button" class="btn-primary" label="บันทึก" name="nonlifelicence-save-submit"
-                          @click="submitSaveNonLifeLicense" :disabled="!valid" />
+                        <FormKit type="button" class="btn-primary" label="ตรวจสอบสถานะสมาชิก" name="idcard-check-submit"
+                          @click="submitCheckIdCard" :disabled="!valid" />
 
                       </FormKit>
 
                     </div>
+
                   </div>
+
                 </div>
 
               </section>
@@ -92,22 +72,31 @@
         <div class="col col-sidebar">
           <section class="site-sidebar is-sticky">
 
-            <aside class="card" v-if="recommender">
+            <aside class="card">
               <div class="card-header">
                 <h3 class="card-title">ผู้แนะนำ</h3>
               </div>
-              <div class="card-body">
+              <div class="card-body" v-if="Referral">
 
-                <p>{{ recommender }}</p>
-                <FormKit type="hidden" name="reference" :value="recommender" />
+                <p>
+                  AgentID : {{ agentReferralDetails.AgentID }}<br>
+                  FirstName : {{ agentReferralDetails.FirstName }}<br>
+                  LastName : {{ agentReferralDetails.LastName }}<br>
+                  ModelAgent : {{ agentReferralDetails.ModelAgent }}
+                </p>
 
+                <FormKit type="hidden" name="reference" :value="Referral" />
+
+              </div>
+              <div class="card-body" v-else>
+                <p>724 Market</p>
               </div>
             </aside>
 
             <FormKit type="submit" label="เข้าสู่การสมัครสมาชิก" name="survey-submit" :classes="{
               input: 'btn-primary',
               outer: 'form-actions',
-            }" :disabled="isLoading" :loading="isLoading" />
+            }" :disabled="false" :loading="isLoading" />
 
           </section>
         </div>
@@ -135,9 +124,6 @@ import { getNode } from '@formkit/core'
 // Define router and route
 const router = useRouter()
 const route = useRoute()
-
-// Use ref to create a reactive property and assign route.query.ref to it
-const recommender = ref(route.params.id || '')
 
 /////////////////////////////////////////
 // Status for notice user
@@ -235,25 +221,27 @@ const submitCheckSKMember = async () => {
 }
 
 /////////////////////////////////////////
-// Submit saveNonLifeLicense group
-const submitSaveNonLifeLicense = async () => {
+// Submit checkIdCard group
+const submitCheckIdCard = async () => {
 
   openLoadingDialog(true)
 
   await new Promise((r) => setTimeout(r, 1000))
 
-  const nonLifeLicense = getNode('nonLifeLicense')
+  const idCard = getNode('idCard')
 
-  if (nonLifeLicense) {
+  if (idCard) {
     statusMessageTypeQ2.value = 'success'
-    statusMessageQ2.value = 'บันทึกสำเร็จ'
+    statusMessageQ2.value = 'สามารถสมัครสมาชิกได้'
 
-    // console.log('nonLifeLicense is: ' + nonLifeLicense.value)
+    // console.log('agenCode is: ' + agentCode.value)
+    // console.log('idCard is: ' + idCard.value)
+
   } else {
     statusMessageTypeQ2.value = 'warning'
-    statusMessageQ2.value = 'ไม่สามารถบันทึกได้'
+    statusMessageQ2.value = 'ไม่สามารถสมัครสมาชิกได้'
 
-    nonLifeLicense?.reset()
+    idCard?.reset()
   }
 
   openLoadingDialog(false)
@@ -285,6 +273,44 @@ const submitSurvey = async (formData: any) => {
 const goNext = async () => {
   router.push({ path: '/register/form' })
 }
+
+
+let agentReferralDetails = ref()
+let Referral = ref()
+
+onMounted(async () => {
+    await loadAgentReferral()
+})
+
+const loadAgentReferral = async () => {
+
+  if (typeof route.params.id === 'string') {
+    if(route.params.id != '724') {
+
+      const checkAgentReferralReq = {
+        ReferralID: route.params.id
+      }
+      const response    = await useRepository().agent.checkAgentReferral(checkAgentReferralReq)
+      const resultCheck = useUtility().responseCheck(response)
+
+      if (resultCheck.status === 'pass') {
+        if(Array.isArray(response.apiResponse.Data)) {
+          agentReferralDetails = response.apiResponse.Data[0]
+          Referral.value = response.apiResponse.Data[0].AgentID
+        }
+      }
+      else if (resultCheck.status === 'error') {
+        alert('error')
+      }
+      else if (resultCheck.status === 'server-error') {
+        alert('server-error')
+      }
+
+    }
+  }
+
+}
+
 
 /////////////////////////////////////////
 // Define layout

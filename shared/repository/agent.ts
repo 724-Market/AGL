@@ -32,7 +32,11 @@ class AgentModule {
   async AddressDelete(req: AgentAddressDeleteReq): Promise<IAPIResponse<AgentAddressDeleteRes>> {
     return await useCallApi().apiRepository<AgentAddressDeleteRes>(`${this.RESOURCE}/address/delete`, req)
   }
-  
+
+  async checkAgentReferral(req: any) {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/referral/check`, req)
+  }
+
 }
 
 export default AgentModule;

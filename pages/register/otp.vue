@@ -6,45 +6,33 @@
       :incomplete-message="false">
 
       <div class="row">
-        <div class="col col-main">
+        <div class="col">
 
-          <div class="card">
+          <div class="card card-center">
+
             <div class="card-header">
-              <h3 class="card-title">Main content</h3>
+              <h1 class="title">ยืนยันด้วย OTP</h1>
+              <h2 class="subtitle">ระบบได้ส่งรหัส OTP ไปที่หมายเลข<span class="badge-info ref-phone-otp"><b>{{
+                getRefOTP.phoneNumber
+              }}</b></span></h2>
             </div>
+
             <div class="card-body">
 
-              <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum culpa nisi quasi necessitatibus
-                doloremque expedita ex, rem fugit velit voluptas explicabo molestias deleniti placeat laborum sunt
-                cupiditate officia distinctio quaerat.</p>
+              <div class="form-area">
 
+                <ElementsFormOtp label="OTP" name="otp" id="otp" :propsOTP="getRefOTP" @on-resend-OTP="handleResendOTP" />
+
+              </div>
+
+              <FormKit type="submit" label="ยืนยันรหัส OTP" name="otp-submit" :classes="{
+                input: 'btn-primary',
+                outer: 'form-actions',
+              }" :disabled="isLoading" :loading="isLoading" />
             </div>
+
           </div>
 
-        </div>
-
-        <div class="col col-sidebar">
-          <section class="site-sidebar is-sticky">
-
-            <aside class="card">
-              <div class="card-header">
-                <h3 class="card-title">Sidebar</h3>
-              </div>
-              <div class="card-body">
-
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum culpa nisi quasi necessitatibus
-                  doloremque expedita ex, rem fugit velit voluptas explicabo molestias deleniti placeat laborum sunt
-                  cupiditate officia distinctio quaerat.</p>
-
-              </div>
-            </aside>
-
-            <FormKit type="submit" label="บันทึก" name="otp-submit" :classes="{
-              input: 'btn-primary',
-              outer: 'form-actions',
-            }" :disabled="isLoading" :loading="isLoading" />
-
-          </section>
         </div>
       </div>
 
@@ -55,35 +43,44 @@
     <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
       :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
 
-    <ElementsDialogConfirms :isShowConfirm="isShowConfirm" :confirm-type="confirmType" :confirm-title="confirmTitle"
-      :confirm-text="confirmText" :confirm-button="confirmButton" :confirm-cancel-button="confirmCancelButton"
-      @on-accept-confirm="handleAcceptConfirm" @on-close-confirm="handleCloseConfirm" />
-
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
+// Define import
+import { getNode } from '@formkit/core'
+
+/////////////////////////////////////////
 // Define page meta
-definePageMeta({
-  middleware: [
-    function (to, from) {
-      // Define and check 'isOTP' status
-      const isOTP = useState('otp')
+// definePageMeta({
+//   middleware: [
+//     function (to, from) {
+//       // Define and check 'isOTP' status
+//       const isOTP = useState('otp')
 
-      // Abort navigation if 'isOTP' is false
-      if (!isOTP.value) {
-        return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
-      }
+//       // Abort navigation if 'isOTP' is false
+//       if (!isOTP.value) {
+//         return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
+//       }
 
-      // Set 'isOTP' to false after check
-      isOTP.value = false
-    }
-  ]
+//       // Set 'isOTP' to false after check
+//       isOTP.value = false
+//     }
+//   ]
+// })
+
+/////////////////////////////////////////
+// Define variables
+const getRefOTP = ref({
+  phoneNumber: '',
+  refCode: '',
 })
 
-// Define router
+/////////////////////////////////////////
+// Define router and route
 const router = useRouter()
 
+/////////////////////////////////////////
 // Button Loading
 const isLoading = ref(false)
 
@@ -97,71 +94,91 @@ const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = fa
 /////////////////////////////////////////
 // Modal Dialog
 const isShowModal = ref(false)
-const modalType = ref('')
+const modalType = ref('danger')
 const modalTitle = ref('')
 const modalText = ref('')
 const modalButton = ref('')
 
 // Function to handle close modal events
 const handleCloseModal = async () => {
+  await requestOTP()
+}
+
+/////////////////////////////////////////
+// Define emit function to emit events on all dialog and components
+const emit = defineEmits(['onCloseModal', 'onResendOTP'])
+
+/////////////////////////////////////////
+// Function to handle close modal events
+const handleResendOTP = async () => {
   isShowModal.value = false
+
+  await requestOTP()
 }
 
 /////////////////////////////////////////
-// Confirm Dialog
-const isShowConfirm = ref(false)
-const confirmType = ref('')
-const confirmTitle = ref('')
-const confirmText = ref('')
-const confirmButton = ref('')
-const confirmCancelButton = ref('')
+// Function request OTP
+const requestOTP = async () => {
+  console.log('request OTP')
 
-// Function to handle close confirm events
-const handleCloseConfirm = async () => {
-  isShowConfirm.value = false
-}
+  // Reset OTP field
+  await resetOTPField()
 
-// Function to handle accept confirm events
-const handleAcceptConfirm = async () => {
-  // Close confirm dialog
-  isShowConfirm.value = false
-
-  await new Promise((r) => setTimeout(r, 1000))
-
-  // Open modal dialog
-  isShowModal.value = true
-  modalType.value = 'success'
-  modalTitle.value = 'ทำงานได้ตามปกติเนอะ'
-  modalText.value = 'ราบรื่นนนนนนนนนน'
-  modalButton.value = 'รับทราบจ้าาาา'
-
-  await new Promise((r) => setTimeout(r, 1000))
-
-  await goNext()
+  getRefOTP.value.phoneNumber = '089-XXX-X999'
+  getRefOTP.value.refCode = 'ABCD'
 }
 
 /////////////////////////////////////////
-// Define emit function to emit events on all dialog
-const emit = defineEmits(['onCloseModal', 'onCloseConfirm', 'onAcceptConfirm'])
+// Function reset OTP field
+const resetOTPField = async () => {
+  const otpField = getNode('otp')
+  otpField?.reset()
+}
 
 /////////////////////////////////////////
+// on Mounted
+onMounted(async () => {
 
-// Submit form event
+  // Get reference value from OTP
+  getRefOTP.value.phoneNumber = '089-XXX-X778'
+  getRefOTP.value.refCode = 'ED2J'
+
+})
+
+/////////////////////////////////////////
+// Submit page
 const submitOTP = async (formData: any) => {
-
   openLoadingDialog(true)
 
-  await new Promise((r) => setTimeout(r, 1000))
+  const formRequest = {
+    otp: formData.otp,
+    refcode: getRefOTP.value.refCode
+  }
+
+  await new Promise((r) => setTimeout(r, 2000))
+
+  console.log(formRequest)
+
+  // Reset OTP field
+  await resetOTPField()
 
   openLoadingDialog(false)
 
-  // Open confirm dialog
-  isShowConfirm.value = true
-  confirmType.value = 'danger'
-  confirmTitle.value = 'แน่ใจ?'
-  confirmText.value = 'It is advised to wrap your plugins as in the future this may enable enhancements.'
-  confirmCancelButton.value = 'อุ่ยยยย กดผิด'
-  confirmButton.value = 'ไปต่อโลดดดด' // After confirm then goto `handleAcceptConfirm` function
+  if (formData) {
+
+    if (formRequest.otp === '555555') {
+
+      await goNext()
+
+    } else {
+
+      isShowModal.value = true
+      modalType.value = 'danger'
+      modalTitle.value = 'รหัส OTP ไม่ถูกต้อง'
+      modalText.value = 'กรุณาทำการยืนยัน OTP ใหม่อีกครั้ง'
+      modalButton.value = 'รับทราบ'
+    }
+  }
 }
 
 /////////////////////////////////////////
@@ -179,7 +196,7 @@ const goNext = async () => {
 const layout = 'monito'
 const layoutClass = '-monito-minimal'
 const showPageSteps = false
-const showPageHeader = true
+const showPageHeader = false
 const showLogoHeader = true
 
 // Define page meta

@@ -6,45 +6,33 @@
       form-class="form-register form-theme" :incomplete-message="false">
 
       <div class="row">
-        <div class="col col-main">
+        <div class="col">
 
-          <div class="card">
+          <div class="card card-center">
+
             <div class="card-header">
-              <h3 class="card-title">Main content</h3>
+              <h1 class="title">กำหนดรหัสผ่าน</h1>
+              <h2 class="subtitle">ควรสร้างรหัสผ่านที่ปลอดภัย</h2>
             </div>
+
             <div class="card-body">
 
-              <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum culpa nisi quasi necessitatibus
-                doloremque expedita ex, rem fugit velit voluptas explicabo molestias deleniti placeat laborum sunt
-                cupiditate officia distinctio quaerat.</p>
+              <div class="form-area">
 
+                <div :class="statusMessageType" v-if="statusMessage">{{ statusMessage }}</div>
+
+                <ElementsFormPasswordWithConfirm />
+
+              </div>
+
+              <FormKit type="submit" label="ยืนยันใช้รหัสผ่านนี้" name="forgotpassword-submit" :classes="{
+                input: 'btn-primary',
+                outer: 'form-actions',
+              }" :disabled="isLoading" :loading="isLoading" />
             </div>
+
           </div>
 
-        </div>
-
-        <div class="col col-sidebar">
-          <section class="site-sidebar is-sticky">
-
-            <aside class="card">
-              <div class="card-header">
-                <h3 class="card-title">Sidebar</h3>
-              </div>
-              <div class="card-body">
-
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum culpa nisi quasi necessitatibus
-                  doloremque expedita ex, rem fugit velit voluptas explicabo molestias deleniti placeat laborum sunt
-                  cupiditate officia distinctio quaerat.</p>
-
-              </div>
-            </aside>
-
-            <FormKit type="submit" label="บันทึก" name="setpassword-submit" :classes="{
-              input: 'btn-primary',
-              outer: 'form-actions',
-            }" :disabled="isLoading" :loading="isLoading" />
-
-          </section>
         </div>
       </div>
 
@@ -54,10 +42,6 @@
 
     <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
       :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
-
-    <ElementsDialogConfirms :isShowConfirm="isShowConfirm" :confirm-type="confirmType" :confirm-title="confirmTitle"
-      :confirm-text="confirmText" :confirm-button="confirmButton" :confirm-cancel-button="confirmCancelButton"
-      @on-accept-confirm="handleAcceptConfirm" @on-close-confirm="handleCloseConfirm" />
 
   </NuxtLayout>
 </template>
@@ -81,9 +65,16 @@ definePageMeta({
   ]
 })
 
-// Define router
+/////////////////////////////////////////
+// Define router and route
 const router = useRouter()
 
+/////////////////////////////////////////
+// Status for notice user
+const statusMessage = ref()
+const statusMessageType = ref()
+
+/////////////////////////////////////////
 // Button Loading
 const isLoading = ref(false)
 
@@ -104,64 +95,35 @@ const modalButton = ref('')
 
 // Function to handle close modal events
 const handleCloseModal = async () => {
-  isShowModal.value = false
-}
-
-/////////////////////////////////////////
-// Confirm Dialog
-const isShowConfirm = ref(false)
-const confirmType = ref('')
-const confirmTitle = ref('')
-const confirmText = ref('')
-const confirmButton = ref('')
-const confirmCancelButton = ref('')
-
-// Function to handle close confirm events
-const handleCloseConfirm = async () => {
-  isShowConfirm.value = false
-}
-
-// Function to handle accept confirm events
-const handleAcceptConfirm = async () => {
-  // Close confirm dialog
-  isShowConfirm.value = false
-
-  await new Promise((r) => setTimeout(r, 1000))
-
-  // Open modal dialog
-  isShowModal.value = true
-  modalType.value = 'success'
-  modalTitle.value = 'ทำงานได้ตามปกติเนอะ'
-  modalText.value = 'ราบรื่นนนนนนนนนน'
-  modalButton.value = 'รับทราบจ้าาาา'
-
-  await new Promise((r) => setTimeout(r, 1000))
-
   await goNext()
 }
 
 /////////////////////////////////////////
 // Define emit function to emit events on all dialog
-const emit = defineEmits(['onCloseModal', 'onCloseConfirm', 'onAcceptConfirm'])
+const emit = defineEmits(['onCloseModal'])
 
 /////////////////////////////////////////
-
-// Submit form event
+// Submit page
 const submitSetPassword = async (formData: any) => {
-
   openLoadingDialog(true)
 
-  await new Promise((r) => setTimeout(r, 1000))
+  console.log(formData)
+
+  const formRequest = {
+    password: formData.password,
+    passwordConfirm: formData.password_confirm
+  }
+
+  await new Promise((r) => setTimeout(r, 2000))
 
   openLoadingDialog(false)
 
-  // Open confirm dialog
-  isShowConfirm.value = true
-  confirmType.value = 'danger'
-  confirmTitle.value = 'แน่ใจ?'
-  confirmText.value = 'It is advised to wrap your plugins as in the future this may enable enhancements.'
-  confirmCancelButton.value = 'อุ่ยยยย กดผิด'
-  confirmButton.value = 'ไปต่อโลดดดด' // After confirm then goto `handleAcceptConfirm` function
+  // Open modal dialog
+  isShowModal.value = true
+  modalType.value = 'success'
+  modalTitle.value = 'ยินดีต้อนรับสมาชิกใหม่'
+  modalText.value = 'การลงทะเบียนสำเร็จ เราจะพาท่านไปหน้าเข้าสู่ระบบ'
+  modalButton.value = 'รับทราบ'
 }
 
 /////////////////////////////////////////
@@ -175,7 +137,7 @@ const goNext = async () => {
 const layout = 'monito'
 const layoutClass = '-monito-minimal'
 const showPageSteps = false
-const showPageHeader = true
+const showPageHeader = false
 const showLogoHeader = true
 
 // Define page meta

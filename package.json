@@ -16,7 +16,7 @@
     "format:check": "prettier --check ."
   },
   "devDependencies": {
-    "@nuxt/devtools": "^0.1.0",
+    "@nuxt/devtools": "^0.1.6",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@types/node": "^18.15.11",
     "@vue/eslint-config-prettier": "^7.1.0",

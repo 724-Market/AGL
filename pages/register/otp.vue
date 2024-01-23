@@ -164,7 +164,7 @@ const submitOTP = async (formData: any) => {
 
   if (formData) {
 
-    if (formRequest.otp === '555555') {
+    if (formRequest.otp === '000000') {
 
       await goNext()
 

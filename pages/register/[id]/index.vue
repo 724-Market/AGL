@@ -156,6 +156,15 @@ const handleCloseModal = async () => {
   isShowModal.value = false
 }
 
+// Function show message modal events
+const serverModal = async (serverCheck: any) => {
+  isShowModal.value = true
+  modalType.value = serverCheck.modalType
+  modalTitle.value = serverCheck.modalTitle
+  modalText.value = serverCheck.modalText
+  modalButton.value = serverCheck.modalButton
+}
+
 /////////////////////////////////////////
 // Confirm Dialog
 const isShowConfirm = ref(false)
@@ -300,10 +309,10 @@ const loadAgentReferral = async () => {
         }
       }
       else if (resultCheck.status === 'error') {
-        alert('error')
+        //serverModal(resultCheck)
       }
       else if (resultCheck.status === 'server-error') {
-        alert('server-error')
+        serverModal(resultCheck)
       }
 
     }

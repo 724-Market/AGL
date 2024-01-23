@@ -335,18 +335,18 @@ export default () => {
         resp.value.status = 'error';
         resp.value.isShowModal = true
         resp.value.modalType = 'danger'
-        resp.value.modalTitle = 'ทำงานได้ตามปกติเนอะ'
-        resp.value.modalText = 'ราบรื่นนนนนนนนนน'
-        resp.value.modalButton = 'รับทราบจ้าาาา'
+        resp.value.modalTitle = res.apiResponse.ErrorMessage
+        resp.value.modalText = 'Error : '+res.apiResponse.ErrorCode
+        resp.value.modalButton = 'ตกลง'
       }
     }
     else {
       resp.value.status = 'server-error';
       resp.value.isShowModal = true
       resp.value.modalType = 'danger'
-      resp.value.modalTitle = 'ทำงานได้ตามปกติเนอะ'
-      resp.value.modalText = 'ราบรื่นนนนนนนนนน'
-      resp.value.modalButton = 'รับทราบจ้าาาา'
+      resp.value.modalTitle = 'เกิดความผิดพลาด กรุณาลองใหม่อีกครั้ง'
+      resp.value.modalText = 'Server Error : '+res.statusMessage+' ('+res.serverStatus+')'
+      resp.value.modalButton = 'ตกลง'
     }
 
     return resp.value

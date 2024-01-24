@@ -4,18 +4,23 @@
         
         <div class="row">
             <div class="col col-main">
-                <ElementsUtilitiesTracking v-if="orderTrack" :order-track="orderTrack" :index-sequence="sequenceIndex"
-                    :index-current="currentIndex" :is-showchild="isShowChild"></ElementsUtilitiesTracking>
             </div>
 
             <div class="col col-sidebar">
                 <section class="site-sidebar is-sticky">
+                    <div class="card">
+                        <BackendPapersCardStatus :order-get="getOrderStatus" v-if="getOrderStatus" />
                     
-                    <BackendPapersCardStatus :order-get="getOrderStatus" v-if="getOrderStatus" />
-                    
-                    <BackendPapersCardDetail :order-get="getOrderStatus" :ordersub-feedelivery="orderDetailFeeDel" :order-detail="orderDetailAll" v-if="orderDetailAll"></BackendPapersCardDetail>
+                        <BackendPapersCardDetail 
+                        @confirm-order-status="handleConfirmOrder"
+                        @confirm-order-delivery="handleConfirmDelivery"
+                        @reload="reloadPage"
+                        :order-get="getOrderStatus" 
+                        :order-detail="getOrderDetails" v-if="getOrderDetails"
+                        ></BackendPapersCardDetail>
 
-                    
+                        
+                    </div>
                     <NuxtLink to="/backend/papers" class="btn btn-back">ย้อนกลับ</NuxtLink>
 
                 </section>
@@ -30,7 +35,6 @@
 
 <script lang="ts" setup>
 
-import { storeToRefs } from "pinia";
 import type {
     OrderNoReq,
     getOrderDetailRes,
@@ -61,17 +65,21 @@ const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
 //const router = useRouter();
 const route = useRoute()
-const router = useRouter();
+const router = useRouter()
+const orderId = ref('')
 
 const onLoad = onMounted(async () => {
+    //console.log("OnMount working!!!")
+
     if (AuthenInfo.value) {
         isLoading.value = true;
         // Handle the possibility of route.params.id being an array
-        const orderId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
+        orderId.value = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
 
-        await loadTrackOrderPaper(orderId);
-        await loadSubDetail(orderId);
-        await loadOrderDetail(orderId);
+        //await loadTrackOrderPaper(orderId.value);
+        await loadSubDetail(orderId.value);
+        await loadOrderDetail(orderId.value);
+
         isLoading.value = false;
     } else {
         router.push("/login")
@@ -141,6 +149,60 @@ const loadSubDetail = async (orderNo: string) => {
     
 };
 
+const handleConfirmOrder = async () => {
+    isLoading.value = true;
+    await confirmOrderStatus(orderId.value);
+    isLoading.value = false;
+
+};
+
+const handleConfirmDelivery = async () => {
+    isLoading.value = true;
+    await confirmOrderDelivery(orderId.value);
+    isLoading.value = false;
+
+};
+
+const reloadPage = async () => {
+    await loadOrderDetail(orderId.value);
+    await loadSubDetail(orderId.value);
+}
+
+const confirmOrderStatus = async (orderNo: string) => {
+    const req: OrderNoReq = {
+        OrderNo: orderNo,
+    };
+
+    const resApproveOrder = await useRepository().backendpaper.approveOrder(req);
+    if (
+        resApproveOrder.apiResponse.Status &&
+        resApproveOrder.apiResponse.Status == "200"
+    ) {
+        getOrderStatus.value = resApproveOrder.apiResponse.Data;
+        reloadPage()
+    } else {
+        alert(resApproveOrder.apiResponse.ErrorMessage);
+    }
+
+};
+
+const confirmOrderDelivery = async (orderNo: string) => {
+    const req: OrderNoReq = {
+        OrderNo: orderNo,
+    };
+
+    const resDeliveryOrder = await useRepository().backendpaper.confirmDeliveryOrder(req);
+    if (
+        resDeliveryOrder.apiResponse.Status &&
+        resDeliveryOrder.apiResponse.Status == "200"
+    ) {
+        reloadPage()
+    } else {
+        alert(resDeliveryOrder.apiResponse.ErrorMessage);
+    }
+
+};
+
 const loadOrderDetail = async (orderNo: string) => {
     const req: OrderNoReq = {
         OrderNo: orderNo,
@@ -158,7 +220,6 @@ const loadOrderDetail = async (orderNo: string) => {
     }
 
 };
-
 
 // Define layout
 const layout = "monito"

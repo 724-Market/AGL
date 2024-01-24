@@ -87,36 +87,48 @@ export default () => {
     }
 
     // Format date value
-    const formatDate = (dateString: string, format?: string): string => {
-        dayjs.extend(buddhistEra)
-        dayjs.locale('th')
-        const date = dayjs(dateString.replace('Z', '')).locale('th')
-
-        switch (format) {
-            case 'FullTime' : format = 'HH:mm:ss'
-                break
-            case 'ShortTime' : format = 'HH:mm'
-                break
-            case 'FullDate' : format = 'D MMMM BBBB'
-                break
-            case 'ShortDate' : format = 'D MMM BBBB'
-                break
-            case 'FullDateFullTime' : format = 'D MMMM BBBB • HH:mm:ss'
-                break
-            case 'ShortDateFullTime' : format = 'D MMM BBBB • HH:mm:ss'
-                break
-            case 'YYYY-MM-DD' : format = 'YYYY-MM-DD'
-                break
-            default: format = 'D MMM BBBB • HH:mm'
+    const formatDate = (dateString: string | undefined, format?: string): string => {
+        if (!dateString) {
+            return ''; // or handle it in a way that makes sense for your application
         }
 
-        return date.format(format)
-    }
+        dayjs.extend(buddhistEra);
+        dayjs.locale('th');
+        const date = dayjs(dateString.replace('Z', '')).locale('th');
+
+        switch (format) {
+            case 'FullTime':
+                format = 'HH:mm:ss';
+                break;
+            case 'ShortTime':
+                format = 'HH:mm';
+                break;
+            case 'FullDate':
+                format = 'D MMMM BBBB';
+                break;
+            case 'ShortDate':
+                format = 'D MMM BBBB';
+                break;
+            case 'FullDateFullTime':
+                format = 'D MMMM BBBB • HH:mm:ss';
+                break;
+            case 'ShortDateFullTime':
+                format = 'D MMM BBBB • HH:mm:ss';
+                break;
+            case 'YYYY-MM-DD':
+                format = 'YYYY-MM-DD';
+                break;
+            default:
+                format = 'D MMM BBBB • HH:mm';
+        }
+
+        return date.format(format);
+    };
 
     const formatText = (text: string): string => {
         // Regular expression to find content between <strong> tags
         const strongContentRegex = /<strong>(.*?)<\/strong>/g
-    
+
         // Replace <strong> tags with span and apply styles conditionally
         const formattedText = text.replace(strongContentRegex, (match, p1) => {
             if (p1) {
@@ -125,7 +137,7 @@ export default () => {
                 return match // Return unchanged if there's no content between <strong> tags
             }
         })
-    
+
         return formattedText
     }
 
@@ -162,7 +174,7 @@ export default () => {
         return page
     }
 
-    const downloadImage = (base64Image: string,filename:string) => {
+    const downloadImage = (base64Image: string, filename: string) => {
         // Convert the Base64 image to Blob
         const byteString = atob(base64Image.split(',')[1])
         const mimeString = base64Image.split(',')[0].split(':')[1].split('')[0]
@@ -190,19 +202,19 @@ export default () => {
     }
 
     const getDeviceId = async () => {
-        const ua= navigator.userAgent
-        let tem 
-        let M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []
-        if(/trident/i.test(M[1])){
-            tem=  /\brv[ :]+(\d+)/g.exec(ua) || []
-            return 'IE '+(tem[1] || '')
+        const ua = navigator.userAgent
+        let tem
+        let M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []
+        if (/trident/i.test(M[1])) {
+            tem = /\brv[ :]+(\d+)/g.exec(ua) || []
+            return 'IE ' + (tem[1] || '')
         }
-        if(M[1]=== 'Chrome'){
-            tem= ua.match(/\b(OPR|Edge)\/(\d+)/)
-            if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera')
+        if (M[1] === 'Chrome') {
+            tem = ua.match(/\b(OPR|Edge)\/(\d+)/)
+            if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera')
         }
-        M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?']
-        if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1])
+        M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?']
+        if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1])
         return M.join(' ')
     }
 
@@ -217,12 +229,10 @@ export default () => {
 
             const d = new Date()
             const getMonth = d.getMonth() + 1
-            const EffectiveDate = `${d.getFullYear()}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
-                d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
-            }`
-            const ExpireDate = `${d.getFullYear() + 1}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
-                d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
-            }`
+            const EffectiveDate = `${d.getFullYear()}-${getMonth > 9 ? getMonth : "0" + getMonth}-${d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
+                }`
+            const ExpireDate = `${d.getFullYear() + 1}-${getMonth > 9 ? getMonth : "0" + getMonth}-${d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
+                }`
 
             const infomation = useStoreInformation()
             const storePackage = useStorePackage()
@@ -242,7 +252,7 @@ export default () => {
                 DeliveryMethod2: order.DeliveryMethod2,
                 IsTaxInvoice: order.IsTaxInvoice,
             }
-            if(orderDetail) {
+            if (orderDetail) {
                 if (req.Customer && req.Customer.DefaultAddress) {
                     req.Customer.DefaultAddress.ZipCode = orderDetail.AssuredDetails.ZipCode
                 }
@@ -256,7 +266,7 @@ export default () => {
                     req.Customer.TaxInvoiceDeliveryAddress.ZipCode = orderDetail.DeliveryTaxInvoiceDetails.ZipCode
                 }
             }
-            
+
             placeorder.setOrder(req)
 
             const reqInfo: IInformation = {

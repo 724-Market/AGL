@@ -14,14 +14,8 @@
                     <PapersOrderDetail :order-get="orderGet" v-if="orderGet" />
                     
                     <PapersSuborder :order-get="orderGet" :ordersub-feedelivery="ordersubFeeDel" :order-sub="orderSubAll" v-if="orderSubAll"></PapersSuborder>
-
-                    
-
-                <FormKit type="button" class="btn-primary" label="รับกระดาษ" name="confirm-submit" :classes="{
-                    input: 'btn-primary',
-                    outer: 'form-actions',
-                }" @click="confirmReceiveOrder" :disabled="isLoading" :loading="isLoading" />
-                    
+                    <button class="btn-primary" @click="confirmReceiveOrder" type="button" v-if="orderGet?.OrderStatus == 'Delivery'">ได้รับกระดาษครบแล้ว</button>
+                    <br>
                     <NuxtLink to="/papers" class="btn btn-back">ย้อนกลับ</NuxtLink>
 
                 </section>

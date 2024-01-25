@@ -11,6 +11,7 @@ import PledgeModule from "~/shared/repository/pledge";
 import SessionModule from "~/shared/repository/session";
 import TrackModule from "~/shared/repository/track";
 import UserModule from "~/shared/repository/user";
+import AffiliateModule from "~/shared/repository/affiliate";
 // import PaymentNoticeService from "~/shared/services/payment-notice-service";
 
 /** ApiInstance interface provides us with good typing */
@@ -28,6 +29,7 @@ interface IApiInstance {
     session: SessionModule,
     track: TrackModule,
     user:UserModule,
+    affiliate:AffiliateModule,
     // paymentNotice:PaymentNoticeService
 }
 
@@ -48,6 +50,7 @@ export default  () => {
         session: new SessionModule(),
         track: new TrackModule(),
         user: new UserModule(),
+        affiliate: new AffiliateModule(),
         // paymentNotice: new PaymentNoticeService(),
     };
 

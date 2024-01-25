@@ -1,88 +1,84 @@
 <template>
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
 
     <FormKit type="form" @submit="submitRegister" :actions="false" id="form-register"
       form-class="form-register form-theme" :incomplete-message="false">
 
       <div class="row">
-        <div class="col col-main">
+        <div class="col">
 
-          <div class="card">
+          <div class="card card-center">
+
             <div class="card-header">
-              <h3 class="card-title">Main content</h3>
+              <h1 class="title">ลงทะเบียนสมาชิกใหม่</h1>
+              <h2 class="subtitle">กรุณากรอกข้อมูลให้ครบถ้วน</h2>
             </div>
+
             <div class="card-body">
 
-              <RegisterFormRegister />
+              <div class="form-area">
 
+                <ElementsFormFirstnameWithLastname />
+
+                <ElementsFormPhoneNumber label="หมายเลขโทรศัพท์ (ที่รับ OTP ได้)" name="phonenumber" id="phonenumber" />
+
+                <ElementsFormEmail label="อีเมล" name="email" />
+
+              </div>
+
+              <FormKit type="submit" label="สมัครสมาชิก" name="register-submit" :classes="{
+                input: 'btn-primary',
+                outer: 'form-actions',
+              }" :disabled="isLoading" :loading="isLoading" />
             </div>
-          </div>
 
-        </div>
-
-        <div class="col col-sidebar">
-          <section class="site-sidebar is-sticky">
-
-            <aside class="card">
-              <div class="card-body">
-                <div class="status-list">
-                  <figure class="status-icon">
-                    <div class="icon user"></div>
-                  </figure>
-                  <h4 class="title">ผู้แนะนำ</h4>
-
-                  <div class="status-item" v-if="isAgent">
-                    <h5 class="topic">ชื่อผู้แนะนำ</h5>
-                    <p>{{ route.params.id }}</p>
-                  </div>
-
-                  <div class="status-item" v-else>
-                    <h5 class="topic">ระบุผู้แนะนำ</h5>
-                    <p>
-                      <FormKit type="text" name="AgentCode" placeholder="ระบุรหัสผู้แนะนำ" autocomplete="off" />
-                    </p>
-                  </div>
+            <div class="card-footer">
+              <p>
+                ผู้แนะนำของท่าน<br>
+              <div class="recommender">
+                <figure class="avatar"><img src="https://css.agentlove.club/uploads/team-5.jpg" alt=""></figure>
+                <div class="info">
+                  <h5 class="name">ปฐมxxx xxxจิตต์</h5>
+                  <span class="code">AM00125633</span>
                 </div>
               </div>
-            </aside>
+              </p>
+            </div>
 
-            <FormKit type="submit" label="บันทึก" name="register-submit" :classes="{
-              input: 'btn-primary',
-              outer: 'form-actions',
-            }" :disabled="isLoading" :loading="isLoading" />
+          </div>
 
-          </section>
         </div>
       </div>
 
     </FormKit>
 
-    <ElementsDialogLoading :isShowLoading="isShowLoading" :loadingLogo="loadingLogo" :loadingText="loadingText" />
+    <ElementsDialogLoading :propsLoading="loadingProps" />
 
     <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
       :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
-
-    <ElementsDialogConfirms :isShowConfirm="isShowConfirm" :confirm-type="confirmType" :confirm-title="confirmTitle"
-      :confirm-text="confirmText" :confirm-button="confirmButton" :confirm-cancel-button="confirmCancelButton"
-      @on-accept-confirm="handleAcceptConfirm" @on-close-confirm="handleCloseConfirm" />
 
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
-// Define router
-const router = useRouter()
-const route = useRoute()
+// Define import
+import { getNode } from '@formkit/core'
 
+/////////////////////////////////////////
+// Define router and route
+const router = useRouter()
+
+/////////////////////////////////////////
 // Button Loading
 const isLoading = ref(false)
 
 /////////////////////////////////////////
 // Modal Loading
-const isShowLoading = ref(false)
-const loadingLogo = ref(false)
-const loadingText = ref(false)
+const loadingProps = ref({})
+const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = false) => {
+  loadingProps.value = useUtility().createLoadingProps(isShowLoading, showLogo, showText)
+}
 
 /////////////////////////////////////////
 // Modal Dialog
@@ -94,77 +90,54 @@ const modalButton = ref('')
 
 // Function to handle close modal events
 const handleCloseModal = async () => {
-  isShowModal.value = false
-}
 
-/////////////////////////////////////////
-// Confirm Dialog
-const isShowConfirm = ref(false)
-const confirmType = ref('')
-const confirmTitle = ref('')
-const confirmText = ref('')
-const confirmButton = ref('')
-const confirmCancelButton = ref('')
+  console.log('reset')
 
-// Function to handle close confirm events
-const handleCloseConfirm = async () => {
-  isShowConfirm.value = false
-}
-
-// Function to handle accept confirm events
-const handleAcceptConfirm = async () => {
-  // Close confirm dialog
-  isShowConfirm.value = false
-
-  await new Promise((r) => setTimeout(r, 1000))
-
-  // Open modal dialog
-  isShowModal.value = true
-  modalType.value = 'success'
-  modalTitle.value = 'ทำงานได้ตามปกติเนอะ'
-  modalText.value = 'ราบรื่นนนนนนนนนน'
-  modalButton.value = 'รับทราบจ้าาาา'
-
-  await new Promise((r) => setTimeout(r, 1000))
-
-  await goNext()
+  // Reset phonenumber field
+  await resetPhoneNumberField()
 }
 
 /////////////////////////////////////////
 // Define emit function to emit events on all dialog
-const emit = defineEmits(['onCloseModal', 'onCloseConfirm', 'onAcceptConfirm'])
+const emit = defineEmits(['onCloseModal'])
 
 /////////////////////////////////////////
+// Function reset phonenumber field
+const resetPhoneNumberField = async () => {
+  const phoneNumberField = getNode('phonenumber')
+  phoneNumberField?.reset()
+}
 
-// Submit form event
+/////////////////////////////////////////
+// Submit page
 const submitRegister = async (formData: any) => {
+  openLoadingDialog(true)
 
-  isShowLoading.value = true
+  console.log(formData)
 
-  await new Promise((r) => setTimeout(r, 1000))
+  await new Promise((r) => setTimeout(r, 2000))
 
-  isShowLoading.value = false
+  if (formData) {
 
-  // Open confirm dialog
-  isShowConfirm.value = true
-  confirmType.value = 'danger'
-  confirmTitle.value = 'แน่ใจ?'
-  confirmText.value = 'It is advised to wrap your plugins as in the future this may enable enhancements.'
-  confirmCancelButton.value = 'อุ่ยยยย กดผิด'
-  confirmButton.value = 'ไปต่อโลดดดด' // After confirm then goto `handleAcceptConfirm` function
+    if (formData.phonenumber === '0000000000') {
+
+      await goNext()
+
+    } else {
+
+      openLoadingDialog(false)
+
+      // Open modal dialog
+      isShowModal.value = true
+      modalType.value = 'danger'
+      modalTitle.value = 'หมายเลขโทรศัพท์นี้มีการลงทะเบียนไปแล้ว'
+      modalText.value = 'กรุณาตรวจสอบและกรอกข้อมูลอีกครั้ง'
+      modalButton.value = 'รับทราบ'
+    }
+  }
 }
 
-// Check affiliate from route param
-const isAgent = ref(false)
-
-if (route.params.id != 'new') {
-  // Call Check Agent Info API
-  isAgent.value = true
-}
-else {
-  isAgent.value = false
-}
-
+/////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
   // Define and check 'isOTP' status
@@ -174,11 +147,13 @@ const goNext = async () => {
   router.push({ path: 'otp' })
 }
 
+/////////////////////////////////////////
 // Define layout
 const layout = 'monito'
-const layoutClass = 'layout-monito'
+const layoutClass = '-monito-minimal'
 const showPageSteps = false
-const showPageHeader = true
+const showPageHeader = false
+const showLogoHeader = true
 
 // Define page meta
 const pageTitle = 'แบบฟอร์มลงทะเบียน'

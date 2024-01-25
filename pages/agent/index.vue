@@ -12,8 +12,8 @@ definePageMeta({
     function () {
       const router = useRouter()
 
-      // Redirect to `724` if no reference id
-      router.push({ path: '/register/724' })
+      // Redirect to login for agent and user
+      router.push({ path: '/agent/login' })
     }
   ]
 })
@@ -26,16 +26,16 @@ const showPageHeader = true
 const showLogoHeader = true
 
 // Define page meta
-const pageTitle = 'ลงทะเบียน'
-const pageCategory = 'ลงทะเบียนสมาชิกใหม่'
-const pageDescription = ''
+const pageTitle = 'เข้าสู่ระบบ'
+const pageCategory = 'เพื่อใช้งานระบบสมาชิก'
+const pageDescription = 'เข้าสู่ระบบ เพื่อใช้งานระบบสมาชิก'
 
 // Define meta seo
 useHead({
   title: pageTitle,
   meta: [{ name: 'description', content: pageDescription }],
   bodyAttrs: {
-    class: 'page-register single-register template-login'
+    class: 'page-login single-login template-login'
   }
 })
 </script>

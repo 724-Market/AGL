@@ -42,6 +42,7 @@
 
           <PapersExchangeListPapers
             v-if="productSearchMatch"
+            :product-company="textProductCompany"
             :product-match-list="productSearchMatch"
             @on-select-match="onSelectMatch"
           ></PapersExchangeListPapers>
@@ -358,19 +359,19 @@ const onChangeProductSubcategory = async (
 const onChangeProductCompany = async (productCompany: string) => {
   isLoading.value = true;
   textProductCompany.value = productCompany;
-  if (storeExchange.$state.length > 0 && storeExchange.$state) {
-    const paperListtoStore = usePagePaper().getPaperList(
-      productSearchMatchAll.value ?? []
-    );
-    productSearchMatch.value = paperListtoStore.filter((obj) => {
-      return obj.ProductCompany == productCompany || productCompany == "-";
-    });
-  } else {
-    productSearchMatch.value = productSearchMatchAll.value?.filter((obj) => {
-      return obj.ProductCompany == productCompany || productCompany == "-";
-    });
-  }
-
+  // if (storeExchange.$state.length > 0 && storeExchange.$state) {
+  //   const paperListtoStore = usePagePaper().getPaperList(
+  //     productSearchMatchAll.value ?? []
+  //   );
+  //   productSearchMatch.value = paperListtoStore.filter((obj) => {
+  //     return obj.ProductCompany == productCompany || productCompany == "-";
+  //   });
+  // } else {
+  //   productSearchMatch.value = productSearchMatchAll.value?.filter((obj) => {
+  //     return obj.ProductCompany == productCompany || productCompany == "-";
+  //   });
+  // }
+  productSearchMatch.value = productSearchMatchAll.value
   console.log("productSearchMatch.value", productSearchMatch.value);
 
   isLoading.value = false;

@@ -1,8 +1,9 @@
 <template>
   <Teleport to="body">
     <dialog id="loading-dialog">
-      <div :class="['dialog-card', 'loading-card', { 'no-icon': !loadingLogo, 'no-text': !loadingText }]">
-        <div class="loading-icon" v-if="loadingLogo">
+      <div
+        :class="['dialog-card', 'loading-card', { 'no-icon': !propsLoading.showLogo, 'no-text': !propsLoading.showText }]">
+        <div class="loading-icon" v-if="propsLoading.showLogo">
           <div class="logo"></div>
         </div>
         <div class="loading-loader">
@@ -10,7 +11,7 @@
             <span class="loading-progress"></span>
           </span>
         </div>
-        <div class="loading-text" v-if="loadingText">กรุณารอสักครู่</div>
+        <div class="loading-text" v-if="propsLoading.showText">กรุณารอสักครู่</div>
       </div>
     </dialog>
   </Teleport>
@@ -18,56 +19,53 @@
 
 <script setup>
 // Define props for the component
-const props = defineProps({
-  isShowLoading: Boolean,
-  loadingLogo: Boolean,
-  loadingText: Boolean,
-})
-
-// on Mounted
-onMounted(() => {
-  const dialogLoading = document.getElementById('loading-dialog')
-
-  // Adding keydown listeners for handling keys
-  dialogLoading.addEventListener('keydown', handleKeyDown)
-
-  // Showing the dialog loading if isShowLoading prop is true
-  if (props.isShowLoading) showDialogLoading()
-})
+const props = defineProps(['propsLoading'])
 
 // Function to show the dialog loading
-function showDialogLoading() {
+const showDialogLoading = () => {
   const dialogLoading = document.getElementById('loading-dialog')
-
-  // Check if the dialogModal exists and show it
-  if (dialogLoading) dialogLoading.showModal()
+  if (dialogLoading) dialogLoading.showModal() // Check if the dialogLoading exists and show it
 }
 
 // Function to hide the dialog loading
-function hiddenDialogLoading() {
+const hideDialogLoading = () => {
   const dialogLoading = document.getElementById('loading-dialog')
 
-  // Check if the dialogModal exists and close it
-  if (dialogLoading) dialogLoading.close()
+  // Check if the dialogLoading exists and close it
+  if (dialogLoading) {
+    dialogLoading.close()
+
+    // Reset isShowLoading to false
+    props.propsLoading.isShowLoading = false
+  }
 }
 
 // Function to handle keydown events
-function handleKeyDown(event) {
+const handleKeyDown = (event) => {
   if (event.key === 'Escape') {
     event.preventDefault()
   }
   if (event.key === 'Alt') {
-    hiddenDialogLoading()
+    hideDialogLoading()
   }
 }
 
-// Watcher to detect changes in isShowLoading prop
-watch(() => props.isShowLoading, () => {
-  // If isShowLoading changes, show or hide the loading accordingly
-  if (props.isShowLoading) {
-    showDialogLoading()
-  } else {
-    hiddenDialogLoading()
-  }
+// on Mounted
+onMounted(() => {
+  // Get the loading dialog element
+  const dialogLoading = document.getElementById('loading-dialog')
+
+  // Add a keydown event listener for handling keys
+  if (dialogLoading) dialogLoading.addEventListener('keydown', handleKeyDown)
+
+  // Watch for changes in the isShowLoading prop
+  watch(() => props.propsLoading.isShowLoading, (newValue) => {
+    // If isShowLoading changes, show or hide the loading dialog accordingly
+    if (newValue) {
+      showDialogLoading()
+    } else {
+      hideDialogLoading()
+    }
+  })
 })
 </script>

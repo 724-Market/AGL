@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
 
     <FormKit type="form" @submit="submitSurvey" #default="{ value }" :actions="false" id="form-register"
       form-class="form-register form-theme" :incomplete-message="false">
@@ -33,18 +33,10 @@
                       <FormKit name="checkSKMember" type="group" #default="{ state: { valid } }">
                         <div :class="'notice-' + statusMessageTypeQ1" v-if="statusMessageQ1">{{ statusMessageQ1 }}</div>
 
-                        <FormKit type="mask" label="รหัสสมาชิก" id="agentCode" name="agentCode" mask="AM########"
-                          validation="required|matches:/^[aA][mM][0-9]{8}$/|length:10" :validation-messages="{
-                            required: 'กรุณาใส่รหัสสมาชิก',
-                            matches: 'รูปแบบของรหัสสมาชิกไม่ถูกต้อง',
-                            length: 'รหัสสมาชิกควรมี 10 ตัวอักษร และขึ้นต้นด้วย AM'
-                          }" inputmode="numeric" autocomplete="off" />
-                        <FormKit type="number" label="เลขบัตรประชาชน" id="idCard" name="idCard"
-                          placeholder="เลขบัตรประชาชน 13 หลัก" validation="required|matches:/^[0-9]{13}$/"
-                          :validation-messages="{
-                            required: 'กรุณาใส่เลขบัตรประชาชน',
-                            matches: 'เลขบัตรประชาชนควรเป็นตัวเลข 13 หลัก'
-                          }" inputmode="numeric" autocomplete="off" />
+                        <ElementsFormAgentCode label="รหัสสมาชิก" id="agentCode" name="agentCode" />
+
+                        <ElementsFormIdCard label="เลขบัตรประชาชน" id="idCard" name="idCard" />
+
                         <FormKit type="button" class="btn-primary" label="ตรวจสอบสถานะสมาชิก" name="agent-check-submit"
                           @click="submitCheckSKMember" :disabled="!valid" />
 
@@ -80,6 +72,7 @@
                             required: 'กรุณาใส่เลขที่ใบอนุญาตฯ',
                             matches: 'เลขที่ใบอนุญาตฯ ควรเป็นตัวเลข 10 หลัก'
                           }" inputmode="numeric" autocomplete="off" />
+
                         <FormKit type="button" class="btn-primary" label="บันทึก" name="nonlifelicence-save-submit"
                           @click="submitSaveNonLifeLicense" :disabled="!valid" />
 
@@ -111,7 +104,7 @@
               </div>
             </aside>
 
-            <FormKit type="submit" label="เข้าสู่การสมัครสมาชิก" name="register-submit" :classes="{
+            <FormKit type="submit" label="เข้าสู่การสมัครสมาชิก" name="survey-submit" :classes="{
               input: 'btn-primary',
               outer: 'form-actions',
             }" :disabled="isLoading" :loading="isLoading" />
@@ -122,7 +115,10 @@
 
     </FormKit>
 
-    <ElementsDialogLoading :isShowLoading="isShowLoading" :loadingLogo="loadingLogo" :loadingText="loadingText" />
+    <ElementsDialogLoading :propsLoading="loadingProps" />
+
+    <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
+      :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
 
     <ElementsDialogConfirms :isShowConfirm="isShowConfirm" :confirm-type="confirmType" :confirm-title="confirmTitle"
       :confirm-text="confirmText" :confirm-button="confirmButton" :confirm-cancel-button="confirmCancelButton"
@@ -145,10 +141,10 @@ const recommender = ref(route.params.id || '')
 
 /////////////////////////////////////////
 // Status for notice user
-const statusMessageQ1 = ref('')
-const statusMessageTypeQ1 = ref('')
-const statusMessageQ2 = ref('')
-const statusMessageTypeQ2 = ref('')
+const statusMessageQ1 = ref()
+const statusMessageTypeQ1 = ref()
+const statusMessageQ2 = ref()
+const statusMessageTypeQ2 = ref()
 
 /////////////////////////////////////////
 // Button Loading
@@ -156,9 +152,23 @@ const isLoading = ref(false)
 
 /////////////////////////////////////////
 // Modal Loading
-const isShowLoading = ref(false)
-const loadingLogo = ref(false)
-const loadingText = ref(false)
+const loadingProps = ref({})
+const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = false) => {
+  loadingProps.value = useUtility().createLoadingProps(isShowLoading, showLogo, showText)
+}
+
+/////////////////////////////////////////
+// Modal Dialog
+const isShowModal = ref(false)
+const modalType = ref('')
+const modalTitle = ref('')
+const modalText = ref('')
+const modalButton = ref('')
+
+// Function to handle close modal events
+const handleCloseModal = async () => {
+  isShowModal.value = false
+}
 
 /////////////////////////////////////////
 // Confirm Dialog
@@ -186,7 +196,7 @@ const handleAcceptConfirm = async () => {
 
 /////////////////////////////////////////
 // Define emit function to emit events on all dialog
-const emit = defineEmits(['onCloseConfirm', 'onAcceptConfirm'])
+const emit = defineEmits(['onCloseModal', 'onCloseConfirm', 'onAcceptConfirm'])
 
 /////////////////////////////////////////
 // Clear status message after change toggle
@@ -199,7 +209,7 @@ const clearStatusMessage = () => {
 // Submit checkSKMember group
 const submitCheckSKMember = async () => {
 
-  isShowLoading.value = true
+  openLoadingDialog(true)
 
   await new Promise((r) => setTimeout(r, 1000))
 
@@ -212,6 +222,7 @@ const submitCheckSKMember = async () => {
 
     // console.log('agenCode is: ' + agentCode.value)
     // console.log('idCard is: ' + idCard.value)
+
   } else {
     statusMessageTypeQ1.value = 'warning'
     statusMessageQ1.value = 'ไม่สามารถยืนยันการเป็นสมาชิกศรีกรุงได้'
@@ -220,14 +231,14 @@ const submitCheckSKMember = async () => {
     idCard?.reset()
   }
 
-  isShowLoading.value = false
+  openLoadingDialog(false)
 }
 
 /////////////////////////////////////////
 // Submit saveNonLifeLicense group
 const submitSaveNonLifeLicense = async () => {
 
-  isShowLoading.value = true
+  openLoadingDialog(true)
 
   await new Promise((r) => setTimeout(r, 1000))
 
@@ -245,18 +256,18 @@ const submitSaveNonLifeLicense = async () => {
     nonLifeLicense?.reset()
   }
 
-  isShowLoading.value = false
+  openLoadingDialog(false)
 }
 
 /////////////////////////////////////////
 // Submit page
 const submitSurvey = async (formData: any) => {
 
-  isShowLoading.value = true
+  openLoadingDialog(true)
 
   await new Promise((r) => setTimeout(r, 1000))
 
-  isShowLoading.value = false
+  openLoadingDialog(false)
 
   console.log(formData)
 
@@ -278,14 +289,15 @@ const goNext = async () => {
 /////////////////////////////////////////
 // Define layout
 const layout = 'monito'
-const layoutClass = 'layout-monito'
+const layoutClass = '-monito-minimal'
 const showPageSteps = false
 const showPageHeader = true
+const showLogoHeader = true
 
 // Define page meta
 const pageTitle = 'แบบสำรวจก่อนลงทะเบียน'
 const pageCategory = 'ลงทะเบียนสมาชิกใหม่'
-const pageDescription = ''
+const pageDescription = 'แบบสำรวจก่อนลงทะเบียนสมาชิกใหม่'
 
 // Define meta seo
 useHead({
@@ -308,15 +320,5 @@ useHead({
 
 .answer {
   margin-bottom: 2em;
-}
-
-.option {
-  background-color: #fcfcfc;
-  padding: 1em;
-}
-
-[data-type="number"] input::-webkit-outer-spin-button,
-[data-type="number"] input::-webkit-inner-spin-button {
-  appearance: none;
 }
 </style>

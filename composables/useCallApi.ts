@@ -13,7 +13,7 @@ export default () => {
             serverStatus: 0,
             statusMessage: "",
             statusMessageType: "",
-            apiResponse: wrapper
+            apiResponse: wrapper, 
         }
         if (response.status == 200) {
 
@@ -114,7 +114,6 @@ export default () => {
 
             }
         })
-        console.log('post',result)
         return result
 
     }
@@ -190,12 +189,9 @@ export default () => {
             method: "POST",
             body: params,
             onResponse({ request, response }) {
-
                 result = getResponse<T>(response, params)
-
             }
         })
-        // console.log('apiRepository',result)
         return result
 
     }

@@ -84,6 +84,7 @@
                           placeholder="คำนำหน้า"
                           :options="prefix"
                           validation="required"
+                          v-model="taxInvoiceAddress.Prefix"
                           :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
                         />
                       </div>
@@ -138,6 +139,7 @@
                     </div>
 
                     <button
+                     type="button"
                       class="btn-primary btn-save"
                       @click="handlerSubmitAddressTaxInvoice"
                     >
@@ -232,6 +234,7 @@
                     </div>
 
                     <button
+                      type="button"
                       class="btn-primary btn-save"
                       @click="handlerSubmitAddressTaxInvoiceDelivery"
                     >
@@ -451,7 +454,9 @@ const handlerChangeSubDistrict2 = (e: string) => {
 const handlerChangeFullAddressTaxInvoice = (addr: string, ObjectAddress: DefaultAddress) => {
   if (addr && ObjectAddress) {
     taxInvoiceAddress.value = ObjectAddress as TaxInvoiceAddress
-    newTaxInvoiceFullAddressTemp.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
+    const prefixId = taxInvoiceAddress.value.Prefix
+    const prefixName = prefix.value.filter(x=>x.value==prefixId)[0]
+    newTaxInvoiceFullAddressTemp.value = `${prefixName.label} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
   }
 }
 const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress: DefaultAddress) => {

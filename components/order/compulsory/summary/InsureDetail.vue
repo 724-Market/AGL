@@ -218,7 +218,7 @@
         </div>
       </div>
     </div>
-    <div class="accordion-item" v-if="orderDetail.IsTaxInvoice">
+    <div class="accordion-item" v-if="orderDetail.IsTaxInvoice && orderDetail.TaxInvoiceDetails">
       <h3 class="accordion-header">
         <button
           class="accordion-button collapsed"
@@ -233,7 +233,7 @@
       </h3>
       <div id="panel-summary-5" class="accordion-collapse collapse">
         <div class="accordion-body">
-          <section class="summary-list" v-if="orderDetail.IsTaxInvoice">
+          <section class="summary-list" v-if="orderDetail.IsTaxInvoice && orderDetail.TaxInvoiceDetails">
             <div class="summary-item">
               <h4 class="topic">ออกใบกำกับภาษีให้</h4>
               <p>
@@ -342,7 +342,7 @@ const getAge = (birthdate: string): string => {
 };
 const getFullAddress = (): string => {
   let fullAddress = "";
-  if (orderDetail && orderDetail.value) {
+  if (orderDetail && orderDetail.value && orderDetail.value.AssuredDetails) {
     if (orderDetail.value.AssuredDetails.No.length > 0) {
       fullAddress += orderDetail.value.AssuredDetails.No + " ";
     }
@@ -375,7 +375,7 @@ const getFullAddress = (): string => {
 };
 const getFullAddressDelivery = (): string => {
   let fullAddress = "";
-  if (orderDetail && orderDetail.value) {
+  if (orderDetail && orderDetail.value && orderDetail.value.DeliveryPolicyDetails) {
     if (orderDetail.value.DeliveryPolicyDetails.No.length > 0) {
       fullAddress += orderDetail.value.DeliveryPolicyDetails.No + " ";
     }

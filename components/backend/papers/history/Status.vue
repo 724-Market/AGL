@@ -18,6 +18,22 @@
         </div>
 
         <div class="card-stat" :class="{ 'is-active' : isActive[1]}">
+            <a @click="onChangeFilter('Prepare')" title="จัดเตรียมกระดาษ">
+                <div class="stat-wrapper">
+                    <div class="stat-header">
+                        <h5 class="topic">จัดเตรียมกระดาษ</h5>
+                        <span class="value">{{ $props.statusGroup?.Prepare }}</span>
+                    </div>
+                    <div class="stat-action">
+                        <figure class="figure">
+                            <i class="fa-duotone fa-truck-arrow-right"></i>
+                        </figure>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="card-stat" :class="{ 'is-active' : isActive[2]}">
             <a @click="onChangeFilter('Delivery')" title="จัดส่งแล้ว">
                 <div class="stat-wrapper">
                     <div class="stat-header">
@@ -33,7 +49,7 @@
             </a>
         </div>
 
-        <div class="card-stat is-success" :class="{ 'is-active' : isActive[2]}">
+        <div class="card-stat is-success" :class="{ 'is-active' : isActive[3]}">
             <a @click="onChangeFilter('Success')" title="สำเร็จ">
                 <div class="stat-wrapper">
                     <div class="stat-header">
@@ -49,7 +65,7 @@
             </a>
         </div>
 
-        <div class="card-stat is-danger" :class="{ 'is-active' : isActive[3]}">
+        <div class="card-stat is-danger" :class="{ 'is-active' : isActive[4]}">
             <a @click="onChangeFilter('Cancel')" title="ยกเลิกรายการ">
                 <div class="stat-wrapper">
                     <div class="stat-header">
@@ -93,16 +109,19 @@ const onChangeFilter = async (status: string) => {
     statusSearch.value = ''
     switch(status) {
         case 'Receive':
-            isActive.value = [true, false, false, false]
+            isActive.value = [true, false, false, false, false]
+            break;
+        case 'Prepare':
+            isActive.value = [false, true, false, false, false]
             break;
         case 'Delivery':
-            isActive.value = [false, true, false, false]
+            isActive.value = [false, false, true, false, false]
             break;
         case 'Success':
-            isActive.value = [false, false, true, false]
+            isActive.value = [false, false, false, true, false]
             break;
         case 'Cancel':
-            isActive.value = [false, false, false, true]
+            isActive.value = [false, false, false, false, true]
             break;
     }
     emit('changeStatus', status)

@@ -11,7 +11,7 @@
           <div class="card card-center">
 
             <div class="card-header">
-              <h1 class="title">กำหนดรหัสผ่าน</h1>
+              <h1 class="title">กำหนดรหัสผ่านใหม่</h1>
               <h2 class="subtitle">ควรสร้างรหัสผ่านที่ปลอดภัย</h2>
             </div>
 
@@ -121,8 +121,8 @@ const submitSetPassword = async (formData: any) => {
   // Open modal dialog
   isShowModal.value = true
   modalType.value = 'success'
-  modalTitle.value = 'ยินดีต้อนรับสมาชิกใหม่'
-  modalText.value = 'การลงทะเบียนสำเร็จ เราจะพาท่านไปหน้าเข้าสู่ระบบ'
+  modalTitle.value = 'กำหนดรหัสผ่านใหม่สำเร็จ'
+  modalText.value = 'เราจะพาท่านไปหน้าเข้าสู่ระบบ'
   modalButton.value = 'รับทราบ'
 }
 
@@ -142,7 +142,7 @@ const showLogoHeader = true
 
 // Define page meta
 const pageTitle = 'กำหนดรหัสผ่าน'
-const pageCategory = 'ลงทะเบียนสมาชิกใหม่'
+const pageCategory = 'ลืมรหัสผ่าน'
 const pageDescription = ''
 
 // Define meta seo
@@ -150,7 +150,7 @@ useHead({
   title: pageTitle,
   meta: [{ name: 'description', content: pageDescription }],
   bodyAttrs: {
-    class: 'page-register single-set-password template-login'
+    class: 'page-login single-set-password template-login'
   }
 })
 </script>

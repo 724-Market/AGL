@@ -14,7 +14,8 @@
                     <PapersOrderDetail :order-get="orderGet" v-if="orderGet" />
                     
                     <PapersSuborder :order-get="orderGet" :ordersub-feedelivery="ordersubFeeDel" :order-sub="orderSubAll" v-if="orderSubAll"></PapersSuborder>
-
+                    <button class="btn-primary" @click="confirmReceiveOrder" type="button" v-if="orderGet?.OrderStatus == 'Delivery'">ได้รับกระดาษครบแล้ว</button>
+                    <br>
                     <NuxtLink to="/papers" class="btn btn-back">ย้อนกลับ</NuxtLink>
 
                 </section>
@@ -61,16 +62,17 @@ const { AuthenInfo } = storeToRefs(storeAuth);
 //const router = useRouter();
 const route = useRoute()
 const router = useRouter();
+const orderId = ref('')
 
 const onLoad = onMounted(async () => {
     if (AuthenInfo.value) {
         isLoading.value = true;
         // Handle the possibility of route.params.id being an array
-        const orderId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
+        orderId.value = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
 
-        await loadTrackOrderPaper(orderId);
-        await loadSubDetail(orderId);
-        await loadOrderDetail(orderId);
+        await loadTrackOrderPaper(orderId.value);
+        await loadSubDetail(orderId.value);
+        await loadOrderDetail(orderId.value);
         isLoading.value = false;
     } else {
         router.push("/login")
@@ -157,6 +159,30 @@ const loadOrderDetail = async (orderNo: string) => {
     }
 
 };
+
+const confirmReceiveOrder = async () => {
+    isLoading.value = true;
+    const req: OrderListReq = {
+        OrderNo: orderId.value,
+    };
+
+    const resPOrder = await useRepository().paper.confirmReceiveOrder(req);
+    if (
+        resPOrder.apiResponse.Status &&
+        resPOrder.apiResponse.Status == "200"
+    ) {
+        reloadPage()
+    } else {
+        alert(resPOrder.apiResponse.ErrorMessage);
+    }
+    isLoading.value = false;
+
+};
+
+const reloadPage = async () => {
+    await loadOrderDetail(orderId.value);
+    await loadSubDetail(orderId.value);
+}
 
 
 // Define layout

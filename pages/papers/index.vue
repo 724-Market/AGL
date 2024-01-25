@@ -87,6 +87,7 @@ const loadPaperBalance = async () => {
 };
 
 const handleChangeStatus = async (status: string) => {
+    loadHistoryStatus();
     // console.log('handleChangeStatus', status)
     filterGridTable.value = [];
 
@@ -179,6 +180,7 @@ const trackStatus = async (OrderNo: string) => {
 };
 
 const handleDelete = async (OrderNo: string) => {
+    console.log("DeleteOrder")
     isDeleteConfirm.value = true
     textDeleteConfirm.value = `คุณต้องการยกเลิกรายการหรือไม่ ?` + OrderNo
     textPaperCancelOrder.value = OrderNo

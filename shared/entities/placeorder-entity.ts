@@ -140,6 +140,7 @@ export interface TaxInvoiceAddress {
   DistrictID: string
   SubDistrictID: string
   TaxID: string
+  Prefix?:string
   FirstName: string
   LastName: string
   PhoneNumber: string

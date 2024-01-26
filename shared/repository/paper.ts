@@ -1,6 +1,8 @@
-import {
+import type {
   AreaListRes,
   BalanceRes,
+  cancelOrderReq,
+  cancelOrderRes,
   WarehouseAreaListReq,
   WarehouseAreaListRes,
   ProductsubcategoryAreaListReq,
@@ -83,6 +85,10 @@ class PaperModule {
 
   async remark(req: RemarkListReq): Promise<IAPIResponse<RemarkListRes[]>> {
     return await useCallApi().apiRepository<RemarkListRes[]>(`${this.RESOURCE}/remark/list`, req)
+  }
+
+  async cancelOrderByUser(req: cancelOrderReq): Promise<IAPIResponse<cancelOrderRes>> {
+    return await useCallApi().apiRepository<cancelOrderRes>(`${this.RESOURCE}/order/by-user/cancel`, req)
   }
 
   async confirmReceiveOrder(req: OrderListReq): Promise<IAPIResponse<OrderListRes[]>> {

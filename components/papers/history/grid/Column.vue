@@ -14,7 +14,9 @@
     </div>
     <div v-if="props.field && props.field == 'status' && props.row">
       <div class="badge-dot badge-warning" v-if="props.row.OrderStatus == 'Prepare'">
-        รอดำเนินการ<a class="cancel" title="ยกเลิก"><span class="icon-trash event-cancel-paper" :data-id="props.row.OrderNo">ยกเลิก</span></a>
+        รอดำเนินการ
+        <a class="cancel" title="ยกเลิก"
+        ><span class="icon-trash event-cancel-paper" :data-id="props.row.OrderNo">ยกเลิก</span></a>
       </div>
       <div class="badge-dot badge-info" v-else-if="props.row.OrderStatus == 'Delivery'">
         จัดส่งแล้ว
@@ -39,8 +41,5 @@
     click:Function
   });
   
-  const openChild = ()=>{
-    alert('opened')
-  }
   </script>
   

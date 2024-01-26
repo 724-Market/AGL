@@ -129,6 +129,24 @@ export default () => {
     return formattedText
   }
 
+  const maskMobileNumber = (mobileNumber: string): string => {
+
+    if (typeof mobileNumber === 'string' && /^\d{10}$/.test(mobileNumber)) {
+      // Extract the parts of the mobile number
+      const prefix = mobileNumber.slice(0, 2);
+      const middlePart = mobileNumber.slice(2, 5);
+      const lastPart = mobileNumber.slice(8);
+
+      // Format the mobile number
+      const formattedNumber = `${prefix}-XXX-X${lastPart}`;
+      return formattedNumber;
+    } else {
+      console.error('Invalid mobile number format');
+      return mobileNumber;
+    }
+
+  }
+
   const getStepMenuFromUri = (): number => {
     let step = 0
     if (process.client) {
@@ -332,11 +350,25 @@ export default () => {
         resp.value.isShowModal = false
       }
       else {
+
+        if (res.apiResponse.ErrorCode === '1102813') { 
+          // Please wait and try again after x Minutes y Seconds.
+          // Cannot Send OTP. Please try again.
+          resp.value.modalTitle = 'ไม่สามารถส่ง OTP ได้'
+          resp.value.modalText = 'กรุณาทำการใหม่อีกครั้ง'
+        }
+        else if (res.apiResponse.ErrorCode === '1103807') {
+          resp.value.modalTitle = 'รหัส OTP ไม่ถูกต้อง'
+          resp.value.modalText = 'กรุณาทำการยืนยัน OTP ใหม่อีกครั้ง'
+        }
+        else {
+          resp.value.modalTitle = res.apiResponse.ErrorMessage
+          resp.value.modalText = 'Error : '+res.apiResponse.ErrorCode
+        }
+
         resp.value.status = 'error';
         resp.value.isShowModal = true
-        resp.value.modalType = 'danger'
-        resp.value.modalTitle = res.apiResponse.ErrorMessage
-        resp.value.modalText = 'Error : '+res.apiResponse.ErrorCode
+        resp.value.modalType = 'warning'
         resp.value.modalButton = 'ตกลง'
       }
     }
@@ -374,6 +406,7 @@ export default () => {
     getPaging,
     formatDate,
     formatText,
+    maskMobileNumber,
     downloadImage,
     getDeviceId,
     setStoretoStep,

@@ -179,7 +179,11 @@ export default () => {
             statusMessageType: "",
             apiResponse: wrapper
         }
-        if (!params.RefreshToken && !url.toLowerCase().includes('/token/get')) { // get token is not refresh token
+
+        if(params.Token2) {
+            params.Token = params.Token2
+        }
+        else if (!params.RefreshToken && !url.toLowerCase().includes('/token/get')) { // get token is not refresh token
             // check token expire
             params.Token = await useUtility().getToken()
         }

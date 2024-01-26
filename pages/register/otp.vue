@@ -55,16 +55,13 @@ import { getNode } from '@formkit/core'
 definePageMeta({
   middleware: [
     function (to, from) {
-      // Define and check 'isOTP' status
-      const isOTP = useState('otp')
 
-      // Abort navigation if 'isOTP' is false
-      if (!isOTP.value) {
+      const registerStep = useState('register-step')
+
+      if (registerStep.value != 'otp') {
         return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
       }
 
-      // Set 'isOTP' to false after check
-      isOTP.value = false
     }
   ]
 })
@@ -98,10 +95,25 @@ const modalType = ref('danger')
 const modalTitle = ref('')
 const modalText = ref('')
 const modalButton = ref('')
+const modalRedirectPath = ref('')
 
 // Function to handle close modal events
 const handleCloseModal = async () => {
-  await requestOTP()
+  if (modalRedirectPath.value) {
+    router.push({ path: modalRedirectPath.value })
+  }
+  else {
+    isShowModal.value = false
+  }
+}
+
+// Function show message modal events
+const serverModal = async (serverCheck: any) => {
+  isShowModal.value = true
+  modalType.value = serverCheck.modalType
+  modalTitle.value = serverCheck.modalTitle
+  modalText.value = serverCheck.modalText
+  modalButton.value = serverCheck.modalButton
 }
 
 /////////////////////////////////////////
@@ -112,20 +124,58 @@ const emit = defineEmits(['onCloseModal', 'onResendOTP'])
 // Function to handle close modal events
 const handleResendOTP = async () => {
   isShowModal.value = false
-
   await requestOTP()
 }
 
 /////////////////////////////////////////
 // Function request OTP
 const requestOTP = async () => {
+  
   console.log('request OTP')
-
-  // Reset OTP field
   await resetOTPField()
 
-  getRefOTP.value.phoneNumber = '089-XXX-X999'
-  getRefOTP.value.refCode = 'ABCD'
+  openLoadingDialog(true)
+
+  if (registerType.value === 'agent') {
+
+    const registerAgentReq = {
+      AgentCode: regAgentAgentCode,
+      IDCard: regAgentIDcard,
+      FirstName: regAgentFirstName.value,
+      LastName: regAgentLastName.value,
+      ReferralID: regReferenceID.value,
+      TemporaryPhone: regAgentMobile.value
+    }
+
+    const response = await useRepository().agent.registerAgent(registerAgentReq)
+    const resultCheck = useUtility().responseCheck(response)
+
+    if (resultCheck.status === 'pass') {
+      getRefOTP.value.refCode = response.apiResponse.Data.CodeReference
+      regCodeReference.value = response.apiResponse.Data.CodeReference
+      regToken.value = response.apiResponse.Data.Token
+      openLoadingDialog(false)
+    }
+    else if (resultCheck.status === 'error') {
+      serverModal(resultCheck)
+      openLoadingDialog(false)
+    }
+    else if (resultCheck.status === 'server-error') {
+      serverModal(resultCheck)
+      openLoadingDialog(false)
+    }
+
+  }
+  else if (registerType.value === 'member') {
+
+    isShowModal.value = true
+    modalType.value = 'warning'
+    modalTitle.value = 'ยังไม่เปิดลงทะเบียนสมาชิกทั่วไป'
+    modalText.value = ''
+    modalButton.value = 'ตกลง'
+
+  }
+
 }
 
 /////////////////////////////////////////
@@ -140,57 +190,82 @@ const resetOTPField = async () => {
 onMounted(async () => {
 
   // Get reference value from OTP
-  getRefOTP.value.phoneNumber = '089-XXX-X778'
-  getRefOTP.value.refCode = 'ED2J'
+  getRefOTP.value.phoneNumber = useUtility().maskMobileNumber(regAgentMobile.value)
+  getRefOTP.value.refCode = regCodeReference.value
 
 })
 
 /////////////////////////////////////////
 // Submit page
 const submitOTP = async (formData: any) => {
+
   openLoadingDialog(true)
+  //console.log(formData)
 
-  const formRequest = {
-    otp: formData.otp,
-    refcode: getRefOTP.value.refCode
-  }
+  if (registerType.value === 'agent') {
 
-  await new Promise((r) => setTimeout(r, 2000))
+    const verifyOtpRegisterAgentReq = {
+      CodeVerify: formData.otp,
+      CodeReference: regCodeReference.value,
+      Token2: regToken.value
+    }
 
-  console.log(formRequest)
+    const response = await useRepository().agent.verifyOtpRegisterAgent(verifyOtpRegisterAgentReq)
+    const resultCheck = useUtility().responseCheck(response)
+    //console.log(response)
 
-  // Reset OTP field
-  await resetOTPField()
-
-  if (formData) {
-
-    if (formRequest.otp === '000000') {
-
+    if (resultCheck.status === 'pass') {
+      regReferenceID.value = response.apiResponse.Data.ReferenceID
+      registerStep.value = 'set-password'
       await goNext()
+    }
+    else if (resultCheck.status === 'error') {
 
-    } else {
-
+      if(response.apiResponse.ErrorCode === '1103807') {
+        resultCheck.modalTitle = 'รหัส OTP ไม่ถูกต้อง'
+        resultCheck.modalText = 'กรุณาทำการยืนยัน OTP ใหม่อีกครั้ง'
+      }
+      resultCheck.modalType = 'warning'
+      serverModal(resultCheck)
       openLoadingDialog(false)
 
-      // Open modal dialog
-      isShowModal.value = true
-      modalType.value = 'danger'
-      modalTitle.value = 'รหัส OTP ไม่ถูกต้อง'
-      modalText.value = 'กรุณาทำการยืนยัน OTP ใหม่อีกครั้ง'
-      modalButton.value = 'รับทราบ'
     }
+    else if (resultCheck.status === 'server-error') {
+      serverModal(resultCheck)
+    }
+
   }
+  else if (registerType.value === 'member') {
+
+    isShowModal.value = true
+    modalType.value = 'warning'
+    modalTitle.value = 'ยังไม่เปิดลงทะเบียนสมาชิกทั่วไป'
+    modalText.value = ''
+    modalButton.value = 'ตกลง'
+
+  }
+
 }
 
 /////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
-  // Define and check 'isSetPassword' status
-  const isSetPassword = useState('set-password')
-  isSetPassword.value = true
-
   router.push({ path: 'set-password' })
 }
+
+/////////////////////////////////////////
+// Define for this page
+
+const registerStep = useState('register-step')
+const registerType = useState('register-type')
+const regAgentAgentCode = useState('reg-agent-agentcode')
+const regAgentFirstName = useState('reg-agent-firstname')
+const regAgentLastName = useState('reg-agent-lastname')
+const regAgentIDcard = useState('reg-agent-idcard')
+const regAgentMobile = useState('reg-agent-mobile')
+const regCodeReference = useState('reg-code-reference')
+const regToken = useState('reg-token')
+const regReferenceID = useState('reg-reference-id')
 
 /////////////////////////////////////////
 // Define layout

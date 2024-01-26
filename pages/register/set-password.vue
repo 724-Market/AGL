@@ -51,16 +51,13 @@
 definePageMeta({
   middleware: [
     function (to, from) {
-      // Define and check 'isSetPassword' status
-      const isSetPassword = useState('set-password')
 
-      // Abort navigation if 'isSetPassword' is false
-      if (!isSetPassword.value) {
+      const registerStep = useState('register-step')
+
+      if (registerStep.value != 'set-password') {
         return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
       }
 
-      // Set 'isSetPassword' to false after check
-      isSetPassword.value = false
     }
   ]
 })
@@ -92,10 +89,25 @@ const modalType = ref('')
 const modalTitle = ref('')
 const modalText = ref('')
 const modalButton = ref('')
+const modalRedirectPath = ref('')
 
 // Function to handle close modal events
 const handleCloseModal = async () => {
-  await goNext()
+  if (modalRedirectPath.value) {
+    router.push({ path: modalRedirectPath.value })
+  }
+  else {
+    isShowModal.value = false
+  }
+}
+
+// Function show message modal events
+const serverModal = async (serverCheck: any) => {
+  isShowModal.value = true
+  modalType.value = serverCheck.modalType
+  modalTitle.value = serverCheck.modalTitle
+  modalText.value = serverCheck.modalText
+  modalButton.value = serverCheck.modalButton
 }
 
 /////////////////////////////////////////
@@ -105,25 +117,63 @@ const emit = defineEmits(['onCloseModal'])
 /////////////////////////////////////////
 // Submit page
 const submitSetPassword = async (formData: any) => {
+
   openLoadingDialog(true)
+  //console.log(formData)
 
-  console.log(formData)
+  if (registerType.value === 'agent') {
 
-  const formRequest = {
-    password: formData.password,
-    passwordConfirm: formData.password_confirm
+    const setupFirstPasswordAgentReq = {
+      Password: formData.password,
+      CodeReference: regCodeReference.value,
+      Token2: regToken.value,
+      ReferenceID: regReferenceID.value
+    }
+
+    const response = await useRepository().agent.setupFirstPasswordAgent(setupFirstPasswordAgentReq)
+    const resultCheck = useUtility().responseCheck(response)
+    //console.log(response)
+
+    if (resultCheck.status === 'pass') {
+
+      registerStep.value = ''
+      registerType.value = ''
+      regAgentAgentCode.value = ''
+      regAgentIDcard.value = ''
+      regAgentMobile.value = ''
+      regCodeReference.value = ''
+      regToken.value = ''
+      regReferenceID.value = ''
+      
+      modalRedirectPath.value = '/agent'
+      resultCheck.modalType = 'success'
+      resultCheck.modalTitle = 'ยินดีต้อนรับสมาชิกใหม่'
+      resultCheck.modalText = 'การลงทะเบียนสำเร็จ เราจะพาท่านไปหน้าเข้าสู่ระบบ'
+      serverModal(resultCheck)
+
+    }
+    else if (resultCheck.status === 'error') {
+
+      resultCheck.modalType = 'warning'
+      serverModal(resultCheck)
+      openLoadingDialog(false)
+
+    }
+    else if (resultCheck.status === 'server-error') {
+      serverModal(resultCheck)
+    }
+
+  }
+  else if (registerType.value === 'member') {
+
+    isShowModal.value = true
+    modalType.value = 'warning'
+    modalTitle.value = 'ยังไม่เปิดลงทะเบียนสมาชิกทั่วไป'
+    modalText.value = ''
+    modalButton.value = 'ตกลง'
+
   }
 
-  await new Promise((r) => setTimeout(r, 2000))
-
-  openLoadingDialog(false)
-
-  // Open modal dialog
-  isShowModal.value = true
-  modalType.value = 'success'
-  modalTitle.value = 'ยินดีต้อนรับสมาชิกใหม่'
-  modalText.value = 'การลงทะเบียนสำเร็จ เราจะพาท่านไปหน้าเข้าสู่ระบบ'
-  modalButton.value = 'รับทราบ'
 }
 
 /////////////////////////////////////////
@@ -131,6 +181,18 @@ const submitSetPassword = async (formData: any) => {
 const goNext = async () => {
   router.push({ path: '/agent' })
 }
+
+/////////////////////////////////////////
+// Define for this page
+
+const registerStep = useState('register-step')
+const registerType = useState('register-type')
+const regAgentAgentCode = useState('reg-agent-agentcode')
+const regAgentIDcard = useState('reg-agent-idcard')
+const regAgentMobile = useState('reg-agent-mobile')
+const regCodeReference = useState('reg-code-reference')
+const regToken = useState('reg-token')
+const regReferenceID = useState('reg-reference-id')
 
 /////////////////////////////////////////
 // Define layout

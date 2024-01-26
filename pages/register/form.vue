@@ -19,11 +19,11 @@
 
               <div class="form-area">
 
-                <ElementsFormFirstnameWithLastname />
+                <ElementsFormFirstnameWithLastname :formFirstName="formFirstName" :formLastName="formLastName" :isReadOnly="true" />
 
                 <ElementsFormPhoneNumber label="หมายเลขโทรศัพท์ (ที่รับ OTP ได้)" name="phonenumber" id="phonenumber" />
 
-                <ElementsFormEmail label="อีเมล" name="email" />
+                <!--<ElementsFormEmail label="อีเมล" name="email" />-->
 
               </div>
 
@@ -31,18 +31,19 @@
                 input: 'btn-primary',
                 outer: 'form-actions',
               }" :disabled="isLoading" :loading="isLoading" />
+
             </div>
 
-            <div class="card-footer">
-              <p>
-                ผู้แนะนำของท่าน<br>
+            <div class="card-footer" v-if="Referral">
+              <p>ผู้แนะนำของท่าน<br>
               <div class="recommender">
                 <figure class="avatar"><img src="https://css.agentlove.club/uploads/team-5.jpg" alt=""></figure>
                 <div class="info">
-                  <h5 class="name">ปฐมxxx xxxจิตต์</h5>
-                  <span class="code">AM00125633</span>
+                  <h5 class="name">{{ agentReferralDetails.FirstName }} {{ agentReferralDetails.LastName }}</h5>
+                  <span class="code">AM{{ agentReferralDetails.AgentID }}</span>
                 </div>
               </div>
+              <FormKit type="hidden" name="reference" id="reference" :value="Referral" />
               </p>
             </div>
 
@@ -62,6 +63,22 @@
 </template>
 
 <script setup lang="ts">
+
+// Define page meta
+definePageMeta({
+  middleware: [
+    function (to, from) {
+
+      const registerStep = useState('register-step')
+
+      if (registerStep.value!='form') {
+        return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
+      }
+
+    }
+  ]
+})
+
 // Define import
 import { getNode } from '@formkit/core'
 
@@ -87,14 +104,25 @@ const modalType = ref('')
 const modalTitle = ref('')
 const modalText = ref('')
 const modalButton = ref('')
+const modalRedirectPath = ref('')
 
 // Function to handle close modal events
 const handleCloseModal = async () => {
+  if (modalRedirectPath.value) {
+    router.push({ path: modalRedirectPath.value })
+  }
+  else {
+    isShowModal.value = false
+  }
+}
 
-  console.log('reset')
-
-  // Reset phonenumber field
-  await resetPhoneNumberField()
+// Function show message modal events
+const serverModal = async (serverCheck: any) => {
+  isShowModal.value = true
+  modalType.value = serverCheck.modalType
+  modalTitle.value = serverCheck.modalTitle
+  modalText.value = serverCheck.modalText
+  modalButton.value = serverCheck.modalButton
 }
 
 /////////////////////////////////////////
@@ -111,40 +139,112 @@ const resetPhoneNumberField = async () => {
 /////////////////////////////////////////
 // Submit page
 const submitRegister = async (formData: any) => {
+
   openLoadingDialog(true)
+  //console.log(formData)
 
-  console.log(formData)
+  if(registerType.value === 'agent') {
 
-  await new Promise((r) => setTimeout(r, 2000))
-
-  if (formData) {
-
-    if (formData.phonenumber === '0000000000') {
-
-      await goNext()
-
-    } else {
-
-      openLoadingDialog(false)
-
-      // Open modal dialog
-      isShowModal.value = true
-      modalType.value = 'danger'
-      modalTitle.value = 'หมายเลขโทรศัพท์นี้มีการลงทะเบียนไปแล้ว'
-      modalText.value = 'กรุณาตรวจสอบและกรอกข้อมูลอีกครั้ง'
-      modalButton.value = 'รับทราบ'
+    const registerAgentReq = {
+      AgentCode: regAgentAgentCode,
+      IDCard: regAgentIDcard,
+      FirstName: formData.firstname,
+      LastName: formData.lastname,
+      ReferralID: regReferralID,
+      TemporaryPhone: formData.phonenumber
     }
+
+    const response = await useRepository().agent.registerAgent(registerAgentReq)
+    const resultCheck = useUtility().responseCheck(response)
+    //console.log(response)
+
+    if (resultCheck.status === 'pass') {
+      regAgentMobile.value = formData.phonenumber
+      regCodeReference.value = response.apiResponse.Data.CodeReference
+      regToken.value = response.apiResponse.Data.Token
+      registerStep.value = 'otp'
+      await goNext()
+    }
+    else if (resultCheck.status === 'error') {
+      resultCheck.modalType = 'warning'
+      serverModal(resultCheck)
+      openLoadingDialog(false)
+    }
+    else if (resultCheck.status === 'server-error') {
+      serverModal(resultCheck)
+    }
+
   }
+  else if(registerType.value === 'member') {
+
+    isShowModal.value = true
+    modalType.value = 'warning'
+    modalTitle.value = 'ยังไม่เปิดลงทะเบียนสมาชิกทั่วไป'
+    modalText.value = ''
+    modalButton.value = 'ตกลง'
+    
+  }
+ 
 }
 
 /////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
-  // Define and check 'isOTP' status
-  const isOTP = useState('otp')
-  isOTP.value = true
-
   router.push({ path: 'otp' })
+}
+
+/////////////////////////////////////////
+// Define for this page
+
+let agentReferralDetails = ref()
+let Referral = ref()
+const formFirstName =  ref()
+const formLastName =  ref()
+
+const registerStep = useState('register-step')
+const registerType = useState('register-type')
+const regReferralID = useState('reg-referral-id')
+const regAgentAgentCode = useState('reg-agent-agentcode')
+const regAgentFirstName = useState('reg-agent-firstname')
+const regAgentLastName = useState('reg-agent-lastname')
+const regAgentIDcard = useState('reg-agent-idcard')
+const regAgentMobile = useState('reg-agent-mobile')
+const regCodeReference = useState('reg-code-reference')
+const regToken = useState('reg-token')
+
+
+if(regAgentFirstName) { formFirstName.value = regAgentFirstName }
+if(regAgentLastName) { formLastName.value = regAgentLastName }
+
+onMounted(async () => {
+  await loadAgentReferral(regReferralID)
+})
+
+const loadAgentReferral = async (regReferralID: any) => {
+
+  if(regReferralID) {
+
+    const checkAgentReferralReq = {
+      ReferralID: regReferralID
+    }
+    const response = await useRepository().agent.checkAgentReferral(checkAgentReferralReq)
+    const resultCheck = useUtility().responseCheck(response)
+
+    if (resultCheck.status === 'pass') {
+      if (Array.isArray(response.apiResponse.Data)) {
+        agentReferralDetails = response.apiResponse.Data[0]
+        Referral.value = 'AM' + response.apiResponse.Data[0].AgentID
+      }
+    }
+    else if (resultCheck.status === 'error') {
+      //serverModal(resultCheck)
+    }
+    else if (resultCheck.status === 'server-error') {
+      serverModal(resultCheck)
+    }
+
+  }
+
 }
 
 /////////////////////////////////////////

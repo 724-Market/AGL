@@ -128,6 +128,7 @@
 
 <script setup lang="ts">
 import type {
+    cancelOrderReq,
     OrderNoReq,
     getOrderDetailRes,
     getRemarkListReq,
@@ -198,7 +199,7 @@ const handleConfirmUnApproveOrder = async () => {
 const getRemarkRejectOrder = async () => {
     
     let req: getRemarkListReq = {
-        Type: "PAPER_ORDER_USER",
+        Type: "PAPER_ORDER_ADMIN",
     };
 
     isLoading.value = true
@@ -246,28 +247,24 @@ const handleCloseConfirm = async () => {
   isShowUnApprove.value = false
 }
 
-// Function to handle accept confirm events
-const handleAcceptUnApprove = async () => {
-  // Close confirm dialog
-  isShowConfirm.value = false
-
-  await new Promise((r) => setTimeout(r, 1000))
-
-  // Open modal dialog
-  isShowModal.value = true
-  modalType.value = 'success'
-  modalTitle.value = 'ทำงานได้ตามปกติเนอะ'
-  modalText.value = 'ราบรื่นนนนนนนนนน'
-  modalButton.value = 'รับทราบจ้าาาา'
-
-  await new Promise((r) => setTimeout(r, 1000))
-}
 
 // Function to handle accept confirm events
-const handleAcceptConfirm = async () => {
+const handleAcceptConfirm = async (orderID: any, remarkID: any, remarkText: any) => {
+    const req: cancelOrderReq = {
+        OrderNo: orderID ?? "",
+        RemarkSystem: remarkID,
+        Remark: remarkText,
+    };
+
+    var response = await useRepository().backendpaper.cancelOrderByAdmin(req);
+    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+        router.push({ path: "/backend/papers" });      
+    } else {
+        alert(response.apiResponse.ErrorMessage);
+    }
+
   // Close confirm dialog
   isShowConfirm.value = false
-  router.push({ path: "/backend/papers" });
 }
 
 

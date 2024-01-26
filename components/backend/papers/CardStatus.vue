@@ -86,6 +86,8 @@ const orderStatusClass = computed(() => {
 // Computed for text on status
 const orderStatusText = computed(() => {
     switch (orderStatus.value) {
+        case 'Receive':
+            return 'รับรายการ'
         case 'Prepare':
             return 'รอดำเนินการ'
         case 'Delivery':

@@ -258,7 +258,8 @@ const submitPledge = async (formData: any) => {
   emit("topupConfirm", isConsent.value, Amount.value, paymentType.value);
 };
 const AddAmount = (credit: number) => {
-  const amount = parseInt(Amount.value.toString());
+  let amount = parseInt(Amount.value.toString());
+  if(Number.isNaN(amount)) amount = 0;
   let total = amount + credit;
   if (paymentList.value) {
     if (total >= paymentList.value.Min && total <= paymentList.value.Max) {

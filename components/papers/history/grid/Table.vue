@@ -5,7 +5,7 @@
         <DataTable
           id="datatables"
           class="table table-transaction nowrap"
-          data-order='[[ 2, "asc" ]]'
+          data-order='[[ 2, "desc" ]]'
           :options="datatableOptions"
           ref="table"
         >
@@ -193,7 +193,6 @@
       TdId6.innerHTML = status;
     
       if(data.OrderStatus == 'Prepare') {
-        console.log("emitcancel")
         const statusCancel = TdId6.querySelector('.event-cancel-paper')
         statusCancel.addEventListener('click',async () => {
           emit('cancelOrder', statusCancel.dataset.id)

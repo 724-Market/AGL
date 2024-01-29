@@ -2,13 +2,13 @@
     <!-- <div class="card"> -->
 
 
-    <FormKit type="form" @submit="handleConfirmDelivery" :actions="false" id="form-papers" form-class="form-order form-theme"
+    <FormKit type="form" @submit="handleConfirmOrder" :actions="false" id="form-papers" form-class="form-order form-theme"
     :incomplete-message="false">
         <div class="card-body card-table">
 
             <h5 class="card-title">รายการกระดาษ</h5>
 
-            <div class="checked-all" v-if="props.orderGet?.OrderStatus == 'Prepare'">
+            <div class="checked-all" v-if="props.orderGet?.OrderStatus == 'NotShow'">
 
                 <div class="formkit-outer" data-type="toggle" data-id="input_09" data-complete="true" >
                     <div class="formkit-wrapper">
@@ -39,7 +39,7 @@
                         </tr>
                         <tr class="product" v-for="(item, i) in props.orderDetail" v-bind:key="i">
                             <th scope="row">ราคามัดจำ {{ item.Model }}<span>{{ item.SubCategory }} • {{ item.Brand }}</span>
-                                <div class="toggle" v-if="props.orderGet?.OrderStatus == 'Prepare'">
+                                <div class="toggle" v-if="props.orderGet?.OrderStatus == 'Receive'">
                                     <FormKit 
                                     type="toggle" 
                                     on-value="true" 
@@ -78,10 +78,10 @@
                 <!--                 
                 <button class="btn-primary" type="button">กระดาษครบแล้ว เตรียมจัดส่ง</button> -->
 
-                <FormKit type="button" class="btn-primary" label="รับรายการ" name="cancel-submit" :classes="{
+                <FormKit type="submit" class="btn-primary" label="รับรายการ" name="papers-submit" id="papers-submit" :classes="{
                     input: 'btn-primary',
                     outer: 'form-actions',
-                }" @click="handleConfirmOrder" :disabled="isLoading" :loading="isLoading" />
+                }" :disabled="isLoading" :loading="isLoading" />
                 
 
                 <FormKit type="button" label="ยกเลิกรายการ" name="cancel-submit" :classes="{
@@ -95,13 +95,13 @@
                 <!--                 
                 <button class="btn-primary" type="button">กระดาษครบแล้ว เตรียมจัดส่ง</button> -->
 
-                <FormKit type="submit" label="กระดาษครบแล้ว เตรียมจัดส่ง" name="papers-submit" id="papers-submit" :classes="{
+                <FormKit type="button" label="กระดาษครบแล้ว เตรียมจัดส่ง" name="papers-submit" :classes="{
                     input: 'btn-primary',
                     outer: 'form-actions',
-                }" :disabled="isLoading" :loading="isLoading" />
+                }" @click="handleConfirmDelivery" :disabled="isLoading" :loading="isLoading" />
                 
 
-                <FormKit type="button" label="ยกเลิกรายการ" name="cancel-submit" :classes="{
+                <FormKit type="button" label="ไม่อนุมัติ" name="cancel-submit" :classes="{
                     input: 'btn-red btn-open-papers-cancellation',
                     outer: 'form-actions',
                 }" @click="handleConfirmUnApproveOrder" :disabled="isLoading" :loading="isLoading" />
@@ -198,7 +198,7 @@ const handleConfirmUnApproveOrder = async () => {
 const getRemarkRejectOrder = async () => {
     
     let req: getRemarkListReq = {
-        Type: "PAPER_ORDER_USER",
+        Type: "PAPER_ORDER_ADMIN",
     };
 
     isLoading.value = true

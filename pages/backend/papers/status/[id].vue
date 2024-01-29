@@ -30,6 +30,9 @@
         
         <ElementsModalLoading :loading="isLoading" />
 
+        <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
+        :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
+
     </NuxtLayout>
 </template>
 
@@ -67,6 +70,14 @@ const { AuthenInfo } = storeToRefs(storeAuth);
 const route = useRoute()
 const router = useRouter()
 const orderId = ref('')
+
+/////////////////////////////////////////
+// Modal Dialog
+const isShowModal = ref(false)
+const modalType = ref('')
+const modalTitle = ref('')
+const modalText = ref('')
+const modalButton = ref('')
 
 const onLoad = onMounted(async () => {
     //console.log("OnMount working!!!")
@@ -119,8 +130,6 @@ const loadTrackOrderPaper = async (orderNo: string) => {
                     isShowChild = false;
                 }
             }
-
-
         } else {
             console.log("No item with IsCurrent: true found");
         }
@@ -166,6 +175,14 @@ const handleConfirmDelivery = async () => {
 const reloadPage = async () => {
     await loadOrderDetail(orderId.value);
     await loadSubDetail(orderId.value);
+    if (getOrderStatus.value?.OrderStatus == 'Delivery') {
+        // Open modal dialog
+        isShowModal.value = true
+        modalType.value = 'success'
+        modalTitle.value = 'บันทึกรายการกระดาษเรียบร้อย'
+        modalText.value = 'กรุณาทำการจัดส่ง'
+        modalButton.value = 'รับทราบ'
+    }
 }
 
 const confirmOrderStatus = async (orderNo: string) => {
@@ -178,8 +195,7 @@ const confirmOrderStatus = async (orderNo: string) => {
         resApproveOrder.apiResponse.Status &&
         resApproveOrder.apiResponse.Status == "200"
     ) {
-        getOrderStatus.value = resApproveOrder.apiResponse.Data;
-        reloadPage()
+        await confirmOrderDelivery(orderId.value);
     } else {
         alert(resApproveOrder.apiResponse.ErrorMessage);
     }
@@ -196,6 +212,7 @@ const confirmOrderDelivery = async (orderNo: string) => {
         resDeliveryOrder.apiResponse.Status &&
         resDeliveryOrder.apiResponse.Status == "200"
     ) {
+
         reloadPage()
     } else {
         alert(resDeliveryOrder.apiResponse.ErrorMessage);
@@ -219,6 +236,11 @@ const loadOrderDetail = async (orderNo: string) => {
         alert(resPOrder.apiResponse.ErrorMessage);
     }
 
+};
+
+// Function to handle close confirm events
+const handleCloseModal = async () => {
+  isShowModal.value = false
 };
 
 // Define layout

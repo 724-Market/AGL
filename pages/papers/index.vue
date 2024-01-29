@@ -51,7 +51,7 @@ var textPaperCancelOrder = ref('')
 const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
 const filterOption: globalThis.Ref<Filter[]> = ref([]);
 const filterGridTable: globalThis.Ref<Filter[]> = ref([
-    { field: "OrderStatus", type: "MATCH", value: "Prepare" },
+    { field: "OrderStatus", type: "MATCH", value: "Receive" },
 ]);
 const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
 const loadPBalance: globalThis.Ref<BalanceRes | undefined> = ref();

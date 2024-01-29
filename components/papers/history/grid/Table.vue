@@ -5,7 +5,7 @@
         <DataTable
           id="datatables"
           class="table table-transaction nowrap"
-          data-order='[[ 2, "asc" ]]'
+          data-order='[[ 2, "desc" ]]'
           :options="datatableOptions"
           ref="table"
         >
@@ -181,7 +181,7 @@
       var tds = row.getElementsByTagName("td");
       var TdId1 = tds[0]; // menu
       var TdId2 = tds[1]; // order
-      var TdId3 = tds[2]; // agent
+      var TdId3 = tds[2]; // agen
       var TdId4 = tds[3]; // delivery
       var TdId5 = tds[4]; // amount
       var TdId6 = tds[5]; // status
@@ -191,13 +191,6 @@
       TdId4.innerHTML = delivery;
       TdId5.innerHTML = amount;
       TdId6.innerHTML = status;
-      
-      // if(data.OrderStatus == 'Prepare') {
-      //   const statusCancel = TdId6.querySelector('.event-cancel-paper')
-      //   statusCancel.addEventListener('click',async () => {
-      //     emit('cancelOrder', statusCancel.dataset.id)
-      //   })
-      // }
       
       if (data.OrderStatus == 'Prepare') {
         // Using nextTick to ensure the DOM has been updated

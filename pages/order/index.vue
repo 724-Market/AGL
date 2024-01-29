@@ -119,7 +119,7 @@ const resume = async (OrderNo: string) => {
   await paymentGateway.clearPaymenGateway();
   await loadOrderSummary(OrderNo);
   // set statte menu to store
-  useStateMenu().setStateMenu(4);
+  useStateMenu().setStateMenu(3);
   router.push("/order/compulsory/placeorder");
 
   isLoading.value = false;

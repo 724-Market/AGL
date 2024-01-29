@@ -86,23 +86,23 @@ export default () => {
         return formattedCurrency
     }
 
-  const maskMobileNumber = (mobileNumber: string): string => {
+    const maskMobileNumber = (mobileNumber: string): string => {
 
-    if (typeof mobileNumber === 'string' && /^\d{10}$/.test(mobileNumber)) {
-      // Extract the parts of the mobile number
-      const prefix = mobileNumber.slice(0, 2);
-      const middlePart = mobileNumber.slice(2, 5);
-      const lastPart = mobileNumber.slice(8);
+        if (typeof mobileNumber === 'string' && /^\d{10}$/.test(mobileNumber)) {
+            // Extract the parts of the mobile number
+            const prefix = mobileNumber.slice(0, 2);
+            const middlePart = mobileNumber.slice(2, 5);
+            const lastPart = mobileNumber.slice(8);
 
-      // Format the mobile number
-      const formattedNumber = `${prefix}-XXX-X${lastPart}`;
-      return formattedNumber;
-    } else {
-      console.error('Invalid mobile number format');
-      return mobileNumber;
+            // Format the mobile number
+            const formattedNumber = `${prefix}-XXX-X${lastPart}`;
+            return formattedNumber;
+        } else {
+            console.error('Invalid mobile number format');
+            return mobileNumber;
+        }
+
     }
-
-  }
 
     // Format date value
     const formatDate = (dateString: string | undefined, format?: string): string => {
@@ -260,7 +260,6 @@ export default () => {
             const { AuthenInfo } = storeToRefs(storeAuth)
 
             const order = data.Order
-
             const req: PlaceOrderRequest = {
                 OrderNo: orderNo,
                 Package: order.Package,
@@ -270,6 +269,7 @@ export default () => {
                 DeliveryMethod2: order.DeliveryMethod2,
                 IsTaxInvoice: order.IsTaxInvoice,
             }
+            /* For fix issue API: /OrderCMI/details/get return orderDetail.TaxInvoiceDetails.ZipCode = null
             if (orderDetail) {
                 if (req.Customer && req.Customer.DefaultAddress) {
                     req.Customer.DefaultAddress.ZipCode = orderDetail.AssuredDetails.ZipCode
@@ -281,6 +281,21 @@ export default () => {
                     req.Customer.TaxInvoiceAddress.ZipCode = orderDetail.TaxInvoiceDetails.ZipCode
                 }
                 if (req.Customer && req.Customer.TaxInvoiceDeliveryAddress) {
+                    req.Customer.TaxInvoiceDeliveryAddress.ZipCode = orderDetail.DeliveryTaxInvoiceDetails.ZipCode
+                }
+            }
+            */
+            if (orderDetail) {
+                if (req.Customer && (req.Customer.DefaultAddress?.ZipCode === null)) {
+                    req.Customer.DefaultAddress.ZipCode = orderDetail.AssuredDetails.ZipCode
+                }
+                if (req.Customer && (req.Customer.DeliveryAddress?.ZipCode === null)) {
+                    req.Customer.DeliveryAddress.ZipCode = orderDetail.DeliveryPolicyDetails.ZipCode
+                }
+                if (req.Customer && (req.Customer.TaxInvoiceAddress?.ZipCode === null)) {
+                    req.Customer.TaxInvoiceAddress.ZipCode = orderDetail.TaxInvoiceDetails.ZipCode
+                }
+                if (req.Customer && (req.Customer.TaxInvoiceDeliveryAddress?.ZipCode === null)) {
                     req.Customer.TaxInvoiceDeliveryAddress.ZipCode = orderDetail.DeliveryTaxInvoiceDetails.ZipCode
                 }
             }
@@ -343,64 +358,64 @@ export default () => {
         return days
     }
 
-  // API Response
-  const responseCheck = (res: any) => {
+    // API Response
+    const responseCheck = (res: any) => {
 
-    const resp = ref<any>({});
+        const resp = ref<any>({});
 
-    if (res.serverStatus == 200) {
-      if (res.apiStatus == 200) {
-        resp.value.status = 'pass';
-        resp.value.isShowModal = false
-      }
-      else {
+        if (res.serverStatus == 200) {
+            if (res.apiStatus == 200) {
+                resp.value.status = 'pass';
+                resp.value.isShowModal = false
+            }
+            else {
 
-        if (res.apiResponse.ErrorCode === '1102813') { 
-          // Please wait and try again after x Minutes y Seconds.
-          // Cannot Send OTP. Please try again.
-          resp.value.modalTitle = 'ไม่สามารถส่ง OTP ได้'
-          resp.value.modalText = 'กรุณาทำการใหม่อีกครั้ง'
-        }
-        else if (res.apiResponse.ErrorCode === '1103807') {
-          resp.value.modalTitle = 'รหัส OTP ไม่ถูกต้อง'
-          resp.value.modalText = 'กรุณาทำการยืนยัน OTP ใหม่อีกครั้ง'
+                if (res.apiResponse.ErrorCode === '1102813') {
+                    // Please wait and try again after x Minutes y Seconds.
+                    // Cannot Send OTP. Please try again.
+                    resp.value.modalTitle = 'ไม่สามารถส่ง OTP ได้'
+                    resp.value.modalText = 'กรุณาทำการใหม่อีกครั้ง'
+                }
+                else if (res.apiResponse.ErrorCode === '1103807') {
+                    resp.value.modalTitle = 'รหัส OTP ไม่ถูกต้อง'
+                    resp.value.modalText = 'กรุณาทำการยืนยัน OTP ใหม่อีกครั้ง'
+                }
+                else {
+                    resp.value.modalTitle = res.apiResponse.ErrorMessage
+                    resp.value.modalText = 'Error : ' + res.apiResponse.ErrorCode
+                }
+
+                resp.value.status = 'error';
+                resp.value.isShowModal = true
+                resp.value.modalType = 'warning'
+                resp.value.modalButton = 'ตกลง'
+            }
         }
         else {
-          resp.value.modalTitle = res.apiResponse.ErrorMessage
-          resp.value.modalText = 'Error : '+res.apiResponse.ErrorCode
+            resp.value.status = 'server-error';
+            resp.value.isShowModal = true
+            resp.value.modalType = 'danger'
+            resp.value.modalTitle = 'เกิดความผิดพลาด กรุณาลองใหม่อีกครั้ง'
+            resp.value.modalText = 'Server Error : ' + res.statusMessage + ' (' + res.serverStatus + ')'
+            resp.value.modalButton = 'ตกลง'
         }
 
-        resp.value.status = 'error';
-        resp.value.isShowModal = true
-        resp.value.modalType = 'warning'
-        resp.value.modalButton = 'ตกลง'
-      }
-    }
-    else {
-      resp.value.status = 'server-error';
-      resp.value.isShowModal = true
-      resp.value.modalType = 'danger'
-      resp.value.modalTitle = 'เกิดความผิดพลาด กรุณาลองใหม่อีกครั้ง'
-      resp.value.modalText = 'Server Error : '+res.statusMessage+' ('+res.serverStatus+')'
-      resp.value.modalButton = 'ตกลง'
+        return resp.value
     }
 
-    return resp.value
-  }
+    // Dialog loading
+    const createLoadingProps = (isShowLoading: boolean, showLogo?: boolean, showText?: boolean) => {
 
-  // Dialog loading
-  const createLoadingProps = (isShowLoading: boolean, showLogo?: boolean, showText?: boolean) => {
+        const loadingProps = ref({
+            isShowLoading: isShowLoading,
+            showLogo: showLogo,
+            showText: showText,
+        })
 
-    const loadingProps = ref({
-      isShowLoading: isShowLoading,
-      showLogo: showLogo,
-      showText: showText,
-    })
+        return loadingProps.value
+    }
 
-    return loadingProps.value
-  }
-  
-      const getCarDetail = (orderDetail: OrderDetails): string => {
+    const getCarDetail = (orderDetail: OrderDetails): string => {
         let carDetail = ""
         if (orderDetail) {
             carDetail = `${orderDetail.CarDetails.CarBrand} ${orderDetail.CarDetails.CarModel} ${orderDetail.CarDetails.SubCarModel}  ${orderDetail.CarDetails.CarYear}`
@@ -408,21 +423,21 @@ export default () => {
         return carDetail
     }
 
-  return {
-    getClassFromStatusOrder,
-    getIconFromStatusOrder,
-    getCompanyImage,
-    getCurrency,
-    getToken,
-    getStepMenuFromUri,
-    getPaging,
-    formatDate,
-    formatText,
-    maskMobileNumber,
-    downloadImage,
-    getDeviceId,
-    setStoretoStep,
-    responseCheck,
-    createLoadingProps
-  }
+    return {
+        getClassFromStatusOrder,
+        getIconFromStatusOrder,
+        getCompanyImage,
+        getCurrency,
+        getToken,
+        getStepMenuFromUri,
+        getPaging,
+        formatDate,
+        formatText,
+        maskMobileNumber,
+        downloadImage,
+        getDeviceId,
+        setStoretoStep,
+        responseCheck,
+        createLoadingProps
+    }
 }

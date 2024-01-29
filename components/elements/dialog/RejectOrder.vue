@@ -124,8 +124,7 @@ const iconClasses = {
 // Function to emit the 'onAcceptConfirm' event
 const confirmModal = () => {
   if (remarkID.value) {
-    //cancelOrder(remarkID.value)
-    emit('onAcceptConfirm')
+    emit('onAcceptConfirm',props.orderID, remarkID.value, remarkText.value)
   } else {
     alert("โปรดเลือกเงื่อนไขการยกเลิก!!!")
   }
@@ -145,8 +144,6 @@ const cancelOrder = async (id: string) => {
     } else {
         alert(response.apiResponse.ErrorMessage);
     }
-
-
 }
 
 // Function to emit the 'onCloseConfirm' event

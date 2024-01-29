@@ -32,7 +32,31 @@ class AgentModule {
   async AddressDelete(req: AgentAddressDeleteReq): Promise<IAPIResponse<AgentAddressDeleteRes>> {
     return await useCallApi().apiRepository<AgentAddressDeleteRes>(`${this.RESOURCE}/address/delete`, req)
   }
-  
+
+  async checkAgent(req: any) {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/user/check`, req)
+  }
+
+  async checkAgentReferral(req: any) {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/referral/check`, req)
+  }
+
+  async registerAgent(req: any) {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/register`, req)
+  }
+
+  async verifyOtpRegisterAgent(req: any) {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/register/otp/verify`, req)
+  }
+
+  async requestRecoveryPasswordAgent(req: any) {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/password/recovery/otp/request`, req)
+  }
+
+  async setupFirstPasswordAgent(req: any) {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/password/first/setup`, req)
+  }
+
 }
 
 export default AgentModule;

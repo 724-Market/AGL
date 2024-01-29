@@ -54,7 +54,7 @@
         </div>
         <div class="card-footer">
 
-            <div class="status-action" v-if="props.orderGet?.OrderStatus == 'Prepare'">                
+            <div class="status-action" v-if="props.orderGet?.OrderStatus == 'Receive'">                
 
                 <FormKit type="button" label="ยกเลิกรายการ" name="cancel-submit" :classes="{
                     input: 'btn-red btn-open-papers-cancellation',

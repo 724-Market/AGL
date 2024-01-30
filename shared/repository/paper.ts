@@ -22,7 +22,7 @@ import type {
   OrderExchangeCreateReq,
   OrderExchangeCreateRes,
   OrderListReq,
-  OrderListRes,
+  OrderPaperRes,
   SubOrderListReq,
   SubOrderListRes,
   RemarkListReq,
@@ -64,8 +64,8 @@ class PaperModule {
     return await useCallApi().apiRepository<OrderExchangeCreateRes[]>(`${this.RESOURCE}/order/exchange/create`, req)
   }
 
-  async getOrder(req: OrderListReq): Promise<IAPIResponse<OrderListRes[]>> {
-    return await useCallApi().apiRepository<OrderListRes[]>(`${this.RESOURCE}/order/get`, req)
+  async getOrder(req: OrderListReq): Promise<IAPIResponse<OrderPaperRes[]>> {
+    return await useCallApi().apiRepository<OrderPaperRes[]>(`${this.RESOURCE}/order/summary/get`, req)
   }
 
   async getSubOrderList(req: SubOrderListReq): Promise<IAPIResponse<SubOrderListRes[]>> {

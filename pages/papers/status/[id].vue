@@ -153,7 +153,7 @@ const loadOrderDetail = async (orderNo: string) => {
         resPOrder.apiResponse.Status == "200" &&
         resPOrder.apiResponse.Data
     ) {
-        orderGet.value = resPOrder.apiResponse.Data[0];
+        orderGet.value = resPOrder.apiResponse.Data[0].Order;
     } else {
         alert(resPOrder.apiResponse.ErrorMessage);
     }

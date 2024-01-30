@@ -1,4 +1,4 @@
-import {
+import type {
   cancelOrderReq,
   cancelOrderRes,
   getStatusGroupReq,
@@ -7,8 +7,9 @@ import {
   getSubOrderListRes,
   getRemarkListReq,
   getRemarkListRes,
-  OrderNoReq,
   getOrderDetailRes,
+  OrderNoReq,
+  OrderPaperRes,
 } from './../entities/backendpaper-entity';
 import { Filter } from "../entities/table-option";
 import { IAPIResponse } from "../entities/useApi-response";
@@ -23,8 +24,8 @@ class BackendPaperModule {
     return await useCallApi().apiRepository<getStatusGroupRes>(`${this.RESOURCE}/status/group/get`, req)
   }
 
-  async getOrderDetail(req: OrderNoReq): Promise<IAPIResponse<getOrderDetailRes[]>> {
-    return await useCallApi().apiRepository<getOrderDetailRes[]>(`${this.RESOURCE}/order/get`, req)
+  async getOrderDetail(req: OrderNoReq): Promise<IAPIResponse<OrderPaperRes[]>> {
+    return await useCallApi().apiRepository<OrderPaperRes[]>(`${this.RESOURCE}/order/summary/get`, req)
   }
 
   async getSubOrderList(req: OrderNoReq): Promise<IAPIResponse<getSubOrderListRes[]>> {

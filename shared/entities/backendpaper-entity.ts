@@ -3,6 +3,55 @@ import type { Filter } from "./table-option"
 export interface OrderNoReq {
   OrderNo: string
 }
+
+export interface OrderPaperRes {
+  Order: getOrderDetailRes;
+  DeliveryAddress: DeliveryAddressRes;
+}
+export interface DeliveryAddressRes {
+
+  ID: string;
+  OwnerID: string;
+  ReferenceID: string;
+  ReferenceType: string;
+  ProvinceID: string;
+  DistrictID: string;
+  SubDistrictID: string;
+  ProvinceCode: string;
+  DistrictCode: string;
+  SubDistrictCode: string;
+  PVCODE: string;
+  TaxID: string;
+  FirstName: string;
+  LastName: string;
+  PhoneNumber: string;
+  Email: string;
+  Name: string;
+  Type: string;
+  AddressLine1: string;
+  AddressLine2: string;
+  AddressText: string;
+  No: string;
+  Moo: string;
+  Place: string;
+  Building: string;
+  Floor: string;
+  Room: string;
+  Branch: string;
+  Alley: string;
+  Road: string;
+  IsSameAsDefault: boolean;
+  IsDefault: boolean;
+  IsDelete: boolean;
+  CreateDate: string;
+  CreateUser: string;
+  UpdateDate: string | null;
+  UpdateUser: string | null;
+  ProvinceName: string;
+  DistrictName: string;
+  SubDistrictName: string;
+  ZipCode: string;
+}
 export interface getOrderDetailRes {
   ID: string;
   OrderNo: string;

@@ -15,8 +15,7 @@
                                         <div :class="useUtility().getClassFromStatusOrder(child?.StatusCode)">
                                             <div class="datetime">
                                                 <time datetime="2022-02-08 12:10">{{
-                                                    useUtility().formatDate(child?.TrackDate, "D MMM BBBB") }}<span>{{
-                                                    useUtility().formatDate(child?.TrackDate, "HH:mm") }}</span></time>
+                                                    useUtility().formatDate(child?.TrackDate, "D MMM BBBB") }}</time>
                                             </div>
                                             <figure class="timeline-icon">
                                                 <div :class="useUtility().getIconFromStatusOrder(child?.StatusCode)"></div>

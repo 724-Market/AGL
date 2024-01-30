@@ -192,7 +192,7 @@
       TdId5.innerHTML = amount;
       TdId6.innerHTML = status;
     
-      if(data.OrderStatus == 'Prepare') {
+      if(data.OrderStatus == 'Receive') {
         const statusCancel = TdId6.querySelector('.event-cancel-paper')
         statusCancel.addEventListener('click',async () => {
           emit('cancelOrder', statusCancel.dataset.id)

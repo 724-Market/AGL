@@ -100,7 +100,7 @@ const loadTrackOrderPaper = async (orderNo: string) => {
             const currentItem = resTrackOrder.apiResponse.Data[currentIndex];
             if (currentItem && currentItem.Parent) {
                 const currentIndex2 = currentItem.Child?.findIndex(
-                    item => item && (item.StatusCode === 'Success' || item.StatusCode === 'CancelByUser'));
+                    item => item && (item.StatusCode === 'Success' || item.StatusCode === 'CancelByUser'|| item.StatusCode === 'CancelByAdmin'));
                 if (currentIndex2 !== -1) {
                     sequenceIndex = currentIndex;
                     isShowChild = true;
@@ -153,7 +153,7 @@ const loadOrderDetail = async (orderNo: string) => {
         resPOrder.apiResponse.Status == "200" &&
         resPOrder.apiResponse.Data
     ) {
-        orderGet.value = resPOrder.apiResponse.Data[0];
+        orderGet.value = resPOrder.apiResponse.Data[0].Order;
     } else {
         alert(resPOrder.apiResponse.ErrorMessage);
     }

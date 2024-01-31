@@ -202,7 +202,11 @@ const confirmOrderStatus = async (orderNo: string) => {
         resApproveOrder.apiResponse.Status &&
         resApproveOrder.apiResponse.Status == "200"
     ) {
+        if(getOrderStatus.value?.DeliveryType === 'WALKIN') {
+            reloadPage()
+        } else {
         await confirmOrderDelivery(orderId.value);
+        }
     } else {
         alert(resApproveOrder.apiResponse.ErrorMessage);
     }

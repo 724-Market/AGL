@@ -4,12 +4,17 @@
         
         <div class="row">
             <div class="col col-main">
+                <ElementsUtilitiesTracking v-if="orderTrack" :order-track="orderTrack" :index-sequence="sequenceIndex"
+                    :index-current="currentIndex" :is-showchild="isShowChild"></ElementsUtilitiesTracking>
             </div>
 
             <div class="col col-sidebar">
                 <section class="site-sidebar is-sticky">
                     <div class="card">
-                        <BackendPapersCardStatus :order-get="getOrderStatus" v-if="getOrderStatus" />
+                        <BackendPapersCardStatus 
+                        :order-get="getOrderStatus" 
+                        :order-address="getOrderAddress"
+                        v-if="getOrderStatus" />
                     
                         <BackendPapersCardDetail 
                         @confirm-order-status="handleConfirmOrder"
@@ -39,6 +44,7 @@
 <script lang="ts" setup>
 
 import type {
+    DeliveryAddressRes,
     OrderNoReq,
     getOrderDetailRes,
     getSubOrderListRes
@@ -56,6 +62,7 @@ import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 // Loading state after form submiting
 const isLoading = ref(false);
 const getOrderStatus: globalThis.Ref<getOrderDetailRes | undefined> = ref();
+const getOrderAddress: globalThis.Ref<DeliveryAddressRes | undefined> = ref();
 const getOrderDetails: globalThis.Ref<getSubOrderListRes[] | undefined> = ref([]);
 const orderTrack: globalThis.Ref<TrackOrderRes[] | undefined> = ref([]);
 const orderDetailFeeDel: globalThis.Ref<getSubOrderListRes[] | undefined> = ref([]);
@@ -87,7 +94,7 @@ const onLoad = onMounted(async () => {
         // Handle the possibility of route.params.id being an array
         orderId.value = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
 
-        //await loadTrackOrderPaper(orderId.value);
+        await loadTrackOrderPaper(orderId.value);
         await loadSubDetail(orderId.value);
         await loadOrderDetail(orderId.value);
 
@@ -179,7 +186,7 @@ const reloadPage = async () => {
         // Open modal dialog
         isShowModal.value = true
         modalType.value = 'success'
-        modalTitle.value = 'บันทึกรายการกระดาษเรียบร้อย'
+        modalTitle.value = 'บันทึกรายการเรียบร้อย'
         modalText.value = 'กรุณาทำการจัดส่ง'
         modalButton.value = 'รับทราบ'
     }
@@ -232,6 +239,7 @@ const loadOrderDetail = async (orderNo: string) => {
         resPOrder.apiResponse.Data
     ) {
         getOrderStatus.value = resPOrder.apiResponse.Data[0].Order;
+        getOrderAddress.value = resPOrder.apiResponse.Data[0].DeliveryAddress;
     } else {
         alert(resPOrder.apiResponse.ErrorMessage);
     }

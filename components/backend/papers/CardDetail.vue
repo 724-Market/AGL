@@ -38,7 +38,8 @@
                             <td colspan="3"></td>
                         </tr>
                         <tr class="product" v-for="(item, i) in props.orderDetail" v-bind:key="i">
-                            <th scope="row">ราคามัดจำ {{ item.Model }}<span>{{ item.SubCategory }} • {{ item.Brand }}</span>
+                            <th scope="row" v-if="item.UseType=='DeliveryFee'">ค่าจัดส่ง</th>
+                            <th scope="row" v-else >ราคามัดจำ {{ item.Model }}<span>{{ item.SubCategory }} • {{ item.Brand }}</span>
                                 <div class="toggle" v-if="props.orderGet?.OrderStatus == 'Receive'">
                                     <FormKit 
                                     type="toggle" 

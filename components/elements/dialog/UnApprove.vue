@@ -74,7 +74,6 @@
   
   // on Mounted
   onMounted(() => {
-    console.log("modal unapprove")
     // Selecting the close and cancel buttons
     const closeDialogConfirm = document.querySelector('.btn-close-modal')
     const cancelDialogConfirm = document.querySelector('.btn-cancel-modal')

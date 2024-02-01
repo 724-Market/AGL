@@ -95,6 +95,7 @@ const storePackage = useStorePackage();
 const placeorder = useStorePlaceorder();
 const storeSummary = useStoreOrderSummary();
 const storeState = useStoreStateOrder();
+const setOrderNo = useStoreOrderNo();
 
 const paymentGateway = useStorePaymentGateway();
 const { PaymenGatewaytInfo } = storeToRefs(paymentGateway);
@@ -149,6 +150,7 @@ const pay = async (OrderNo: string) => {
   // set statte menu to store
   await paymentGateway.clearPaymenGateway()
   useStateMenu().setStateMenu(5)
+  setOrderNo.value = OrderNo;
   router.push(`/order/compulsory/summary`);
 };
 

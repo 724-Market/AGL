@@ -53,7 +53,6 @@ const messageError = ref("")
 const isLoading = ref(false)
 const router = useRouter()
 const setPassword = useStorePassword()
-const renderKey = ref(0);
 
 // on Mounted
 onMounted(async () => {
@@ -87,10 +86,6 @@ const loadUsersLimit = async () => {
     messageError.value = response.apiResponse.ErrorMessage ?? ""
   }
 }
-
-
-const props = defineProps({
-})
 
 // Submit form event
 const submitCreateUser = async (formData: any) => {

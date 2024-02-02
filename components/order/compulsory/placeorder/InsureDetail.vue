@@ -269,7 +269,7 @@
 
                 <section class="insured-address">
                   <h3>ที่อยู่ผู้เอาประกันภัย</h3>
-                  <button type="button" class="btn-gray btn-open-papers" @click="onModalEditAddress(true)"><i
+                  <button type="button" v-show="props.cacheOrderRequest?.OrderNo != null" class="btn-gray btn-open-papers" @click="onModalEditAddress(true)"><i
                       class="fa-solid fa-layer-group"></i>Edit</button>
 
                   <div class="row">

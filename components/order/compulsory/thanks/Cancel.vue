@@ -49,6 +49,9 @@ const props = defineProps({
   paymentGetInfo: {
     type: Object as () => PaymentGetResponse,
   },
+  paymentGet: {
+    type: Object as () => PaymentGetResponse,
+  },
 })
 
 const onLoad = onMounted(async () => {

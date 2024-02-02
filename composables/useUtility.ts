@@ -133,9 +133,9 @@ export default () => {
 
     if (typeof mobileNumber === 'string' && /^\d{10}$/.test(mobileNumber)) {
       // Extract the parts of the mobile number
-      const prefix = mobileNumber.slice(0, 2);
-      const middlePart = mobileNumber.slice(2, 5);
-      const lastPart = mobileNumber.slice(8);
+      const prefix = mobileNumber.slice(0, 3);
+      const middlePart = mobileNumber.slice(3, 4);
+      const lastPart = mobileNumber.slice(7);
 
       // Format the mobile number
       const formattedNumber = `${prefix}-XXX-X${lastPart}`;

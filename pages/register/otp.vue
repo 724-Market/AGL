@@ -67,13 +67,6 @@ definePageMeta({
 })
 
 /////////////////////////////////////////
-// Define variables
-const getRefOTP = ref({
-  phoneNumber: '',
-  refCode: '',
-})
-
-/////////////////////////////////////////
 // Define router and route
 const router = useRouter()
 
@@ -152,6 +145,7 @@ const requestOTP = async () => {
 
     if (resultCheck.status === 'pass') {
       getRefOTP.value.refCode = response.apiResponse.Data.CodeReference
+      getRefOTP.value.countTimer = response.apiResponse.Data.ExpireInSeconds
       regCodeReference.value = response.apiResponse.Data.CodeReference
       regToken.value = response.apiResponse.Data.Token
       openLoadingDialog(false)
@@ -264,8 +258,17 @@ const regAgentLastName = useState('reg-agent-lastname')
 const regAgentIDcard = useState('reg-agent-idcard')
 const regAgentMobile = useState('reg-agent-mobile')
 const regCodeReference = useState('reg-code-reference')
+const regOtpExpire = useState('reg-otp-expire')
 const regToken = useState('reg-token')
 const regReferenceID = useState('reg-reference-id')
+
+/////////////////////////////////////////
+// Define variables
+const getRefOTP = ref({
+  phoneNumber: '',
+  refCode: '',
+  countTimer: regOtpExpire.value,
+})
 
 /////////////////////////////////////////
 // Define layout

@@ -199,6 +199,7 @@ import type { SelectOption } from "~/shared/entities/select-option";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { useStorePackage } from "~/stores/order/storePackage";
 import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
+import { useStoreOrderSummary } from "~/stores/order/storeOrderSummary";
 import type {
   DefaultAddress,
   CarDetailsExtension,
@@ -310,6 +311,9 @@ const storeOrder = useStorePlaceorder();
 // define getter in store
 const { OrderInfo } = storeToRefs(storeOrder);
 
+const storeOrderSummary = useStoreOrderSummary();
+const { OrderSummaryInfo } = storeToRefs(storeOrderSummary);
+
 const router = useRouter();
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
@@ -358,6 +362,16 @@ const onLoad = onMounted(async () => {
       insuranceRecieveCache.value = insuranceRecieve;
       // set cache Data Step4
       taxInvoiceCache.value = OrderInfo.value;
+
+      const info = sessionStorage.getItem("useStoreOrderSummary") ?
+          JSON.parse(sessionStorage.getItem("useStoreOrderSummary") || "") as OrderResponse : undefined
+      if(info) {
+        insureFullAddress.value = `${info.Order?.Customer?.TaxInvoiceAddress?.FirstName} ${info.Order?.Customer?.TaxInvoiceAddress?.LastName} 
+                                   ${info.Order?.Customer?.TaxInvoiceAddress?.No} ${info.Order?.Customer?.TaxInvoiceAddress?.Moo} 
+                                   ${info.Order?.Customer?.TaxInvoiceAddress?.Place} ${info.Order?.Customer?.TaxInvoiceAddress?.Building} 
+                                   ${info.Order?.Customer?.TaxInvoiceAddress?.Alley} ${info.Order?.Customer?.TaxInvoiceAddress?.Road}`
+      }
+      
     }
 
     // if (OrderInfo.value) {

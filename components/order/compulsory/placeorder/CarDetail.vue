@@ -328,7 +328,7 @@ const getFile = async (fileId: string) => {
   console.log('response', response)
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if(response.apiResponse.Data){
-      FileName = response.apiResponse.Data?.FileNameWithExtension ?? ''
+      FileName = `${response.apiResponse.Data?.Name}${response.apiResponse.Data?.Extension}` ?? ''
       Base64File = response.apiResponse.Data?.Base64 ?? ''
       console.log('FileName', FileName)
       console.log('Base64File', Base64File)
@@ -354,7 +354,7 @@ const handleDowloadFile = async (fileId: string) => {
         value: 'application/pdf'
     },
   ]
-  let fileType = mimeType.find(o => o.label == FileName.split('.')[1])?.value
+  let fileType = mimeType.find(o => o.label == FileName.split('.')[1].toLowerCase())?.value
   const base64Response = fetch(`data:${fileType};base64,${Base64File}`)
   // const base64Response = fetch(`${Base64File}`)
   base64Response.then(res => {

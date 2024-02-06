@@ -1,16 +1,16 @@
 
 export default defineEventHandler(async (event) => {
 
-  const body = await readBody(event)
+  console.log('aglove.get',event)
+  const query = await getQuery(event)
   const config = useRuntimeConfig()
 
 
-  const response = await $fetch(config.public.BaseUrl + body.URL, {
+  const response = await $fetch(config.public.BaseUrl + query.url, {
     method: "GET",
     headers: {
-      Authorization: body.Token != "" ? "Bearer " + body.Token : ""
-    },
-    body: body
+      Authorization: query.token != "" ? "Bearer " + query.token : ""
+    }
   })
 
   return response

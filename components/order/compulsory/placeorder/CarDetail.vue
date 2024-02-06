@@ -439,6 +439,7 @@ watch(
       CarLicenseFileText.value = ''
       LicenseFileID = carDetailCache.value.LicenseFileID
       if(LicenseFileID != ''){
+        
         getFile(LicenseFileID);
       }
 

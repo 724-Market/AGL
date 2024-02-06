@@ -61,20 +61,19 @@
                       </div>
                       <div class="col-6">
                         <FormKit
-                            type="datepicker"
-                            label="วันเดือนปีเกิด" 
-                            name="EffectiveDate"
-                            placeholder="วัน/เดือน/ปี ค.ศ."
-                            format="DD/MM/YYYY" 
-                            value-format="YYYY-MM-DD"
-                            picker-only
-                            :max-date="new Date()"
-                            v-model="personProfile.BirthDate" 
-                            @change="handlerChangePersonalProfile"
-                            validation="required"
-                            :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
-                          />
-<!--   The old version delete after the new version did not issue                       
+                          type="datepicker"
+                          label="วันเดือนปีเกิด"
+                          name="EffectiveDate"
+                          :max-date="effectiveMinDate"
+                          placeholder="วัน/เดือน/ปี ค.ศ."
+                          format="DD/MM/YYYY" value-format="YYYY-MM-DD"
+                          picker-only
+                          v-model="personProfile.BirthDate"
+                          @change="handlerChangePersonalProfile"
+                          validation="required"
+                          :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
+                        />
+                      <!--   The old version delete after the new version did not issue                     
                         <FormKit type="date" label="วันเดือนปีเกิด" name="ฺBirthDate" :max="effectiveMinDate"
                           v-model="personProfile.BirthDate" @change="handlerChangePersonalProfile"
                           placeholder="วัน/เดือน/ปี" validation="required"
@@ -129,7 +128,6 @@
                           }" autocomplete="false" />
                       </div>
                       <div class="col-sm-4 col-lg-3">
-                        
                         <FormKit
                             type="datepicker"
                             label="Birthdate" 
@@ -138,13 +136,13 @@
                             format="DD/MM/YYYY" 
                             value-format="YYYY-MM-DD"
                             picker-only
-                            :max-date="new Date()"
                             v-model="personProfile.BirthDate" 
                             @change="handlerChangePersonalProfile"
                             validation="required"
                             :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
                           />
-<!-- The old version delete after the new version did not issue  
+                        
+                        <!-- The old version delete after the new version did not issue  
                         <FormKit type="date" label="Birthdate" name="BirthDate" placeholder="ฺBirthdate"
                           v-model="personProfile.BirthDate" @change="handlerChangePersonalProfile" validation="required"
                           :max="effectiveMinDate" :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
@@ -356,7 +354,7 @@ const personProfile: globalThis.Ref<PersonProfile> = ref({
   PrefixID: '',
   FirstName: '',
   LastName: '',
-  BirthDate: '',
+  BirthDate: null, // Format: YYYY-MM-DD
   PersonalID: '',
   NationalityID: '',
   PhoneNumber: '',
@@ -393,7 +391,7 @@ const renderKey = ref(0)
 var isEditAddress = ref(false)
 
 const dateNow: Date = new Date()
-const effectiveMinDate: string = dateNow.toLocaleDateString("en-CA") // en-CA or sv => yyyy-MM-dd
+const effectiveMinDate: Date = new Date() // Format date explicitly
 
 const values = reactive({})
 const onLoad = onMounted(() => {

@@ -161,7 +161,7 @@
               <div class="form-inline">
                 <FormKit
                   type="radio"
-                  label="เลือกวันคุ้มครอง"format="DD/MM/YYYY"
+                  label="เลือกวันคุ้มครอง" format="DD/MM/YYYY"
                   name="EffectiveType"
                   :options="{
                     FULLYEAR: 'คุ้มครอง 1 ปี',

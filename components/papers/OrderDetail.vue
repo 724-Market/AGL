@@ -88,6 +88,8 @@ const orderStatusText = computed(() => {
     switch (orderStatus.value) {
         case 'Prepare':
             return 'รอดำเนินการ'
+        case 'Receive':
+            return 'เตรียมกระดาษ'
         case 'Delivery':
             return 'จัดส่ง'
         case 'Success':

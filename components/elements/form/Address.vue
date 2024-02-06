@@ -132,9 +132,9 @@
       บ้านเลขที่ {{ props.defaultAddressCustomer?.No }} 
       หมู่ที่ {{ props.defaultAddressCustomer?.Moo }} 
       {{ props.defaultAddressCustomer?.Place }} 
-      หมู่บ้าน/อาคาร {{ props.defaultAddressCustomer?.Building }} 
-      ซอย/ตรอก/แยก {{ props.defaultAddressCustomer?.Alley }} 
-      ถนน {{ props.defaultAddressCustomer?.Road }} 
+      <!-- หมู่บ้าน/อาคาร {{ props.defaultAddressCustomer?.Building }} 
+      ซอย/ตรอก/แยก {{ props.defaultAddressCustomer?.Alley }}  
+      ถนน {{ props.defaultAddressCustomer?.Road }} -->
       {{ props.defaultAddressCustomer?.DistrictName }} 
       {{ props.defaultAddressCustomer?.SubDistrictName }}
       {{ props.defaultAddressCustomer?.ProvinceName }} 

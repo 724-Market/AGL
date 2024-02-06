@@ -11,13 +11,13 @@ class MasterModule {
   async province(): Promise<IAPIResponse<MasterResponse[]>> {
     return await useCallApi().apiRepository<MasterResponse[]>(`${this.RESOURCE}/province/list`, {})
   }
-  async district(req:DistrictReq): Promise<IAPIResponse<MasterResponse[]>> {
+  async district(req: DistrictReq): Promise<IAPIResponse<MasterResponse[]>> {
     return await useCallApi().apiRepository<MasterResponse[]>(`${this.RESOURCE}/district/list`, req)
   }
-  async subDistrict(req:SubDistrictReq): Promise<IAPIResponse<MasterResponse[]>> {
+  async subDistrict(req: SubDistrictReq): Promise<IAPIResponse<MasterResponse[]>> {
     return await useCallApi().apiRepository<MasterResponse[]>(`${this.RESOURCE}/subdistrict/list`, req)
   }
-  async carColor(req:ICarColorReq): Promise<IAPIResponse<ICarColorResponse[]>> {
+  async carColor(req: ICarColorReq): Promise<IAPIResponse<ICarColorResponse[]>> {
     return await useCallApi().apiRepository<ICarColorResponse[]>(`${this.RESOURCE}/carcolor/list`, req)
   }
   async nationality(): Promise<IAPIResponse<INationalityResponse[]>> {
@@ -27,21 +27,24 @@ class MasterModule {
   async usecar(): Promise<IAPIResponse<IUseCarResponse[]>> {
     return await useCallApi().apiRepository<IUseCarResponse[]>(`${this.RESOURCE}/usecar/list`, {})
   }
-  async cartype(req:unknown): Promise<IAPIResponse<ICarTypeResponse[]>> {
+  async cartype(req: unknown): Promise<IAPIResponse<ICarTypeResponse[]>> {
     return await useCallApi().apiRepository<ICarTypeResponse[]>(`${this.RESOURCE}/cartype/list`, req)
   }
-  async carcategory(req:unknown): Promise<IAPIResponse<ICarCategoryResponse[]>> {
+  async carcategory(req: unknown): Promise<IAPIResponse<ICarCategoryResponse[]>> {
     console.log('carcategory', req)
     return await useCallApi().apiRepository<ICarCategoryResponse[]>(`${this.RESOURCE}/carcategory/list`, req)
   }
-  async carbrand(req:unknown): Promise<IAPIResponse<ICarBrandResponse[]>> {
+  async carbrand(req: unknown): Promise<IAPIResponse<ICarBrandResponse[]>> {
     return await useCallApi().apiRepository<ICarBrandResponse[]>(`${this.RESOURCE}/carbrand/list`, req)
   }
-  async carmodel(req:unknown): Promise<IAPIResponse<ICarModelResponse[]>> {
+  async carmodel(req: unknown): Promise<IAPIResponse<ICarModelResponse[]>> {
     return await useCallApi().apiRepository<ICarModelResponse[]>(`${this.RESOURCE}/carmodel/list`, req)
   }
-  async subcarmodel(req:unknown): Promise<IAPIResponse<ISubCarModelResponse[]>> {
+  async subcarmodel(req: unknown): Promise<IAPIResponse<ISubCarModelResponse[]>> {
     return await useCallApi().apiRepository<ISubCarModelResponse[]>(`${this.RESOURCE}/subcarmodel/list`, req)
+  }
+  async modalProvine(): Promise<IAPIResponse<MasterResponse[]>> {
+    return await useCallApi().apiRepository<MasterResponse[]>(`${this.RESOURCE}/province/list`, {})
   }
 }
 

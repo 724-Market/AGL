@@ -29,6 +29,10 @@
                          {{ orderAddress.No }}  {{ orderAddress.ProvinceName }}  {{ orderAddress.SubDistrictName }}
                          {{ orderAddress.ZipCode }} </p>
                 </div>
+                <div class="status-item" v-if="orderGet?.DeliveryType=='WALKIN'">
+                    <h5 class="topic">ที่อยู่</h5>
+                    <p>{{ orderGet.BranchName }} </p>
+                </div>
             </div>
 
         </div>

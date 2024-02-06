@@ -17,7 +17,11 @@ export default () => {
         }
         if (response.status == 200) {
 
-            const jsonData = JSON.parse(response._data)
+            let jsonData = response._data
+            if(typeof response._data==="string")
+            {
+                jsonData = JSON.parse(response._data)
+            }
 
             if (jsonData.Status == 200) {
 

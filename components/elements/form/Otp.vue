@@ -39,7 +39,7 @@ const resendOTP = () => {
   emit('onResendOTP')
 
   // Start the countdown timer
-  startCountdown(30) // Set the countdown duration (in seconds)
+  startCountdown(props.propsOTP.countTimer) // Set the countdown duration (in seconds)
 }
 
 /////////////////////////////////////////
@@ -60,6 +60,6 @@ const startCountdown = (duration: number) => {
 // on Mounted
 onMounted(() => {
   // Optionally, start the countdown automatically when the component is mounted
-  startCountdown(30) // Set the countdown duration (in seconds)
+  startCountdown(props.propsOTP.countTimer) // Set the countdown duration (in seconds)
 })
 </script>

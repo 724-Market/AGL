@@ -122,7 +122,7 @@ watch(
   async () => {
     if (props.statusSearch) {
       statusSearch.value = props.statusSearch
-      if(statusSearch.value == 'clear') isActive.value = [false, false, false, false, false]
+      if(statusSearch.value == 'clear') isActive.value = [false, false, false, false]
       //emit('changeStatus', 'clear')
     }
   }

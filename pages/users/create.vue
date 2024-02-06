@@ -53,7 +53,6 @@ const messageError = ref("")
 const isLoading = ref(false)
 const router = useRouter()
 const setPassword = useStorePassword()
-const renderKey = ref(0);
 
 // on Mounted
 onMounted(async () => {
@@ -88,10 +87,6 @@ const loadUsersLimit = async () => {
   }
 }
 
-
-const props = defineProps({
-})
-
 // Submit form event
 const submitCreateUser = async (formData: any) => {
   const resCreate = await useRepository().user.create(formData)
@@ -104,7 +99,6 @@ const submitCreateUser = async (formData: any) => {
     setPassword.value = formData.Password;
     router.push("/users/profile/" + UserID)
   } else {
-    console.log("formData.BranchName"+formData.BranchName)
     isError.value = true
     alert(resCreate.apiResponse.ErrorMessage);
     messageError.value = resCreate.apiResponse.ErrorMessage ?? ""

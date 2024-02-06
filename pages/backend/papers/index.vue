@@ -73,6 +73,7 @@ const onLoad = onMounted(async () => {
 });
 
 const handleChangeStatus = async (status: string) => {
+    await loadHistoryStatus();
     // console.log('handleChangeStatus', status)
     filterGridTable.value = [];
 

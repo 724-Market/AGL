@@ -9,12 +9,12 @@
                 <div class="status-item text-info text-big">
                     <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
                      <!-- <p>{{ $props.paymentGet.PaymentNo }}</p> -->
-                    <p>{{ props.paymentGet.PaymentNo }}</p>
+                    <p>{{ props.paymentGet?.PaymentNo }}</p>
                 </div>
                 <div class="status-item">
                     <h5 class="topic">วันที่ทำรายการ</h5>
                     <!-- <p>{{ useUtility().formatDate($props.paymentGet.PaymentDate,"D MMMM BBBB HH:mm:ss") }}</p> -->
-                     <p>{{ useUtility().formatDate(props.paymentGet.PaymentDate,"D MMMM BBBB HH:mm:ss") }}</p>
+                     <p>{{ useUtility().formatDate(props.paymentGet?.PaymentDate,"D MMMM BBBB HH:mm:ss") }}</p>
                 </div>
                 <div class="status-item text-danger">
                     <h5 class="topic">สถานะ</h5>
@@ -41,32 +41,10 @@
 <script setup lang="ts">
 import type { PaymentGetResponse }  from "~/shared/entities/payment-entity"
 
-const paymentGetInfo: globalThis.Ref<PaymentGetResponse | undefined> = ref()
-var PaymentNo = ref('')
-var PaymentDate = ref('')
-
 const props = defineProps({ 
-  paymentGetInfo: {
+  paymentGet: {
     type: Object as () => PaymentGetResponse,
   },
 })
 
-const onLoad = onMounted(async () => {
-  if(props.paymentGetInfo){
-    paymentGetInfo.value = props.paymentGetInfo
-    PaymentNo.value = paymentGetInfo.value.PaymentNo
-    PaymentDate.value = paymentGetInfo.value.CancelDate
-  }
-})
-
-watch(
-  () => props.paymentGetInfo,
-  async () => {
-    if (props.paymentGetInfo) {
-      paymentGetInfo.value = props.paymentGetInfo
-      PaymentNo.value = paymentGetInfo.value.PaymentNo
-      PaymentDate.value = paymentGetInfo.value.CancelDate
-    }
-  }
-)
 </script>

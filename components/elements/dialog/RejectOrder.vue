@@ -38,7 +38,7 @@
                       <div class="formkit-inner">
                         <input class="formkit-input" type="radio" name="remark" :value="item.ID"
                           :id="'radio_' + i + '-option-insured'" aria-describedby="help-radio_38-option-insured"
-                          @change="handleRadioChange(item.ID)" />
+                          @change="handleRadiochoises(item.Message)" />
                         <span class="formkit-decorator" aria-hidden="true"></span>
                       </div>
                       <span class="formkit-label">{{ item.Message }}</span>
@@ -75,6 +75,7 @@
 <script setup lang="ts">
 import type {
   getRemarkListRes,
+  cancelOrderReq,
 } from "~/shared/entities/backendpaper-entity";
 // Define emit function to emit events on confirm
 const emit = defineEmits(['onCloseConfirm', 'onAcceptConfirm'])
@@ -89,6 +90,7 @@ const props = defineProps({
   confirmText: String,
   confirmButton: String,
   confirmCancelButton: String,
+  orderID: String,
   getRemarkList: {
     type: Array<getRemarkListRes>,
     default: Array<getRemarkListRes>,
@@ -122,16 +124,26 @@ const iconClasses = {
 // Function to emit the 'onAcceptConfirm' event
 const confirmModal = () => {
   if (remarkID.value) {
-    cancelOrderReq(remarkID.value)
-    emit('onAcceptConfirm')
+    emit('onAcceptConfirm',props.orderID, remarkID.value, remarkText.value)
   } else {
     alert("โปรดเลือกเงื่อนไขการยกเลิก!!!")
   }
 }
-const cancelOrderReq = async (id: string) => {
-    
-    
 
+const cancelOrder = async (id: string) => {
+    const req: cancelOrderReq = {
+        OrderNo: props.orderID ?? "",
+        RemarkSystem: id,
+        Remark: remarkText.value,
+    };
+
+
+    var response = await useRepository().backendpaper.cancelOrderByAdmin(req);
+    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+        
+    } else {
+        alert(response.apiResponse.ErrorMessage);
+    }
 }
 
 // Function to emit the 'onCloseConfirm' event
@@ -152,7 +164,7 @@ onMounted(() => {
   if (props.isShowConfirm) showDialogConfirm()
 })
 
-function handleRadioChange(id: string) {
+function handleRadiochoises(id: string) {
   remarkID.value = id;
 }
 

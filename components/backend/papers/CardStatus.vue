@@ -23,6 +23,12 @@
                     <h5 class="topic">สถานะ</h5>
                     <p :class="orderStatusClass">{{ orderStatusText }}</p>
                 </div>
+                <div class="status-item" v-if="orderAddress">
+                    <h5 class="topic">ที่อยู่</h5>
+                    <p>{{ orderAddress.FirstName }}  {{ orderAddress.LastName }} 
+                         {{ orderAddress.No }}  {{ orderAddress.ProvinceName }}  {{ orderAddress.SubDistrictName }}
+                         {{ orderAddress.ZipCode }} </p>
+                </div>
             </div>
 
         </div>
@@ -31,12 +37,15 @@
 
 <script setup lang="ts">
 // // Define import
-import type { OrderListRes } from "~/shared/entities/paper-entity"
+import type { getOrderDetailRes, DeliveryAddressRes } from "~/shared/entities/backendpaper-entity"
 
 // // Define props
 const props = defineProps({
     orderGet: {
-        type: Object as () => OrderListRes
+        type: Object as () => getOrderDetailRes
+    },
+    orderAddress: {
+        type: Object as () => DeliveryAddressRes
     }
 })
 
@@ -86,6 +95,8 @@ const orderStatusClass = computed(() => {
 // Computed for text on status
 const orderStatusText = computed(() => {
     switch (orderStatus.value) {
+        case 'Receive':
+            return 'รับรายการ'
         case 'Prepare':
             return 'รอดำเนินการ'
         case 'Delivery':

@@ -10,12 +10,22 @@
 
             <div class="col col-sidebar">
                 <section class="site-sidebar is-sticky">
+                    <div class="card">
+                        <BackendPapersCardStatus 
+                        :order-get="getOrderStatus" 
+                        :order-address="getOrderAddress"
+                        v-if="getOrderStatus" />
                     
-                    <BackendPapersCardStatus :order-get="getOrderStatus" v-if="getOrderStatus" />
-                    
-                    <BackendPapersCardDetail :order-get="getOrderStatus" :ordersub-feedelivery="orderDetailFeeDel" :order-detail="orderDetailAll" v-if="orderDetailAll"></BackendPapersCardDetail>
+                        <BackendPapersCardDetail 
+                        @confirm-order-status="handleConfirmOrder"
+                        @confirm-order-delivery="handleConfirmDelivery"
+                        @reload="reloadPage"
+                        :order-get="getOrderStatus" 
+                        :order-detail="getOrderDetails" v-if="getOrderDetails"
+                        ></BackendPapersCardDetail>
 
-                    
+                        
+                    </div>
                     <NuxtLink to="/backend/papers" class="btn btn-back">ย้อนกลับ</NuxtLink>
 
                 </section>
@@ -25,13 +35,16 @@
         
         <ElementsModalLoading :loading="isLoading" />
 
+        <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
+        :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
+
     </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
 
-import { storeToRefs } from "pinia";
 import type {
+    DeliveryAddressRes,
     OrderNoReq,
     getOrderDetailRes,
     getSubOrderListRes
@@ -49,6 +62,7 @@ import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 // Loading state after form submiting
 const isLoading = ref(false);
 const getOrderStatus: globalThis.Ref<getOrderDetailRes | undefined> = ref();
+const getOrderAddress: globalThis.Ref<DeliveryAddressRes | undefined> = ref();
 const getOrderDetails: globalThis.Ref<getSubOrderListRes[] | undefined> = ref([]);
 const orderTrack: globalThis.Ref<TrackOrderRes[] | undefined> = ref([]);
 const orderDetailFeeDel: globalThis.Ref<getSubOrderListRes[] | undefined> = ref([]);
@@ -61,17 +75,29 @@ const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
 //const router = useRouter();
 const route = useRoute()
-const router = useRouter();
+const router = useRouter()
+const orderId = ref('')
+
+/////////////////////////////////////////
+// Modal Dialog
+const isShowModal = ref(false)
+const modalType = ref('')
+const modalTitle = ref('')
+const modalText = ref('')
+const modalButton = ref('')
 
 const onLoad = onMounted(async () => {
+    //console.log("OnMount working!!!")
+
     if (AuthenInfo.value) {
         isLoading.value = true;
         // Handle the possibility of route.params.id being an array
-        const orderId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
+        orderId.value = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
 
-        await loadTrackOrderPaper(orderId);
-        await loadSubDetail(orderId);
-        await loadOrderDetail(orderId);
+        await loadTrackOrderPaper(orderId.value);
+        await loadSubDetail(orderId.value);
+        await loadOrderDetail(orderId.value);
+
         isLoading.value = false;
     } else {
         router.push("/login")
@@ -99,7 +125,7 @@ const loadTrackOrderPaper = async (orderNo: string) => {
             const currentItem = resTrackOrder.apiResponse.Data[currentIndex];
             if (currentItem && currentItem.Parent) {
                 const currentIndex2 = currentItem.Child?.findIndex(
-                    item => item && (item.StatusCode === 'Success' || item.StatusCode === 'CancelByUser'));
+                    item => item && (item.StatusCode === 'Success' || item.StatusCode === 'CancelByUser' || item.StatusCode === 'CancelByAdmin'));
                 if (currentIndex2 !== -1) {
                     sequenceIndex = currentIndex;
                     isShowChild = true;
@@ -111,8 +137,6 @@ const loadTrackOrderPaper = async (orderNo: string) => {
                     isShowChild = false;
                 }
             }
-
-
         } else {
             console.log("No item with IsCurrent: true found");
         }
@@ -141,6 +165,72 @@ const loadSubDetail = async (orderNo: string) => {
     
 };
 
+const handleConfirmOrder = async () => {
+    isLoading.value = true;
+    await confirmOrderStatus(orderId.value);
+    isLoading.value = false;
+
+};
+
+const handleConfirmDelivery = async () => {
+    isLoading.value = true;
+    await confirmOrderDelivery(orderId.value);
+    isLoading.value = false;
+
+};
+
+const reloadPage = async () => {
+    await loadOrderDetail(orderId.value);
+    await loadSubDetail(orderId.value);
+    if (getOrderStatus.value?.OrderStatus == 'Delivery') {
+        // Open modal dialog
+        isShowModal.value = true
+        modalType.value = 'success'
+        modalTitle.value = 'บันทึกรายการเรียบร้อย'
+        modalText.value = 'กรุณาทำการจัดส่ง'
+        modalButton.value = 'รับทราบ'
+    }
+}
+
+const confirmOrderStatus = async (orderNo: string) => {
+    const req: OrderNoReq = {
+        OrderNo: orderNo,
+    };
+
+    const resApproveOrder = await useRepository().backendpaper.approveOrder(req);
+    if (
+        resApproveOrder.apiResponse.Status &&
+        resApproveOrder.apiResponse.Status == "200"
+    ) {
+        if(getOrderStatus.value?.DeliveryType === 'WALKIN') {
+            reloadPage()
+        } else {
+        await confirmOrderDelivery(orderId.value);
+        }
+    } else {
+        alert(resApproveOrder.apiResponse.ErrorMessage);
+    }
+
+};
+
+const confirmOrderDelivery = async (orderNo: string) => {
+    const req: OrderNoReq = {
+        OrderNo: orderNo,
+    };
+
+    const resDeliveryOrder = await useRepository().backendpaper.confirmDeliveryOrder(req);
+    if (
+        resDeliveryOrder.apiResponse.Status &&
+        resDeliveryOrder.apiResponse.Status == "200"
+    ) {
+
+        reloadPage()
+    } else {
+        alert(resDeliveryOrder.apiResponse.ErrorMessage);
+    }
+
+};
+
 const loadOrderDetail = async (orderNo: string) => {
     const req: OrderNoReq = {
         OrderNo: orderNo,
@@ -152,13 +242,18 @@ const loadOrderDetail = async (orderNo: string) => {
         resPOrder.apiResponse.Status == "200" &&
         resPOrder.apiResponse.Data
     ) {
-        getOrderStatus.value = resPOrder.apiResponse.Data[0];
+        getOrderStatus.value = resPOrder.apiResponse.Data[0].Order;
+        getOrderAddress.value = resPOrder.apiResponse.Data[0].DeliveryAddress;
     } else {
         alert(resPOrder.apiResponse.ErrorMessage);
     }
 
 };
 
+// Function to handle close confirm events
+const handleCloseModal = async () => {
+  isShowModal.value = false
+};
 
 // Define layout
 const layout = "monito"

@@ -2,11 +2,11 @@
     <div id="transaction-stats-admin" class="card-stat-stack">
 
         <div class="card-stat" :class="{ 'is-active' : isActive[0]}">
-            <a @click="onChangeFilter('Prepare')" title="รอดำเนินการ">
+            <a @click="onChangeFilter('Receive')" title="แจ้งงาน">
                 <div class="stat-wrapper">
                     <div class="stat-header">
-                        <h5 class="topic">รอดำเนินการ</h5>
-                        <span class="value">{{ $props.statusGroup?.Prepare }}</span>
+                        <h5 class="topic">แจ้งงาน</h5>
+                        <span class="value">{{ $props.statusGroup?.Receive }}</span>
                     </div>
                     <div class="stat-action">
                         <figure class="figure">
@@ -92,7 +92,7 @@ const onChangeFilter = async (status: string) => {
     // console.log('filter', filter)
     statusSearch.value = ''
     switch(status) {
-        case 'Prepare':
+        case 'Receive':
             isActive.value = [true, false, false, false]
             break;
         case 'Delivery':

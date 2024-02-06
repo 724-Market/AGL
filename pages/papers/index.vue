@@ -51,7 +51,7 @@ var textPaperCancelOrder = ref('')
 const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref();
 const filterOption: globalThis.Ref<Filter[]> = ref([]);
 const filterGridTable: globalThis.Ref<Filter[]> = ref([
-    { field: "OrderStatus", type: "MATCH", value: "Prepare" },
+    { field: "OrderStatus", type: "MATCH", value: "Receive" },
 ]);
 const historySearch: globalThis.Ref<HistorySearch | undefined> = ref();
 const loadPBalance: globalThis.Ref<BalanceRes | undefined> = ref();
@@ -87,6 +87,7 @@ const loadPaperBalance = async () => {
 };
 
 const handleChangeStatus = async (status: string) => {
+    loadHistoryStatus();
     // console.log('handleChangeStatus', status)
     filterGridTable.value = [];
 
@@ -179,6 +180,7 @@ const trackStatus = async (OrderNo: string) => {
 };
 
 const handleDelete = async (OrderNo: string) => {
+    console.log("DeleteOrder")
     isDeleteConfirm.value = true
     textDeleteConfirm.value = `คุณต้องการยกเลิกรายการหรือไม่ ?` + OrderNo
     textPaperCancelOrder.value = OrderNo

@@ -70,6 +70,7 @@
                             picker-only
                             :max-date="new Date()"
                             v-model="personProfile.BirthDate" 
+                            @change="handlerChangePersonalProfile"
                             validation="required"
                             :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
                           />
@@ -139,6 +140,7 @@
                             picker-only
                             :max-date="new Date()"
                             v-model="personProfile.BirthDate" 
+                            @change="handlerChangePersonalProfile"
                             validation="required"
                             :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
                           />

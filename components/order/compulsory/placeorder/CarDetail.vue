@@ -319,6 +319,7 @@ const convertFileToBase64 = async (file: File): Promise<string> => {
 const getFile = async (fileId: string) => {
   isLoading.value = true;
   const response = await useRepository().file.get(fileId)
+  console.log('response', response)
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if(response.apiResponse.Data){
       FileName = response.apiResponse.Data?.FileNameWithExtension ?? ''

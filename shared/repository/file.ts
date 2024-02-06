@@ -8,7 +8,7 @@ class FileModule {
     return await useCallApi().apiRepository<UploadFileResponse[]>(`${this.RESOURCE}/http/upload`, req)
   }
   async get(req: string): Promise<IAPIResponse<GetFileResponse>> {
-    return await useCallApi().get<GetFileResponse>(`${this.RESOURCE}/base64/get?FileID=${req}`)
+    return await useCallApi().apiRepository<GetFileResponse>(`${this.RESOURCE}/base64/get?FileID=${req}`, {}, 'GET')
   }
   
 }

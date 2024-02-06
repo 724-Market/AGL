@@ -153,7 +153,13 @@
                       :validation-messages="{ required: 'กรุณาอัปโหลดไฟล์เอกสาร' }"
                     />
                   </div>
-                  <span>{{FileName}}</span>
+                  <div v-if="FileName != '-' && Base64File != ''" class="d-flex justify-content-end">
+                    <div class="m-1">
+                      <button type="button" class="btn btn-warning" @click="handleDowloadFile">
+                        {{FileName}}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -167,7 +173,7 @@
 
 <script setup lang="ts">
 import { defineEventHandler } from "~/server/api/setting.post";
-import type { SelectOption } from "~/shared/entities/select-option";
+import type { RadioOption, SelectOption } from "~/shared/entities/select-option";
 import type { IInformation } from "~~/shared/entities/information-entity";
 import type { CarDetailsExtension } from "~~/shared/entities/placeorder-entity";
 import type { UploadFileRequest, UploadFileResponse } from "~~/shared/entities/file-entity";
@@ -212,7 +218,7 @@ var carEngineNumberValue: string = ""
 var CarLicenseFileText = ref("");
 var LicenseFileID: string = ""
 
-var FileName: string = "--"
+var FileName: string = "-"
 var Base64File: string = ""
 
 const onLoad = onMounted(async () => {
@@ -332,6 +338,51 @@ const getFile = async (fileId: string) => {
   }
   isLoading.value = false;
 }
+
+const handleDowloadFile = async (fileId: string) => {
+  isLoading.value = true;
+  console.log('FileName', FileName)
+  console.log('Base64File', Base64File)
+
+  const mimeType: RadioOption[] = [
+    {
+        label: 'jpeg',
+        value: 'image/jpeg'
+    },
+    {
+        label: 'pdf',
+        value: 'application/pdf'
+    },
+  ]
+  let fileType = mimeType.find(o => o.label == FileName.split('.')[1])?.value
+  const base64Response = fetch(`data:${fileType};base64,${Base64File}`)
+  // const base64Response = fetch(`${Base64File}`)
+  base64Response.then(res => {
+    res.blob().then(blob => {
+      // Create a URL for the blob
+      const blobUrl = URL.createObjectURL(blob);
+
+      // Create an anchor (<a>) element
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = FileName; // Set the file name
+
+      // Append the link to the body (required for Firefox)
+      document.body.appendChild(link);
+
+      // Simulate a click on the link to start the download
+      link.click();
+
+      // Clean up by revoking the Object URL and removing the link
+      URL.revokeObjectURL(link.href);
+      document.body.removeChild(link);
+    });
+  }).catch(error => {
+      console.error('Error downloading the file:', error);
+  });
+  isLoading.value = false;
+}
+
 
 const handleCheckCarDetail = async () => {
   console.log('LicenseFileID', LicenseFileID)

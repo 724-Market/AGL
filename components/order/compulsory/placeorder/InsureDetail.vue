@@ -60,10 +60,26 @@
                           }" autocomplete="false" />
                       </div>
                       <div class="col-6">
+                        <FormKit
+                            type="datepicker"
+                            label="วันเดือนปีเกิด" 
+                            name="EffectiveDate"
+                            placeholder="วัน/เดือน/ปี ค.ศ."
+                            format="DD/MM/YYYY" 
+                            value-format="YYYY-MM-DD"
+                            picker-only
+                            :max-date="new Date()"
+                            v-model="personProfile.BirthDate" 
+                            @change="handlerChangePersonalProfile"
+                            validation="required"
+                            :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
+                          />
+<!--   The old version delete after the new version did not issue                       
                         <FormKit type="date" label="วันเดือนปีเกิด" name="ฺBirthDate" :max="effectiveMinDate"
                           v-model="personProfile.BirthDate" @change="handlerChangePersonalProfile"
                           placeholder="วัน/เดือน/ปี" validation="required"
                           :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="false" />
+                           -->
                       </div>
                       <div class="col-6">
                         <ElementsFormIdCard label="เลขบัตรประชาชน" name="idCard" v-model="personProfile.PersonalID" />
@@ -113,10 +129,27 @@
                           }" autocomplete="false" />
                       </div>
                       <div class="col-sm-4 col-lg-3">
+                        
+                        <FormKit
+                            type="datepicker"
+                            label="Birthdate" 
+                            name="BirthDate"
+                            placeholder="ฺBirthdate"
+                            format="DD/MM/YYYY" 
+                            value-format="YYYY-MM-DD"
+                            picker-only
+                            :max-date="new Date()"
+                            v-model="personProfile.BirthDate" 
+                            @change="handlerChangePersonalProfile"
+                            validation="required"
+                            :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
+                          />
+<!-- The old version delete after the new version did not issue  
                         <FormKit type="date" label="Birthdate" name="BirthDate" placeholder="ฺBirthdate"
                           v-model="personProfile.BirthDate" @change="handlerChangePersonalProfile" validation="required"
                           :max="effectiveMinDate" :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
                           autocomplete="false" />
+                           -->
                       </div>
                       <div class="col-sm-8 col-lg-4">
                         <ElementsFormPassport v-model="personProfile.PersonalID" @change="handlerChangePersonalProfile"
@@ -269,7 +302,7 @@
 
                 <section class="insured-address">
                   <h3>ที่อยู่ผู้เอาประกันภัย</h3>
-                  <button type="button" class="btn-gray btn-open-papers" @click="onModalEditAddress(true)"><i
+                  <button type="button" v-show="props.cacheOrderRequest?.OrderNo != null" class="btn-gray btn-open-papers" @click="onModalEditAddress(true)"><i
                       class="fa-solid fa-layer-group"></i>Edit</button>
 
                   <div class="row">

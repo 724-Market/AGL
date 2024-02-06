@@ -166,7 +166,7 @@ export default () => {
         return result
     }
 
-    const apiRepository = async<T>(url: string, params: any): Promise<IAPIResponse<T>> => {
+    const apiRepository = async<T>(url: string, params: any,method?:"POST" | "post" | "GET" | "get"): Promise<IAPIResponse<T>> => {
         const wrapper: WrapperResponse<T> = {
             Status: "",
         }
@@ -190,7 +190,7 @@ export default () => {
 
         params.URL = url
         const { data, pending, error, refresh } = await useFetch('/api/aglove', {
-            method: "POST",
+            method: method ?? "POST",
             body: params,
             onResponse({ request, response }) {
                 result = getResponse<T>(response, params)

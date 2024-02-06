@@ -161,6 +161,7 @@ const submitRegister = async (formData: any) => {
     if (resultCheck.status === 'pass') {
       regAgentMobile.value = formData.phonenumber
       regCodeReference.value = response.apiResponse.Data.CodeReference
+      regOtpExpire.value = response.apiResponse.Data.ExpireInSeconds
       regToken.value = response.apiResponse.Data.Token
       registerStep.value = 'otp'
       await goNext()
@@ -210,6 +211,7 @@ const regAgentLastName = useState('reg-agent-lastname')
 const regAgentIDcard = useState('reg-agent-idcard')
 const regAgentMobile = useState('reg-agent-mobile')
 const regCodeReference = useState('reg-code-reference')
+const regOtpExpire = useState('reg-otp-expire')
 const regToken = useState('reg-token')
 
 

@@ -153,6 +153,7 @@
                       :validation-messages="{ required: 'กรุณาอัปโหลดไฟล์เอกสาร' }"
                     />
                   </div>
+                  <span>{{FileName}}</span>
                 </div>
               </div>
             </div>
@@ -211,6 +212,9 @@ var carEngineNumberValue: string = ""
 var CarLicenseFileText = ref("");
 var LicenseFileID: string = ""
 
+var FileName: string = "--"
+var Base64File: string = ""
+
 const onLoad = onMounted(async () => {
   if(props.carProvince)
   {
@@ -235,6 +239,9 @@ const onLoad = onMounted(async () => {
     carEngineNumberText.value = carDetailCache.value.EngineNo
     CarLicenseFileText.value = ''
     LicenseFileID = carDetailCache.value.LicenseFileID
+    if(LicenseFileID != ''){
+      getFile(LicenseFileID);
+    }
   }
 })
 
@@ -309,6 +316,22 @@ const convertFileToBase64 = async (file: File): Promise<string> => {
   })
 }
 
+const getFile = async (fileId: string) => {
+  isLoading.value = true;
+  const response = await useRepository().file.get(fileId)
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+    if(response.apiResponse.Data){
+      FileName = response.apiResponse.Data?.FileNameWithExtension ?? ''
+      Base64File = response.apiResponse.Data?.Base64 ?? ''
+      console.log('FileName', FileName)
+      console.log('Base64File', Base64File)
+    }
+  } else {
+    // messageError.value = response.apiResponse.ErrorMessage ?? "";
+  }
+  isLoading.value = false;
+}
+
 const handleCheckCarDetail = async () => {
   console.log('LicenseFileID', LicenseFileID)
   let carDetail: CarDetailsExtension = {
@@ -363,6 +386,9 @@ watch(
 
       CarLicenseFileText.value = ''
       LicenseFileID = carDetailCache.value.LicenseFileID
+      if(LicenseFileID != ''){
+        getFile(LicenseFileID);
+      }
 
       handleCheckCarDetail()
     }

@@ -371,7 +371,6 @@ const onLoad = onMounted(async () => {
                                    ${info.Order?.Customer?.TaxInvoiceAddress?.Place} ${info.Order?.Customer?.TaxInvoiceAddress?.Building} 
                                    ${info.Order?.Customer?.TaxInvoiceAddress?.Alley} ${info.Order?.Customer?.TaxInvoiceAddress?.Road}`
       }
-      
     }
 
     // if (OrderInfo.value) {

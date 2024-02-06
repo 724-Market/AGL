@@ -112,7 +112,7 @@ const selectedPostalCode = computed(() => {
 
 
 const handleProvinceClick = () => {
-  selectedDistrict.value = "district3";
+  selectedDistrict.value = null;
   selectedSubDistrict.value = null;
 };
 

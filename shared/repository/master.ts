@@ -43,7 +43,7 @@ class MasterModule {
   async subcarmodel(req: unknown): Promise<IAPIResponse<ISubCarModelResponse[]>> {
     return await useCallApi().apiRepository<ISubCarModelResponse[]>(`${this.RESOURCE}/subcarmodel/list`, req)
   }
-  async modalProvine(): Promise<IAPIResponse<MasterResponse[]>> {
+  async modalProvince(): Promise<IAPIResponse<MasterResponse[]>> {
     return await useCallApi().apiRepository<MasterResponse[]>(`${this.RESOURCE}/province/list`, {})
   }
 }

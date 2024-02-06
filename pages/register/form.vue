@@ -19,11 +19,16 @@
 
               <div class="form-area">
 
-                <ElementsFormFirstnameWithLastname :formFirstName="formFirstName" :formLastName="formLastName" :isReadOnly="true" />
+                <ElementsFormFirstnameWithLastname :formFirstName="formFirstName" :formLastName="formLastName"
+                  :isReadOnly="true" />
 
                 <ElementsFormPhoneNumber label="หมายเลขโทรศัพท์ (ที่รับ OTP ได้)" name="phonenumber" id="phonenumber" />
 
-                <!--<ElementsFormEmail label="อีเมล" name="email" />-->
+                <ElementsFormAddressInfo :addressData="addressDataArray" />
+
+                <FormKit type="button" label="เพิ่มที่อยู่" name="register-submit" :classes="{
+                  input: 'btn-primary',
+                }" @click="openDialogAddress" :disabled="isLoading" :loading="isLoading" />
 
               </div>
 
@@ -59,10 +64,30 @@
     <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
       :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
 
+    <ElementsDialogAddress :isOpenDialogAddress="isOpenDialogAddress" @on-close-address="closeModalAddress"
+      @on-save-address="saveAddress" />
+
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
+
+interface AddressData {
+  No?: string;
+  Moo?: string;
+  Place?: string;
+  Building?: string;
+  Floor?: string;
+  Alley?: string;
+  Road?: string;
+  Province?: string;
+  district?: string;
+  subDistrict?: string;
+  postalCode?: string;
+  ProvinceLabel?: string;
+  DistrictLabel?: string;
+  SubDistrictLabel?: string;
+}
 
 // Define page meta
 definePageMeta({
@@ -71,8 +96,8 @@ definePageMeta({
 
       const registerStep = useState('register-step')
 
-      if (registerStep.value!='form') {
-        return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
+      if (registerStep.value != 'form') {
+        //return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
       }
 
     }
@@ -127,7 +152,7 @@ const serverModal = async (serverCheck: any) => {
 
 /////////////////////////////////////////
 // Define emit function to emit events on all dialog
-const emit = defineEmits(['onCloseModal'])
+const emit = defineEmits(['onCloseModal', 'onCloseConfirm', 'onAcceptConfirm', 'onCloseAddress', 'onSaveAddress'])
 
 /////////////////////////////////////////
 // Function reset phonenumber field
@@ -143,49 +168,61 @@ const submitRegister = async (formData: any) => {
   openLoadingDialog(true)
   //console.log(formData)
 
-  if(registerType.value === 'agent') {
+  if (registerType.value === 'agent') {
 
-    const registerAgentReq = {
-      AgentCode: regAgentAgentCode,
-      IDCard: regAgentIDcard,
-      FirstName: formData.firstname,
-      LastName: formData.lastname,
-      ReferralID: regReferralID,
-      TemporaryPhone: formData.phonenumber
+    if (addressDataArray.value.Province) {
+
+      const registerAgentReq = {
+        AgentCode: regAgentAgentCode,
+        IDCard: regAgentIDcard,
+        FirstName: formData.firstname,
+        LastName: formData.lastname,
+        ReferralID: regReferralID,
+        TemporaryPhone: formData.phonenumber
+      }
+
+      const response = await useRepository().agent.registerAgent(registerAgentReq)
+      const resultCheck = useUtility().responseCheck(response)
+      //console.log(response)
+
+      if (resultCheck.status === 'pass') {
+        regAgentMobile.value = formData.phonenumber
+        regCodeReference.value = response.apiResponse.Data.CodeReference
+        regOtpExpire.value = response.apiResponse.Data.ExpireInSeconds
+        regToken.value = response.apiResponse.Data.Token
+        registerStep.value = 'otp'
+        await goNext()
+      }
+      else if (resultCheck.status === 'error') {
+        resultCheck.modalType = 'warning'
+        serverModal(resultCheck)
+        openLoadingDialog(false)
+      }
+      else if (resultCheck.status === 'server-error') {
+        serverModal(resultCheck)
+      }
+
     }
-
-    const response = await useRepository().agent.registerAgent(registerAgentReq)
-    const resultCheck = useUtility().responseCheck(response)
-    //console.log(response)
-
-    if (resultCheck.status === 'pass') {
-      regAgentMobile.value = formData.phonenumber
-      regCodeReference.value = response.apiResponse.Data.CodeReference
-      regOtpExpire.value = response.apiResponse.Data.ExpireInSeconds
-      regToken.value = response.apiResponse.Data.Token
-      registerStep.value = 'otp'
-      await goNext()
-    }
-    else if (resultCheck.status === 'error') {
-      resultCheck.modalType = 'warning'
-      serverModal(resultCheck)
+    else {
+      isShowModal.value = true
+      modalType.value = 'warning'
+      modalTitle.value = 'กรุณาระบุที่อยู่'
+      modalText.value = ''
+      modalButton.value = 'ตกลง'
       openLoadingDialog(false)
-    }
-    else if (resultCheck.status === 'server-error') {
-      serverModal(resultCheck)
     }
 
   }
-  else if(registerType.value === 'member') {
+  else if (registerType.value === 'member') {
 
     isShowModal.value = true
     modalType.value = 'warning'
     modalTitle.value = 'ยังไม่เปิดลงทะเบียนสมาชิกทั่วไป'
     modalText.value = ''
     modalButton.value = 'ตกลง'
-    
+
   }
- 
+
 }
 
 /////////////////////////////////////////
@@ -199,8 +236,8 @@ const goNext = async () => {
 
 let agentReferralDetails = ref()
 let Referral = ref()
-const formFirstName =  ref()
-const formLastName =  ref()
+const formFirstName = ref()
+const formLastName = ref()
 
 const registerStep = useState('register-step')
 const registerType = useState('register-type')
@@ -215,8 +252,8 @@ const regOtpExpire = useState('reg-otp-expire')
 const regToken = useState('reg-token')
 
 
-if(regAgentFirstName) { formFirstName.value = regAgentFirstName }
-if(regAgentLastName) { formLastName.value = regAgentLastName }
+if (regAgentFirstName) { formFirstName.value = regAgentFirstName }
+if (regAgentLastName) { formLastName.value = regAgentLastName }
 
 onMounted(async () => {
   await loadAgentReferral(regReferralID)
@@ -224,7 +261,7 @@ onMounted(async () => {
 
 const loadAgentReferral = async (regReferralID: any) => {
 
-  if(regReferralID) {
+  if (regReferralID) {
 
     const checkAgentReferralReq = {
       ReferralID: regReferralID
@@ -248,6 +285,30 @@ const loadAgentReferral = async (regReferralID: any) => {
   }
 
 }
+
+const isOpenDialogAddress = ref(false)
+
+const openDialogAddress = () => {
+  isOpenDialogAddress.value = true;
+
+}
+
+const closeModalAddress = async (refresh: boolean) => {
+  if (refresh) {
+    isOpenDialogAddress.value = true;
+    isOpenDialogAddress.value = false;
+  }
+  isOpenDialogAddress.value = false;
+}
+
+const addressDataArray = ref<AddressData>({});
+
+const saveAddress = async (addressData: any) => {
+
+  addressDataArray.value = addressData
+  isOpenDialogAddress.value = false;
+
+};
 
 /////////////////////////////////////////
 // Define layout

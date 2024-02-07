@@ -16,5 +16,12 @@ export interface UploadFileResponse {
 
 export interface GetFileResponse {
     Base64: string
-    FileNameWithExtension: string
+    Name: string
+    ReferenceID: string
+    Extension: string
+    Size: number
+    Title: string
+    Details: string
+    CreateDate: string
+    UpdateDate: string
 }

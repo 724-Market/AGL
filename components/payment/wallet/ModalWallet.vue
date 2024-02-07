@@ -1,195 +1,132 @@
 <template>
-  <dialog id="wallet-dialog" v-show="_show">
-    <div class="dialog-card">
-      <div class="card-header">
-        <button
-          type="button"
-          class="btn btn-close btn-close-wallet"
-          @click="closeModal(false)"
-        >
-          ปิด
-        </button>
-      </div>
-
-      <div
-        :class="isStep1 ? 'card-body pledge-step-1 is-active' : 'card-body pledge-step-1'"
-        
-      >
-        <FormKit
-          type="form"
-          :actions="false"
-          id="form-pledge"
-          form-class="form-pledge form-theme"
-          :incomplete-message="false"
-          v-if="paymentList"
-        >
-          <figure class="dialog-icon"><i class="fa-regular fa-wallet"></i></figure>
-          <h5>กรอกจำนวนเงินที่ต้องการเติม</h5>
-          <div class="form-hide-label topup-value">
-            <FormKit
-              type="number"
-              label="จำนวนเงินที่ต้องการเติม"
-              name="amount"
-              :validation="`required|number|min:${paymentList.Min}|max:${paymentList.Max}`"
-              :validation-messages="{
-                required: 'กรุณากรอกจำนวนเงิน',
-                number: 'กรุณากรอกเป็นตัวเลขเท่านั้น',
-                min: `ขั้นต่ำ ${minVolumn} บาท`,
-                max: `สูงสุดไม่เกิน ${maxVolumn}บาท`,
-              }"
-              step="1"
-              autocomplete="off"
-              v-model="Amount"
-            />
-          </div>
-          <div class="topup">
-            <button
-              type="button"
-              v-for="item in historyPaymentList"
-              v-bind:key="item"
-              @click="AddAmount(item)"
-            >
-              {{ useUtility().getCurrency(item, 0) }}
-            </button>
-            <small>ขั้นต่ำ {{ minVolumn }} บาท สูงสุดไม่เกิน {{ maxVolumn }} บาท</small>
-          </div>
-          <h5>เลือกช่องทางการชำระเงิน</h5>
-          <div class="form-hide-label payment-choice">
-            <ElementsFormRadioPledgeMethods v-model="paymentType" />
-            <small>{{ feeMessage }}</small
-            ><br />
-            <small>{{ topupMessage }}</small>
-          </div>
-
-          <div class="form-hide-label accept-box">
-            <FormKit
-              type="checkbox"
-              value="accept"
-              name="terms-conditions"
-              label="ข้าพเจ้าเข้าใจข้อกำหนดและยอมรับเงื่อนไขต่างๆ และตกลงยอมรับผูกพันตามข้อกำหนด"
-              validation="required"
-              :validation-messages="{ required: 'กรุณาคลิกยอมรับข้อกำหนดและเงื่อนไข' }"
-              v-model="isConsent"
-            />
-          </div>
-          <button
-            type="button"
-            class="formkit-input btn btn-primary btn-accept pledge-action"
-            @click="submitPledge"
-            label="ยืนยันการเติมเงิน"
-            name="pledge-submit"
-            id="pledge-submit"
-            :disabled="
-              !isConsent || !(Amount >= paymentList.Min && Amount <= paymentList.Max)
-            "
-            :loading="isLoading"
-          >
-            ยืนยันการเติมเงิน
+  <Teleport to="body">
+    <dialog id="wallet-dialog" v-show="_show">
+      <div class="dialog-card">
+        <div class="card-header">
+          <button type="button" class="btn btn-close btn-close-wallet" @click="closeModal(false)">
+            ปิด
           </button>
-        </FormKit>
-        <div v-else>
-          <PaymentWalletModalLoading></PaymentWalletModalLoading>
         </div>
-      </div>
 
-      <div
-        :class="isStep2 ? 'card-body pledge-step-2 is-active' : 'card-body pledge-step-2'"
-      >
-        <PaymentQrDetail
-          v-if="isStep2"
-          :paymen-gateway-info="props.walletPaymentGateway"
-          :payment-type="'wallet'"
-          :fee-amount="feeAmount"
-          @check-payment="hanlderCheckPayment"
-        ></PaymentQrDetail>
-      </div>
-
-      <div
-        v-if="paymentResponse"
-        :class="isStep3 ? 'card-body pledge-step-3 is-active' : 'card-body pledge-step-3'"
-      >
-        <div class="status-list" v-if="isSuccess">
-          <figure class="status-icon">
-            <div class="icon check success"></div>
-          </figure>
-          <h4 class="title">ชำระเงินสำเร็จแล้ว</h4>
-          <div class="status-item">
-            <h5 class="topic">หมายเลขทำรายการ</h5>
-            <p>{{ paymentResponse.PaymentNo }}</p>
-          </div>
-          <div class="status-item">
-            <h5 class="topic">จำนวนเงิน</h5>
-            <p>{{ useUtility().getCurrency(paymentResponse.GrandAmount, 2) }} บาท</p>
-          </div>
-          <div class="status-item">
-            <h5 class="topic">วันที่ทำรายการสำเร็จ</h5>
-            <p>
-              {{
-                useUtility().formatDate(
-                  paymentResponse.CreateDate,
-                  "D MMMM BBBB HH:mm:ss"
-                )
-              }}
-            </p>
-          </div>
-          <div class="status-item text-success">
-            <h5 class="topic">สถานะ</h5>
-            <p>ทำรายการสำเร็จ</p>
-          </div>
-          <div class="status-info">
-            <div class="status-action">
-              <button
-                type="button"
-                class="btn btn-close-wallet"
-                @click="closeModal(true)"
-              >
-                ปิดหน้าต่างนี้
+        <div :class="isStep1 ? 'card-body pledge-step-1 is-active' : 'card-body pledge-step-1'">
+          <FormKit type="form" :actions="false" id="form-pledge" form-class="form-pledge form-theme"
+            :incomplete-message="false" v-if="paymentList">
+            <figure class="dialog-icon"><i class="fa-regular fa-wallet"></i></figure>
+            <h5>กรอกจำนวนเงินที่ต้องการเติม</h5>
+            <div class="form-hide-label topup-value">
+              <FormKit type="number" label="จำนวนเงินที่ต้องการเติม" name="amount"
+                :validation="`required|number|min:${paymentList.Min}|max:${paymentList.Max}`" :validation-messages="{
+                  required: 'กรุณากรอกจำนวนเงิน',
+                  number: 'กรุณากรอกเป็นตัวเลขเท่านั้น',
+                  min: `ขั้นต่ำ ${minVolumn} บาท`,
+                  max: `สูงสุดไม่เกิน ${maxVolumn}บาท`,
+                }" step="1" autocomplete="off" v-model="Amount" />
+            </div>
+            <div class="topup">
+              <button type="button" v-for="item in historyPaymentList" v-bind:key="item" @click="AddAmount(item)">
+                {{ useUtility().getCurrency(item, 0) }}
               </button>
+              <small>ขั้นต่ำ {{ minVolumn }} บาท สูงสุดไม่เกิน {{ maxVolumn }} บาท</small>
+            </div>
+            <h5>เลือกช่องทางการชำระเงิน</h5>
+            <div class="form-hide-label payment-choice">
+              <ElementsFormRadioPledgeMethods v-model="paymentType" />
+            </div>
+            <div class="notice-info">
+              {{ feeMessage }}<br />
+              {{ topupMessage }}
+            </div>
+
+            <div class="form-hide-label accept-box">
+              <FormKit type="checkbox" value="accept" name="terms-conditions"
+                label="ข้าพเจ้าเข้าใจข้อกำหนดและยอมรับเงื่อนไขต่างๆ และตกลงยอมรับผูกพันตามข้อกำหนด" validation="required"
+                :validation-messages="{ required: 'กรุณาคลิกยอมรับข้อกำหนดและเงื่อนไข' }" v-model="isConsent" />
+            </div>
+            <button type="button" class="formkit-input btn-primary btn-accept pledge-action" @click="submitPledge"
+              label="ยืนยันการเติมเงิน" name="pledge-submit" id="pledge-submit" :disabled="!isConsent || !(Amount >= paymentList.Min && Amount <= paymentList.Max)
+                " :loading="isLoading">
+              ยืนยันการเติมเงิน
+            </button>
+          </FormKit>
+          <div v-else>
+            <UtilitiesLoading />
+          </div>
+        </div>
+
+        <div :class="isStep2 ? 'card-body pledge-step-2 is-active' : 'card-body pledge-step-2'">
+          <PaymentQrDetail v-if="isStep2" :paymen-gateway-info="props.walletPaymentGateway" :payment-type="'wallet'"
+            :fee-amount="feeAmount" @check-payment="hanlderCheckPayment"></PaymentQrDetail>
+        </div>
+
+        <div v-if="paymentResponse" :class="isStep3 ? 'card-body pledge-step-3 is-active' : 'card-body pledge-step-3'">
+          <div class="status-list" v-if="isSuccess">
+            <figure class="status-icon">
+              <div class="icon check success"></div>
+            </figure>
+            <h4 class="title">ชำระเงินสำเร็จแล้ว</h4>
+            <div class="status-item">
+              <h5 class="topic">หมายเลขทำรายการ</h5>
+              <p>{{ paymentResponse.PaymentNo }}</p>
+            </div>
+            <div class="status-item">
+              <h5 class="topic">จำนวนเงิน</h5>
+              <p>{{ useUtility().getCurrency(paymentResponse.GrandAmount, 2) }} บาท</p>
+            </div>
+            <div class="status-item">
+              <h5 class="topic">วันที่ทำรายการสำเร็จ</h5>
+              <p>
+                {{
+                  useUtility().formatDate(
+                    paymentResponse.CreateDate,
+                    "D MMMM BBBB HH:mm:ss"
+                  )
+                }}
+              </p>
+            </div>
+            <div class="status-item text-success">
+              <h5 class="topic">สถานะ</h5>
+              <p>ทำรายการสำเร็จ</p>
+            </div>
+            <div class="status-info">
+              <div class="status-action">
+                <button type="button" class="btn btn-close-wallet" @click="closeModal(true)">
+                  ปิดหน้าต่างนี้
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="status-list" v-else>
+            <figure class="status-icon">
+              <div class="icon cross danger"></div>
+            </figure>
+            <h4 class="title">ชำระเงินไม่สำเร็จ</h4>
+            <div class="status-item">
+              <h5 class="topic">หมายเลขทำรายการ</h5>
+              <p>{{ paymentResponse.PaymentNo }}</p>
+            </div>
+            <div class="status-item">
+              <h5 class="topic">จำนวนเงิน</h5>
+              <p>{{ useUtility().getCurrency(paymentResponse.GrandAmount, 2) }} บาท</p>
+            </div>
+            <div class="status-item text-danger">
+              <h5 class="topic">สถานะ</h5>
+              <p>ทำรายการไม่สำเร็จ</p>
+            </div>
+            <div class="status-info">
+              <div class="status-action">
+                <button type="button" class="btn btn-close-wallet" @click="reset" title="ทำรายการใหม่">
+                  ทำรายการใหม่
+                </button>
+              </div>
             </div>
           </div>
         </div>
-
-        <div class="status-list" v-else>
-          <figure class="status-icon">
-            <div class="icon cross danger"></div>
-          </figure>
-          <h4 class="title">ชำระเงินไม่สำเร็จ</h4>
-          <div class="status-item">
-            <h5 class="topic">หมายเลขทำรายการ</h5>
-            <p>{{ paymentResponse.PaymentNo }}</p>
-          </div>
-          <div class="status-item">
-            <h5 class="topic">จำนวนเงิน</h5>
-            <p>{{ useUtility().getCurrency(paymentResponse.GrandAmount, 2) }} บาท</p>
-          </div>
-          <div class="status-item text-danger">
-            <h5 class="topic">สถานะ</h5>
-            <p>ทำรายการไม่สำเร็จ</p>
-          </div>
-          <div class="status-info">
-            <div class="status-action">
-              <button
-                type="button"
-                class="btn btn-close-wallet"
-                @click="reset"
-                title="ทำรายการใหม่"
-              >
-                ทำรายการใหม่
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
-    </div>
-    <!-- <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
-    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading> -->
-    <ElementsModalAlert
-      v-if="isError"
-      :is-error="isError"
-      :message="messageError"
-      :reload="false"
-    />
-  </dialog>
+
+      <ElementsModalAlert v-if="isError" :is-error="isError" :message="messageError" :reload="false" />
+    </dialog>
+  </Teleport>
 </template>
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
@@ -259,7 +196,7 @@ const submitPledge = async (formData: any) => {
 };
 const AddAmount = (credit: number) => {
   let amount = parseInt(Amount.value.toString());
-  if(Number.isNaN(amount)) amount = 0;
+  if (Number.isNaN(amount)) amount = 0;
   let total = amount + credit;
   if (paymentList.value) {
     if (total >= paymentList.value.Min && total <= paymentList.value.Max) {
@@ -483,6 +420,7 @@ async function closeModal(refresh: boolean) {
   border-color: #138543 !important;
   color: #fff !important;
 }
+
 .btn:disabled {
   background: var(--fk-color-border) !important;
   color: var(--fk-color-button) !important;

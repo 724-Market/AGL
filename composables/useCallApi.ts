@@ -13,11 +13,15 @@ export default () => {
             serverStatus: 0,
             statusMessage: "",
             statusMessageType: "",
-            apiResponse: wrapper, 
+            apiResponse: wrapper,
         }
         if (response.status == 200) {
 
-            const jsonData = JSON.parse(response._data)
+            let jsonData = response._data
+            if(typeof response._data==="string")
+            {
+                jsonData = JSON.parse(response._data)
+            }
 
             if (jsonData.Status == 200) {
 
@@ -56,7 +60,7 @@ export default () => {
             result.respOptions = undefined
 
         }
-        
+
         return result
     }
     const get = async <T>(params: any): Promise<IAPIResponse<T>> => {
@@ -101,10 +105,10 @@ export default () => {
         }
 
         if (!params.RefreshToken) { // get token is not refresh token
-        // check token expire
-        params.Token = await useUtility().getToken()
+            // check token expire
+            params.Token = await useUtility().getToken()
         }
-        
+
         const { data, pending, error, refresh } = await useFetch('/api/aglove', {
             method: "POST",
             body: params,
@@ -121,15 +125,15 @@ export default () => {
     const postGateway = async<T>(url: string, params: any): Promise<IAPIPaymentGatewayResponse<T>> => {
         const result: IAPIPaymentGatewayResponse<T> =
         {
-            message:'',
-            status:'',
+            message: '',
+            status: '',
         }
         params.URL = url
         const { data, pending, error, refresh } = await useFetch('/api/gateway', {
             method: "POST",
             body: params,
             onResponse({ request, response }) {
-                
+
                 if (response.status == 200) {
                     result.status = response._data.status
                     result.message = response._data.message
@@ -143,7 +147,7 @@ export default () => {
     const postDataTable = async<T>(url: string, params: any): Promise<IDataTableResponse<T>> => {
         const result: IDataTableResponse<T> =
         {
-            status:'',
+            status: '',
             draw: 0,
             recordsTotal: 0,
             recordsFiltered: 0
@@ -153,7 +157,7 @@ export default () => {
             method: "POST",
             body: params,
             onResponse({ request, response }) {
-                
+
                 if (response.status == 200) {
                     result.status = response._data.status
                     result.draw = response._data.draw
@@ -166,7 +170,7 @@ export default () => {
         return result
     }
 
-    const apiRepository = async<T>(url: string, params: any): Promise<IAPIResponse<T>> => {
+    const apiRepository = async<T>(url: string, params: any, method?: "POST" | "post" | "GET" | "get"): Promise<IAPIResponse<T>> => {
         const wrapper: WrapperResponse<T> = {
             Status: "",
         }
@@ -180,7 +184,7 @@ export default () => {
             apiResponse: wrapper
         }
 
-        if(params.Token2) {
+        if (params.Token2) {
             params.Token = params.Token2
         }
         else if (!params.RefreshToken && !url.toLowerCase().includes('/token/get')) { // get token is not refresh token
@@ -189,13 +193,25 @@ export default () => {
         }
 
         params.URL = url
-        const { data, pending, error, refresh } = await useFetch('/api/aglove', {
-            method: "POST",
-            body: params,
-            onResponse({ request, response }) {
-                result = getResponse<T>(response, params)
-            }
-        })
+        if (!method ||( method != "get" && method != "GET")) {
+
+            const { data, pending, error, refresh } = await useFetch('/api/aglove', {
+                method: method ?? "POST",
+                body: params,
+                onResponse({ request, response }) {
+                    result = getResponse<T>(response, params)
+                }
+            })
+        }
+        else{
+            const { data, pending, error, refresh } = await useFetch('/api/aglove?url='+ params.URL+"&token="+params.Token, {
+                method: method,
+                onResponse({ request, response }) {
+                    result = getResponse<T>(response, params)
+                }
+            })
+
+        }
         return result
 
     }

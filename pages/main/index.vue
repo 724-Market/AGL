@@ -6,6 +6,72 @@
       <div class="col col-main">
 
         <div class="card">
+
+          <ElementsUtilitiesUserProfileBar />
+
+        </div>
+
+        <div class="card-stat-stack">
+
+          <div class="card-stat">
+            <div class="stat-wrapper">
+              <div class="stat-header">
+                <h5 class="topic">แจ้งงาน</h5>
+                <span class="value">27,463</span>
+              </div>
+              <div class="stat-action">
+                <figure class="figure">
+                  <i class="fa-duotone fa-hourglass-clock fa-swap-opacity"></i>
+                </figure>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-stat">
+            <div class="stat-wrapper">
+              <div class="stat-header">
+                <h5 class="topic">จัดส่งแล้ว</h5>
+                <span class="value">2,467</span>
+              </div>
+              <div class="stat-action">
+                <figure class="figure">
+                  <i class="fa-duotone fa-truck-arrow-right"></i>
+                </figure>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-stat is-success">
+            <div class="stat-wrapper">
+              <div class="stat-header">
+                <h5 class="topic">สำเร็จ</h5>
+                <span class="value">253</span>
+              </div>
+              <div class="stat-action">
+                <figure class="figure">
+                  <i class="fa-solid fa-check fa-lg"></i>
+                </figure>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-stat is-danger">
+            <div class="stat-wrapper">
+              <div class="stat-header">
+                <h5 class="topic">ยกเลิกรายการ</h5>
+                <span class="value">5</span>
+              </div>
+              <div class="stat-action">
+                <figure class="figure">
+                  <i class="fa-solid fa-xmark-large"></i>
+                </figure>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="card">
           <div class="card-header">
             <h3 class="card-title">รายละเอียด</h3>
           </div>

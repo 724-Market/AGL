@@ -6,6 +6,72 @@
       <div class="col col-main">
 
         <div class="card">
+
+          <ElementsUtilitiesUserProfileBar />
+
+        </div>
+
+        <div class="card-stat-stack">
+
+          <div class="card-stat">
+            <div class="stat-wrapper">
+              <div class="stat-header">
+                <h5 class="topic">แจ้งงาน</h5>
+                <span class="value">27,463</span>
+              </div>
+              <div class="stat-action">
+                <figure class="figure">
+                  <i class="fa-duotone fa-hourglass-clock fa-swap-opacity"></i>
+                </figure>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-stat">
+            <div class="stat-wrapper">
+              <div class="stat-header">
+                <h5 class="topic">จัดส่งแล้ว</h5>
+                <span class="value">2,467</span>
+              </div>
+              <div class="stat-action">
+                <figure class="figure">
+                  <i class="fa-duotone fa-truck-arrow-right"></i>
+                </figure>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-stat is-success">
+            <div class="stat-wrapper">
+              <div class="stat-header">
+                <h5 class="topic">สำเร็จ</h5>
+                <span class="value">253</span>
+              </div>
+              <div class="stat-action">
+                <figure class="figure">
+                  <i class="fa-solid fa-check fa-lg"></i>
+                </figure>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-stat is-danger">
+            <div class="stat-wrapper">
+              <div class="stat-header">
+                <h5 class="topic">ยกเลิกรายการ</h5>
+                <span class="value">5</span>
+              </div>
+              <div class="stat-action">
+                <figure class="figure">
+                  <i class="fa-solid fa-xmark-large"></i>
+                </figure>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="card">
           <div class="card-header">
             <h3 class="card-title">รายละเอียด</h3>
           </div>
@@ -134,14 +200,14 @@ const loadAffiliateProductPlan = async (ProductPlanID: string, AgentID: string) 
 /////////////////////////////////////////
 // Define layout
 const layout = 'monito'
-const layoutClass = 'layout-monito'
+const layoutClass = ''
 const showPageSteps = false
-const showPageHeader = true
+const showPageHeader = false
 const showLogoHeader = false
 
 // Define page meta
 const pageTitle = 'หน้าหลัก'
-const pageCategory = 'แดชบอร์ด'
+const pageCategory = 'หน้าหลัก'
 const pageDescription = ''
 
 // Define meta seo
@@ -149,7 +215,7 @@ useHead({
   title: pageTitle,
   meta: [{ name: 'description', content: pageDescription }],
   bodyAttrs: {
-    class: 'page-register single-register template-login'
+    class: 'page-main single-main'
   }
 })
 </script>

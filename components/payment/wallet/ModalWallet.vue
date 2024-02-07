@@ -260,7 +260,8 @@ const submitPledge = async (formData: any) => {
 const AddAmount = (credit: number) => {
   let amount = parseInt(Amount.value.toString());
   if(Number.isNaN(amount)) amount = 0;
-  let total = amount + credit;
+  // let total = amount + credit;
+  let total = credit;
   if (paymentList.value) {
     if (total >= paymentList.value.Min && total <= paymentList.value.Max) {
       Amount.value = total;

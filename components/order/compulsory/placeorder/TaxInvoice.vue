@@ -220,7 +220,7 @@
                     <div class="row">
                       <ElementsFormNewAddress
                         key="taxinvoice_delivery"
-                        :addr-province="addrProvince"
+                        :addr-province="addrProvince2"
                         :addr-district="addrDistrict2"
                         :addr-sub-district="addrSubDistrict2"
                         :addr-zip-code="addrZipCode2"
@@ -263,6 +263,7 @@ const props = defineProps({
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
   addrZipCode: String,
+  addrProvince2: Array<SelectOption>,
   addrDistrict2: Array<SelectOption>,
   addrSubDistrict2: Array<SelectOption>,
   addrZipCode2: String,
@@ -280,6 +281,7 @@ const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
+const addrProvince2: globalThis.Ref<SelectOption[]> = ref([])
 const addrDistrict2: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict2: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode2 = ref('')
@@ -389,6 +391,9 @@ const cacheDefaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref()
   if (props.insureFullAddress) {
     insureFullAddress.value = props.insureFullAddress
   }
+  if (props.addrProvince2) {
+    addrProvince2.value = props.addrProvince2
+  }
   if (props.addrDistrict2) {
     addrDistrict2.value = props.addrDistrict2
   }
@@ -456,7 +461,8 @@ const handlerChangeFullAddressTaxInvoice = (addr: string, ObjectAddress: Default
     taxInvoiceAddress.value = ObjectAddress as TaxInvoiceAddress
     const prefixId = taxInvoiceAddress.value.Prefix
     const prefixName = prefix.value.filter(x=>x.value==prefixId)[0]
-    newTaxInvoiceFullAddressTemp.value = `${prefixName.label} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
+    let prefixLabel = prefixName ? prefixName.label ?? '' : ''
+    newTaxInvoiceFullAddressTemp.value = `${prefixLabel} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
   }
 }
 const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress: DefaultAddress) => {
@@ -479,25 +485,24 @@ const handlerSubmitAddressTaxInvoiceDelivery = ()=>{
 const handlerChangeTaxInvoice = ()=>{
   insureDetail.value.IsTaxInvoiceAddressSameAsDefault = addressIncludeTaxType.value=='insured'
   insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = addressDeliveryTaxType.value=='insured'
-  //console.log(insureDetail.value,requestIncludeTax.value.length > 0,shippedPolicy.value,ShippingMethodText.value)
   emit('changeTaxInvoice',insureDetail.value,requestIncludeTax.value.length > 0,shippedPolicy.value,ShippingMethodText.value)
 }
 
 const setCacheData = ()=>{
-  //console.log(props.cacheOrderRequest)
   if(props.cacheOrderRequest){
     requestIncludeTax.value =props.cacheOrderRequest.IsTaxInvoice==true? ['request'] : []
     if(props.cacheOrderRequest.Customer){
+       console.log('props.cacheOrderRequest Customer', props.cacheOrderRequest.Customer)
+      
       addressIncludeTaxType.value=props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault==true ? 'insured' : 'addnew'
       addressDeliveryTaxType.value=props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault==true ? 'insured' : 'addnew'
 
-      if(props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault==false && props.cacheOrderRequest.Customer.TaxInvoiceAddress){
-        taxInvoiceAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceAddress
+      if(props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault==false && props.cacheOrderRequest.Customer.TaxInvoiceAddress?.ProvinceID != ''){
+        taxInvoiceAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceAddress as DefaultAddress
       }
-      if(props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault==false && props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress){
+      if(props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault==false && props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress?.ProvinceID != ''){
         cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress
         //const deliveryMethod1 = props.cacheOrderRequest.DeliveryMethod1
-
 
       }
       const deliveryMethod2 = props.cacheOrderRequest.DeliveryMethod2
@@ -543,6 +548,14 @@ watch(
   () => {
     if (props.addrZipCode && props.addrZipCode.length > 0) {
       addrZipCode.value = props.addrZipCode
+    }
+  }
+)
+watch(
+  () => props.addrProvince2,
+  () => {
+    if (props.addrProvince2 && props.addrProvince2.length > 0) {
+      addrProvince2.value = props.addrProvince2
     }
   }
 )

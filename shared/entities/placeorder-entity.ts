@@ -48,15 +48,15 @@ export interface CustomerOrderRequest {
 }
 
 export interface PersonProfile {
-  CustomerID: string
-  PrefixID: string
-  FirstName: string
-  LastName: string
-  BirthDate: string
-  PersonalID: string
-  NationalityID: string
-  PhoneNumber: string
-  Email: string
+  CustomerID: string;
+  PrefixID: string;
+  FirstName: string;
+  LastName: string;
+  BirthDate: string | null;
+  PersonalID: string;
+  NationalityID: string;
+  PhoneNumber: string;
+  Email: string;
 }
 
 export interface LegalPersonProfile {

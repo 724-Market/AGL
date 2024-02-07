@@ -62,8 +62,8 @@
   <div class="col-md-12">{{ selectedProvince }}</div>
 </template>
 <script setup lang="ts">
-import districts from "~/shared/entities/fulladdress";
-import provinceData from "~/shared/entities/province-entity";
+import districtsData from "~/shared/data/districts-data";
+import provincesData from "~/shared/data/provinces-data";
 
 const selectedDistrict = ref();
 const selectedSubDistrict = ref();
@@ -98,21 +98,21 @@ onMounted(async () => {
 });
 
 const mapProvince = async () => {
-  province.value = provinceData.map((item) => ({
+  province.value = provincesData.map((item) => ({
     value: item.value,
     label: item.label
   }));
 }
 
 const filteredDistricts = computed(() => {
-  const provinceFiltered = districts.filter(district => district.province === selectedProvince.value);
+  const provinceFiltered = districtsData.filter(districtsData => districtsData.province === selectedProvince.value);
   const prov = province.value.find(province => province.value === selectedProvince.value);
   selectedProvinceLabel.value = prov ? prov.label : '';
   return provinceFiltered;
 });
 
 const filteredSubDistricts = computed(() => {
-  const district = districts.find(district => district.value === selectedDistrict.value);
+  const district = districtsData.find(districtsData => districtsData.value === selectedDistrict.value);
   selectedDistrictLabel.value = district ? district.label : '';
   return district ? district.subDistricts : [];
 });

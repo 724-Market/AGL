@@ -134,14 +134,14 @@ const loadAffiliateProductPlan = async (ProductPlanID: string, AgentID: string) 
 /////////////////////////////////////////
 // Define layout
 const layout = 'monito'
-const layoutClass = 'layout-monito'
+const layoutClass = ''
 const showPageSteps = false
-const showPageHeader = true
+const showPageHeader = false
 const showLogoHeader = false
 
 // Define page meta
 const pageTitle = 'หน้าหลัก'
-const pageCategory = 'แดชบอร์ด'
+const pageCategory = 'หน้าหลัก'
 const pageDescription = ''
 
 // Define meta seo
@@ -149,7 +149,7 @@ useHead({
   title: pageTitle,
   meta: [{ name: 'description', content: pageDescription }],
   bodyAttrs: {
-    class: 'page-register single-register template-login'
+    class: 'page-main single-main'
   }
 })
 </script>

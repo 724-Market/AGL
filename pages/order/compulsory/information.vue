@@ -258,7 +258,8 @@ import type {
   ISubCarModelResponse,
   IInformation,
 } from "~/shared/entities/information-entity";
-import { defineEventHandler } from "~/server/api/setting.post";
+//import { defineEventHandler } from "~/server/api/setting.post";
+import settingData from "~/shared/data/setting-data";
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth";
 import { useStoreInformation } from "~/stores/order/storeInformation";
 import { storeToRefs } from "pinia";
@@ -284,12 +285,20 @@ const router = useRouter();
 const statusMessage = ref();
 const statusMessageType = ref();
 
+// const CoverageExpireDateFullYearMaxDay: number =
+//   defineEventHandler.compulsory.CoverageExpireDateFullYearMaxDay;
+// const coverageExpireDateNotFullYearMinDay: number =
+//   defineEventHandler.compulsory.CoverageExpireDateNotFullYearMinDay;
+// const coverageExpireDateNotFullYearMaxDay: number =
+//   defineEventHandler.compulsory.CoverageExpireDateNotFullYearMaxDay;
+
 const CoverageExpireDateFullYearMaxDay: number =
-  defineEventHandler.compulsory.CoverageExpireDateFullYearMaxDay;
+  settingData.compulsory.CoverageExpireDateFullYearMaxDay;
 const coverageExpireDateNotFullYearMinDay: number =
-  defineEventHandler.compulsory.CoverageExpireDateNotFullYearMinDay;
+  settingData.compulsory.CoverageExpireDateNotFullYearMinDay;
 const coverageExpireDateNotFullYearMaxDay: number =
-  defineEventHandler.compulsory.CoverageExpireDateNotFullYearMaxDay;
+  settingData.compulsory.CoverageExpireDateNotFullYearMaxDay;
+
 
 var checklistCarData: globalThis.Ref<String> = ref(""); //current
 var checklistCoverageDate: globalThis.Ref<String> = ref("");
@@ -317,8 +326,12 @@ var effectiveType: globalThis.Ref<String> = ref("FULLYEAR");
 
 const dateNow: Date = new Date();
 const effectiveMinDate: String = dateNow.toISOString(); // en-CA or sv => yyyy-MM-dd
+// const effectiveMaxDate: String = new Date(
+//   dateNow.setDate(dateNow.getDate() + defineEventHandler.compulsory.CoverageFuture)
+// ).toISOString();
+
 const effectiveMaxDate: String = new Date(
-  dateNow.setDate(dateNow.getDate() + defineEventHandler.compulsory.CoverageFuture)
+  dateNow.setDate(dateNow.getDate() + settingData.compulsory.CoverageFuture)
 ).toISOString();
 
 var selectDate: Date;

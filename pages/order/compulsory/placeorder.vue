@@ -470,62 +470,62 @@ const submitOrder = async (formData: any) => {
 
   console.log("orderReq", orderReq);
   //create order
-  //  if (!orderReq.OrderNo || orderReq.OrderNo == "") {
-  //    const response = await useRepository().order.create(orderReq);
+   if (!orderReq.OrderNo || orderReq.OrderNo == "") {
+     const response = await useRepository().order.create(orderReq);
 
-  //    if (
-  //      response.apiResponse.Status &&
-  //      response.apiResponse.Status == "200" &&
-  //      response.apiResponse.Data
-  //    ) {
-  //      orderReq.OrderNo = response.apiResponse.Data.OrderNo;
-  //    } else {
-  //      isError.value = true;
-  //      messageError.value = response.apiResponse.ErrorMessage ?? "";
-  //    }
-  //  } else {
-  //    // edit order
-  //    const response = await useRepository().order.save(orderReq);
+     if (
+       response.apiResponse.Status &&
+       response.apiResponse.Status == "200" &&
+       response.apiResponse.Data
+     ) {
+       orderReq.OrderNo = response.apiResponse.Data.OrderNo;
+     } else {
+       isError.value = true;
+       messageError.value = response.apiResponse.ErrorMessage ?? "";
+     }
+   } else {
+     // edit order
+     const response = await useRepository().order.save(orderReq);
 
-  //    if (
-  //      response.apiResponse.Status &&
-  //      response.apiResponse.Status == "200" &&
-  //      response.apiResponse.Data
-  //    ) {
-  //      orderReq.OrderNo = response.apiResponse.Data.OrderNo;
-  //    } else {
-  //      isError.value = true;
-  //      messageError.value = response.apiResponse.ErrorMessage ?? "";
-  //    }
-  //  }
-  //  if (!isError.value) {
-  //    // get order after save or create
-  //    const req: OrderDetailRequest = {
-  //      OrderNo: orderReq.OrderNo ?? "",
-  //    };
-  //    const getData = await useRepository().order.summary(req);
-  //    if (
-  //      getData.apiResponse.Status &&
-  //      getData.apiResponse.Status == "200" &&
-  //      getData.apiResponse.Data &&
-  //      getData.apiResponse.Data.length > 0
-  //    ) {
-  //      const summaryOrder = getData.apiResponse.Data[0].Order as Order
-  //      const orderSetStore: PlaceOrderRequest = {
-  //        OrderNo: orderReq.OrderNo,
-  //        Package: summaryOrder.Package,
-  //        CarDetailsExtension: summaryOrder.CarDetailsExtension,
-  //        Customer: summaryOrder.Customer,
-  //        DeliveryMethod1: summaryOrder.DeliveryMethod1,
-  //        DeliveryMethod2: summaryOrder.DeliveryMethod2,
-  //        IsTaxInvoice: summaryOrder.IsTaxInvoice,
-  //      };
+     if (
+       response.apiResponse.Status &&
+       response.apiResponse.Status == "200" &&
+       response.apiResponse.Data
+     ) {
+       orderReq.OrderNo = response.apiResponse.Data.OrderNo;
+     } else {
+       isError.value = true;
+       messageError.value = response.apiResponse.ErrorMessage ?? "";
+     }
+   }
+   if (!isError.value) {
+     // get order after save or create
+     const req: OrderDetailRequest = {
+       OrderNo: orderReq.OrderNo ?? "",
+     };
+     const getData = await useRepository().order.summary(req);
+     if (
+       getData.apiResponse.Status &&
+       getData.apiResponse.Status == "200" &&
+       getData.apiResponse.Data &&
+       getData.apiResponse.Data.length > 0
+     ) {
+       const summaryOrder = getData.apiResponse.Data[0].Order as Order
+       const orderSetStore: PlaceOrderRequest = {
+         OrderNo: orderReq.OrderNo,
+         Package: summaryOrder.Package,
+         CarDetailsExtension: summaryOrder.CarDetailsExtension,
+         Customer: summaryOrder.Customer,
+         DeliveryMethod1: summaryOrder.DeliveryMethod1,
+         DeliveryMethod2: summaryOrder.DeliveryMethod2,
+         IsTaxInvoice: summaryOrder.IsTaxInvoice,
+       };
        
-  //      storeOrder.setOrder(orderSetStore);
-  //      useStateMenu().setStateMenu(4);
-  //      router.push("/order/compulsory/payment");
-  //    }
-  //  }
+       storeOrder.setOrder(orderSetStore);
+       useStateMenu().setStateMenu(4);
+       router.push("/order/compulsory/payment");
+     }
+   }
    //set state menu
 
   isLoading.value = false;

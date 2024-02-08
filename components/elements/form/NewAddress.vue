@@ -258,10 +258,13 @@ const handlerChangeFullAddress = (addr:string, ObjectAddress:DefaultAddress)=>{
     insureFullAddress.value = addr
     AddressObject.value = ObjectAddress
 
+    const prefixName = prefix.value.filter(x=>x.value==TitleText.value)[0]
+    let prefixLabel = prefixName ? prefixName.label ?? '' : ''
+    
     ObjectAddress.AddressText = LabelAddressText.value
     ObjectAddress.PhoneNumber = PhoneNumberText.value
     ObjectAddress.PrefixID =  TitleText.value
-    ObjectAddress.PrefixName = prefix.value.filter(x=>x.value==TitleText.value)[0].label
+    ObjectAddress.PrefixName = prefixLabel
     ObjectAddress.FirstName = FirstNameText.value
     ObjectAddress.LastName = LastNameText.value
 

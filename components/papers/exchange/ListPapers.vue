@@ -191,13 +191,15 @@ watch(()=>storeExchange.$state,()=>{
   getAmountCurrentList();
 },{deep:true})
 watch(tempExchangeDataList,()=>{
+  // fix: filter product company is "" by Nice 2023-02-08
   exchangeDataList.value = tempExchangeDataList.value
-  const filter =  exchangeDataList.value.filter(x=>x.ProductCompany == props.productCompany || props.productCompany == "-")
+  const filter =  exchangeDataList.value.filter(x=>x.ProductCompany == props.productCompany || props.productCompany == "-" || props.productCompany=="")
 exchangeDataList.value = filter
 })
 watch(()=>props.productCompany,()=>{
   getAmountCurrentList()
-const filter =  exchangeDataList.value.filter(x=>x.ProductCompany == props.productCompany || props.productCompany == "-")
+  // fix: filter product company is "" by Nice 2023-02-08
+const filter =  exchangeDataList.value.filter(x=>x.ProductCompany == props.productCompany || props.productCompany == "-"  || props.productCompany=="")
 exchangeDataList.value = filter
 })
 // watch(

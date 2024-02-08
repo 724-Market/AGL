@@ -330,8 +330,6 @@ const getFile = async (fileId: string) => {
     if(response.apiResponse.Data){
       FileName = `${response.apiResponse.Data?.Name}${response.apiResponse.Data?.Extension}` ?? ''
       Base64File = response.apiResponse.Data?.Base64 ?? ''
-      console.log('FileName', FileName)
-      console.log('Base64File', Base64File)
     }
   } else {
     // messageError.value = response.apiResponse.ErrorMessage ?? "";
@@ -341,9 +339,6 @@ const getFile = async (fileId: string) => {
 
 const handleDowloadFile = async (fileId: string) => {
   isLoading.value = true;
-  console.log('FileName', FileName)
-  console.log('Base64File', Base64File)
-
   const mimeType: RadioOption[] = [
     {
         label: 'jpeg',
@@ -356,7 +351,6 @@ const handleDowloadFile = async (fileId: string) => {
   ]
   let fileType = mimeType.find(o => o.label == FileName.split('.')[1].toLowerCase())?.value
   const base64Response = fetch(`data:${fileType};base64,${Base64File}`)
-  // const base64Response = fetch(`${Base64File}`)
   base64Response.then(res => {
     res.blob().then(blob => {
       // Create a URL for the blob

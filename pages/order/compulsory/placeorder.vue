@@ -28,9 +28,9 @@
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลผู้เอาประกันภัย # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderInsureDetail
-            v-if="prefix.length > 0 && nationality.length > 0 && addrProvince.length > 0 "
-            @change-province="handlerChangeProvince"
-            @change-district="handlerChangeDistrict"
+            v-if="prefix.length > 0 && nationality.length > 0 && addrProvinceForInsured.length > 0 "
+            @change-province="handlerChangeProvinceForInsured"
+            @change-district="handlerChangeDistrictForInsured"
             @change-sub-district="handlerChangeSubDistrictForInsured"
             @change-customer-type="handlerChangeCustomerType"
             @change-full-address="handlerChangeFullAddress"
@@ -38,9 +38,9 @@
             :customer-id="OrderInfo.Customer?.PersonProfile?.CustomerID"
             :prefix="prefix"
             :nationality="nationality"
-            :addr-province="addrProvince"
-            :addr-district="addrDistrict"
-            :addr-sub-district="addrSubDistrict"
+            :addr-province="addrProvinceForInsured"
+            :addr-district="addrDistrictForInsured"
+            :addr-sub-district="addrSubDistrictForInsured"
             :addr-zip-code="addrZipCodeForInsured"
             :cache-order-request="insureDetailCache"
           ></OrderCompulsoryPlaceorderInsureDetail>
@@ -48,17 +48,17 @@
 
           <!-- # # # # # # # # # # # # # # # # # # # # # วิธีการรับกรมธรรม์ # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderInsuranceRecieve
-            v-if="prefix.length > 0 && addrProvince.length > 0"
-            @change-province="handlerChangeProvince"
-            @change-district="handlerChangeDistrict"
+            v-if="prefix.length > 0 && addrProvinceForRecieve.length > 0"
+            @change-province="handlerChangeProvinceForRecieve"
+            @change-district="handlerChangeDistrictForRecieve"
             @change-sub-district="handlerChangeSubDistrictForRecieve"
             @check-insurance-recieve="handleCheckInsuranceRecieve"
             :insure-full-address="insureFullAddress"
             :prefix="prefixRecieve"
             :delivery="delivery"
-            :addr-province="addrProvince"
-            :addr-district="addrDistrict"
-            :addr-sub-district="addrSubDistrict"
+            :addr-province="addrProvinceForRecieve"
+            :addr-district="addrDistrictForRecieve"
+            :addr-sub-district="addrSubDistrictForRecieve"
             :addr-zip-code="addrZipCodeForRecieve"
             :package-select="packageSelect"
             :insurance-recieve-cache="insuranceRecieveCache"
@@ -70,23 +70,24 @@
               packageSelect &&
               prefix.length > 0 &&
               delivery.length > 0 &&
-              addrProvince.length > 0
+              addrProvinceForTax.length > 0
             "
-            @change-province="handlerChangeProvince"
-            @change-district="handlerChangeDistrict"
+            @change-province="handlerChangeProvinceForTax"
+            @change-district="handlerChangeDistrictForTax"
             @change-sub-district="handlerChangeSubDistrictForTax"
-            @change-province2="handlerChangeProvince2"
-            @change-district2="handlerChangeDistrict2"
+            @change-province2="handlerChangeProvinceForTax2"
+            @change-district2="handlerChangeDistrictForTax2"
             @change-sub-district2="handlerChangeSubDistrictForTax2"
             :insure-full-address="insureFullAddress"
             :prefix="prefix"
             :delivery="delivery"
-            :addr-province="addrProvince"
-            :addr-district="addrDistrict"
-            :addr-sub-district="addrSubDistrict"
+            :addr-province="addrProvinceForTax"
+            :addr-district="addrDistrictForTax"
+            :addr-sub-district="addrSubDistrictForTax"
             :addr-zip-code="addrZipCodeForTax"
-            :addr-district2="addrDistrict"
-            :addr-sub-district2="addrSubDistrict"
+            :addr-province2="addrProvinceForTax2"
+            :addr-district2="addrDistrictForTax2"
+            :addr-sub-district2="addrSubDistrictForTax2"
             :addr-zip-code2="addrZipCodeForTax2"
             :is-include-tax="packageSelect.IsTaxInclude"
             :shipping-policy="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
@@ -234,17 +235,31 @@ const carColor: globalThis.Ref<SelectOption[]> = ref([]);
 const prefix: globalThis.Ref<SelectOption[]> = ref([]);
 const prefixRecieve: globalThis.Ref<SelectOption[]> = ref([]);
 const nationality: globalThis.Ref<SelectOption[]> = ref([]);
-const addrProvince: globalThis.Ref<SelectOption[]> = ref([]);
-const addrDistrict: globalThis.Ref<SelectOption[]> = ref([]);
-const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([]);
-// const addrZipCode = ref(""); //TODO: Bug ZipCode
+
+const addrProvinceForInsured: globalThis.Ref<SelectOption[]> = ref([]);
+const addrDistrictForInsured: globalThis.Ref<SelectOption[]> = ref([]);
+const addrSubDistrictForInsured: globalThis.Ref<SelectOption[]> = ref([]);
 const addrZipCodeForInsured = ref("");
+
+// const addrZipCode = ref(""); //TODO: Bug ZipCode
+
+const addrProvinceForRecieve: globalThis.Ref<SelectOption[]> = ref([]);
+const addrDistrictForRecieve: globalThis.Ref<SelectOption[]> = ref([]);
+const addrSubDistrictForRecieve: globalThis.Ref<SelectOption[]> = ref([]);
 const addrZipCodeForRecieve = ref("");
+
+const addrProvinceForTax: globalThis.Ref<SelectOption[]> = ref([]);
+const addrDistrictForTax: globalThis.Ref<SelectOption[]> = ref([]);
+const addrSubDistrictForTax: globalThis.Ref<SelectOption[]> = ref([]);
 const addrZipCodeForTax = ref("");
+
+const addrProvinceForTax2: globalThis.Ref<SelectOption[]> = ref([]);
+const addrDistrictForTax2: globalThis.Ref<SelectOption[]> = ref([]);
+const addrSubDistrictForTax2: globalThis.Ref<SelectOption[]> = ref([]);
 const addrZipCodeForTax2 = ref("");
-const addrDistrict2: globalThis.Ref<SelectOption[]> = ref([]);
-const addrSubDistrict2: globalThis.Ref<SelectOption[]> = ref([]);
+
 const addrZipCode2 = ref("");
+
 const delivery: globalThis.Ref<SelectOption[]> = ref([]);
 const insureFullAddress: globalThis.Ref<string> = ref("");
 const isSelect: globalThis.Ref<Boolean> = ref(false);
@@ -417,6 +432,15 @@ const submitOrder = async (formData: any) => {
   let DeliveryMethod2 = null;
   if (DeliveryMethod[1].MethodType != "") {
     DeliveryMethod2 = DeliveryMethod[1];
+  }
+
+  if(insureDetail.value.DefaultAddress?.AddressID) {
+    if(insureDetail.value.DeliveryAddress?.ProvinceID)
+      insureDetail.value.DeliveryAddress.AddressID = insureDetail.value.DefaultAddress?.AddressID
+    if(insureDetail.value.TaxInvoiceAddress?.ProvinceID)
+      insureDetail.value.TaxInvoiceAddress.AddressID = insureDetail.value.DefaultAddress?.AddressID
+    if(insureDetail.value.TaxInvoiceDeliveryAddress?.ProvinceID)
+      insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = insureDetail.value.DefaultAddress?.AddressID
   }
   const orderReq: PlaceOrderRequest = {
     OrderNo: orderNo ?? undefined,
@@ -696,7 +720,10 @@ const loadProvince = async () => {
     }
   } else {
   }
-  addrProvince.value = carProvince.value;
+  addrProvinceForInsured.value = carProvince.value;
+  addrProvinceForRecieve.value = carProvince.value;
+  addrProvinceForTax.value = carProvince.value;
+  addrProvinceForTax2.value = carProvince.value;
 };
 const loadDistrict = async (provId: string): Promise<SelectOption[]> => {
   let options: SelectOption[] = [];
@@ -745,13 +772,36 @@ const loadSubDistrict = async (distId: string): Promise<SelectOption[]> => {
 
   return options;
 };
-const loadZipCode = async (subDistId: string): Promise<string> => {
+const loadZipCodeForInsured = async (subDistId: string): Promise<string> => {
   let option = "";
-  const filter = addrSubDistrict.value.filter((x) => x.value == subDistId);
+  const filter = addrSubDistrictForInsured.value.filter((x) => x.value == subDistId);
   if (filter.length > 0) {
     option = filter[0].option ?? "";
   }
-
+  return option;
+};
+const loadZipCodeForRecieve = async (subDistId: string): Promise<string> => {
+  let option = "";
+  const filter = addrSubDistrictForRecieve.value.filter((x) => x.value == subDistId);
+  if (filter.length > 0) {
+    option = filter[0].option ?? "";
+  }
+  return option;
+};
+const loadZipCodeForTax = async (subDistId: string): Promise<string> => {
+  let option = "";
+  const filter = addrSubDistrictForTax.value.filter((x) => x.value == subDistId);
+  if (filter.length > 0) {
+    option = filter[0].option ?? "";
+  }
+  return option;
+};
+const loadZipCodeForTax2 = async (subDistId: string): Promise<string> => {
+  let option = "";
+  const filter = addrSubDistrictForTax2.value.filter((x) => x.value == subDistId);
+  if (filter.length > 0) {
+    option = filter[0].option ?? "";
+  }
   return option;
 };
 const loadDelivery = async () => {
@@ -818,18 +868,66 @@ const handlerChangeCustomerType = async (e: string) => {
     isLoading.value = false;
   }
 };
-const handlerChangeProvince = async (e: string) => {
+const handlerChangeProvinceForInsured = async (e: string) => {
   if (e) {
     isLoading.value = true;
-    addrDistrict.value = await loadDistrict(e);
+    addrDistrictForInsured.value = await loadDistrict(e);
 
     isLoading.value = false;
   }
 };
-const handlerChangeDistrict = async (e: string) => {
+const handlerChangeProvinceForRecieve = async (e: string) => {
   if (e) {
     isLoading.value = true;
-    addrSubDistrict.value = await loadSubDistrict(e);
+    addrDistrictForRecieve.value = await loadDistrict(e);
+
+    isLoading.value = false;
+  }
+};
+const handlerChangeProvinceForTax = async (e: string) => {
+  if (e) {
+    isLoading.value = true;
+    addrDistrictForTax.value = await loadDistrict(e);
+
+    isLoading.value = false;
+  }
+};
+const handlerChangeProvinceForTax2 = async (e: string) => {
+  if (e) {
+    isLoading.value = true;
+    addrDistrictForTax2.value = await loadDistrict(e);
+
+    isLoading.value = false;
+  }
+};
+const handlerChangeDistrictForInsured = async (e: string) => {
+  if (e) {
+    isLoading.value = true;
+    addrSubDistrictForInsured.value = await loadSubDistrict(e);
+
+    isLoading.value = false;
+  }
+};
+const handlerChangeDistrictForRecieve = async (e: string) => {
+  if (e) {
+    isLoading.value = true;
+    addrSubDistrictForRecieve.value = await loadSubDistrict(e);
+
+    isLoading.value = false;
+  }
+};
+const handlerChangeDistrictForTax = async (e: string) => {
+  if (e) {
+    isLoading.value = true;
+    addrSubDistrictForTax.value = await loadSubDistrict(e);
+
+    isLoading.value = false;
+  }
+};
+const handlerChangeDistrictForTax2 = async (e: string) => {
+  if (e) {
+    isLoading.value = true;
+    addrSubDistrictForTax2.value = await loadSubDistrict(e);
 
     isLoading.value = false;
   }
@@ -837,7 +935,7 @@ const handlerChangeDistrict = async (e: string) => {
 const handlerChangeSubDistrictForInsured = async (e: string) => {
   if (e) {
     isLoading.value = true;
-    addrZipCodeForInsured.value = await loadZipCode(e);
+    addrZipCodeForInsured.value = await loadZipCodeForInsured(e);
     isLoading.value = false;
   }
 };
@@ -845,47 +943,47 @@ const handlerChangeSubDistrictForRecieve = async (e: string) => {
   if (e) {
     // console.log('handlerChangeSubDistrictForRecieve',e)
     isLoading.value = true;
-    addrZipCodeForRecieve.value = await loadZipCode(e);
+    addrZipCodeForRecieve.value = await loadZipCodeForRecieve(e);
     isLoading.value = false;
   }
 };
 const handlerChangeSubDistrictForTax = async (e: string) => {
   if (e) {
     isLoading.value = true;
-    addrZipCodeForTax.value = await loadZipCode(e);
+    addrZipCodeForTax.value = await loadZipCodeForTax(e);
     isLoading.value = false;
   }
 };
 const handlerChangeSubDistrictForTax2 = async (e: string) => {
   if (e) {
     isLoading.value = true;
-    addrZipCodeForTax2.value = await loadZipCode(e);
+    addrZipCodeForTax2.value = await loadZipCodeForTax2(e);
     isLoading.value = false;
   }
 };
-const handlerChangeProvince2 = async (e: string) => {
-  if (e) {
-    isLoading.value = true;
-    addrDistrict2.value = await loadDistrict(e);
+// const handlerChangeProvince2 = async (e: string) => {
+//   if (e) {
+//     isLoading.value = true;
+//     addrDistrict2.value = await loadDistrict(e);
 
-    isLoading.value = false;
-  }
-};
-const handlerChangeDistrict2 = async (e: string) => {
-  if (e) {
-    isLoading.value = true;
-    addrSubDistrict2.value = await loadSubDistrict(e);
+//     isLoading.value = false;
+//   }
+// };
+// const handlerChangeDistrict2 = async (e: string) => {
+//   if (e) {
+//     isLoading.value = true;
+//     addrSubDistrict2.value = await loadSubDistrict(e);
 
-    isLoading.value = false;
-  }
-};
-const handlerChangeSubDistrict2 = async (e: string) => {
-  if (e) {
-    isLoading.value = true;
-    addrZipCode2.value = await loadZipCode(e);
-    isLoading.value = false;
-  }
-};
+//     isLoading.value = false;
+//   }
+// };
+// const handlerChangeSubDistrict2 = async (e: string) => {
+//   if (e) {
+//     isLoading.value = true;
+//     addrZipCode2.value = await loadZipCode(e);
+//     isLoading.value = false;
+//   }
+// };
 const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) => {
   if (ObjectAddress) {
     defaultAddress.value = ObjectAddress;
@@ -932,7 +1030,7 @@ const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject
         else checklist.value[2].className = "";
       } else {
         let deliveryAddress = RecieveObject.PostalDelivary?.DeliveryAddress;
-        console.log("deliveryAddress", deliveryAddress);
+        // console.log("deliveryAddress", deliveryAddress);
         if (deliveryAddress && RecieveObject.PostalDelivary?.ShippingMethod != "") {
           if (
             // deliveryAddress.AddressText.length > 0 &&
@@ -1070,14 +1168,14 @@ const handlerChangeTaxInvoice = (
   if (InsureDetail.TaxInvoiceDeliveryAddress) {
     insureDetail.value.TaxInvoiceDeliveryAddress = InsureDetail.TaxInvoiceDeliveryAddress;
   }
-  if (InsureDetail.IsTaxInvoiceAddressSameAsDefault) {
-    insureDetail.value.IsTaxInvoiceAddressSameAsDefault =
-      InsureDetail.IsTaxInvoiceAddressSameAsDefault;
-  }
-  if (InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault) {
-    insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault =
-      InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault;
-  }
+  // if (InsureDetail.IsTaxInvoiceAddressSameAsDefault) {
+  //   insureDetail.value.IsTaxInvoiceAddressSameAsDefault = InsureDetail.IsTaxInvoiceAddressSameAsDefault;
+  // }
+  insureDetail.value.IsTaxInvoiceAddressSameAsDefault = InsureDetail.IsTaxInvoiceAddressSameAsDefault;
+  // if (InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault) {
+  //   insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault;
+  // }
+  insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault;
 
   if (isIncludeTax) {
     if (insuranceRecieve.value) {

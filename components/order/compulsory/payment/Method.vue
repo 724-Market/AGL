@@ -1,111 +1,110 @@
 <template>
-    <div class="card">
-
-<div class="card-header">
-  <h3 class="card-title">วิธีการชำระเงิน</h3>
-</div>
-
-<div class="card-body">
-
-  <section class="payment-methods">
-
-    <ElementsFormRadioPaymentMethods 
-      v-model="paymentMethodText" 
-      :order="order"
-      :fee="radiioPaymentObject"
-    />
-
-  </section>
-
-  <section class="discount-methods" v-if="paymentMethodText != ''">
-
-    <ElementsFormRadioDiscountMethods 
-      v-model="discountMethodText" 
-      :max="max"
-    />
-
-  </section>
-
-  <section class="custom-discount inner-section">
-    <h5 class="discount-text">ส่วนลดที่สามารถใช้ได้สูงสุด {{someDiscountMax}} บาท</h5>
-
-    <div class="discount-range">
-
-      <div class="prefix">0 บาท</div>
-
-      <!-- :show-input="true" -->
-      <FormKit type="slider" label="ใช้ส่วนลด" min="0" :max="someDiscountMax" step="1" 
-        :tooltip="true" v-model="someDiscount"/>
-
-      <div class="suffix">{{someDiscountMax}} บาท</div>
-
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">วิธีการชำระเงิน</h3>
     </div>
-  </section>
 
-</div>
-</div>
+    <div class="card-body">
+      <section class="payment-methods">
+        <ElementsFormRadioPaymentMethods
+          v-model="paymentMethodText"
+          :order="order"
+          :fee="radiioPaymentObject"
+        />
+      </section>
+
+      <section class="discount-methods" v-if="paymentMethodText != ''">
+        <ElementsFormRadioDiscountMethods v-model="discountMethodText" :max="max" />
+      </section>
+
+      <section class="custom-discount inner-section">
+        <h5 class="discount-text">
+          ส่วนลดที่สามารถใช้ได้สูงสุด {{ someDiscountMax }} บาท
+        </h5>
+
+        <div class="discount-range">
+          <div class="prefix">0 บาท</div>
+
+          <!-- :show-input="true" -->
+          <FormKit
+            type="slider"
+            label="ใช้ส่วนลด"
+            min="0"
+            :max="someDiscountMax"
+            step="1"
+            :tooltip="true"
+            v-model="someDiscount"
+          />
+
+          <div class="suffix">{{ someDiscountMax }} บาท</div>
+        </div>
+      </section>
+    </div>
+  </div>
 </template>
 <style scoped>
 .custom-discount {
   display: none;
 }
 
-.discount-methods:has(.formkit-input[value="partialdiscount" i]:checked)~.custom-discount {
+.discount-methods:has(.formkit-input[value="partialdiscount" i]:checked)
+  ~ .custom-discount {
   display: block;
 }
 </style>
 
 <script lang="ts" setup>
 import type {
-CalculateRequest,
-CalculateResponse,
-DebitCredit,
-BillPayment,
-Pledge,
-Fee,
-Max,
-RadiioPaymentObject,
-SummaryDiscountObject
+  CalculateRequest,
+  CalculateResponse,
+  DebitCredit,
+  BillPayment,
+  Pledge,
+  Fee,
+  Max,
+  RadiioPaymentObject,
+  SummaryDiscountObject,
 } from "~/shared/entities/payment-entity";
-import type { CreditBalanceResponse } from '~/shared/entities/pledge-entity';
+import type { CreditBalanceResponse } from "~/shared/entities/pledge-entity";
 import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
 
-const emit = defineEmits(['passSummary'])
+const emit = defineEmits(["passSummary"]);
 
 const isError = ref(false);
 const messageError = ref("");
 
-const orderInfo: globalThis.Ref<PlaceOrderRequest | undefined> = ref()
-var orderNo: globalThis.Ref<String> = ref("")
+const orderInfo: globalThis.Ref<PlaceOrderRequest | undefined> = ref();
+var orderNo: globalThis.Ref<String> = ref("");
 
-const calculate: globalThis.Ref<CalculateResponse | undefined> = ref()
-const billPayment: globalThis.Ref<DebitCredit | undefined> = ref()
-const debitCredit: globalThis.Ref<BillPayment | undefined> = ref()
-const pledge: globalThis.Ref<Pledge | undefined> = ref()
-const creditBalance: globalThis.Ref<CreditBalanceResponse | undefined> = ref()
-const max: globalThis.Ref<Max | undefined> = ref()
+const calculate: globalThis.Ref<CalculateResponse | undefined> = ref();
+const billPayment: globalThis.Ref<DebitCredit | undefined> = ref();
+const debitCredit: globalThis.Ref<BillPayment | undefined> = ref();
+const pledge: globalThis.Ref<Pledge | undefined> = ref();
+const creditBalance: globalThis.Ref<CreditBalanceResponse | undefined> = ref();
+const max: globalThis.Ref<Max | undefined> = ref();
 
-const feeQr: globalThis.Ref<Fee | undefined> = ref()
-const feeCard: globalThis.Ref<Fee | undefined> = ref()
-const remainPledge: globalThis.Ref<number> = ref(0)
-const someDiscount: globalThis.Ref<number> = ref(0)
-const someDiscountMax: globalThis.Ref<number> = ref(0)
+const feeQr: globalThis.Ref<Fee | undefined> = ref();
+const feeCard: globalThis.Ref<Fee | undefined> = ref();
+const remainPledge: globalThis.Ref<number> = ref(0);
+const someDiscount: globalThis.Ref<number> = ref(0);
+const someDiscountMax: globalThis.Ref<number> = ref(0);
 // const totalDiscount: globalThis.Ref<TotalDiscount | undefined> = ref()
 // const creditBalance: globalThis.Ref<CreditBalanceResponse | undefined> = ref()
-const radiioPaymentObject: globalThis.Ref<RadiioPaymentObject | undefined> = ref()
+const radiioPaymentObject: globalThis.Ref<RadiioPaymentObject | undefined> = ref();
 
-const packagePrice: globalThis.Ref<number> = ref(0)
-const shipopingCost: globalThis.Ref<number> = ref(0)
-const feeCost: globalThis.Ref<number> = ref(0)
-const totalPrice: globalThis.Ref<number> = ref(0)
-const disPrice: globalThis.Ref<number> = ref(0)
-const sumPrice: globalThis.Ref<number> = ref(0)
+const packagePrice: globalThis.Ref<number> = ref(0);
+const shipopingCost: globalThis.Ref<number> = ref(0);
+const feeCost: globalThis.Ref<number> = ref(0);
+const totalPrice: globalThis.Ref<number> = ref(0);
+const disPrice: globalThis.Ref<number> = ref(0);
+const sumPrice: globalThis.Ref<number> = ref(0);
 // const summaryDiscountObject: globalThis.Ref<SummaryDiscountObject | undefined> = ref()
 
-var paymentMethodText: globalThis.Ref<String> = ref("")
-var discountMethodText: globalThis.Ref<String> = ref("")
+var paymentMethodText: globalThis.Ref<String> = ref("");
+var discountMethodText: globalThis.Ref<String> = ref("");
 
-const props = defineProps({ //TODO: Check Object Null To Display Discount
+const props = defineProps({
+  //TODO: Check Object Null To Display Discount
   order: {
     type: Object as () => PlaceOrderRequest,
   },
@@ -115,43 +114,43 @@ const props = defineProps({ //TODO: Check Object Null To Display Discount
   creditBalance: {
     type: Object as () => CreditBalanceResponse,
   },
-})
+});
 
 const onLoad = onMounted(async () => {
-  if(props.order){
-    orderInfo.value = props.order
-    orderNo.value =  props.order.OrderNo ?? ''
+  if (props.order) {
+    orderInfo.value = props.order;
+    orderNo.value = props.order.OrderNo ?? "";
   }
-  if(props.calculate){
-    calculate.value = props.calculate
+  if (props.calculate) {
+    calculate.value = props.calculate;
   }
-  if(props.creditBalance){
-    creditBalance.value = props.creditBalance
+  if (props.creditBalance) {
+    creditBalance.value = props.creditBalance;
   }
-})
+});
 
 watch(paymentMethodText, async (newPaymentMethod) => {
-  await handleRadioPaymentMethodChange(newPaymentMethod)
-})
+  await handleRadioPaymentMethodChange(newPaymentMethod);
+});
 
 watch(discountMethodText, async (newDiscountMethod) => {
-  await handleRadioDiscountMethodChange(newDiscountMethod)
-})
+  await handleRadioDiscountMethodChange(newDiscountMethod);
+});
 
 // watch(orderNo, async (neworderNo) => {
 // })
 
 watch(calculate, async (newCalculate) => {
-  await getCalculate()
-})
+  await getCalculate();
+});
 
 watch(creditBalance, async (newCreditBalance) => {
-  await getCalculate()
-})
+  await getCalculate();
+});
 
 watch(someDiscount, async (newSomeDiscount) => {
-  await getSummary()
-})
+  await getSummary();
+});
 
 const handleRadioPaymentMethodChange = async (event: String) => {
   //TODO: Pass param to Component 'discount'
@@ -160,160 +159,173 @@ const handleRadioPaymentMethodChange = async (event: String) => {
       max.value = {
         ZeroCommission: billPayment.value?.ZeroCommission?.Max ?? undefined,
         SomeCommission: billPayment.value?.SomeCommission?.Max ?? undefined,
-        FullCommission: billPayment.value?.FullCommission?.Max ?? 0
-      }
+        FullCommission: billPayment.value?.FullCommission?.Max ?? 0,
+      };
       // totalDiscount.value = calculate.value?.BillPayment.TotalDiscount
-      await handleRadioDiscountMethodChange(discountMethodText.value)
-      break
+      await handleRadioDiscountMethodChange(discountMethodText.value);
+      break;
     case "card":
       max.value = {
         ZeroCommission: debitCredit.value?.ZeroCommission?.Max ?? undefined,
         SomeCommission: debitCredit.value?.SomeCommission?.Max ?? undefined,
-        FullCommission: debitCredit.value?.FullCommission?.Max ?? 0
-      }
+        FullCommission: debitCredit.value?.FullCommission?.Max ?? 0,
+      };
       // totalDiscount.value = calculate.value?.DebitCredit.TotalDiscount
-      await handleRadioDiscountMethodChange(discountMethodText.value)
-      break
+      await handleRadioDiscountMethodChange(discountMethodText.value);
+      break;
     case "pledge":
       max.value = {
         ZeroCommission: pledge.value?.ZeroCommission?.Max ?? undefined,
         SomeCommission: pledge.value?.SomeCommission?.Max ?? undefined,
-        FullCommission: pledge.value?.FullCommission?.Max ?? 0
-      }
+        FullCommission: pledge.value?.FullCommission?.Max ?? 0,
+      };
       // totalDiscount.value = calculate.value?.Pledge.TotalDiscount
-      await handleRadioDiscountMethodChange(discountMethodText.value)
-      break
+      await handleRadioDiscountMethodChange(discountMethodText.value);
+      break;
   }
-}
+};
 
 const handleRadioDiscountMethodChange = async (event: String) => {
   //TODO: Pass param to Component 'method'
   switch (event) {
     case "fulldiscount":
-      if(paymentMethodText.value == 'qr') {
+      if (paymentMethodText.value == "qr") {
         radiioPaymentObject.value = {
           FeeQr: billPayment.value?.ZeroCommission?.Fee.Price ?? 0, // Change
           FeeCard: debitCredit.value?.ZeroCommission?.Fee.Amount ?? 0,
           PercenCard: debitCredit.value?.ZeroCommission?.Fee.Price ?? 0,
-          RemainPledge: remainPledge.value 
-        }
-        feeCost.value = billPayment.value?.ZeroCommission?.Fee.Price ?? 0
-      } else if(paymentMethodText.value == 'card') {
+          RemainPledge: remainPledge.value,
+        };
+        feeCost.value = billPayment.value?.ZeroCommission?.Fee.Price ?? 0;
+      } else if (paymentMethodText.value == "card") {
         radiioPaymentObject.value = {
           FeeQr: billPayment.value?.ZeroCommission?.Fee.Price ?? 0,
-          FeeCard : debitCredit.value?.ZeroCommission?.Fee.Amount ?? 0, // Change
+          FeeCard: debitCredit.value?.ZeroCommission?.Fee.Amount ?? 0, // Change
           PercenCard: debitCredit.value?.ZeroCommission?.Fee.Price ?? 0,
-          RemainPledge: remainPledge.value 
-        }
-        feeCost.value = debitCredit.value?.ZeroCommission?.Fee.Amount ?? 0
+          RemainPledge: remainPledge.value,
+        };
+        feeCost.value = debitCredit.value?.ZeroCommission?.Fee.Amount ?? 0;
       } else {
         radiioPaymentObject.value = {
-          FeeQr: billPayment.value?.ZeroCommission?.Fee.Price ?? 0, 
+          FeeQr: billPayment.value?.ZeroCommission?.Fee.Price ?? 0,
           FeeCard: debitCredit.value?.ZeroCommission?.Fee.Amount ?? 0,
           PercenCard: debitCredit.value?.ZeroCommission?.Fee.Price ?? 0,
-          RemainPledge: remainPledge.value 
-        }
-        feeCost.value = pledge.value?.ZeroCommission?.Fee.Amount ?? 0
+          RemainPledge: remainPledge.value,
+        };
+        feeCost.value = pledge.value?.ZeroCommission?.Fee.Amount ?? 0;
       }
-      disPrice.value = max.value?.ZeroCommission ?? 0
-      someDiscountMax.value = max.value?.ZeroCommission ?? 0
-      break
+      disPrice.value = max.value?.ZeroCommission ?? 0;
+      someDiscountMax.value = max.value?.ZeroCommission ?? 0;
+      break;
     case "partialdiscount":
-      if(paymentMethodText.value == 'qr') {
+      if (paymentMethodText.value == "qr") {
         radiioPaymentObject.value = {
           FeeQr: billPayment.value?.SomeCommission?.Fee.Price ?? 0, // Change
-          FeeCard : debitCredit.value?.ZeroCommission?.Fee.Amount ?? 0,
+          FeeCard: debitCredit.value?.ZeroCommission?.Fee.Amount ?? 0,
           PercenCard: debitCredit.value?.ZeroCommission?.Fee.Price ?? 0,
-          RemainPledge: remainPledge.value 
-        }
-        feeCost.value = billPayment.value?.SomeCommission?.Fee.Amount ?? 0
-      } else if(paymentMethodText.value == 'card') {
+          RemainPledge: remainPledge.value,
+        };
+        feeCost.value = billPayment.value?.SomeCommission?.Fee.Amount ?? 0;
+      } else if (paymentMethodText.value == "card") {
         radiioPaymentObject.value = {
           FeeQr: billPayment.value?.ZeroCommission?.Fee.Price ?? 0,
-          FeeCard : debitCredit.value?.SomeCommission?.Fee.Amount ?? 0, // Change
+          FeeCard: debitCredit.value?.SomeCommission?.Fee.Amount ?? 0, // Change
           PercenCard: debitCredit.value?.SomeCommission?.Fee.Price ?? 0,
-          RemainPledge: remainPledge.value 
-        }
-        feeCost.value = debitCredit.value?.SomeCommission?.Fee.Amount ?? 0
+          RemainPledge: remainPledge.value,
+        };
+        feeCost.value = debitCredit.value?.SomeCommission?.Fee.Amount ?? 0;
       } else {
         radiioPaymentObject.value = {
-          FeeQr: billPayment.value?.ZeroCommission?.Fee.Price ?? 0, 
+          FeeQr: billPayment.value?.ZeroCommission?.Fee.Price ?? 0,
           FeeCard: debitCredit.value?.ZeroCommission?.Fee.Amount ?? 0,
           PercenCard: debitCredit.value?.ZeroCommission?.Fee.Price ?? 0,
-          RemainPledge: remainPledge.value 
-        }
-        feeCost.value = pledge.value?.SomeCommission?.Fee.Amount ?? 0
+          RemainPledge: remainPledge.value,
+        };
+        feeCost.value = pledge.value?.SomeCommission?.Fee.Amount ?? 0;
       }
-      disPrice.value = max.value?.SomeCommission ?? 0
-      someDiscountMax.value = max.value?.SomeCommission ?? 0
-      break
+      disPrice.value = max.value?.SomeCommission ?? 0;
+      someDiscountMax.value = max.value?.SomeCommission ?? 0;
+      break;
     case "fullpay":
-      if(paymentMethodText.value == 'qr') {
+      if (paymentMethodText.value == "qr") {
         radiioPaymentObject.value = {
           FeeQr: billPayment.value?.FullCommission?.Fee.Price ?? 0, // Change
-          FeeCard : debitCredit.value?.ZeroCommission?.Fee.Amount ?? 0,
-          PercenCard: debitCredit.value?.ZeroCommission?.Fee.Price ?? 0,
-          RemainPledge: remainPledge.value 
-        }
-        feeCost.value =  billPayment.value?.FullCommission?.Fee.Amount ?? 0
-      } else if(paymentMethodText.value == 'card') {
-        radiioPaymentObject.value = {
-          FeeQr: billPayment.value?.ZeroCommission?.Fee.Price ?? 0, 
-          FeeCard : debitCredit.value?.FullCommission?.Fee.Amount ?? 0, // Change
-          PercenCard: debitCredit.value?.FullCommission?.Fee.Price ?? 0,
-          RemainPledge: remainPledge.value 
-        }
-        feeCost.value = debitCredit.value?.FullCommission?.Fee.Amount ?? 0
-      } else {
-        radiioPaymentObject.value = {
-          FeeQr: billPayment.value?.ZeroCommission?.Fee.Price ?? 0, 
           FeeCard: debitCredit.value?.ZeroCommission?.Fee.Amount ?? 0,
           PercenCard: debitCredit.value?.ZeroCommission?.Fee.Price ?? 0,
-          RemainPledge: remainPledge.value 
-        }
-        feeCost.value =  pledge.value?.FullCommission?.Fee.Amount ?? 0
+          RemainPledge: remainPledge.value,
+        };
+        feeCost.value = billPayment.value?.FullCommission?.Fee.Amount ?? 0;
+      } else if (paymentMethodText.value == "card") {
+        radiioPaymentObject.value = {
+          FeeQr: billPayment.value?.ZeroCommission?.Fee.Price ?? 0,
+          FeeCard: debitCredit.value?.FullCommission?.Fee.Amount ?? 0, // Change
+          PercenCard: debitCredit.value?.FullCommission?.Fee.Price ?? 0,
+          RemainPledge: remainPledge.value,
+        };
+        feeCost.value = debitCredit.value?.FullCommission?.Fee.Amount ?? 0;
+      } else {
+        radiioPaymentObject.value = {
+          FeeQr: billPayment.value?.ZeroCommission?.Fee.Price ?? 0,
+          FeeCard: debitCredit.value?.ZeroCommission?.Fee.Amount ?? 0,
+          PercenCard: debitCredit.value?.ZeroCommission?.Fee.Price ?? 0,
+          RemainPledge: remainPledge.value,
+        };
+        feeCost.value = pledge.value?.FullCommission?.Fee.Amount ?? 0;
       }
-      disPrice.value = max.value?.FullCommission ?? 0
-      someDiscountMax.value = max.value?.FullCommission ?? 0
-      break
+      disPrice.value = max.value?.FullCommission ?? 0;
+      someDiscountMax.value = max.value?.FullCommission ?? 0;
+      break;
   }
   // console.log('radiioPaymentObject.value', radiioPaymentObject.value)
-  await getSummary()
-}
+  await getSummary();
+};
 
 const getCalculate = async () => {
-  if(calculate.value && creditBalance.value){
+  if (calculate.value && creditBalance.value) {
     // console.log('calculate.value', calculate.value)
-    remainPledge.value = creditBalance.value.AvailableBalance
+    remainPledge.value = creditBalance.value.AvailableBalance;
 
-    billPayment.value = calculate.value.BillPayment
-    debitCredit.value = calculate.value.DebitCredit
-    pledge.value = calculate.value.Pledge
-    packagePrice.value = calculate.value.Total
+    billPayment.value = calculate.value.BillPayment;
+    debitCredit.value = calculate.value.DebitCredit;
+    pledge.value = calculate.value.Pledge;
+    packagePrice.value = calculate.value.Total;
 
-    if(calculate.value.DeliveryFee) {
-      const DeliveryFee = calculate.value.DeliveryFee
-      if(DeliveryFee.length > 0) {
-        shipopingCost.value = DeliveryFee[0].Price
+    if (calculate.value.DeliveryFee) {
+      const DeliveryFee = calculate.value.DeliveryFee;
+      if (DeliveryFee.length > 0) {
+        shipopingCost.value = DeliveryFee[0].Price;
       }
     }
-    
-    radiioPaymentObject.value = {
-      FeeQr: calculate.value.BillPayment.FullCommission?.Fee.Price ?? 0,
-      FeeCard: calculate.value.DebitCredit.FullCommission?.Fee.Price ?? 0,
-      PercenCard: calculate.value.DebitCredit.FullCommission?.Fee.Price ?? 0,
-      RemainPledge: remainPledge.value
+
+    // fix: Add condition check Delivery type is not paper  by Nice 2024-02-08
+    if (orderInfo.value && orderInfo.value.DeliveryMethod1?.DeliveryType != "PAPER") {
+      radiioPaymentObject.value = {
+        FeeQr: calculate.value.BillPayment.FullCommission?.Fee.Price ?? 0,
+        FeeCard: calculate.value.DebitCredit.FullCommission?.Fee.Price ?? 0,
+        PercenCard: calculate.value.DebitCredit.FullCommission?.Fee.Price ?? 0,
+        RemainPledge: remainPledge.value,
+      };
+    }
+    else{
+      radiioPaymentObject.value = {
+        FeeQr: calculate.value.Pledge.FullCommission?.Fee.Price ?? 0,
+        FeeCard: calculate.value.Pledge.FullCommission?.Fee.Price ?? 0,
+        PercenCard: calculate.value.Pledge.FullCommission?.Fee.Price ?? 0,
+        RemainPledge: remainPledge.value,
+      };
+
     }
   }
-}
+};
 
 const getSummary = async () => {
   // console.log('packagePrice.value', packagePrice.value)
   // console.log('shipopingCost.value', shipopingCost.value)
   // console.log('feeCost.value', feeCost.value)
-  let totalPrice = packagePrice.value + shipopingCost.value 
-  let disCount = discountMethodText.value == 'partialdiscount' ? someDiscount.value : disPrice.value 
-  let sum = totalPrice - disCount
+  let totalPrice = packagePrice.value + shipopingCost.value;
+  let disCount =
+    discountMethodText.value == "partialdiscount" ? someDiscount.value : disPrice.value;
+  let sum = totalPrice - disCount;
   let summaryDiscountObject: SummaryDiscountObject = {
     PackagePrice: packagePrice.value,
     ShipopingCost: shipopingCost.value,
@@ -322,39 +334,38 @@ const getSummary = async () => {
     DisPrice: disCount,
     SumPrice: parseFloat(sum.toFixed(2)),
     PaymentMethod: paymentMethodText.value.toString(),
-    DiscountMethod: discountMethodText.value.toString()
-  }
+    DiscountMethod: discountMethodText.value.toString(),
+  };
   // console.log('summaryDiscountObject', summaryDiscountObject)
-  emit('passSummary', summaryDiscountObject)
-}
+  emit("passSummary", summaryDiscountObject);
+};
 
 //watching props pass data
 watch(
   () => props.order,
   async () => {
     if (props.order) {
-      orderInfo.value = props.order
-      orderNo.value =  props.order.OrderNo ?? ''
+      orderInfo.value = props.order;
+      orderNo.value = props.order.OrderNo ?? "";
     }
   }
-)
+);
 
 watch(
   () => props.calculate,
   async () => {
     if (props.calculate) {
-      calculate.value = props.calculate
+      calculate.value = props.calculate;
     }
   }
-)
+);
 
 watch(
   () => props.creditBalance,
   async () => {
     if (props.creditBalance) {
-      creditBalance.value = props.creditBalance
+      creditBalance.value = props.creditBalance;
     }
   }
-)
-
+);
 </script>

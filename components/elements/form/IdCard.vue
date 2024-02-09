@@ -1,7 +1,17 @@
 <template>
-  <FormKit type="number" mask="#-####-#####-##-#" placeholder="เลขบัตรประชาชน 13 หลัก"
+  <FormKit type="number" mask="#-####-#####-##-#" v-model="idCard" placeholder="เลขบัตรประชาชน 13 หลัก"
     validation="required|matches:/^[0-9]{13}$/" :validation-messages="{
       required: 'กรุณาใส่เลขบัตรประชาชน',
       matches: 'เลขบัตรประชาชนควรเป็นตัวเลข 13 หลัก'
-    }" show-mask="false" unmask-value="true" inputmode="numeric" autocomplete="off" />
+    }" show-mask="false" unmask-value="true" inputmode="numeric" autocomplete="off" :readonly="props.isReadOnly" />
 </template>
+
+<script setup>
+// Define props for the component
+const props = defineProps({
+  formIdCard: String,
+  isReadOnly: Boolean
+})
+
+const idCard = props.formIdCard
+</script>

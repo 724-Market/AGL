@@ -4,12 +4,12 @@
     <div class="card-stat is-success">
       <div class="stat-wrapper">
         <div class="stat-header">
-          <h5 class="topic">ยอดขายสะสม</h5>
-          <span class="value">654,423.68</span>
+          <h5 class="topic">ยืนยันเบอร์โทรศัพท์ด้วย OTP</h5>
+          <span class="value">สำเร็จ</span>
         </div>
         <div class="stat-action">
           <figure class="figure">
-            <i class="fa-duotone fa-sack-dollar fa-swap-opacity"></i>
+            <i class="fa-solid fa-check"></i>
           </figure>
         </div>
       </div>
@@ -23,7 +23,7 @@
         </div>
         <div class="stat-action">
           <figure class="figure">
-            <i class="fa-duotone fa-hand-holding-circle-dollar"></i>
+            <i class="fa-solid fa-2"></i>
           </figure>
         </div>
       </div>
@@ -37,7 +37,7 @@
         </div>
         <div class="stat-action">
           <figure class="figure">
-            <i class="fa-duotone fa-hourglass-clock fa-swap-opacity"></i>
+            <i class="fa-solid fa-3"></i>
           </figure>
         </div>
       </div>
@@ -51,7 +51,7 @@
         </div>
         <div class="stat-action">
           <figure class="figure">
-            <i class="fa-duotone fa-users"></i>
+            <i class="fa-solid fa-4"></i>
           </figure>
         </div>
       </div>

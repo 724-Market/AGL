@@ -139,7 +139,8 @@ import { useStorePlaceorder } from "~/stores/order/storePlaceorder";
 import { useStorePaymentGateway } from "~/stores/order/storePaymentGateway";
 import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
 import { useStoreFeeLimit } from "~/stores/plege/storeFeeLimit";
-import { defineEventHandler } from "~/server/api/setting.post";
+//import { defineEventHandler } from "~/server/api/setting.post";
+import settingData from "~/shared/data/setting-data";
 import type { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity";
 
 //define store
@@ -367,8 +368,8 @@ const submitOrder = async (formData: any) => {
           endpoint_code: "insurance_payment",
           orderid: paymentConfirmRes?.OrderNo ?? "",
           refno: paymentConfirmRes?.PaymentNo ?? "",
-          expire_type: defineEventHandler.paymentGateWayExpireType,
-          expire_value: defineEventHandler.paymentGateWayExpireValue,
+          expire_type: settingData.paymentGateWayExpireType,
+          expire_value: settingData.paymentGateWayExpireValue,
           amount: paymentConfirmRes?.GrandAmount ?? 0,
         };
       } else {
@@ -466,8 +467,8 @@ const handleTopupConfirm = async (
       endpoint_code: "credit_payment",
       orderid: paymentConfirm.value.CreditOrderNo,
       refno: paymentConfirm.value.CreditPaymentNo,
-      expire_type: defineEventHandler.paymentGateWayExpireType,
-      expire_value: defineEventHandler.paymentGateWayExpireValue,
+      expire_type: settingData.paymentGateWayExpireType,
+      expire_value: settingData.paymentGateWayExpireValue,
       amount: paymentConfirm.value.OrderAmount,
     };
 

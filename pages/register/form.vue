@@ -67,7 +67,7 @@
     <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
       :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
 
-    <ElementsDialogAddress :isOpenDialogAddress="isOpenDialogAddress" @on-close-address="closeModalAddress"
+    <ElementsDialogAddress :addressData="addressDataArray" :isOpenDialogAddress="isOpenDialogAddress" @on-close-address="closeModalAddress"
       @on-save-address="saveAddress" />
 
   </NuxtLayout>
@@ -310,6 +310,19 @@ const closeModalAddress = async (refresh: boolean) => {
 }
 
 const addressDataArray = ref<AddressData>({})
+
+// addressDataArray.value = {
+//   No: '999xxxx99',
+//   Moo: '99999',
+//   Place: '99999',
+//   Building: '99999',
+//   Floor: '99999',
+//   Alley: '99999',
+//   Road: '99999',
+//   Province: '9F0A074997264E44B09C91E266AE28C5',
+//   district: '06007C7C0E6F4D769B110E070E4FEF9D',
+//   subDistrict: '1FFDF6E38FF644D88E31F248E04BF49B'
+// }
 
 const saveAddress = async (addressData: any) => {
   addressDataArray.value = addressData

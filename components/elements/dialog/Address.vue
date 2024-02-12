@@ -13,9 +13,7 @@
 
             <h5 v-if="modalTitle">{{ modalTitle }}</h5>
 
-            <RegisterFormAddress />
-
-            <ElementsFormTheAddress />
+            <RegisterFormAddress :addressData="props.addressData" />
 
           </div>
           <div class="card-footer">
@@ -38,6 +36,7 @@ const emit = defineEmits(['onCloseAddress', 'onSaveAddress'])
 
 // Define props for the component
 const props = defineProps({
+  addressData: [],
   isOpenDialogAddress: Boolean,
   modalType: String,
   modalTitle: String,
@@ -63,7 +62,7 @@ const saveAddress = async (formData) => {
 
 
 // on Mounted
-onMounted(() => {
+onMounted(() => { 
   //loadProvince ()
   // Selecting the close and cancel buttons
   const closeDialogModal = document.querySelector('.btn-close-modal')
@@ -94,7 +93,7 @@ function hiddenDialogModal() {
 }
 
 // Watcher to detect changes in isOpenDialogAddress prop
-watch(() => props.isOpenDialogAddress, () => {
+watch(() => props.isOpenDialogAddress, () => { 
   // If isOpenDialogAddress changes, show or hide the modal accordingly
   if (props.isOpenDialogAddress) {
     showDialogModal()

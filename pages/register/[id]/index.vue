@@ -3,7 +3,7 @@
     :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
 
     <FormKit type="form" @submit="submitSurvey" #default="{ value }" :actions="false" id="form-register"
-        form-class="form-register form-theme" :incomplete-message="false">
+      form-class="form-register form-theme" :incomplete-message="false">
 
       <div class="row">
         <div class="col">
@@ -47,7 +47,7 @@
             <div class="card-footer" v-if="Referral">
               <p>ผู้แนะนำของท่าน<br>
               <div class="recommender">
-                <figure class="avatar"><img src="https://css.agentlove.club/uploads/team-5.jpg" alt=""></figure>
+                <figure class="avatar"><!--<img src="https://css.agentlove.club/uploads/team-5.jpg" alt="">--></figure>
                 <div class="info">
                   <h5 class="name">{{ agentReferralDetails.FirstName }} {{ agentReferralDetails.LastName }}</h5>
                   <span class="code">AM{{ agentReferralDetails.AgentID }}</span>
@@ -107,7 +107,7 @@ const modalRedirectPath = ref('')
 
 // Function to handle close modal events
 const handleCloseModal = async () => {
-  if(modalRedirectPath.value) {
+  if (modalRedirectPath.value) {
     router.push({ path: modalRedirectPath.value })
   }
   else {
@@ -169,7 +169,7 @@ const submitSurvey = async (formData: any) => {
     //console.log(response)
 
     if (resultCheck.status === 'pass') {
-      if(response.respOptions === 'REGISTER' || response.respOptions === 'VERIFY') {
+      if (response.respOptions === 'REGISTER' || response.respOptions === 'VERIFY') {
         regAgentAgentCode.value = response.apiResponse.Data.AgentCode
         regAgentFirstName.value = response.apiResponse.Data.FirstName
         regAgentLastName.value = response.apiResponse.Data.LastName
@@ -220,8 +220,8 @@ const submitSurvey = async (formData: any) => {
 /////////////////////////////////////////
 // Define for this page
 
-let   agentReferralDetails = ref()
-let   Referral = ref()
+let agentReferralDetails = ref()
+let Referral = ref()
 const registerStep = useState('register-step')
 const registerType = useState('register-type')
 const regReferralID = useState('reg-referral-id')
@@ -237,18 +237,18 @@ onMounted(async () => {
 const loadAgentReferral = async () => {
 
   if (typeof route.params.id === 'string') {
-    if(route.params.id != '724') {
+    if (route.params.id != '724') {
 
       const checkAgentReferralReq = {
         ReferralID: route.params.id
       }
-      const response    = await useRepository().agent.checkAgentReferral(checkAgentReferralReq)
+      const response = await useRepository().agent.checkAgentReferral(checkAgentReferralReq)
       const resultCheck = useUtility().responseCheck(response)
 
       if (resultCheck.status === 'pass') {
-        if(Array.isArray(response.apiResponse.Data)) {
+        if (Array.isArray(response.apiResponse.Data)) {
           agentReferralDetails = response.apiResponse.Data[0]
-          Referral.value = 'AM'+response.apiResponse.Data[0].AgentID
+          Referral.value = 'AM' + response.apiResponse.Data[0].AgentID
           regReferralID.value = 'AM' + response.apiResponse.Data[0].AgentID
         }
       }

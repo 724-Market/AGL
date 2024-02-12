@@ -60,8 +60,11 @@
   <div class="col-md-12">{{ selectedDistrict }}</div>
   <div class="col-md-12">{{ selectedProvinceLabel }}</div>
   <div class="col-md-12">{{ selectedProvince }}</div>
+  <div class="col-md-12">----------------------------------------</div>
+  <div class="col-md-12">{{ filteredDistricts }}</div>
 </template>
 <script setup lang="ts">
+import type { CustomerAddressListRes } from "~/shared/entities/customer-entity";
 import districtsData from "~/shared/data/districts-data";
 import provincesData from "~/shared/data/provinces-data";
 
@@ -88,13 +91,23 @@ const loadProvince = async () => {
 
   }
 }
+const props = defineProps({
+  defaultAddressCustomer: {
+    type: Object as () => CustomerAddressListRes
+  },
+});
 
 onMounted(async () => {
   //await loadProvince()
+  selectedDistrict.value = 'A5C0644F7BD4439CB7D55FED0894FE9D'
+  selectedDistrictLabel.value = props.defaultAddressCustomer?.DistrictName
   await mapProvince()
-  selectedProvince.value = '0E4B61AD55B447A1816B69CE06005B5F';
-  selectedDistrict.value = 'district3';
-  selectedSubDistrict.value = 'subdistrict3';
+  if (props.defaultAddressCustomer?.SubDistrictID) {
+    selectedProvince.value = props.defaultAddressCustomer?.ProvinceID
+    selectedDistrict.value = props.defaultAddressCustomer?.DistrictID
+    selectedSubDistrict.value = props.defaultAddressCustomer?.SubDistrictID
+  }
+  console.log("1selectedDistrict.value"+selectedDistrict.value)
 });
 
 const mapProvince = async () => {
@@ -102,6 +115,12 @@ const mapProvince = async () => {
     value: item.value,
     label: item.label
   }));
+}
+
+const mapDistrict = async () => {
+  const filteredDistricts = districtsData.filter(districtsData => districtsData.province === selectedProvince.value);
+  const prov = province.value.find(province => province.value === selectedProvince.value);
+  selectedProvinceLabel.value = prov ? prov.label : '';
 }
 
 const filteredDistricts = computed(() => {
@@ -124,6 +143,7 @@ const selectedPostalCode = computed(() => {
 });
 
 const handleProvinceClick = () => {
+  console.log("handleProvinceClick")
   selectedDistrict.value = null;
   selectedSubDistrict.value = null;
 };
@@ -132,6 +152,8 @@ const handleDistrictClick = () => {
   selectedSubDistrict.value = null;
 };
 
+
+/*
 watch(selectedProvince, (newProvince) => {
   // Reset selectedDistrict, selectedSubDistrict, and selectedPostalCode when changing the Province
   selectedDistrict.value = null;
@@ -142,5 +164,5 @@ watch(selectedDistrict, (newDistrict) => {
   // Reset selectedDistrict, selectedSubDistrict, and selectedPostalCode when changing the district
   selectedSubDistrict.value = null;
 });
-
+*/
 </script>

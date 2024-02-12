@@ -57,7 +57,7 @@
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="false" />
+                          }" autocomplete="off" />
                       </div>
                       <div class="col-6">
                         <FormKit
@@ -300,11 +300,19 @@
 
                 <section class="insured-address">
                   <h3>ที่อยู่ผู้เอาประกันภัย</h3>
+<!--                   
                   <button type="button" v-show="props.cacheOrderRequest?.OrderNo != null" class="btn-gray btn-open-papers" @click="onModalEditAddress(true)"><i
-                      class="fa-solid fa-layer-group"></i>Edit</button>
+                      class="fa-solid fa-layer-group"></i>Edit</button> -->
+                  <FormKit type="button" label="แก้ไขที่อยู่" v-show="props.cacheOrderRequest?.OrderNo != null" name="register-submit" :classes="{
+                    input: 'btn-primary',
+                  }" @click="onModalEditAddress(true)" :disabled="isLoading" :loading="isLoading" /> 
+
+                  <FormKit type="button" label="เพิ่มที่อยู่" name="register-submit" :classes="{
+                    input: 'btn-primary',
+                  }" @click="openDialogAddress" :disabled="isLoading" :loading="isLoading" /> 
 
                   <div class="row">
-                    <ElementsFormAddress element-key="insured" :order-No="props.cacheOrderRequest?.OrderNo"
+                    <ElementsFormAddress :order-No="props.cacheOrderRequest?.OrderNo"
                       :addr-province="addrProvince" :addr-district="addrDistrict" :addr-sub-district="addrSubDistrict"
                       :addr-zip-code="addrZipCode" :default-address-cache="defaultAddress"
                       :default-address-customer="defaultAddressCustomer" @change-province="handlerChangeProvince"
@@ -386,7 +394,10 @@ const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
 const prefixID = ref('')
-const renderKey = ref(0)
+
+/////////////////////////////////////////
+// Button Loading
+const isLoading = ref(false)
 
 var isEditAddress = ref(false)
 
@@ -454,6 +465,13 @@ const onLoad = onMounted(() => {
   }
 })
 
+const isOpenDialogAddress = ref(false)
+
+const openDialogAddress = () => {
+  isOpenDialogAddress.value = true;
+
+}
+
 const onModalEditAddress = (open: boolean) => {
   isEditAddress.value = false;
   isEditAddress.value = open;
@@ -480,7 +498,7 @@ const updateAddress = async (e: string) => {
     getData.apiResponse.Status == "200" &&
     getData.apiResponse.Data
   ) {
-    defaultAddressCustomer.value = getData.apiResponse.Data[0];
+    defaultAddressCustomer.value = getData.apiResponse.Data[0]
     emit('changeProvince', defaultAddressCustomer.value?.ProvinceID)
     emit('changeDistrict', defaultAddressCustomer.value?.DistrictID)
     emit('changeSubDistrict', defaultAddressCustomer.value?.SubDistrictID)

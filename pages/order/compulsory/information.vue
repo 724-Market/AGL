@@ -174,7 +174,7 @@
                   options-class="option-block-inline"
                 />
               </div>
-              <div class="form-inline">
+              <div class="form-inline" >
                 <FormKit
                   type="datepicker"
                   label="เริ่มต้น"

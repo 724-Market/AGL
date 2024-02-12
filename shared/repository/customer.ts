@@ -9,8 +9,8 @@ import type {
   class CustomerModule {
     private RESOURCE = '/Customer';
   
-    async AddressSave(req: CustomerAddressSaveReq): Promise<IAPIResponse<CustomerAddressSaveRes>> {
-      return await useCallApi().apiRepository<CustomerAddressSaveRes>(`${this.RESOURCE}/address/save`, req)
+    async AddressSave(req: any) {
+      return await useCallApi().apiRepository(`${this.RESOURCE}/address/save`, req)
     }
   
     async AddressList(req: CustomerIDReq): Promise<IAPIResponse<CustomerAddressListRes>> {

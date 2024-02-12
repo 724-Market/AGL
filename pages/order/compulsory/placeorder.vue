@@ -9,6 +9,7 @@
   >
     <FormKit
       type="form"
+      @submit="submitOrder"
       :actions="false"
       id="form-order"
       form-class="form-order form-theme"
@@ -153,13 +154,11 @@
           /> -->
 
           <button
-            type="button"
+            type="submit"
             class="formkit-input btn btn-primary form-actions"
-            @click="submitOrder"
             label="ไปเลือกวิธีชำระเงิน"
             name="order-submit"
             id="order-submit"
-            :disabled="!checkSave"
             :loading="isLoading"
           >
             ไปเลือกวิธีชำระเงิน
@@ -758,10 +757,17 @@ const loadSubDistrict = async (distId: string): Promise<SelectOption[]> => {
     if (response.apiResponse.Data) {
       options = response.apiResponse.Data.map((x) => {
         const options: SelectOption = {
+          label: `${x.Name} (${x.ZipCode})`,
+          value: x.ID,
+          option: x.ZipCode ?? "",
+        };
+        /*
+        const opZipcode: SelectOption = {
           label: `${x.Name} : ${x.ZipCode}`,
           value: x.ID,
           option: x.ZipCode ?? "",
         };
+        */
         return options;
       });
     } else {

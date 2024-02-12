@@ -369,7 +369,11 @@ const handlerChangeFullAddress = () => {
       const id = ObjectAddress.value.SubDistrictID
       const filter = addrSubDistrict.value.filter(x => x.value == id)
       if (filter.length > 0) {
-        fullAddress += filter[0].label + " "
+        if(addrZipCode.value.length > 0){
+          fullAddress += filter[0].label.replace('('+addrZipCode.value+')','') + " "
+        } else {
+          fullAddress += filter[0].label + " "
+        }
       }
     }
     if (ObjectAddress.value.DistrictID.length > 0) {

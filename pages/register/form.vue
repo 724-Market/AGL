@@ -22,6 +22,9 @@
                 <ElementsFormFirstnameWithLastname :formFirstName="formFirstName" :formLastName="formLastName"
                   :isReadOnly="true" />
 
+                <ElementsFormIdCard label="เลขบัตรประชาชน" id="idCard" name="idCard" :formIdCard="formIdCard"
+                  :isReadOnly="true" />
+
                 <ElementsFormPhoneNumber label="หมายเลขโทรศัพท์ (ที่รับ OTP ได้)" name="phonenumber" id="phonenumber" />
 
                 <ElementsFormAddressInfo :addressData="addressDataArray" />
@@ -42,7 +45,7 @@
             <div class="card-footer" v-if="Referral">
               <p>ผู้แนะนำของท่าน<br>
               <div class="recommender">
-                <figure class="avatar"><img src="https://css.agentlove.club/uploads/team-5.jpg" alt=""></figure>
+                <figure class="avatar"><!--<img src="https://css.agentlove.club/uploads/team-5.jpg" alt="">--></figure>
                 <div class="info">
                   <h5 class="name">{{ agentReferralDetails.FirstName }} {{ agentReferralDetails.LastName }}</h5>
                   <span class="code">AM{{ agentReferralDetails.AgentID }}</span>
@@ -73,20 +76,20 @@
 <script setup lang="ts">
 
 interface AddressData {
-  No?: string;
-  Moo?: string;
-  Place?: string;
-  Building?: string;
-  Floor?: string;
-  Alley?: string;
-  Road?: string;
-  Province?: string;
-  district?: string;
-  subDistrict?: string;
-  postalCode?: string;
-  ProvinceLabel?: string;
-  DistrictLabel?: string;
-  SubDistrictLabel?: string;
+  No?: string
+  Moo?: string
+  Place?: string
+  Building?: string
+  Floor?: string
+  Alley?: string
+  Road?: string
+  Province?: string
+  district?: string
+  subDistrict?: string
+  postalCode?: string
+  ProvinceLabel?: string
+  DistrictLabel?: string
+  SubDistrictLabel?: string
 }
 
 // Define page meta
@@ -183,7 +186,6 @@ const submitRegister = async (formData: any) => {
 
       const response = await useRepository().agent.registerAgent(registerAgentReq)
       const resultCheck = useUtility().responseCheck(response)
-      //console.log(response)
 
       if (resultCheck.status === 'pass') {
         regAgentMobile.value = formData.phonenumber
@@ -236,8 +238,10 @@ const goNext = async () => {
 
 let agentReferralDetails = ref()
 let Referral = ref()
+
 const formFirstName = ref()
 const formLastName = ref()
+const formIdCard = ref()
 
 const registerStep = useState('register-step')
 const registerType = useState('register-type')
@@ -254,6 +258,7 @@ const regToken = useState('reg-token')
 
 if (regAgentFirstName) { formFirstName.value = regAgentFirstName }
 if (regAgentLastName) { formLastName.value = regAgentLastName }
+if (regAgentIDcard) { formIdCard.value = regAgentIDcard }
 
 onMounted(async () => {
   await loadAgentReferral(regReferralID)
@@ -286,29 +291,30 @@ const loadAgentReferral = async (regReferralID: any) => {
 
 }
 
+/////////////////////////////////////////
+// Modal address
 const isOpenDialogAddress = ref(false)
 
 const openDialogAddress = () => {
-  isOpenDialogAddress.value = true;
-
+  isOpenDialogAddress.value = true
 }
 
 const closeModalAddress = async (refresh: boolean) => {
+
   if (refresh) {
-    isOpenDialogAddress.value = true;
-    isOpenDialogAddress.value = false;
+    isOpenDialogAddress.value = true
+    isOpenDialogAddress.value = false
   }
-  isOpenDialogAddress.value = false;
+
+  isOpenDialogAddress.value = false
 }
 
-const addressDataArray = ref<AddressData>({});
+const addressDataArray = ref<AddressData>({})
 
 const saveAddress = async (addressData: any) => {
-
   addressDataArray.value = addressData
-  isOpenDialogAddress.value = false;
-
-};
+  isOpenDialogAddress.value = false
+}
 
 /////////////////////////////////////////
 // Define layout

@@ -15,6 +15,8 @@
 
             <RegisterFormAddress />
 
+            <ElementsFormTheAddress />
+
           </div>
           <div class="card-footer">
             <FormKit type="submit" class="btn-primary btn-cancel-modal">

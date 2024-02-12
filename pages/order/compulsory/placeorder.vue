@@ -139,7 +139,7 @@
             <OrderChecklist :list="checklist" @change-check-save="handlerCheckSave" />
           </aside>
 
-          <!-- <FormKit
+          <FormKit
             type="submit"
             label="ไปเลือกวิธีชำระเงิน"
             name="order-submit"
@@ -148,12 +148,11 @@
               input: 'btn-primary',
               outer: 'form-actions',
             }"
-
             :disabled="!checkSave"
             :loading="isLoading"
-          /> -->
+          /> 
 
-          <button
+          <!-- <button
             type="submit"
             class="formkit-input btn btn-primary form-actions"
             label="ไปเลือกวิธีชำระเงิน"
@@ -162,7 +161,7 @@
             :loading="isLoading"
           >
             ไปเลือกวิธีชำระเงิน
-          </button>
+          </button> -->
 
           <NuxtLink @click="backStep()" class="btn btn-back mt-3">ย้อนกลับ</NuxtLink>
         </div>
@@ -325,8 +324,8 @@ const storeOrder = useStorePlaceorder();
 // define getter in store
 const { OrderInfo } = storeToRefs(storeOrder);
 
-const storeOrderSummary = useStoreOrderSummary();
-const { OrderSummaryInfo } = storeToRefs(storeOrderSummary);
+const storeSummary = useStoreOrderSummary();
+const { OrderSummaryInfo } = storeToRefs(storeSummary);
 
 const router = useRouter();
 const onLoad = onMounted(async () => {
@@ -380,10 +379,14 @@ const onLoad = onMounted(async () => {
       const info = sessionStorage.getItem("useStoreOrderSummary") ?
           JSON.parse(sessionStorage.getItem("useStoreOrderSummary") || "") as OrderResponse : undefined
       if(info) {
-        insureFullAddress.value = `${info.Order?.Customer?.TaxInvoiceAddress?.FirstName} ${info.Order?.Customer?.TaxInvoiceAddress?.LastName} 
-                                   ${info.Order?.Customer?.TaxInvoiceAddress?.No} ${info.Order?.Customer?.TaxInvoiceAddress?.Moo} 
-                                   ${info.Order?.Customer?.TaxInvoiceAddress?.Place} ${info.Order?.Customer?.TaxInvoiceAddress?.Building} 
-                                   ${info.Order?.Customer?.TaxInvoiceAddress?.Alley} ${info.Order?.Customer?.TaxInvoiceAddress?.Road}`
+        const customer = info.Order?.Customer
+        if(customer) {
+          insureFullAddress.value = `${customer.DeliveryAddress?.FirstName} ${customer.DeliveryAddress?.LastName} 
+                                     ${customer.DeliveryAddress?.No} ${customer.DeliveryAddress?.Moo} 
+                                     ${customer.DeliveryAddress?.Place} ${customer.DeliveryAddress?.Building} 
+                                     ${customer.DeliveryAddress?.Alley} ${customer.DeliveryAddress?.Road}
+                                     ${customer.DeliveryAddress?.ZipCode}`
+        }
       }
     }
 
@@ -509,20 +512,21 @@ const submitOrder = async (formData: any) => {
        getData.apiResponse.Data &&
        getData.apiResponse.Data.length > 0
      ) {
-       const summaryOrder = getData.apiResponse.Data[0].Order as Order
-       const orderSetStore: PlaceOrderRequest = {
-         OrderNo: orderReq.OrderNo,
-         Package: summaryOrder.Package,
-         CarDetailsExtension: summaryOrder.CarDetailsExtension,
-         Customer: summaryOrder.Customer,
-         DeliveryMethod1: summaryOrder.DeliveryMethod1,
-         DeliveryMethod2: summaryOrder.DeliveryMethod2,
-         IsTaxInvoice: summaryOrder.IsTaxInvoice,
-       };
-       
-       storeOrder.setOrder(orderSetStore);
-       useStateMenu().setStateMenu(4);
-       router.push("/order/compulsory/payment");
+        const summaryOrder = getData.apiResponse.Data[0].Order as Order
+        const orderSetStore: PlaceOrderRequest = {
+          OrderNo: orderReq.OrderNo,
+          Package: summaryOrder.Package,
+          CarDetailsExtension: summaryOrder.CarDetailsExtension,
+          Customer: summaryOrder.Customer,
+          DeliveryMethod1: summaryOrder.DeliveryMethod1,
+          DeliveryMethod2: summaryOrder.DeliveryMethod2,
+          IsTaxInvoice: summaryOrder.IsTaxInvoice,
+        };
+
+        storeSummary.setOrderSummary(getData.apiResponse.Data[0]);
+        storeOrder.setOrder(orderSetStore);
+        useStateMenu().setStateMenu(4);
+        router.push("/order/compulsory/payment");
      }
    }
    //set state menu
@@ -871,6 +875,8 @@ const handlerChangeProvinceForInsured = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrDistrictForInsured.value = await loadDistrict(e);
+    addrSubDistrictForInsured.value = []
+    addrZipCodeForInsured.value = ''
 
     isLoading.value = false;
   }
@@ -879,6 +885,8 @@ const handlerChangeProvinceForRecieve = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrDistrictForRecieve.value = await loadDistrict(e);
+    addrSubDistrictForRecieve.value = []
+    addrZipCodeForRecieve.value = ''
 
     isLoading.value = false;
   }
@@ -887,6 +895,8 @@ const handlerChangeProvinceForTax = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrDistrictForTax.value = await loadDistrict(e);
+    addrSubDistrictForTax.value = []
+    addrZipCodeForTax.value = ''
 
     isLoading.value = false;
   }
@@ -895,6 +905,8 @@ const handlerChangeProvinceForTax2 = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrDistrictForTax2.value = await loadDistrict(e);
+    addrSubDistrictForTax2.value = []
+    addrZipCodeForTax2.value = ''
 
     isLoading.value = false;
   }
@@ -903,6 +915,7 @@ const handlerChangeDistrictForInsured = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrSubDistrictForInsured.value = await loadSubDistrict(e);
+    addrZipCodeForInsured.value = ''
 
     isLoading.value = false;
   }
@@ -911,6 +924,7 @@ const handlerChangeDistrictForRecieve = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrSubDistrictForRecieve.value = await loadSubDistrict(e);
+    addrZipCodeForRecieve.value = ''
 
     isLoading.value = false;
   }
@@ -919,6 +933,7 @@ const handlerChangeDistrictForTax = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrSubDistrictForTax.value = await loadSubDistrict(e);
+    addrZipCodeForTax.value = ''
 
     isLoading.value = false;
   }
@@ -927,6 +942,7 @@ const handlerChangeDistrictForTax2 = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrSubDistrictForTax2.value = await loadSubDistrict(e);
+    addrZipCodeForTax2.value = ''
 
     isLoading.value = false;
   }

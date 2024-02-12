@@ -198,17 +198,23 @@ watch(
 watch(
     () => props.addrSubDistrict,
     () => {
-        if (props.addrSubDistrict && props.addrSubDistrict.length > 0) {
-            addrSubDistrict.value = props.addrSubDistrict
-        }
+      if (props.addrSubDistrict && props.addrSubDistrict.length > 0) {
+          addrSubDistrict.value = props.addrSubDistrict
+      }
+      else {
+        addrSubDistrict.value = []
+      }
     }
 )
 watch(
     () => props.addrZipCode,
     () => {
-        if (props.addrZipCode && props.addrZipCode.length > 0) {
-            addrZipCode.value = props.addrZipCode
-        }
+      if (props.addrZipCode && props.addrZipCode.length > 0) {
+          addrZipCode.value = props.addrZipCode
+      }
+      else {
+        addrZipCode.value = ''
+      }
     }
 )
 watch(

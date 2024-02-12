@@ -626,6 +626,9 @@ watch(
     if (props.addrSubDistrict && props.addrSubDistrict.length > 0) {
       addrSubDistrict.value = props.addrSubDistrict
     }
+    else {
+      addrSubDistrict.value = []
+    }
   }
 )
 watch(
@@ -633,6 +636,9 @@ watch(
   () => {
     if (props.addrZipCode && props.addrZipCode.length > 0) {
       addrZipCode.value = props.addrZipCode
+    }
+    else {
+      addrZipCode.value = ''
     }
   }
 )

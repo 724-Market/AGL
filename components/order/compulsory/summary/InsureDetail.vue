@@ -31,7 +31,7 @@
             <div class="summary-item">
               <h4 class="topic">วันเดือนปีเกิด</h4>
               <p>
-                {{ getBirthDate(orderDetail.AssuredDetails.BirthDate) }} ({{
+                {{ useUtility().formatDate(orderDetail.AssuredDetails.BirthDate, "FullDate") }} ({{
                   getAge(orderDetail.AssuredDetails.BirthDate)
                 }}
                 ปี)
@@ -327,10 +327,6 @@ const getDayOfYear = (): string => {
 const getFormatDate = (date: string): string => {
   const formatDate = useUtility().formatDate(date, "DD/MM/BBBB");
 
-  return formatDate;
-};
-const getBirthDate = (birthdate: string): string => {
-  const formatDate = useUtility().formatDate(birthdate, "D MMMM BBBB");
   return formatDate;
 };
 const getAge = (birthdate: string): string => {

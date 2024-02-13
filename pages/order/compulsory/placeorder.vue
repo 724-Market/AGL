@@ -9,7 +9,6 @@
   >
     <FormKit
       type="form"
-      @submit="submitOrder"
       :actions="false"
       id="form-order"
       form-class="form-order form-theme"
@@ -139,7 +138,7 @@
             <OrderChecklist :list="checklist" @change-check-save="handlerCheckSave" />
           </aside>
 
-          <FormKit
+          <!-- <FormKit
             type="submit"
             label="ไปเลือกวิธีชำระเงิน"
             name="order-submit"
@@ -150,18 +149,19 @@
             }"
             :disabled="!checkSave"
             :loading="isLoading"
-          /> 
-
-          <!-- <button
-            type="submit"
+          /> -->
+          <button
+            type="button"
             class="formkit-input btn btn-primary form-actions"
+            @click="submitOrder"
             label="ไปเลือกวิธีชำระเงิน"
             name="order-submit"
             id="order-submit"
+            :disabled="!checkSave"
             :loading="isLoading"
           >
             ไปเลือกวิธีชำระเงิน
-          </button> -->
+          </button> 
 
           <NuxtLink @click="backStep()" class="btn btn-back mt-3">ย้อนกลับ</NuxtLink>
         </div>

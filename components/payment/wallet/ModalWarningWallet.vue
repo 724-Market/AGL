@@ -1,22 +1,22 @@
 <template>
-    <dialog id="modal-dialog">
-        <div class="dialog-card"><!-- Add class 'is-info', 'is-success', 'is-warning', 'is-danger' for color styling -->
-            <div class="card-header">
-                <button class="btn btn-close btn-close-modal">ปิด</button>
-            </div>
-            <div class="card-body">
-                <figure class="dialog-icon">
-                    <div class="icon exclamation"></div>
-                </figure>
-                <h5>Warning</h5>
-                <p>ยอดเ้งินใน Wallet ไม่เพียงพอกรุณาเติมเงิน</p>
-            </div>
-            <div class="card-footer">
-                <button class="btn-primary">ตกลง</button>
-            </div>
-            
-        </div>
-    </dialog>
+  <dialog id="modal-dialog">
+    <div class="dialog-card"><!-- Add class 'is-info', 'is-success', 'is-warning', 'is-danger' for color styling -->
+      <div class="card-header">
+        <button class="btn btn-close btn-close-modal">ปิด</button>
+      </div>
+      <div class="card-body">
+        <figure class="dialog-icon">
+          <div class="icon exclamation"></div>
+        </figure>
+        <h5>Warning</h5>
+        <p>ยอดเงินใน Wallet ไม่เพียงพอกรุณาเติมเงิน</p>
+      </div>
+      <div class="card-footer">
+        <button class="btn-primary">ตกลง</button>
+      </div>
+
+    </div>
+  </dialog>
 </template>
 
 <script setup>
@@ -29,9 +29,9 @@ const props = defineProps({
 const _show = ref(false);
 
 const onLoad = onMounted(async () => {
-    if(props._show){
-        _show.value = props._show
-    }
+  if (props._show) {
+    _show.value = props._show
+  }
 })
 
 watch(

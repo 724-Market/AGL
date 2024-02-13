@@ -8,6 +8,11 @@
         <span class="loading-progress"></span>
       </span>
     </div>
-    <div class="loading-text">กรุณารอสักครู่</div>
+    <div class="loading-text">{{ waitingText ? waitingText : 'กรุณารอสักครู่' }}</div>
   </div>
 </template>
+
+<script setup>
+// Define props for the component
+const props = defineProps(['waitingText'])
+</script>

@@ -541,6 +541,9 @@ watch(
     if (props.addrSubDistrict && props.addrSubDistrict.length > 0) {
       addrSubDistrict.value = props.addrSubDistrict
     }
+    else {
+      addrSubDistrict.value = []
+    }
   }
 )
 watch(
@@ -548,6 +551,9 @@ watch(
   () => {
     if (props.addrZipCode && props.addrZipCode.length > 0) {
       addrZipCode.value = props.addrZipCode
+    }
+    else {
+      addrZipCode.value = ''
     }
   }
 )
@@ -573,6 +579,9 @@ watch(
     if (props.addrSubDistrict2 && props.addrSubDistrict2.length > 0) {
       addrSubDistrict2.value = props.addrSubDistrict2
     }
+    else {
+      addrSubDistrict2.value = []
+    }
   }
 )
 watch(
@@ -580,6 +589,9 @@ watch(
   () => {
     if (props.addrZipCode2 && props.addrZipCode2.length > 0) {
       addrZipCode2.value = props.addrZipCode2
+    }
+    else {
+      addrZipCode2.value = ''
     }
   }
 )

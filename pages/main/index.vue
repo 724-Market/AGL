@@ -31,12 +31,36 @@
           <div class="card-body">
 
             <div v-for="(value, key) in affiliateProductPlanList" :key="key">
-              {{ value.Plan.ID }}
+              <div><b><u>Title : {{ value.Plan.Title }}</u></b></div>
+              <div>ID : {{ value.Plan.ID }}</div>
+              <div>Code : {{ value.Plan.Code }}</div>
+              <div>Name : {{ value.Plan.Name }}</div>
+              <div>Details : {{ value.Plan.Details }}</div>
+              <div>Price : {{ value.Plan.Price }}</div>
+              <div>PeriodDay : {{ value.Plan.PeriodDay }}</div>
+              <div>PeriodMinute : {{ value.Plan.PeriodMinute }}</div>
+              <div>Sequence : {{ value.Plan.Sequence }}</div>
+              <div>Tier : {{ value.Plan.Tier }}</div>
+              <div>MinModelAgentNo : {{ value.Plan.MinModelAgentNo }}</div>
+              <div>IsMain : {{ value.Plan.IsMain }}</div>
+              <div>IsPublic : {{ value.Plan.IsPublic }}</div>
+              <div>IsActive : {{ value.Plan.IsActive }}</div>
+              <div>IsRecommend : {{ value.Plan.IsRecommend }}</div>
+              <div>IsLicenseRequire : {{ value.Plan.IsLicenseRequire }}</div>
+              <div>IsOneTime : {{ value.Plan.IsOneTime }}</div>
               <br>
-              <template v-for="(value2, key2) in value.Benefit" :key="key2">
+              <b>Feature</b>
+              <br>
+              <template v-for="(value2, key2) in value.Feature" :key="key2">
                 <li>{{ value2.Name }}</li>
               </template>
-              <hr>
+              <b>Benefit</b>
+              <br>
+              <template v-for="(value3, key3) in value.Benefit" :key="key3">
+                <li>{{ value3.Name }}</li>
+              </template>
+              ------------------------------
+              <br>
             </div>
 
           </div>

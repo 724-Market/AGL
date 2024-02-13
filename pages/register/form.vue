@@ -22,6 +22,9 @@
                 <ElementsFormFirstnameWithLastname :formFirstName="formFirstName" :formLastName="formLastName"
                   :isReadOnly="true" />
 
+                <ElementsFormIdCard label="เลขบัตรประชาชน" id="idCard" name="idCard" :formIdCard="formIdCard"
+                  :isReadOnly="true" />
+
                 <ElementsFormPhoneNumber label="หมายเลขโทรศัพท์ (ที่รับ OTP ได้)" name="phonenumber" id="phonenumber" />
 
                 <ElementsFormAddressInfo :addressData="addressDataArray" />
@@ -42,7 +45,7 @@
             <div class="card-footer" v-if="Referral">
               <p>ผู้แนะนำของท่าน<br>
               <div class="recommender">
-                <figure class="avatar"><img src="https://css.agentlove.club/uploads/team-5.jpg" alt=""></figure>
+                <figure class="avatar"><!--<img src="https://css.agentlove.club/uploads/team-5.jpg" alt="">--></figure>
                 <div class="info">
                   <h5 class="name">{{ agentReferralDetails.FirstName }} {{ agentReferralDetails.LastName }}</h5>
                   <span class="code">AM{{ agentReferralDetails.AgentID }}</span>
@@ -64,7 +67,7 @@
     <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
       :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
 
-    <ElementsDialogAddress :isOpenDialogAddress="isOpenDialogAddress" @on-close-address="closeModalAddress"
+    <ElementsDialogAddress :addressData="addressDataArray" :isOpenDialogAddress="isOpenDialogAddress" @on-close-address="closeModalAddress"
       @on-save-address="saveAddress" />
 
   </NuxtLayout>
@@ -73,20 +76,20 @@
 <script setup lang="ts">
 
 interface AddressData {
-  No?: string;
-  Moo?: string;
-  Place?: string;
-  Building?: string;
-  Floor?: string;
-  Alley?: string;
-  Road?: string;
-  Province?: string;
-  district?: string;
-  subDistrict?: string;
-  postalCode?: string;
-  ProvinceLabel?: string;
-  DistrictLabel?: string;
-  SubDistrictLabel?: string;
+  No?: string
+  Moo?: string
+  Place?: string
+  Building?: string
+  Floor?: string
+  Alley?: string
+  Road?: string
+  Province?: string
+  district?: string
+  subDistrict?: string
+  postalCode?: string
+  ProvinceLabel?: string
+  DistrictLabel?: string
+  SubDistrictLabel?: string
 }
 
 // Define page meta
@@ -183,7 +186,6 @@ const submitRegister = async (formData: any) => {
 
       const response = await useRepository().agent.registerAgent(registerAgentReq)
       const resultCheck = useUtility().responseCheck(response)
-      //console.log(response)
 
       if (resultCheck.status === 'pass') {
         regAgentMobile.value = formData.phonenumber
@@ -236,8 +238,10 @@ const goNext = async () => {
 
 let agentReferralDetails = ref()
 let Referral = ref()
+
 const formFirstName = ref()
 const formLastName = ref()
+const formIdCard = ref()
 
 const registerStep = useState('register-step')
 const registerType = useState('register-type')
@@ -254,6 +258,7 @@ const regToken = useState('reg-token')
 
 if (regAgentFirstName) { formFirstName.value = regAgentFirstName }
 if (regAgentLastName) { formLastName.value = regAgentLastName }
+if (regAgentIDcard) { formIdCard.value = regAgentIDcard }
 
 onMounted(async () => {
   await loadAgentReferral(regReferralID)
@@ -286,29 +291,43 @@ const loadAgentReferral = async (regReferralID: any) => {
 
 }
 
+/////////////////////////////////////////
+// Modal address
 const isOpenDialogAddress = ref(false)
 
 const openDialogAddress = () => {
-  isOpenDialogAddress.value = true;
-
+  isOpenDialogAddress.value = true
 }
 
 const closeModalAddress = async (refresh: boolean) => {
+
   if (refresh) {
-    isOpenDialogAddress.value = true;
-    isOpenDialogAddress.value = false;
+    isOpenDialogAddress.value = true
+    isOpenDialogAddress.value = false
   }
-  isOpenDialogAddress.value = false;
+
+  isOpenDialogAddress.value = false
 }
 
-const addressDataArray = ref<AddressData>({});
+const addressDataArray = ref<AddressData>({})
+
+// addressDataArray.value = {
+//   No: '999xxxx99',
+//   Moo: '99999',
+//   Place: '99999',
+//   Building: '99999',
+//   Floor: '99999',
+//   Alley: '99999',
+//   Road: '99999',
+//   Province: '9F0A074997264E44B09C91E266AE28C5',
+//   district: '06007C7C0E6F4D769B110E070E4FEF9D',
+//   subDistrict: '1FFDF6E38FF644D88E31F248E04BF49B'
+// }
 
 const saveAddress = async (addressData: any) => {
-
   addressDataArray.value = addressData
-  isOpenDialogAddress.value = false;
-
-};
+  isOpenDialogAddress.value = false
+}
 
 /////////////////////////////////////////
 // Define layout

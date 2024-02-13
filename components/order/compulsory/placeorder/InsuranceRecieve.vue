@@ -499,17 +499,25 @@ watch(
 watch(
     () => props.addrSubDistrict,
     () => {
-        if (props.addrSubDistrict && props.addrSubDistrict.length > 0) {
-            addrSubDistrict.value = props.addrSubDistrict
-        }
+      console.log('props.addrSubDistrict', props.addrSubDistrict)
+      if (props.addrSubDistrict && props.addrSubDistrict.length > 0) {
+          addrSubDistrict.value = props.addrSubDistrict
+      }
+      else {
+        console.log('props.addrSubDistrict Else', props.addrSubDistrict)
+        addrSubDistrict.value = []
+      }
     }
 )
 watch(
     () => props.addrZipCode,
     () => {
-        if (props.addrZipCode && props.addrZipCode.length > 0) {
-            addrZipCode.value = props.addrZipCode
-        }
+      if (props.addrZipCode && props.addrZipCode.length > 0) {
+        addrZipCode.value = props.addrZipCode
+      }
+      else {
+        addrZipCode.value = ''
+      }
     }
 )
 watch(

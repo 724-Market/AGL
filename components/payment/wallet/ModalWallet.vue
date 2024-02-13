@@ -2,7 +2,7 @@
   <Teleport to="body">
     <dialog id="wallet-dialog" v-show="_show">
       <div class="dialog-card">
-        <div class="card-header">
+        <div class="card-header" v-if="!isStep3">
           <button type="button" class="btn btn-close btn-close-wallet" @click="hideModal">ปิด</button>
         </div>
 
@@ -21,13 +21,13 @@
               <h5>กรอกจำนวนเงินที่ต้องการเติม</h5>
 
               <div class="form-hide-label topup-value">
-                <FormKit type="number" label="จำนวนเงินที่ต้องการเติม" name="Amount"
+                <FormKit type="number" label="จำนวนเงินที่ต้องการเติม" name="amount"
                   :validation="`required|number|min:${paymentList.Min}|max:${paymentList.Max}`" :validation-messages="{
                     required: 'กรุณากรอกจำนวนเงิน',
                     number: 'กรุณากรอกเป็นตัวเลขเท่านั้น',
                     min: `ขั้นต่ำ ${minVolumn} บาท`,
                     max: `สูงสุดไม่เกิน ${maxVolumn}บาท`,
-                  }" step="1" autocomplete="off" />
+                  }" step="1" autocomplete="off" v-model="Amount" />
               </div>
 
               <div class="topup">
@@ -56,12 +56,6 @@
                 input: 'btn-primary btn-accept',
                 outer: 'pledge-action',
               }" :disabled="isLoading" :loading="isLoading" />
-              <!-- <button type="button" class="formkit-input btn-primary btn-accept pledge-action" @click="submitPledge"
-                label="ยืนยันการเติมเงิน" name="pledge-submit" id="pledge-submit"
-                :loading="isLoading">ยืนยันการเติมเงิน</button> -->
-              <!-- <button type="button" class="formkit-input btn-primary btn-accept pledge-action" @click="submitPledge"
-                label="ยืนยันการเติมเงิน" name="pledge-submit" id="pledge-submit" :disabled="!isConsent || !(Amount >= paymentList.Min && Amount <= paymentList.Max)
-                  " :loading="isLoading">ยืนยันการเติมเงิน</button> -->
             </FormKit>
           </div>
 
@@ -191,8 +185,7 @@ const historyPaymentList: globalThis.Ref<number[]> = ref([])
 const paymentResponse: globalThis.Ref<PaymentGetResponse | undefined> = ref()
 const minVolumn = ref("")
 const maxVolumn = ref("")
-const Amount = ref()
-const isConsent = ref(false)
+const Amount = ref<number | null>(null)
 const paymentType = ref('qr')
 const isStep1 = ref(false)
 const isStep2 = ref(false)
@@ -232,13 +225,13 @@ const submitPledge = async (formData: any) => {
   // Change pledge state
   pledgeStep.value = 'loading'
 
-  emit('topupConfirm', formData.terms, formData.Amount, formData.PledgeMethods)
+  emit('topupConfirm', formData.terms, formData.amount, formData.PledgeMethods)
 }
 
 /////////////////////////////////////////
 // Add amount
 const AddAmount = (credit: number) => {
-  let amount = parseInt(Amount.value.toString())
+  let amount = parseInt(Amount.value?.toString() || "0")
   if (Number.isNaN(amount)) amount = 0
   let total = credit
 
@@ -247,7 +240,7 @@ const AddAmount = (credit: number) => {
     if (total >= paymentList.value.Min && total <= paymentList.value.Max) {
       Amount.value = total
     } else {
-      Amount.value = paymentList.value.Max
+      Amount.value = paymentList.value.Min
     }
   }
 }
@@ -471,6 +464,6 @@ async function closeModal(refresh: boolean) {
   if (dialogLoading) dialogLoading.close()
   if (props.walletPaymentGateway) paymentService.disconnect()
   // paymentService.disconnect()
-  emit("closeWallet", false, refresh)
+  emit("onCloseWallet", false, refresh)
 }
 </script>

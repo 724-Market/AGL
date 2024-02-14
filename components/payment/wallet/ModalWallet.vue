@@ -27,7 +27,7 @@
                     number: 'กรุณากรอกเป็นตัวเลขเท่านั้น',
                     min: `ขั้นต่ำ ${minVolumn} บาท`,
                     max: `สูงสุดไม่เกิน ${maxVolumn}บาท`,
-                  }" step="1" autocomplete="off" v-model="Amount" />
+                  }" step="1" inputmode="numeric" autocomplete="off" v-model="Amount" />
               </div>
 
               <div class="topup">

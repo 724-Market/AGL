@@ -36,7 +36,7 @@ const emit = defineEmits(['onCloseAddress', 'onSaveAddress'])
 
 // Define props for the component
 const props = defineProps({
-  addressData: [],
+  addressData:  Object,
   isOpenDialogAddress: Boolean,
   modalType: String,
   modalTitle: String,
@@ -58,8 +58,6 @@ const saveAddress = async (formData) => {
 
 
 }
-
-
 
 // on Mounted
 onMounted(() => { 

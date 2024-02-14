@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <PaymentWalletModalWallet v-if="showWallet" :show="showWallet" @close-wallet="handleCloseWallet"
+  <PaymentWalletModalWallet v-if="showWallet" :show="showWallet" @on-close-wallet="handleCloseWallet"
     @topup-confirm="handleTopupConfirm" :wallet-payment-gateway="walletPaymentGateway" :credit-order="paymentConfirm">
   </PaymentWalletModalWallet>
 </template>
@@ -78,7 +78,6 @@ const handleTopupConfirm = async (
   paymentType: string
 ) => {
   isLoading.value = true;
-  // console.log(isConsent, Amount, paymentType);
   const req: CreditOrderPaymentCreateRequest = {
     Amount: Amount,
     IsConsent: isConsent,
@@ -104,7 +103,7 @@ const handleTopupConfirm = async (
 
     const responseGateway = await useRepository().payment.gateway(reqGateway);
     if (responseGateway.status == "0000") {
-      console.log("Wallet responseGateway", responseGateway);
+      // console.log("Wallet responseGateway", responseGateway);
       let gatewayInfo = responseGateway.data as PaymentGatewayResponse;
       walletPaymentGateway.value = gatewayInfo;
     }

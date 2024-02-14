@@ -1,5 +1,5 @@
 <template>
-  <div class="qr-payment" v-if="$props.paymenGatewayInfo">
+  <div class="payment-info" v-if="$props.paymenGatewayInfo">
     <div class="status-list">
       <div class="logo">724 Payment</div>
       <div class="status-item">
@@ -8,102 +8,107 @@
       </div>
       <div class="status-item">
         <h5 class="topic">จำนวนเงิน</h5>
-        <p>{{ useUtility().getCurrency(parseInt($props.paymenGatewayInfo.amount)) }}</p>
+        <p>{{ useUtility().getCurrency(parseInt($props.paymenGatewayInfo.amount)) }} บาท</p>
+      </div>
+      <div class="status-item" v-if="$props.paymentType == 'wallet'">
+        <h5 class="topic">ค่าธรรมเนียม</h5>
+        <p>{{ $props.feeAmount ? useUtility().getCurrency($props.feeAmount) + ' บาท' : 'ไม่มี' }}</p>
+      </div>
+      <div class="status-item" v-if="$props.paymentType == 'wallet'">
+        <h5 class="topic">ยอดเงินเติมที่สามารถใช้ได้</h5>
+        <p>{{ useUtility().getCurrency(parseInt($props.paymenGatewayInfo.amount) - ($props.feeAmount ?? 0)) }} บาท</p>
       </div>
       <div class="status-item text-warning" v-if="$props.paymenGatewayInfo.payment_expired != ''">
         <h5 class="topic">กรุณาชำระภายใน</h5>
         <p>{{ useUtility().formatDate($props.paymenGatewayInfo.payment_expired, 'FullDateFullTime') }}</p>
       </div>
-      <div class="status-item" v-if="$props.paymentType=='wallet'">
-        <h5 class="topic">ค่าธรรมเนียม</h5>
-        <p>{{ useUtility().getCurrency($props.feeAmount ?? 0) }}</p>
-      </div>
-      <div class="status-item" v-if="$props.paymentType=='wallet'">
-        <h5 class="topic">Wallet</h5>
-        <p>{{ useUtility().getCurrency(parseInt($props.paymenGatewayInfo.amount) - ($props.feeAmount ?? 0)) }}</p>
+      <div class="status-item text-warning">
+        <h5 class="topic">สถานะ</h5>
+        <p>รอการชำระเงิน</p>
       </div>
     </div>
 
     <div class="qr-info">
+
       <figure class="qr-code">
-        <img :src="$props.paymenGatewayInfo.payment_qr" alt="" />
+        <img :src="$props.paymenGatewayInfo.payment_qr" :alt="$props.paymenGatewayInfo.refno1" />
       </figure>
 
       <small>{{ $props.paymenGatewayInfo.refno1 }}</small>
 
       <p>หรือคลิกปุ่มเพื่อบันทึก QR ด้านล่าง</p>
-      <div class="btn-group">
-        <button type="button" class="btn btn-secondary" @click="downloadImage">
-          <i class="fa-solid fa-download"></i>บันทึก QR
-        </button>
-        <button
-          type="button"
-          v-if="isCheck"
-          class="btn btn-outline-primary"
-          @click="checkPayment"
-        >
-          ตรวจสอบสถานะการชำระเงิน
-        </button>
-      </div>
-    </div>
 
-    <!-- <div class="qr-action">
-                <a class="btn btn-outline-info" href="#" title="แชร์หน้านี้">แชร์หน้านี้</a>
-                <a class="btn" href="#" title="เปลี่ยนช่องทางการชำระเงิน">เปลี่ยนช่องทางการชำระเงิน</a>
-            </div> -->
+      <button type="button" class="btn-secondary" @click="downloadImage">
+        <i class="fa-solid fa-download"></i>บันทึก QR
+      </button>
+
+      <div class="qr-action" v-if="isCheckPaymentStatus">
+        <UtilitiesLoading :waiting-text="waitingText" v-if="isWaitingPaymentStatus" />
+
+        <div class="notice-info" v-else>
+          <p>หลังจากสแกนชำระเงินแล้ว หากท่านต้องการตรวจสอบสถานะการชำระเงิน ท่านสามารถกดปุ่มด้านล่างเพื่อตรวจสอบสถานะได้
+          </p>
+          <button type="button" class="btn-info" @click="checkPayment">
+            ตรวจสอบสถานะการชำระเงิน
+          </button>
+        </div>
+      </div>
+
+    </div>
   </div>
 </template>
 
-<style scoped>
-.btn-group {
-  position: relative;
-  display: flex;
-  vertical-align: middle;
-}
-</style>
-
 <script setup lang="ts">
 import type {
-PaymentGatewayResponse,
-PaymentGetRequest,
-} from "~/shared/entities/payment-entity";
-import { useStorePaymentGet } from "~/stores/order/storePaymentGet";
+  PaymentGatewayResponse,
+  PaymentGetRequest,
+} from "~/shared/entities/payment-entity"
+import { useStorePaymentGet } from "~/stores/order/storePaymentGet"
 
-const paymenGatewaytInfo: globalThis.Ref<PaymentGatewayResponse | undefined> = ref();
-var isCheck = ref(false);
+const paymenGatewaytInfo: globalThis.Ref<PaymentGatewayResponse | undefined> = ref()
 
-const paymentGat = useStorePaymentGet();
+var isCheckPaymentStatus = ref(false)
 
-const emit = defineEmits(['checkPayment'])
+var isWaitingPaymentStatus = ref(false)
+
+const paymentGat = useStorePaymentGet()
+
+const emit = defineEmits(['onCheckPayment'])
+
+const waitingText = ref('กำลังตรวจสอบข้อมูลกับธนาคาร')
 
 const props = defineProps({
   paymenGatewayInfo: {
     type: Object as () => PaymentGatewayResponse,
   },
   paymentType: String,
-  feeAmount:Number
-});
+  feeAmount: Number
+})
 
-const onLoad = onMounted(async () => {
+onMounted(async () => {
   if (props.paymenGatewayInfo) {
-    paymenGatewaytInfo.value = props.paymenGatewayInfo;
+    paymenGatewaytInfo.value = props.paymenGatewayInfo
   }
+
   setTimeout(() => {
-    isCheck.value = true;
-  }, 30000);
-});
+    isCheckPaymentStatus.value = true
+  }, 10000)
+})
 
 const downloadImage = () => {
   if (props.paymenGatewayInfo && props.paymenGatewayInfo.payment_qr) {
-    useUtility().downloadImage(props.paymenGatewayInfo.payment_qr, "paymeny_qr.png");
+    useUtility().downloadImage(props.paymenGatewayInfo.payment_qr, "paymeny_qr.png")
   }
-};
+}
 
 const checkPayment = async () => {
-  const router = useRouter();
+
+  isWaitingPaymentStatus.value = true
+
+  const router = useRouter()
   const req: PaymentGetRequest = {
     PaymentNo: paymenGatewaytInfo.value?.refno2 ?? "",
-  };
+  }
   if (props.paymentType == "wallet") {
     const response = await useRepository().pledge.creditorderPaymentGet(req)
     if (
@@ -111,27 +116,27 @@ const checkPayment = async () => {
       response.apiResponse.Status == "200" &&
       response.apiResponse.Data
     ) {
-      emit('checkPayment',response.apiResponse.Data[0])
+      emit('onCheckPayment', response.apiResponse.Data[0])
     }
   } else {
-    const response = await useRepository().payment.get(req);
+    const response = await useRepository().payment.get(req)
     if (
       response.apiResponse.Status &&
       response.apiResponse.Status == "200" &&
       response.apiResponse.Data
     ) {
-      await paymentGat.setPaymentGet(response.apiResponse.Data[0]);
-      router.push("/order/compulsory/thanks");
+      await paymentGat.setPaymentGet(response.apiResponse.Data[0])
+      router.push("/order/compulsory/thanks")
     }
   }
-};
+}
 
 watch(
   () => props.paymenGatewayInfo,
   async () => {
     if (props.paymenGatewayInfo) {
-      paymenGatewaytInfo.value = props.paymenGatewayInfo;
+      paymenGatewaytInfo.value = props.paymenGatewayInfo
     }
   }
-);
+)
 </script>

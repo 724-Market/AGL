@@ -131,8 +131,8 @@
     <div > 
       บ้านเลขที่ {{ props.defaultAddressCustomer?.No }} 
       หมู่ที่ {{ props.defaultAddressCustomer?.Moo }} 
-      {{ props.defaultAddressCustomer?.Place }} 
-      <!-- หมู่บ้าน/อาคาร {{ props.defaultAddressCustomer?.Building }} 
+      <!-- {{ props.defaultAddressCustomer?.Place }} 
+      หมู่บ้าน/อาคาร {{ props.defaultAddressCustomer?.Building }} 
       ซอย/ตรอก/แยก {{ props.defaultAddressCustomer?.Alley }}  
       ถนน {{ props.defaultAddressCustomer?.Road }} -->
       {{ props.defaultAddressCustomer?.DistrictName }} 
@@ -271,7 +271,6 @@ watch(
   ()=>props.defaultAddressCache, 
   async (newValue) => {
     let addressCache = newValue as DefaultAddress
-
     if(addressCache) {
       ObjectAddress.value.ProvinceID = addressCache.ProvinceID 
       await emit('changeProvince', ObjectAddress.value.ProvinceID)

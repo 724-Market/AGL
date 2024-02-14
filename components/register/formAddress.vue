@@ -32,17 +32,17 @@
     </div>
 
     <div class="col-md-12">
-      <FormKit type="autocomplete" name="Province" label="จังหวัด" placeholder="เลือกจังหวัด" validation="required"
+      <FormKit type="autocomplete" name="ProvinceID" label="จังหวัด" placeholder="เลือกจังหวัด" validation="required"
         :validation-messages="{ required: 'กรุณาเลือกจังหวัด' }" :options="province" clear-search-on-open open-on-focus
         v-model="selectedProvince" @click="handleProvinceClick" />
     </div>
     <div class="col-md-12">
-      <FormKit type="autocomplete" name="district" label="อำเภอ" placeholder="เลือกอำเภอ" validation="required"
+      <FormKit type="autocomplete" name="DistrictID" label="อำเภอ" placeholder="เลือกอำเภอ" validation="required"
         :validation-messages="{ required: 'กรุณาเลือกอำเภอ' }" :options="filteredDistricts" clear-search-on-open
         open-on-focus v-model="selectedDistrict" @click="handleDistrictClick" />
     </div>
     <div class="col-md-12">
-      <FormKit type="autocomplete" name="subDistrict" label="ตำบล" placeholder="เลือกตำบล" validation="required"
+      <FormKit type="autocomplete" name="SubDistrictID" label="ตำบล" placeholder="เลือกตำบล" validation="required"
         :validation-messages="{ required: 'กรุณาเลือกตำบล' }" :options="filteredSubDistricts" clear-search-on-open
         open-on-focus v-model="selectedSubDistrict" />
     </div>
@@ -93,13 +93,12 @@ const loadProvince = async () => {
 */
 
 onMounted(async () => {
-
   if (props.addressData) {
-    selectedProvince.value = props.addressData.Province
+    selectedProvince.value = props.addressData.ProvinceID
     await filteredSubDistricts
-    selectedDistrict.value = props.addressData.district
+    selectedDistrict.value = props.addressData.DistrictID
     await selectedPostalCode
-    selectedSubDistrict.value = props.addressData.subDistrict
+    selectedSubDistrict.value = props.addressData.SubDistrictID
   }
   
 });

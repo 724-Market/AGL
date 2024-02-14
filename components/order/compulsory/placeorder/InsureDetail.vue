@@ -300,8 +300,13 @@
 
                 <section class="insured-address">
                   <h3>ที่อยู่ผู้เอาประกันภัย</h3>
+<!-- 
                   <button type="button" v-show="props.cacheOrderRequest?.OrderNo != null" class="btn-gray btn-open-papers" @click="onModalEditAddress(true)"><i
                       class="fa-solid fa-layer-group"></i>Edit</button>
+                       -->
+                  <FormKit type="button" v-show="props.cacheOrderRequest?.OrderNo != null" label="เพิ่มที่อยู่" name="register-submit" :classes="{
+                    input: 'btn-primary',
+                  }" @click="openDialogAddress" :disabled="isLoading" :loading="isLoading" />
 
                   <div class="row">
                     <ElementsFormAddress element-key="insured" :order-No="props.cacheOrderRequest?.OrderNo"
@@ -319,11 +324,9 @@
       </div>
     </div>
   </div>
-  <ElementsDialogEditAddress v-if="isEditAddress" element-key="insured" :customer-i-d="props.customerId"
-    :address-i-d="insureDetail.DefaultAddress?.AddressID" :order-No="props.cacheOrderRequest?.OrderNo"
-    :addr-province="addrProvince" :addr-district="addrDistrict" :addr-sub-district="addrSubDistrict"
-    :addr-zip-code="addrZipCode" :default-address-customer="defaultAddressCustomer"
-    :customer-profile-details="insureDetail" :show="isEditAddress" @close-address="closeModalAddress"
+  <ElementsDialogEditAddress v-if="addressDataArray.ProvinceID != null"
+    :customer-i-d="props.customerId" :address-i-d="insureDetail.DefaultAddress?.AddressID"
+    :address-data-array="addressDataArray" :show="isEditAddress" @close-address="closeModalAddress"
     @on-edit-address="updateAddress"></ElementsDialogEditAddress>
 </template>
 <script setup lang="ts">
@@ -386,7 +389,29 @@ const addrDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrSubDistrict: globalThis.Ref<SelectOption[]> = ref([])
 const addrZipCode = ref('')
 const prefixID = ref('')
-const renderKey = ref(0)
+
+/////////////////////////////////////////
+// Button Loading
+const isLoading = ref(false)
+
+interface AddressData {
+  No?: string
+  Moo?: string
+  Place?: string
+  Building?: string
+  Floor?: string
+  Alley?: string
+  Road?: string
+  ProvinceID?: string
+  DistrictID?: string
+  SubDistrictID?: string
+  postalCode?: string
+  ProvinceLabel?: string
+  DistrictLabel?: string
+  SubDistrictLabel?: string
+}
+
+const addressDataArray = ref<AddressData>({})
 
 var isEditAddress = ref(false)
 
@@ -394,10 +419,10 @@ const dateNow: Date = new Date()
 const effectiveMinDate: Date = new Date() // Format date explicitly
 
 const values = reactive({})
-const onLoad = onMounted(() => {
+const onLoad = onMounted(async () => {
   if (props.customerId) {
-    updateAddress(props.customerId);
-
+    await updateAddress(props.customerId);
+    await mapAddressData();
   }
   if (props.prefix) {
     Prefix.value = props.prefix
@@ -454,7 +479,7 @@ const onLoad = onMounted(() => {
   }
 })
 
-const onModalEditAddress = (open: boolean) => {
+const openDialogAddress = (open: boolean) => {
   isEditAddress.value = false;
   isEditAddress.value = open;
 }
@@ -466,6 +491,38 @@ const closeModalAddress = async (refresh: boolean) => {
   }
   isEditAddress.value = false;
 }
+
+const mapAddressData = async () => {
+  addressDataArray.value = {
+      No: defaultAddressCustomer.value?.No,
+      Moo: defaultAddressCustomer.value?.Moo,
+      Place: defaultAddressCustomer.value?.Place,
+      Building: defaultAddressCustomer.value?.Building,
+      Floor: defaultAddressCustomer.value?.Floor,
+      Alley: defaultAddressCustomer.value?.Alley,
+      Road: defaultAddressCustomer.value?.Road,
+      ProvinceID: defaultAddressCustomer.value?.ProvinceID,
+      DistrictID: defaultAddressCustomer.value?.DistrictID,
+      SubDistrictID: defaultAddressCustomer.value?.SubDistrictID,
+      postalCode: defaultAddressCustomer.value?.ZipCode,
+      ProvinceLabel: defaultAddressCustomer.value?.ProvinceName,
+      DistrictLabel: defaultAddressCustomer.value?.DistrictName,
+      SubDistrictLabel: defaultAddressCustomer.value?.SubDistrictName
+    }
+};
+const replaceValues = () => {
+  if (!defaultAddressCustomer.value || !defaultAddress.value) return;
+
+  const defaultAddressKeys = Object.keys(defaultAddress.value);
+  const customerAddressKeys = Object.keys(defaultAddressCustomer.value);
+
+  customerAddressKeys.forEach((key) => {
+    if (defaultAddressKeys.includes(key) && !defaultAddress.value[key]) {
+      defaultAddress.value[key] = defaultAddressCustomer.value[key];
+    }
+  });
+};
+
 
 // Update profile after save
 const updateAddress = async (e: string) => {
@@ -481,9 +538,11 @@ const updateAddress = async (e: string) => {
     getData.apiResponse.Data
   ) {
     defaultAddressCustomer.value = getData.apiResponse.Data[0];
+    await replaceValues();
     emit('changeProvince', defaultAddressCustomer.value?.ProvinceID)
     emit('changeDistrict', defaultAddressCustomer.value?.DistrictID)
     emit('changeSubDistrict', defaultAddressCustomer.value?.SubDistrictID)
+    await mapAddressData()
   }
 }
 

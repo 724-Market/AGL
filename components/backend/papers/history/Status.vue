@@ -1,8 +1,8 @@
 <template>
     <div id="transaction-stats-admin" class="card-stat-stack">
 
-        <div class="card-stat" :class="{ 'is-active' : isActive[0]}">
-            <a @click="onChangeFilter('Receive')" title="รับแจ้งงาน">
+        <div class="card-stat" :class="{ 'is-active': isActive[0] }">
+            <a href="#" @click="onChangeFilter('Receive', $event)" title="รับแจ้งงาน">
                 <div class="stat-wrapper">
                     <div class="stat-header">
                         <h5 class="topic">รับแจ้งงาน</h5>
@@ -17,8 +17,8 @@
             </a>
         </div>
 
-        <div class="card-stat" :class="{ 'is-active' : isActive[1]}">
-            <a @click="onChangeFilter('Delivery')" title="จัดส่งแล้ว">
+        <div class="card-stat" :class="{ 'is-active': isActive[1] }">
+            <a href="#" @click="onChangeFilter('Delivery', $event)" title="จัดส่งแล้ว">
                 <div class="stat-wrapper">
                     <div class="stat-header">
                         <h5 class="topic">จัดส่งแล้ว</h5>
@@ -33,8 +33,8 @@
             </a>
         </div>
 
-        <div class="card-stat is-success" :class="{ 'is-active' : isActive[2]}">
-            <a @click="onChangeFilter('Success')" title="สำเร็จ">
+        <div class="card-stat is-success" :class="{ 'is-active': isActive[2] }">
+            <a href="#" @click="onChangeFilter('Success', $event)" title="สำเร็จ">
                 <div class="stat-wrapper">
                     <div class="stat-header">
                         <h5 class="topic">สำเร็จ</h5>
@@ -49,8 +49,8 @@
             </a>
         </div>
 
-        <div class="card-stat is-danger" :class="{ 'is-active' : isActive[3]}">
-            <a @click="onChangeFilter('Cancel')" title="ยกเลิกรายการ">
+        <div class="card-stat is-danger" :class="{ 'is-active': isActive[3] }">
+            <a href="#" @click="onChangeFilter('Cancel', $event)" title="ยกเลิกรายการ">
                 <div class="stat-wrapper">
                     <div class="stat-header">
                         <h5 class="topic">ยกเลิกรายการ</h5>
@@ -76,11 +76,11 @@ import type {
 
 const emit = defineEmits(['changeStatus'])
 
-const props = defineProps({ 
-  statusGroup : {
-    type: Object as () => getStatusGroupRes,
-  },
-  statusSearch : String    
+const props = defineProps({
+    statusGroup: {
+        type: Object as () => getStatusGroupRes,
+    },
+    statusSearch: String
 })
 
 const statusGroup: globalThis.Ref<getStatusGroupRes | undefined> = ref()
@@ -88,10 +88,13 @@ var statusSearch = ref('')
 
 var isActive = ref([true, false, false, false])
 
-const onChangeFilter = async (status: string) => {
-    // console.log('filter', filter)
+const onChangeFilter = async (status: string, event: any) => {
+
+    event.preventDefault()
+
     statusSearch.value = ''
-    switch(status) {
+
+    switch (status) {
         case 'Receive':
             isActive.value = [true, false, false, false]
             break;
@@ -109,22 +112,22 @@ const onChangeFilter = async (status: string) => {
 };
 
 watch(
-  () => props.statusGroup,
-  async () => {
-    if (props.statusGroup) {
-      statusGroup.value = props.statusGroup
+    () => props.statusGroup,
+    async () => {
+        if (props.statusGroup) {
+            statusGroup.value = props.statusGroup
+        }
     }
-  }
 )
 
 watch(
-  () => props.statusSearch,
-  async () => {
-    if (props.statusSearch) {
-      statusSearch.value = props.statusSearch
-      if(statusSearch.value == 'clear') isActive.value = [false, false, false, false]
-      //emit('changeStatus', 'clear')
+    () => props.statusSearch,
+    async () => {
+        if (props.statusSearch) {
+            statusSearch.value = props.statusSearch
+            if (statusSearch.value == 'clear') isActive.value = [false, false, false, false]
+            //emit('changeStatus', 'clear')
+        }
     }
-  }
 )
 </script>

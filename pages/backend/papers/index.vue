@@ -8,8 +8,8 @@
 
                 <BackendPapersHistoryStatus v-if="statusGroup" @change-status="handleChangeStatus"
                     :status-group="statusGroup" :status-search="statusSearch"></BackendPapersHistoryStatus>
-<!-- 
-                <div id="transaction-stats" class="card-stat-stack">
+
+                <!-- <div id="transaction-stats" class="card-stat-stack">
                     <OrderHistoryCardsPledge v-if="loadPBalance" :paper-balance="loadPBalance" />
                     <OrderHistoryCardsPaperUsage v-if="loadPBalance" :paper-balance="loadPBalance" />
                 </div> -->
@@ -153,7 +153,7 @@ const loadHistoryStatus = async (filter?: Filter[]) => {
 const handlerChangeTable = async (datatable: any) => {
     table.value = datatable;
 
-    console.log("datatable", table.value);
+    // console.log("datatable", table.value);
 }
 
 const trackStatus = async (OrderNo: string) => {

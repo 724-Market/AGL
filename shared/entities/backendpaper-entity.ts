@@ -131,8 +131,8 @@ export interface getStatusGroupReq {
   Filter?: Filter[]
 }
 export interface getStatusGroupRes {
-  Receive: number
   Prepare: number
+  Receive: number
   Delivery: number
   Success: number
   Cancel: number

@@ -324,10 +324,12 @@
       </div>
     </div>
   </div>
-  <ElementsDialogEditAddress v-if="addressDataArray.ProvinceID != null"
+  
+  <ElementsDialogEditAddress v-if="isEditAddress"
     :customer-i-d="props.customerId" :address-i-d="insureDetail.DefaultAddress?.AddressID"
     :address-data-array="addressDataArray" :show="isEditAddress" @close-address="closeModalAddress"
-    @on-edit-address="updateAddress"></ElementsDialogEditAddress>
+    @on-edit-address="updateAddress"></ElementsDialogEditAddress> 
+
 </template>
 <script setup lang="ts">
 import type { DefaultAddress, CustomerOrderRequest, LegalPersonProfile, PersonProfile, PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
@@ -539,10 +541,10 @@ const updateAddress = async (e: string) => {
   ) {
     defaultAddressCustomer.value = getData.apiResponse.Data[0];
     await replaceValues();
-    emit('changeProvince', defaultAddressCustomer.value?.ProvinceID)
-    emit('changeDistrict', defaultAddressCustomer.value?.DistrictID)
-    emit('changeSubDistrict', defaultAddressCustomer.value?.SubDistrictID)
-    await mapAddressData()
+    //emit('changeProvince', defaultAddressCustomer.value?.ProvinceID)
+    //emit('changeDistrict', defaultAddressCustomer.value?.DistrictID)
+    //emit('changeSubDistrict', defaultAddressCustomer.value?.SubDistrictID)
+    await mapAddressData();
   }
 }
 

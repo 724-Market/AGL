@@ -199,7 +199,7 @@ const loadHistoryStatus = async (filter?: Filter[]) => {
   if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
     if (statusRes.apiResponse.Data) {
       statusGroup.value = statusRes.apiResponse.Data;
-      console.log("statusGroup.value", statusGroup.value);
+      // console.log("statusGroup.value", statusGroup.value);
     }
   }
   isLoading.value = false;
@@ -244,7 +244,7 @@ const handleChangeStatus = async (status: string) => {
     filterOptionTable.value = [...filterOptionTable.value, value];
   });
 
-  console.log("handleChangeStatus filterOption", filterOption.value);
+  // console.log("handleChangeStatus filterOption", filterOption.value);
 };
 
 const handleSearch = async (searchValue: HistorySearch) => {
@@ -311,13 +311,13 @@ const handleClearSearch = async (status: boolean) => {
 const handlerChangeTable = async (datatable: any) => {
   table.value = datatable;
 
-  console.log("datatable", table.value);
+  // console.log("datatable", table.value);
 }
 
-const continute = () => {
-  alert("ทำรายการต่อ");
-  console.log("ทำรายการต่อ");
-};
+// const continute = () => {
+//   alert("ทำรายการต่อ");
+//   console.log("ทำรายการต่อ");
+// };
 
 // Define layout
 const layout = "monito";

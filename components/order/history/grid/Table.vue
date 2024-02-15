@@ -1,13 +1,8 @@
 <template>
   <div class="card">
     <div class="card-body card-table">
-      <DataTable
-        id="datatables"
-        class="table table-transaction nowrap"
-        data-order='[[ 2, "desc" ]]'
-        :options="datatableOptions"
-        ref="table"
-      >
+      <DataTable id="datatables" class="table table-transaction nowrap" data-order='[[ 2, "desc" ]]'
+        :options="datatableOptions" ref="table">
         <thead>
           <tr>
             <th data-orderable="false"></th>
@@ -38,7 +33,7 @@ import type { Filter } from "~/shared/entities/table-option";
 import type { SubHistoryRequest } from "~/shared/entities/order-entity";
 
 const props = defineProps({
-    filters: {
+  filters: {
     type: Array<Filter>,
     default: Array<Filter>,
   },
@@ -51,11 +46,11 @@ const isLoading = ref(false)
 const onLoad = onMounted(async () => {
   dt = table.value;
   // console.log(dt);
-  emit('changeTable',table.value)
+  emit('changeTable', table.value)
 
 });
- // DataTable
- table.value = DataTable.use(DataTablesCore);
+// DataTable
+table.value = DataTable.use(DataTablesCore);
 
 // Column options in datatable
 const columns = [
@@ -103,11 +98,11 @@ const datatableAjax = {
       Filter: props.filters, //filterOption.value,
     };
   },
-  dataSrc: function ( json: { data: any; } ) {
-   //Make your callback here.
-  isLoading.value = false
-  return json.data;
-            }
+  dataSrc: function (json: { data: any; }) {
+    //Make your callback here.
+    isLoading.value = false
+    return json.data;
+  }
 };
 
 // DataTable options
@@ -208,41 +203,41 @@ const datatableOptions = {
       (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
     );
 
-    if(data.Status == 'Draft') {
+    if (data.Status == 'Draft') {
       const menuEdit = TdId1.querySelector('.icon-edit');
       menuEdit.addEventListener('click', async () => {
         emit('onResume', menuEdit.dataset.id)
       })
 
       const menuDelete = TdId1.querySelector('.icon-trash')
-      menuDelete.addEventListener('click',async () => {
+      menuDelete.addEventListener('click', async () => {
         emit('onDelete', menuDelete.dataset.id)
       })
     }
-    if(data.Status == 'Pending') {
+    if (data.Status == 'Pending') {
       const menuPayment = TdId1.querySelector('.icon-payment');
       menuPayment.addEventListener('click', async () => {
         emit('onPay', menuPayment.dataset.id)
       })
     }
-    if(data.Status == 'Delivery' || data.Status == 'Process') {
+    if (data.Status == 'Delivery' || data.Status == 'Process') {
       const menuTracking = TdId1.querySelector('.icon-tracking')
-      menuTracking.addEventListener('click',async () => {
+      menuTracking.addEventListener('click', async () => {
         emit('onTracking', menuTracking.dataset.id)
       })
     }
-    if(data.Status == 'Success') {
+    if (data.Status == 'Success') {
       const menuPolicy = TdId1.querySelector('.icon-policy')
-      menuPolicy.addEventListener('click',async () => {
+      menuPolicy.addEventListener('click', async () => {
         emit('onPolicy', menuPolicy.dataset.id)
       })
 
       const menuDownload = TdId1.querySelector('.icon-download-file')
-      menuDownload.addEventListener('click',async () => {
+      menuDownload.addEventListener('click', async () => {
         emit('onDownload', menuDownload.dataset.url)
       })
     }
-    if(data.Status == 'Cancel' && data.IsCancel && data.IsCancelComplete) {
+    if (data.Status == 'Cancel' && data.IsCancel && data.IsCancelComplete) {
       const menuTracking = TdId1.querySelector('.icon-tracking')
       menuTracking.addEventListener('click', async () => {
         emit('onTracking', menuTracking.dataset.id)
@@ -260,53 +255,52 @@ const datatableOptions = {
     //   // console.log(tr)
     // })
 
-    TdId2.addEventListener('click',async () => {
-        if(data.OrderGroupNo!='')
-        {
-            const req: SubHistoryRequest = {
-            OrderGroupNo:data.OrderGroupNo
+    TdId2.addEventListener('click', async () => {
+      if (data.OrderGroupNo != '') {
+        const req: SubHistoryRequest = {
+          OrderGroupNo: data.OrderGroupNo
         }
 
-            // Get the parent tr element
-            var tr = this.parentNode
+        // Get the parent tr element
+        var tr = this.parentNode
 
-            // Toggle the class "is-open" on the parent tr element
-            tr.classList.toggle('is-open')
-            // Check if the class "is-open" is present after toggling
-            if (tr.classList.contains('is-open')) {
-                const subdata = await useRepository().order.getSubHistoryList(req)
+        // Toggle the class "is-open" on the parent tr element
+        tr.classList.toggle('is-open')
+        // Check if the class "is-open" is present after toggling
+        if (tr.classList.contains('is-open')) {
+          const subdata = await useRepository().order.getSubHistoryList(req)
 
-                let sub_group = await renderToString(
-                    h(OrderHistoryGridSub, {
-                        row: subdata.apiResponse.Data,
-                    })
-                    );
-                console.log(sub_group)
-                // Create the HTML content for the new tr element
-                //var newTrHtml = '<tr><td colspan="8" style="background-color: #faefce"><strong>New HTML Here</strong></td></tr>'
-                var newTrHtml = sub_group;
-                // Insert the new tr element after the current tr
-                tr.insertAdjacentHTML('afterend', newTrHtml)
-            } else {
-              const sub_group = document.querySelectorAll(`tr[group-data="${data.OrderGroupNo}"]`);
-                console.log(sub_group)
-                sub_group.forEach(function(value,key){
-                  tr.parentNode.removeChild(value)
-                })
-                // // Check if the next sibling is a tr element
-                // if (tr.nextSibling.tagName === 'TR') {
-                //     // Remove the next sibling tr element
-                //     tr.parentNode.removeChild(tr.nextSibling)
-                // }
-            }
+          let sub_group = await renderToString(
+            h(OrderHistoryGridSub, {
+              row: subdata.apiResponse.Data,
+            })
+          );
+          console.log(sub_group)
+          // Create the HTML content for the new tr element
+          //var newTrHtml = '<tr><td colspan="8" style="background-color: #faefce"><strong>New HTML Here</strong></td></tr>'
+          var newTrHtml = sub_group;
+          // Insert the new tr element after the current tr
+          tr.insertAdjacentHTML('afterend', newTrHtml)
+        } else {
+          const sub_group = document.querySelectorAll(`tr[group-data="${data.OrderGroupNo}"]`);
+          console.log(sub_group)
+          sub_group.forEach(function (value, key) {
+            tr.parentNode.removeChild(value)
+          })
+          // // Check if the next sibling is a tr element
+          // if (tr.nextSibling.tagName === 'TR') {
+          //     // Remove the next sibling tr element
+          //     tr.parentNode.removeChild(tr.nextSibling)
+          // }
         }
+      }
 
-        })
+    })
   },
 };
 
-watch(()=>props.filters,()=>{
-console.log('filter in table ',props.filters)
-table.value.dt.draw();
+watch(() => props.filters, () => {
+  // console.log('filter in table ',props.filters)
+  table.value.dt.draw();
 })
 </script>

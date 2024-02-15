@@ -83,9 +83,9 @@ interface AddressData {
   Floor?: string
   Alley?: string
   Road?: string
-  Province?: string
-  district?: string
-  subDistrict?: string
+  ProvinceID?: string
+  DistrictID?: string
+  SubDistrictID?: string
   postalCode?: string
   ProvinceLabel?: string
   DistrictLabel?: string

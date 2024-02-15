@@ -324,6 +324,7 @@ export interface StatusGroupRequest {
 }
 export interface StatusGroupResponse {
   Prepare: number
+  Receive: number
   Delivery: number
   Success: number
   Cancel: number

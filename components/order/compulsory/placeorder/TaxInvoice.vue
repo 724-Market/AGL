@@ -124,6 +124,18 @@
                           v-model="taxInvoiceAddress.PhoneNumber"
                         />
                       </div>
+
+                      <div class="col-6">
+                        <FormKit type="number" label="ภาษี" mask="#-####-#####-##-#" 
+                          name="TaxID" placeholder="เลขบัตรประชาชน 13 หลัก"
+                          v-model="taxInvoiceAddress.TaxID"
+                          validation="required|matches:/^[0-9]{13}$/" :validation-messages="{
+                            required: 'กรุณาใส่เลขบัตรประชาชน',
+                            matches: 'เลขบัตรประชาชนควรเป็นตัวเลข 13 หลัก'
+                          }"
+                        />
+                      </div>
+                      
                       <ElementsFormAddress
                         element-key="taxinvoice"
                         :addr-province="addrProvince"

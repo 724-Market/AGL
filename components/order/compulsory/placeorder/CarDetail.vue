@@ -172,7 +172,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineEventHandler } from "~/server/api/setting.post";
 import type { RadioOption, SelectOption } from "~/shared/entities/select-option";
 import type { IInformation } from "~~/shared/entities/information-entity";
 import type { CarDetailsExtension } from "~~/shared/entities/placeorder-entity";

@@ -12,22 +12,6 @@
       <div class="loading-text">กรุณารอสักครู่</div>
     </div>
   </dialog>
-  <!-- <div id="dialogModal" class="dialog-modal" v-show="_loading">
-        <div class="dialog-content modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalToggleLabel">แจ้งเตือน</h1>
-                <button type="button" class="btn-close" @click="closeModal"></button>
-            </div>
-            <div class="modal-body" style="height:150px">
-                <div class="d-flex justify-content-center mb-3">
-                    <div class="spinner-border text-success" style="width: 4rem; height: 4rem;" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-                <h3 class="text-center">Loading...</h3>
-            </div>
-        </div>
-    </div> -->
 </template>
 
 <script setup lang="ts">

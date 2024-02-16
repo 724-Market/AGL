@@ -66,7 +66,7 @@ const onLoad = onMounted(async () => {
         isLoading.value = true;
         // Handle the possibility of route.params.id being an array
         const orderId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
-        await loadTrackOrderPaper("PO2311000038");
+        await loadTrackOrderPaper(orderId);
         
         await loadOrderDetail(orderId);
         isLoading.value = false;

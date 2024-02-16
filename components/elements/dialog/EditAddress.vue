@@ -95,11 +95,7 @@ const submitEditAddress = async (formData: any) => {
       Road: formData.Road,
       ProvinceID: formData.ProvinceID,
       DistrictID: formData.DistrictID,
-      SubDistrictID: formData.SubDistrictID,
-      postalCode: formData.ZipCode,
-      ProvinceLabel: formData.ProvinceName,
-      DistrictLabel: formData.DistrictName,
-      SubDistrictLabel: formData.SubDistrictName
+      SubDistrictID: formData.SubDistrictID
   }
   const resCreate = await useRepository().customer.AddressSave(reqSaveAddress);
   if (

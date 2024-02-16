@@ -135,9 +135,9 @@
       หมู่บ้าน/อาคาร {{ props.defaultAddressCustomer?.Building }} 
       ซอย/ตรอก/แยก {{ props.defaultAddressCustomer?.Alley }}  
       ถนน {{ props.defaultAddressCustomer?.Road }} -->
+      {{ props.defaultAddressCustomer?.ProvinceName }}
       {{ props.defaultAddressCustomer?.DistrictName }} 
-      {{ props.defaultAddressCustomer?.SubDistrictName }}
-      {{ props.defaultAddressCustomer?.ProvinceName }} 
+      {{ props.defaultAddressCustomer?.SubDistrictName }} 
       {{ props.defaultAddressCustomer?.ZipCode }} 
     </div>
   </div>

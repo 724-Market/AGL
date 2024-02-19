@@ -66,7 +66,7 @@ const onLoad = onMounted(async () => {
         isLoading.value = true;
         // Handle the possibility of route.params.id being an array
         const orderId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
-        await loadTrackOrderPaper("PO2311000038");
+        await loadTrackOrderInsure(orderId);
         
         await loadOrderDetail(orderId);
         isLoading.value = false;
@@ -74,11 +74,11 @@ const onLoad = onMounted(async () => {
         router.push("/login")
     }
 });
-const loadTrackOrderPaper = async (orderNo: string) => {
+const loadTrackOrderInsure = async (orderNo: string) => {
     const treq: TrackOrderReq = {
         ReferenceID: orderNo,
     };
-    const resTrackOrder = await useRepository().track.getOrderPaper(treq);
+    const resTrackOrder = await useRepository().track.getOrderInsure(treq);
     if (
         resTrackOrder.apiResponse.Status &&
         resTrackOrder.apiResponse.Status == "200" &&

@@ -14,7 +14,7 @@
           required: 'กรุณาใส่ข้อมูล',
           address_characters: 'กรุณากรอกรูปแบบบ้านเลขที่ให้ถูกต้อง',
         }"
-        autocomplete="false"
+        autocomplete="off"
       />
     </div>
     
@@ -24,7 +24,7 @@
         label="หมู่ที่"
         :name="'AddressMoo' + props.elementKey"
         placeholder="หมู่ที่"
-        autocomplete="false"
+        autocomplete="off"
         v-model="ObjectAddress.Moo"
         @keyup="handlerChangeFullAddress"
       />
@@ -37,7 +37,7 @@
         placeholder="หมู่บ้าน/อาคาร"
         v-model="ObjectAddress.Building"
         @keyup="handlerChangeFullAddress"
-        autocomplete="false"
+        autocomplete="off"
       />
     </div>
     <div class="col-6">
@@ -46,7 +46,7 @@
         label="ซอย/ตรอก/แยก"
         :name="'AddressSoi' + props.elementKey"
         placeholder="ซอย/ตรอก/แยก"
-        autocomplete="false"
+        autocomplete="off"
         v-model="ObjectAddress.Alley"
         @keyup="handlerChangeFullAddress"
       />
@@ -57,7 +57,7 @@
         label="ถนน"
         :name="'AddressRoad' + props.elementKey"
         placeholder="ถนน"
-        autocomplete="false"
+        autocomplete="off"
         v-model="ObjectAddress.Road"
         @input-raw="handlerChangeFullAddress"
       />
@@ -112,7 +112,7 @@
         placeholder="รหัสไปรษณีย์"
         validation="required"
         :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-        autocomplete="false"
+        autocomplete="off"
       />
     </div>
     <div class="col-xs-12 col-md-6">
@@ -135,9 +135,9 @@
       หมู่บ้าน/อาคาร {{ props.defaultAddressCustomer?.Building }} 
       ซอย/ตรอก/แยก {{ props.defaultAddressCustomer?.Alley }}  
       ถนน {{ props.defaultAddressCustomer?.Road }} -->
+      {{ props.defaultAddressCustomer?.ProvinceName }}
       {{ props.defaultAddressCustomer?.DistrictName }} 
-      {{ props.defaultAddressCustomer?.SubDistrictName }}
-      {{ props.defaultAddressCustomer?.ProvinceName }} 
+      {{ props.defaultAddressCustomer?.SubDistrictName }} 
       {{ props.defaultAddressCustomer?.ZipCode }} 
     </div>
   </div>

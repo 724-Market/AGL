@@ -148,9 +148,10 @@
               input: 'btn-primary',
               outer: 'form-actions',
             }"
-            :disabled="!checkSave"
+            
             :loading="isLoading"
           /> 
+          <!-- :disabled="!checkSave" -->
 
           <!-- <button
             type="submit"

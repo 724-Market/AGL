@@ -43,7 +43,7 @@
             </div>
             <div class="summary-item">
               <h4 class="topic">เบอร์โทรศัพท์</h4>
-              <p>{{ orderDetail.AssuredDetails.PhoneNumber }}</p>
+              <p>{{ orderDetail.AssuredDetails.AddressPhoneNumber }}</p>
             </div>
             <div class="summary-item">
               <h4 class="topic">ที่อยู่</h4>

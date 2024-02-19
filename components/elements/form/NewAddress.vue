@@ -35,7 +35,7 @@
       @change="handleFirstNameChange"
       validation="required"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-      autocomplete="false"
+      autocomplete="off"
     />
   </div>
   <div class="col-md-5 col-lg-5">
@@ -48,7 +48,7 @@
       @change="handleLastNameChange"
       validation="required"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-      autocomplete="false"
+      autocomplete="off"
     />
   </div>
 
@@ -63,7 +63,7 @@
       @change="handlePhoneNumberChange"
       validation="required|matches:/^[0-9]{10}$/"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล', matches: 'หมายเลขโทรศัพท์ควรเป็นตัวเลข 10 หลัก' }"
-      autocomplete="false"
+      autocomplete="off"
     />
   </div>
 

@@ -32,8 +32,8 @@
                     </div>
                     <div class="status-action">
                         <a class="btn btn-outline-info" href="#" title="แชร์หน้านี้">แชร์หน้านี้</a>
-                        <a class="btn btn-primary" href="#"
-                            title="ตรวจสอบสถานะสั่งซื้อ">ตรวจสอบสถานะสั่งซื้อ</a>
+                        <NuxtLink class="btn btn-primary" to="/order/compulsory/status/AMC2402000043"
+                            title="ตรวจสอบสถานะสั่งซื้อ">ตรวจสอบสถานะสั่งซื้อ</NuxtLink>
                     </div>
                 </div>
             </div>

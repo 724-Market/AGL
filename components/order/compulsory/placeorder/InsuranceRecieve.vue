@@ -51,7 +51,7 @@
                     placeholder="xxxxxx@email.com"
                     validation="required"
                     :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-                    autocomplete="false"
+                    autocomplete="off"
                   />
                 </aside>
 
@@ -140,17 +140,21 @@
                       :classes="{ input: 'btn-primary', outer: 'form-actions' }"
                       :disabled="insureFullNewAddress == ''"
                       :loading="isLoading"
-                    /> -->
-
-                    <button 
-                      type="button"
-                      class="formkit-input btn btn-primary form-actions"
-                      @click.prevent="handleButtonSaveClick"
+                    /> 
+                    <FormKit
+                      type="submit"
                       label="บันทึกข้อมูล"
-                      :disabled="insureFullNewAddress == ''"
                       :loading="isLoading"
-                      >บันทึกข้อมูล
-                    </button>
+                    />-->
+
+                    <FormKit 
+                      type="submit"
+                      class="formkit-input btn btn-primary form-actions"
+                      @click="handleButtonSaveClick"
+                      label="บันทึกข้อมูล"
+                      :loading="isLoading"
+                    />
+
                   </aside>
                 </section>
               </div>

@@ -10,6 +10,10 @@ class TrackModule {
     async getOrderPaper(req: TrackOrderReq): Promise<IAPIResponse<TrackOrderRes[]>> {
       return await useCallApi().apiRepository<TrackOrderRes[]>(`${this.RESOURCE}/order/paper/get`, req)
     }
+    
+    async getOrderInsure(req: TrackOrderReq): Promise<IAPIResponse<TrackOrderRes[]>> {
+      return await useCallApi().apiRepository<TrackOrderRes[]>(`${this.RESOURCE}/order/insurance/compulsory/get`, req)
+    }
 }
 
 export default TrackModule;

@@ -1,28 +1,35 @@
 <template>
     <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-        :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
-        
+        :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
+
         <div class="row">
             <div class="col col-main">
-                <ElementsUtilitiesTracking v-if="orderTrack" :order-track="orderTrack" :index-sequence="sequenceIndex"
-                    :index-current="currentIndex" :is-showchild="isShowChild"></ElementsUtilitiesTracking>
+                <div class="has-sticky">
+
+                    <ElementsUtilitiesTracking v-if="orderTrack" :order-track="orderTrack" :index-sequence="sequenceIndex"
+                        :index-current="currentIndex" :is-showchild="isShowChild"></ElementsUtilitiesTracking>
+
+                </div>
             </div>
 
             <div class="col col-sidebar">
                 <section class="site-sidebar is-sticky">
-                    
+
                     <PapersOrderDetail :order-get="orderGet" v-if="orderGet" />
-                    
-                    <PapersSuborder :order-get="orderGet" :ordersub-feedelivery="ordersubFeeDel" :order-sub="orderSubAll" v-if="orderSubAll"></PapersSuborder>
-                    <button class="btn-primary" @click="confirmReceiveOrder" type="button" v-if="orderGet?.OrderStatus == 'Delivery'">ได้รับกระดาษครบแล้ว</button>
-                    <br>
-                    <NuxtLink to="/papers" class="btn btn-back">ย้อนกลับ</NuxtLink>
+
+                    <PapersSuborder :order-get="orderGet" :ordersub-feedelivery="ordersubFeeDel" :order-sub="orderSubAll"
+                        v-if="orderSubAll"></PapersSuborder>
+
+                    <button class="btn-primary" @click="confirmReceiveOrder" type="button"
+                        v-if="orderGet?.OrderStatus == 'Delivery'">ได้รับกระดาษครบแล้ว</button>
+
+                    <NuxtLink class="btn-back btn-gray" to="/papers">ย้อนกลับ</NuxtLink>
 
                 </section>
             </div>
 
         </div>
-        
+
         <ElementsModalLoading :loading="isLoading" />
 
     </NuxtLayout>
@@ -100,7 +107,7 @@ const loadTrackOrderPaper = async (orderNo: string) => {
             const currentItem = resTrackOrder.apiResponse.Data[currentIndex];
             if (currentItem && currentItem.Parent) {
                 const currentIndex2 = currentItem.Child?.findIndex(
-                    item => item && (item.StatusCode === 'Success' || item.StatusCode === 'CancelByUser'|| item.StatusCode === 'CancelByAdmin'));
+                    item => item && (item.StatusCode === 'Success' || item.StatusCode === 'CancelByUser' || item.StatusCode === 'CancelByAdmin'));
                 if (currentIndex2 !== -1) {
                     sequenceIndex = currentIndex;
                     isShowChild = true;
@@ -138,8 +145,8 @@ const loadSubDetail = async (orderNo: string) => {
     } else {
         alert(resPSubOrder.apiResponse.Status);
     }
-        
-    
+
+
 };
 
 const loadOrderDetail = async (orderNo: string) => {
@@ -190,6 +197,7 @@ const layout = "monito"
 const layoutClass = "layout-monito"
 const showPageSteps = false
 const showPageHeader = true
+const showLogoHeader = false
 
 // Define page meta
 const pageTitle = "ติดตามสถานะ"

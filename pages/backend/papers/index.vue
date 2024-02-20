@@ -1,6 +1,6 @@
 <template>
     <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-        :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
+        :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
         <div class="row">
             <div class="col">
 
@@ -198,6 +198,7 @@ const layout = "monito"
 const layoutClass = "layout-monito"
 const showPageSteps = false
 const showPageHeader = true
+const showLogoHeader = false
 
 // Define page meta
 const pageTitle = "รายการแลกกระดาษ"

@@ -60,7 +60,8 @@ const orderStatusIconClass = computed(() => {
     switch (orderStatus.value) {
         case 'OrderCreate':
             return 'warning'
-        case 'OrderDelivery':
+        case 'OrderPayment':
+            return 'info'
         case 'OrderReceive':
             return 'info'
         case 'OrderComplete':
@@ -78,6 +79,8 @@ const orderStatusClass = computed(() => {
         case 'OrderCreate':
             return 'text-warning'
         case 'OrderDelivery':
+        case 'OrderPayment':
+            return 'text-warning'
         case 'OrderReceive':
             return 'text-info'
         case 'OrderComplete':
@@ -94,6 +97,8 @@ const orderStatusText = computed(() => {
     switch (orderStatus.value) {
         case 'OrderCreate':
             return 'รอดำเนินการ'
+        case 'OrderPayment':
+            return 'ชำระเงิน'
         case 'OrderDelivery':
             return 'จัดส่ง'
         case 'OrderReceive':

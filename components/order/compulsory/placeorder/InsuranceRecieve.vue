@@ -106,10 +106,10 @@
                       :options="postalAddressPolicy"
                       options-class="option-block-stack"
                     >
-                      <template #label="context">
+                      <!-- <template #label="context">
                       <div class="ml-2">{{context.option.label}}</div>
                       <button>ลบ</button>
-                      </template>
+                      </template> -->
                     </FormKit>
                   </div>
 
@@ -393,6 +393,8 @@ const handleShippingMethodChange = async (event: any) => {
 }
 
 const handleRadioPostalAddressPolicyChange = async (event: String) => {
+  console.log('event', event)
+  console.log('postalAddressPolicyText', postalAddressPolicyText.value)
   switch (event) {
     case "insured":
       isInsured.value = true

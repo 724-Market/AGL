@@ -255,6 +255,7 @@
                       <div class="col-md-12 col-lg-4">
                         <FormKit type="text" label="เลขประจำตัวผู้เสียภาษี" name="BranchTaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี" validation="required|length:13|number"
+                          maxlength="13"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 13 ตัว',
@@ -282,6 +283,7 @@
                       </div>
                       <div class="col-6">
                         <FormKit type="text" label="หมายเลขโทรศัพท์" name="BranchPhoneNumber" placeholder="098765XXXX"
+                          maxlength="10"
                           validation="required|+length:10|number" :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 10 ตัว',

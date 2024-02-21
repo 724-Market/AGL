@@ -35,19 +35,21 @@
                 </div>
                 <section class="request-tax-address" v-if="requestIncludeTax.length > 0">
                   <div class="form-hide-label">
-                    <FormKit type="radio" label="รายชื่อที่อยู่" :options="[
-                      {
-                        label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
-                        help: insureFullAddress,
-                        value: 'insured',
-                      },
-                      {
-                        label: 'แก้ไขใบกำกับภาษี',
-                        value: 'addnew',
-                        help: newTaxInvoiceFullAddress,
-                        attrs: { addnewaddress: true },
-                      },
-                    ]" options-class="option-block-stack" v-model="addressIncludeTaxType" />
+                    <FormKit type="radio" label="รายชื่อที่อยู่" 
+                      name="AddressTax"
+                      :options="[
+                        {
+                          label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
+                          help: insureFullAddress,
+                          value: 'insured',
+                        },
+                        {
+                          label: 'แก้ไขใบกำกับภาษี',
+                          value: 'addnew',
+                          help: newTaxInvoiceFullAddress,
+                          attrs: { addnewaddress: true },
+                        },
+                      ]" options-class="option-block-stack" v-model="addressIncludeTaxType" />
                   </div>
 
                   <aside class="new-request-tax-address inner-section" v-if="addressIncludeTaxType == 'addnew'">
@@ -62,22 +64,26 @@
                       <div class="col-sm-8 col-lg-4">
                         <FormKit type="text" label="ชื่อผู้รับ" name="NewFirstName" placeholder="ชื่อ"
                           validation="required" :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="off"
+                          @keyup="handlerChangeTaxInvoice"
                           v-model="taxInvoiceAddress.FirstName" />
                       </div>
                       <div class="col-md-12 col-lg-5">
                         <FormKit type="text" label="นามสกุลผู้รับ" name="NewLastName" placeholder="นามสกุล"
                           validation="required" :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="off"
+                          @keyup="handlerChangeTaxInvoice"
                           v-model="taxInvoiceAddress.LastName" />
                       </div>
                       <div class="col-6">
                         <FormKit type="text" label="หมายเลขโทรศัพท์" name="NewPhoneNumber" placeholder="098765XXXX"
                           validation="required" :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="off"
+                          @keyup="handlerChangeTaxInvoice"
                           v-model="taxInvoiceAddress.PhoneNumber" />
                       </div>
 
                       <div class="col-6">
-                        <FormKit type="number" label="ภาษี" mask="#-####-#####-##-#" name="TaxID"
-                          placeholder="เลขบัตรประชาชน 13 หลัก" v-model="taxInvoiceAddress.TaxID"
+                        <FormKit type="text" label="ภาษี" mask="#-####-#####-##-#" name="TaxID"
+                          maxlength="13" placeholder="เลขบัตรประชาชน 13 หลัก" v-model="taxInvoiceAddress.TaxID"
+                          @keyup="handlerChangeTaxInvoice"
                           validation="required|matches:/^[0-9]{13}$/" :validation-messages="{
                             required: 'กรุณาใส่เลขบัตรประชาชน',
                             matches: 'เลขบัตรประชาชนควรเป็นตัวเลข 13 หลัก'
@@ -382,13 +388,21 @@ const handlerChangeFullAddressTaxInvoice = (addr: string, ObjectAddress: Default
     const prefixName = prefix.value.filter(x => x.value == prefixId)[0]
     let prefixLabel = prefixName ? prefixName.label ?? '' : ''
     newTaxInvoiceFullAddressTemp.value = `${prefixLabel} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
+
+    insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
+    newTaxInvoiceFullAddress.value = newTaxInvoiceFullAddressTemp.value
+    handlerChangeTaxInvoice()
   }
 }
 const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress: DefaultAddress) => {
+  console.log('handlerChangeFullAddressTaxInvoiceDelivery', ObjectAddress)
   if (addr && ObjectAddress) {
     taxInvoiceDeliveryAddress.value = ObjectAddress as TaxInvoiceAddress
     newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
-
+    
+    insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
+    newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
+    handlerChangeTaxInvoice()
   }
 }
 const handlerSubmitAddressTaxInvoice = () => {
@@ -412,13 +426,12 @@ const setCacheData = () => {
   if (props.cacheOrderRequest) {
     requestIncludeTax.value = props.cacheOrderRequest.IsTaxInvoice == true ? ['request'] : []
     if (props.cacheOrderRequest.Customer) {
-      console.log('props.cacheOrderRequest Customer', props.cacheOrderRequest.Customer)
-
       addressIncludeTaxType.value = props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault == true ? 'insured' : 'addnew'
       addressDeliveryTaxType.value = props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault == true ? 'insured' : 'addnew'
 
       if (props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault == false && props.cacheOrderRequest.Customer.TaxInvoiceAddress?.ProvinceID != '') {
         taxInvoiceAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceAddress as DefaultAddress
+        console.log('taxInvoiceAddress.value', taxInvoiceAddress.value)
       }
       if (props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault == false && props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress?.ProvinceID != '') {
         cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress

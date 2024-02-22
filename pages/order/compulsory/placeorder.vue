@@ -586,8 +586,8 @@ const submitOrder = async (formData: any) => {
 
             storeSummary.setOrderSummary(getData.apiResponse.Data[0]);
             storeOrder.setOrder(orderSetStore);
-            useStateMenu().setStateMenu(4);
-            router.push("/order/compulsory/payment");
+            // useStateMenu().setStateMenu(4);
+            // router.push("/order/compulsory/payment");
         }
       }
       //set state menu
@@ -1238,7 +1238,6 @@ const handlerChangeTaxInvoice = (
   RequestIncludeTax.value = isIncludeTax;
   TaxInvoiceAddressShipped.value = shippedPolicy;
   TaxInvoiceAddressShipping.value = ShippingMethod;
-  console.log('handlerChangeTaxInvoice InsureDetail', InsureDetail)
   if (!insureDetail.value) {
     insureDetail.value = InsureDetail;
   }
@@ -1296,7 +1295,6 @@ const handlerChangeTaxInvoice = (
       }
 
       if (shippedPolicy != "together") {
-        console.log('not together', insureDetail.value)
         if (insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault == false) {
           if (insureDetail.value.TaxInvoiceDeliveryAddress) {
             if (

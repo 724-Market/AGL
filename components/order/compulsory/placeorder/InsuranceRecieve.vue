@@ -393,8 +393,6 @@ const handleShippingMethodChange = async (event: any) => {
 }
 
 const handleRadioPostalAddressPolicyChange = async (event: String) => {
-  console.log('event', event)
-  console.log('postalAddressPolicyText', postalAddressPolicyText.value)
   switch (event) {
     case "insured":
       isInsured.value = true

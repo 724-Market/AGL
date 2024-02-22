@@ -494,14 +494,14 @@ const submitOrder = async (formData: any) => {
 
       if(insureDetail.value.TaxInvoiceAddress?.ProvinceID) {
         if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceAddress?.AddressID) 
-          insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.DefaultAddress?.AddressID as string
-        else insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.TaxInvoiceAddress?.AddressID as string
+          insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.DefaultAddress?.AddressID ?? "" as string
+        else insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.TaxInvoiceAddress?.AddressID ?? "" as string
       }
 
       if(insureDetail.value.TaxInvoiceDeliveryAddress?.ProvinceID) {
         if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceDeliveryAddress?.AddressID) 
-          insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.DefaultAddress?.AddressID as string
-        else insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.TaxInvoiceDeliveryAddress?.AddressID as string
+          insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.DefaultAddress?.AddressID ?? "" as string
+        else insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.TaxInvoiceDeliveryAddress?.AddressID ?? "" as string
       }
     }
 
@@ -586,8 +586,8 @@ const submitOrder = async (formData: any) => {
 
             storeSummary.setOrderSummary(getData.apiResponse.Data[0]);
             storeOrder.setOrder(orderSetStore);
-            // useStateMenu().setStateMenu(4);
-            // router.push("/order/compulsory/payment");
+            useStateMenu().setStateMenu(4);
+            router.push("/order/compulsory/payment");
         }
       }
       //set state menu
@@ -773,72 +773,30 @@ const loadPapeRonHand = async () => {
   }
 };
 const loadProvince = async () => {
-  const response = await useRepository().master.province();
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      carProvince.value = response.apiResponse.Data.map((x) => {
-        const options: SelectOption = {
-          label: x.Name,
-          value: x.ID,
-        };
-        return options;
-      });
-    } else {
-      // data not found
-    }
-  } else {
-  }
-  addrProvinceForInsured.value = carProvince.value;
-  addrProvinceForRecieve.value = carProvince.value;
-  addrProvinceForTax.value = carProvince.value;
-  addrProvinceForTax2.value = carProvince.value;
+  const response = useRepository().master.provinceText();
+  carProvince.value = response
+  addrProvinceForInsured.value = response
+  addrProvinceForRecieve.value = response
+  addrProvinceForTax.value = response
+  addrProvinceForTax2.value = response
 };
 const loadDistrict = async (provId: string): Promise<SelectOption[]> => {
   let options: SelectOption[] = [];
   const req: DistrictReq = {
     ProvinceID: provId,
   };
-  const response = await useRepository().master.district(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      options = response.apiResponse.Data.map((x) => {
-        const opt: SelectOption = {
-          label: x.Name,
-          value: x.ID,
-        };
-        return opt;
-      });
-    } else {
-      // data not found
-    }
-  } else {
-  }
+  const response = useRepository().master.districtText(req);
+  
 
-  return options;
+  return response;
 };
 const loadSubDistrict = async (distId: string): Promise<SelectOption[]> => {
   let options: SelectOption[] = [];
   const req: SubDistrictReq = {
     DistrictID: distId,
   };
-  const response = await useRepository().master.subDistrict(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      options = response.apiResponse.Data.map((x) => {
-        const options: SelectOption = {
-          label: `${x.Name} (${x.ZipCode})`,
-          value: x.ID,
-          option: x.ZipCode ?? "",
-        };
-        return options;
-      });
-    } else {
-      // data not found
-    }
-  } else {
-  }
-
-  return options;
+  const response = await useRepository().master.subDistrictText(req);
+  return response;
 };
 const loadZipCodeForInsured = async (subDistId: string): Promise<string> => {
   let option = "";
@@ -995,6 +953,7 @@ const handlerChangeDistrictForRecieve = async (e: string) => {
   }
 };
 const handlerChangeDistrictForTax = async (e: string) => {
+  console.log('handlerChangeDistrictForTax',e)
   if (e) {
     isLoading.value = true;
     addrSubDistrictForTax.value = await loadSubDistrict(e);

@@ -147,13 +147,13 @@
                       :loading="isLoading"
                     />-->
 
-                    <FormKit 
-                      type="submit"
+                    <button 
+                      type="button"
                       class="formkit-input btn btn-primary form-actions"
                       @click="handleButtonSaveClick"
                       label="บันทึกข้อมูล"
                       :loading="isLoading"
-                    />
+                    >บันทึกข้อมูล</button>
 
                   </aside>
                 </section>
@@ -436,7 +436,8 @@ const handlerChangeSubDistrict = (e: string)=>{
 const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddress)=>{
   if(addr && ObjectAddress){
     //TODO implement coding new address
-    insureFullNewAddress.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
+    //insureFullNewAddress.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
+    insureFullNewAddress.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
     newAddressObject.value = ObjectAddress
 
     await handleCheckInsuranceRecieve()
@@ -481,6 +482,7 @@ const handleCheckInsuranceRecieve = async () => {
       }
     }
   }
+  await setPostalAddressPolicy(insureFullAddress.value.toString(), insureFullNewAddress.value.toString())
   emit('checkInsuranceRecieve', RecieveObject)
 }
 //watching props pass data

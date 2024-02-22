@@ -10,6 +10,7 @@
         @keyup="handlerChangeFullAddress"
         :validation-rules="{ address_characters }"
         validation="required|address_characters"
+        validation-visibility="live"
         :validation-messages="{
           required: 'กรุณาใส่ข้อมูล',
           address_characters: 'กรุณากรอกรูปแบบบ้านเลขที่ให้ถูกต้อง',
@@ -69,8 +70,9 @@
         :name="'AddressProvince' + props.elementKey"
         placeholder="จังหวัด"
         @change="handlerChangeProvince"
-        :options="addrProvince"
+        :options="province"
         validation="required"
+        validation-visibility="live"
         v-model="ObjectAddress.ProvinceID"
         :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
       />
@@ -84,6 +86,7 @@
         :options="addrDistrict"
         @change="handlerChangeDistrict"
         validation="required"
+        validation-visibility="live"
         v-model="ObjectAddress.DistrictID"
         :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
       />
@@ -98,6 +101,7 @@
         :options="addrSubDistrict"
         @change="handlerChangeSubDistrict"
         validation="required"
+        validation-visibility="live"
         :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
       />
     </div>
@@ -111,6 +115,7 @@
         @input-raw="handlerChangeFullAddress"
         placeholder="รหัสไปรษณีย์"
         validation="required"
+        validation-visibility="live"
         :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
         autocomplete="off"
       />
@@ -147,6 +152,7 @@
 import type { DefaultAddress } from "~/shared/entities/placeorder-entity";
 import type { SelectOption } from "~/shared/entities/select-option";
 import type {  CustomerAddressListRes } from "~/shared/entities/customer-entity";
+import province from  "~/shared/data/provinces-data";
 
 const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict', 'changeFullAddress'])
 
@@ -197,7 +203,7 @@ const ObjectAddress: globalThis.Ref<DefaultAddress> = ref({
     ZipCode: '',
 })
 
-const onLoad = onMounted(() => {
+const onLoad = onMounted(async () => {
 
   if (props.addrProvince) {
     addrProvince.value = props.addrProvince
@@ -214,7 +220,14 @@ const onLoad = onMounted(() => {
   if (props.defaultAddressCache) {
 
     ObjectAddress.value = props.defaultAddressCache as DefaultAddress
-    emit('changeProvince', ObjectAddress.value.ProvinceID)
+      await emit('changeProvince', ObjectAddress.value.ProvinceID)
+      //ObjectAddress.value.DistrictID = addressCache.DistrictID
+      await emit('changeDistrict', ObjectAddress.value.DistrictID)
+      //ObjectAddress.value.SubDistrictID = addressCache.SubDistrictID
+      await emit('changeSubDistrict', ObjectAddress.value.SubDistrictID)
+
+      addrZipCode.value = ObjectAddress.value.ZipCode ?? ""
+    //emit('changeProvince', ObjectAddress.value.ProvinceID)
   }
 })
 
@@ -269,8 +282,8 @@ watch(
 )
 watch(
   ()=>props.defaultAddressCache, 
-  async (newValue) => {
-    let addressCache = newValue as DefaultAddress
+  async () => {
+    let addressCache = props.defaultAddressCache as DefaultAddress
     if(addressCache) {
       // console.log('addressCache', addressCache)
       ObjectAddress.value.ProvinceID = addressCache.ProvinceID 

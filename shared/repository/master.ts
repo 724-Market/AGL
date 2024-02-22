@@ -1,9 +1,33 @@
 import type { ICarBrandResponse, ICarCategoryResponse, ICarModelResponse, ICarTypeResponse, ISubCarModelResponse, IUseCarResponse } from "../entities/information-entity";
 import type { DistrictReq, ICarColorReq, ICarColorResponse, INationalityResponse, MasterResponse, PrefixReq, SubDistrictReq } from "../entities/master-entity";
 import type { IAPIResponse } from "../entities/useApi-response";
+import provinceData from  "~/shared/data/provinces-data";
+import districtData from  "~/shared/data/districts-data";
+import type { SelectOption } from "../entities/select-option";
 
 class MasterModule {
   private RESOURCE = '/Master';
+
+  provinceText(): SelectOption[] {
+    const prov = provinceData as SelectOption[]
+    return  prov
+  }
+  districtText(req: DistrictReq): SelectOption[] {
+    const filter = districtData.filter(x=>x.province==req.ProvinceID) as SelectOption[]
+    return filter
+  }
+   subDistrictText(req: SubDistrictReq): SelectOption[] {
+    const filter = districtData.filter(x=>x.value==req.DistrictID).map(x=>x.subDistricts.map(sub=>{
+      const options: SelectOption = {
+        label: `${sub.label} (${sub.postalCode})`,
+        value: sub.value,
+        option: sub.postalCode ?? "",
+      };
+      return options
+    }))
+    return filter[0]
+  }
+
 
   async prefix(req: PrefixReq): Promise<IAPIResponse<MasterResponse[]>> {
     return await useCallApi().apiRepository<MasterResponse[]>(`${this.RESOURCE}/prefix/list`, req)

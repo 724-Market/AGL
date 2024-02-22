@@ -50,11 +50,20 @@
       </div>
 
     </div>
-    <div class="card-footer" v-if="props.orderGet?.OrderStatus == 'Receive'">
+    <div class="card-footer" v-if="props.orderGet?.OrderStatus === 'Receive'">
 
       <div class="status-action">
-        <button class="btn-outline-danger btn-open-papers-cancellation" type="button" name="cancel-submit"
+        <button class="btn-outline-danger btn-open-papers-cancellation" type="button"
           @click="getRemarkRejectOrder">ยกเลิกรายการ</button>
+      </div>
+
+    </div>
+
+    <div class="card-footer" v-if="props.orderGet?.OrderStatus === 'Delivery'">
+
+      <div class="status-action">
+        <button class="btn-primary btn-papers-received" type="button"
+          @click="confirmReceived">ได้รับกระดาษครบแล้ว</button>
       </div>
 
     </div>
@@ -77,6 +86,12 @@ import type {
 } from "~/shared/entities/paper-entity"
 import type { SubOrderListRes } from "~/shared/entities/paper-entity"
 
+// Define emit function to emit events on status action
+const emit = defineEmits(['onConfirmReceived', 'onAcceptConfirm'])
+
+// Function to emit the 'onConfirmReceived' event
+const confirmReceived = () => emit('onConfirmReceived')
+
 // Loading state after form submiting
 const isLoading = ref(false)
 
@@ -93,7 +108,6 @@ const confirmButton = ref('')
 const confirmCancelButton = ref('')
 
 // Define Variables
-
 const props = defineProps({
   orderGet: {
     type: Object as () => OrderListRes,

@@ -4,13 +4,12 @@
     <div class="card-body card-table">
       <DataTable id="datatables" class="table table-transaction nowrap" data-order='[[ 1, "desc" ]]'
         :options="datatableOptions" ref="table">
-        <!--data-page-length='2' //inside <DataTable>-->
         <thead>
           <tr>
             <th data-orderable="false"></th>
             <th>เลขที่ทำรายการ</th>
             <th data-orderable="false">รหัสนายหน้า</th>
-            <th data-orderable="false">ช่องทางการรับกระดาษ</th>
+            <th>ช่องทางการรับกระดาษ</th>
             <th>จำนวนเงิน (บาท)</th>
             <th>สถานะ</th>
           </tr>
@@ -56,29 +55,12 @@ const columns = [
     targets: 0,
     data: "OrderNo",
     title: "",
-    // render:async function (data, type,row) {
-    //   console.log('type=',type)
-    //   if (type === "display") {
-    //     console.log(row)
-    //     const html = await renderToString(h(OrderHistorySearch))
-    //     console.log(html)
-    //     return html
-    //   }
-
-    //   return data;
-    // },
   },
   { data: "OrderNo", title: "เลขที่ทำรายการ", targets: 1, className: "order" },
   { data: "AgentCode", title: "รหัสนายหน้า", targets: 2, className: "agent" },
   { data: "DeliveryChannelType", title: "ช่องทางการรับกระดาษ", targets: 3, className: "delivery" },
   { data: "TotalPrice", title: "จำนวนเงิน (บาท)", targets: 4, className: "amount" },
   { data: "OrderStatus", title: "สถานะ", targets: 5, className: "status" },
-  //{ data: "CreateType", title: "รูปแบบการทำรายการ", targets: 7 },
-
-  // { data: 'office', title: 'Office' },
-  // { data: 'extn', title: 'Extension' },
-  // { data: 'start_date', title: 'Start date' },
-  // { data: 'salary', title: 'Salary' },
 ];
 
 // DataTable ajax options
@@ -105,12 +87,10 @@ const datatableAjax = {
 // DataTable options
 const datatableOptions = {
   columnDefs: columns,
-
   processing: true,
   serverSide: true,
   ajax: datatableAjax,
   filter: false,
-  //searchCols: [{}, {}, { search: "My filter" }, { search: "^[0-9]", regex: true }],
   language: {
     paginate: {
       previous: "ก่อนหน้า",
@@ -124,24 +104,13 @@ const datatableOptions = {
     emptyTable: "ไม่มีรายการ",
     zeroRecords: "ไม่มีรายการ",
   },
-  // initComplete: function (settings, json) {
 
-  // },
   createdRow: async function (row: any, data: any) {
-    // console.log("createdRow [data]=", data);
     const menu = await renderToString(
       h(PapersHistoryGridActions, {
         row: data
       })
     );
-    // const has_child = await renderToString(
-
-    //   h(OrderHistoryGridColumn, {
-    //     row: data,
-    //     field: "has-child",
-    //     //click: continute,
-    //   })
-    // );
     const order = await renderToString(
       h(PapersHistoryGridColumn, {
         row: data,
@@ -190,7 +159,6 @@ const datatableOptions = {
     if (data.OrderStatus == 'Prepare') {
       // Using nextTick to ensure the DOM has been updated
       nextTick(() => {
-        console.log("nexttrick")
         const statusCancel = TdId6.querySelector('.event-cancel-paper');
         if (statusCancel) {
           statusCancel.addEventListener('click', async () => {
@@ -205,7 +173,6 @@ const datatableOptions = {
 };
 
 watch(() => props.filters, () => {
-  console.log('filter in table ', props.filters)
   table.value.dt.draw();
 })
 </script>

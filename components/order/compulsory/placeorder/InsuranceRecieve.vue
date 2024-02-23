@@ -437,7 +437,7 @@ const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddres
   if(addr && ObjectAddress){
     //TODO implement coding new address
     //insureFullNewAddress.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
-    insureFullNewAddress.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
+    insureFullNewAddress.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} : `+addr
     newAddressObject.value = ObjectAddress
 
     await handleCheckInsuranceRecieve()

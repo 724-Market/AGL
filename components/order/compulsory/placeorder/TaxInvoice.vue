@@ -501,7 +501,7 @@ const handlerChangeFullAddressTaxInvoice = (addr: string, ObjectAddress: Default
     const prefixName = prefix.value.filter(x => x.value == prefixId)[0]
     let prefixLabel = prefixName ? prefixName.label ?? '' : ''
     //newTaxInvoiceFullAddressTemp.value = `${prefixLabel} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
-    newTaxInvoiceFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
+    newTaxInvoiceFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} : ` + addr
 
     insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
     newTaxInvoiceFullAddress.value = newTaxInvoiceFullAddressTemp.value
@@ -512,7 +512,7 @@ const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress:
   if (addr && ObjectAddress) {
     taxInvoiceDeliveryAddress.value = ObjectAddress as TaxInvoiceAddress
     //newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
-    newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
+    newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} : ` + addr
 
     insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
     newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value

@@ -487,21 +487,36 @@ const submitOrder = async (formData: any) => {
     let customerOld = OrderInfo.value.Customer
     if(insureDetail.value.DefaultAddress?.AddressID) {
       if(insureDetail.value.DeliveryAddress?.ProvinceID) {
-        if(customerOld?.DefaultAddress?.AddressID == customerOld?.DeliveryAddress?.AddressID) 
-          insureDetail.value.DeliveryAddress.AddressID = customerOld?.DefaultAddress?.AddressID as string
+        if(customerOld?.DefaultAddress?.AddressID == customerOld?.DeliveryAddress?.AddressID && !insureDetail.value.IsDeliveryAddressSameAsDefault) 
+          insureDetail.value.DeliveryAddress.AddressID = ''
         else insureDetail.value.DeliveryAddress.AddressID = customerOld?.DeliveryAddress?.AddressID as string
+
+        // if(customerOld?.DefaultAddress?.AddressID == insureDetail.value.DeliveryAddress.AddressID && insureDetail.value.IsDeliveryAddressSameAsDefault==false)
+        // {
+        //   insureDetail.value.DeliveryAddress.AddressID=""
+        // }
       }
 
       if(insureDetail.value.TaxInvoiceAddress?.ProvinceID) {
-        if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceAddress?.AddressID) 
-          insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.DefaultAddress?.AddressID ?? "" as string
+        if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceAddress?.AddressID && !insureDetail.value.IsTaxInvoiceAddressSameAsDefault) 
+          insureDetail.value.TaxInvoiceAddress.AddressID = ''
         else insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.TaxInvoiceAddress?.AddressID ?? "" as string
+
+        // if(customerOld?.TaxInvoiceAddress?.AddressID == insureDetail.value.TaxInvoiceAddress.AddressID && insureDetail.value.IsTaxInvoiceAddressSameAsDefault==false)
+        // {
+        //   insureDetail.value.TaxInvoiceAddress.AddressID=""
+        // }
       }
 
       if(insureDetail.value.TaxInvoiceDeliveryAddress?.ProvinceID) {
-        if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceDeliveryAddress?.AddressID) 
+        if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceDeliveryAddress?.AddressID && !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault) 
           insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.DefaultAddress?.AddressID ?? "" as string
         else insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.TaxInvoiceDeliveryAddress?.AddressID ?? "" as string
+
+        // if(customerOld?.TaxInvoiceDeliveryAddress?.AddressID == insureDetail.value.TaxInvoiceDeliveryAddress.AddressID && insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault==false)
+        // {
+        //   insureDetail.value.TaxInvoiceDeliveryAddress.AddressID=""
+        // }
       }
     }
 

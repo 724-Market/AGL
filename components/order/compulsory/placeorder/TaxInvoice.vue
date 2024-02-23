@@ -168,14 +168,7 @@
                       />
                     </div>
 
-                    <button
-                      type="button"
-                      class="btn-primary btn-save"
-                      @click="handlerSubmitAddressTaxInvoice"
-                      label="บันทึกข้อมูล"
-                    >
-                      บันทึกข้อมูล
-                    </button>
+                    
                   </aside>
                 </section>
 
@@ -270,13 +263,7 @@
                       />
                     </div>
 
-                    <button
-                      type="button"
-                      class="btn-primary btn-save"
-                      @click="handlerSubmitAddressTaxInvoiceDelivery"
-                    >
-                      บันทึกข้อมูล
-                    </button>
+                    
                   </aside>
                 </section>
               </div>

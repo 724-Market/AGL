@@ -1,15 +1,16 @@
 <template>
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
 
     <FormKit type="form" @submit="submitCreateUser" :actions="false" id="form-user" form-class="form-order form-theme"
       :incomplete-message="false">
 
       <div class="row">
         <div class="col col-main">
+          <div class="has-sticky">
 
-          <UsersProfileDetail v-if="usersLimitRes" />
-
+            <UsersProfileDetail v-if="usersLimitRes" />
+          </div>
         </div>
 
         <div class="col col-sidebar">
@@ -102,8 +103,8 @@ const submitCreateUser = async (formData: any) => {
     isError.value = true
     alert(resCreate.apiResponse.ErrorMessage);
     messageError.value = resCreate.apiResponse.ErrorMessage ?? ""
-  } 
-  
+  }
+
 };
 
 // Define layout
@@ -111,6 +112,7 @@ const layout = "monito"
 const layoutClass = "layout-monito"
 const showPageSteps = false
 const showPageHeader = true
+const showLogoHeader = false
 
 // Define page meta
 const pageTitle = "เพิ่มผู้ช่วย"

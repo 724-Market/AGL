@@ -31,18 +31,18 @@
                                 </template>
                             </template>
 
-                                <div class="timeline-item is-success"
-                                    v-if="item.Parent?.Type !== 'OrderComplete' || (item.Parent?.Type === 'OrderComplete' && $props.isShowchild !== true)">
-                                    <div class="datetime">
-                                        <!-- <time datetime="2022-02-09 09:30">2022-02-09<span>09:30</span></time> -->
-                                    </div>
-                                    <figure class="timeline-icon">
-                                        <div class="icon check"></div>
-                                    </figure>
-                                    <div class="detail">
-                                        <h4 class="title"> {{ item.Parent?.Name }} </h4>
-                                    </div>
+                            <div class="timeline-item is-success"
+                                v-if="item.Parent?.Type !== 'OrderComplete' || (item.Parent?.Type === 'OrderComplete' && $props.isShowchild !== true)">
+                                <div class="datetime">
+                                    <!-- <time datetime="2022-02-09 09:30">2022-02-09<span>09:30</span></time> -->
                                 </div>
+                                <figure class="timeline-icon">
+                                    <div class="icon check"></div>
+                                </figure>
+                                <div class="detail">
+                                    <h4 class="title"> {{ item.Parent?.Name }} </h4>
+                                </div>
+                            </div>
                         </div>
                     </section>
                 </div>
@@ -60,7 +60,7 @@ const orderTrack: globalThis.Ref<TrackOrderRes[] | undefined> = ref([]);
 
 // Example usage
 const iconClass = ref("");
-console.log(iconClass);
+// console.log(iconClass);
 
 const props = defineProps({
     indexSequence: Number,
@@ -79,8 +79,8 @@ const props = defineProps({
 const onLoad = onMounted(async () => {
     if (props.indexSequence) {
         orderTrack.value = props.orderTrack
-        console.log("$props.indexSequence " + props.indexSequence)
-        console.log("orderTrack.length " + orderTrack.value.length)
+        // console.log("$props.indexSequence " + props.indexSequence)
+        // console.log("orderTrack.length " + orderTrack.value.length)
     }
 });
 
@@ -88,9 +88,9 @@ watch(
     () => props.orderTrack,
     () => {
         orderTrack.value = props.orderTrack
-        console.log("prop isShowchild value changed", props.isShowchild);
-        console.log("prop indexSequence value changed", props.indexSequence);
-        console.log("prop indexCurrent value changed", props.indexCurrent);
+        // console.log("prop isShowchild value changed", props.isShowchild);
+        // console.log("prop indexSequence value changed", props.indexSequence);
+        // console.log("prop indexCurrent value changed", props.indexCurrent);
     }
 );
 </script>

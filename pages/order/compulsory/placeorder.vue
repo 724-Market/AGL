@@ -71,7 +71,8 @@
               packageSelect &&
               prefix.length > 0 &&
               delivery.length > 0 &&
-              addrProvinceForTax.length > 0
+              addrProvinceForTax.length > 0 &&
+              insuranceRecieve
             "
             @change-province="handlerChangeProvinceForTax"
             @change-district="handlerChangeDistrictForTax"
@@ -487,7 +488,7 @@ const submitOrder = async (formData: any) => {
     let customerOld = OrderInfo.value.Customer
     if(insureDetail.value.DefaultAddress?.AddressID) {
       if(insureDetail.value.DeliveryAddress?.ProvinceID) {
-        if(customerOld?.DefaultAddress?.AddressID == customerOld?.DeliveryAddress?.AddressID && !insureDetail.value.IsDeliveryAddressSameAsDefault) 
+        if(customerOld?.DefaultAddress?.AddressID == customerOld?.DeliveryAddress?.AddressID && insureDetail.value.IsDeliveryAddressSameAsDefault==false) 
           insureDetail.value.DeliveryAddress.AddressID = ''
         else insureDetail.value.DeliveryAddress.AddressID = customerOld?.DeliveryAddress?.AddressID as string
 
@@ -498,7 +499,7 @@ const submitOrder = async (formData: any) => {
       }
 
       if(insureDetail.value.TaxInvoiceAddress?.ProvinceID) {
-        if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceAddress?.AddressID && !insureDetail.value.IsTaxInvoiceAddressSameAsDefault) 
+        if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceAddress?.AddressID && insureDetail.value.IsTaxInvoiceAddressSameAsDefault==false) 
           insureDetail.value.TaxInvoiceAddress.AddressID = ''
         else insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.TaxInvoiceAddress?.AddressID ?? "" as string
 
@@ -509,7 +510,7 @@ const submitOrder = async (formData: any) => {
       }
 
       if(insureDetail.value.TaxInvoiceDeliveryAddress?.ProvinceID) {
-        if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceDeliveryAddress?.AddressID && !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault) 
+        if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceDeliveryAddress?.AddressID && insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault==false) 
           insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.DefaultAddress?.AddressID ?? "" as string
         else insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.TaxInvoiceDeliveryAddress?.AddressID ?? "" as string
 

@@ -531,6 +531,7 @@ const handlerSubmitAddressTaxInvoiceDelivery = () => {
   handlerChangeTaxInvoice()
 }
 const handlerChangeTaxInvoice = () => {
+
   insureDetail.value.IsTaxInvoiceAddressSameAsDefault = addressIncludeTaxType.value == 'insured'
   insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = addressDeliveryTaxType.value == 'insured'
   emit('changeTaxInvoice', insureDetail.value, requestIncludeTax.value.length > 0, shippedPolicy.value, ShippingMethodText.value)
@@ -549,12 +550,20 @@ const setCacheData = () => {
             taxInvoiceAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceAddress as DefaultAddress
           }
 
-      }
+     }
+     else{
+      taxInvoiceAddress.value = props.cacheOrderRequest.Customer.DefaultAddress as DefaultAddress
+     }
+     insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
+
       if (props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault == false && props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress?.ProvinceID != '') {
         cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress
         //const deliveryMethod1 = props.cacheOrderRequest.DeliveryMethod1
-
       }
+      else{
+        cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress
+      }
+      insureDetail.value.TaxInvoiceDeliveryAddress =  cacheDefaultAddress.value
       const deliveryMethod2 = props.cacheOrderRequest.DeliveryMethod2
       if (props.delivery && deliveryMethod2) {
         const filter = props.delivery.filter(x => x.value == deliveryMethod2.DeliveryChannelType)
@@ -709,7 +718,7 @@ watch(
 watch(requestIncludeTax, () => {
   handlerChangeTaxInvoice()
 })
-watch(() => props.cacheOrderRequest, (newValue) => {
+watch(() => props.cacheOrderRequest, () => {
   setCacheData()
 })
 

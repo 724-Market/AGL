@@ -40,7 +40,8 @@
           </tbody>
           <tfoot>
             <tr>
-              <td scope="col">ยอดมัดจำที่ใช้</td>
+              <td scope="col" v-if="props.orderGet?.OrderStatus === 'Cancel'">ยอดมัดจำที่คืนแล้ว</td>
+              <td scope="col" v-else>ยอดมัดจำที่ใช้</td>
               <td scope="col"></td>
               <td scope="col" class="text-end price">{{
                 useUtility().getCurrency($props.orderGet?.GrandPrice ?? 0, 2) }}</td>
@@ -53,8 +54,9 @@
     <div class="card-footer" v-if="props.orderGet?.OrderStatus === 'Receive'">
 
       <div class="status-action">
+
         <button class="btn-outline-danger btn-open-papers-cancellation" type="button"
-          @click="getRemarkRejectOrder">ยกเลิกรายการ</button>
+          @click="cancelPapersOrder">ยกเลิกรายการ</button>
       </div>
 
     </div>
@@ -68,46 +70,23 @@
 
     </div>
   </div>
-
-  <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
-
-  <ElementsDialogRejectOrder :isShowConfirm="isShowConfirm" :confirm-type="confirmType" :confirm-title="confirmTitle"
-    :confirm-text="confirmText" :confirm-button="confirmButton" :confirm-cancel-button="confirmCancelButton"
-    :get-remark-list="getRemarkList" :order-i-d="props.orderGet?.OrderNo" @on-accept-confirm="handleAcceptConfirm"
-    @on-close-confirm="handleCloseConfirm" />
 </template>
 
 <script setup lang="ts">
-import type {
-  cancelOrderReq,
-  OrderListRes,
-  RemarkListReq,
-  RemarkListRes,
-} from "~/shared/entities/paper-entity"
-import type { SubOrderListRes } from "~/shared/entities/paper-entity"
+import type { OrderListRes, SubOrderListRes } from "~/shared/entities/paper-entity"
 
+/////////////////////////////////////////
 // Define emit function to emit events on status action
-const emit = defineEmits(['onConfirmReceived', 'onAcceptConfirm'])
+const emit = defineEmits(['onConfirmReceived', 'onCancelPapersOrder'])
 
 // Function to emit the 'onConfirmReceived' event
 const confirmReceived = () => emit('onConfirmReceived')
 
-// Loading state after form submiting
-const isLoading = ref(false)
-
-const getRemarkList: globalThis.Ref<RemarkListRes[] | undefined> = ref([])
-const router = useRouter()
+// Function to emit the 'onCancelPapersOrder' event
+const cancelPapersOrder = () => emit('onCancelPapersOrder')
 
 /////////////////////////////////////////
-// Confirm Dialog
-const isShowConfirm = ref(false)
-const confirmType = ref('')
-const confirmTitle = ref('')
-const confirmText = ref('')
-const confirmButton = ref('')
-const confirmCancelButton = ref('')
-
-// Define Variables
+// Define Props
 const props = defineProps({
   orderGet: {
     type: Object as () => OrderListRes,
@@ -121,55 +100,4 @@ const props = defineProps({
     default: Array<SubOrderListRes>,
   }
 })
-
-// Function to handle accept confirm events
-const handleAcceptConfirm = async (orderID: any, remarkID: any, remarkText: any) => {
-  const req: cancelOrderReq = {
-    OrderNo: orderID ?? "",
-    RemarkSystem: remarkID,
-    Remark: remarkText,
-  }
-
-  var response = await useRepository().paper.cancelOrderByUser(req)
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    router.push({ path: "/papers" })
-  } else {
-    alert(response.apiResponse.ErrorMessage)
-  }
-
-  // Close confirm dialog
-  isShowConfirm.value = false
-}
-
-// Function to handle close confirm events
-const handleCloseConfirm = async () => {
-  isShowConfirm.value = false
-}
-
-const getRemarkRejectOrder = async () => {
-
-  let req: RemarkListReq = {
-    Type: "PAPER_ORDER_USER",
-  }
-
-  isLoading.value = true
-
-  var response = await useRepository().paper.remark(req)
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    getRemarkList.value = response.apiResponse.Data
-
-  } else {
-    alert(response.apiResponse.ErrorMessage)
-  }
-
-  isLoading.value = false
-
-  // Open Reject Order dialog
-  isShowConfirm.value = true
-  confirmType.value = 'danger'
-  confirmTitle.value = 'เหตุผลในการยกเลิกรายการ?'
-  confirmText.value = 'It is advised to wrap your plugins as in the future this may enable enhancements.'
-  confirmCancelButton.value = 'ไม่ยกเลิก'
-  confirmButton.value = 'ยืนยัน' // After confirm then goto `handleAcceptConfirm` function
-}
 </script>

@@ -25,7 +25,6 @@
                 <div class="row">
                   <div class="col">
                     <label for="CarLicense">
-                      <span class="text-danger">*</span>
                       ทะเบียนรถ 
                     </label>
                     <FormKit
@@ -41,7 +40,7 @@
                         required: 'กรุณาใส่ข้อมูล',
                         length: 'ทะเบียนรถควรมีไม่เกิน 7 ตัว',
                       }"
-                      autocomplete="false"
+                      autocomplete="off"
                     />
                   </div>
                   <div class="col">
@@ -118,7 +117,7 @@
                         matches: 'รูปแบบของเลขตัวถังไม่ถูกต้อง',
                         length: 'เลขตัวถังควรมี 17 หลัก',
                       }"
-                      autocomplete="false"
+                      autocomplete="off"
                     />
                   </div>
                   <div class="col-sm-12 col-lg-4">
@@ -129,7 +128,7 @@
                       v-model="carEngineNumberText"
                       @change="handleCarEngineNumberChange"
                       placeholder="ตัวอย่าง: 724XXX"
-                      autocomplete="false"
+                      autocomplete="off"
                     />
                   </div>
                 </div>

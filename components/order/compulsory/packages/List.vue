@@ -9,7 +9,7 @@
 
         <div class="detail">
           <h4 class="topic">
-            พ.ร.บ. สำหรับรถยนต์นั่ง{{ item.PackageResult[0].UseCarName }}
+            พ.ร.บ. สำหรับ{{item.CarTypeName}}{{ item.PackageResult[0].UseCarName }}
           </h4>
           <div class="tags">
             <span class="badge">{{ item.CompanyCode }}</span>

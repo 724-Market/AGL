@@ -51,7 +51,7 @@
                     placeholder="xxxxxx@email.com"
                     validation="required"
                     :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-                    autocomplete="false"
+                    autocomplete="off"
                   />
                 </aside>
 
@@ -106,10 +106,10 @@
                       :options="postalAddressPolicy"
                       options-class="option-block-stack"
                     >
-                      <template #label="context">
+                      <!-- <template #label="context">
                       <div class="ml-2">{{context.option.label}}</div>
                       <button>ลบ</button>
-                      </template>
+                      </template> -->
                     </FormKit>
                   </div>
 
@@ -140,17 +140,14 @@
                       :classes="{ input: 'btn-primary', outer: 'form-actions' }"
                       :disabled="insureFullNewAddress == ''"
                       :loading="isLoading"
-                    /> -->
-
-                    <button 
-                      type="button"
-                      class="formkit-input btn btn-primary form-actions"
-                      @click.prevent="handleButtonSaveClick"
+                    /> 
+                    <FormKit
+                      type="submit"
                       label="บันทึกข้อมูล"
-                      :disabled="insureFullNewAddress == ''"
                       :loading="isLoading"
-                      >บันทึกข้อมูล
-                    </button>
+                    />-->
+
+
                   </aside>
                 </section>
               </div>
@@ -432,7 +429,8 @@ const handlerChangeSubDistrict = (e: string)=>{
 const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddress)=>{
   if(addr && ObjectAddress){
     //TODO implement coding new address
-    insureFullNewAddress.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
+    //insureFullNewAddress.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
+    insureFullNewAddress.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
     newAddressObject.value = ObjectAddress
 
     await handleCheckInsuranceRecieve()
@@ -477,6 +475,7 @@ const handleCheckInsuranceRecieve = async () => {
       }
     }
   }
+  await setPostalAddressPolicy(insureFullAddress.value.toString(), insureFullNewAddress.value.toString())
   emit('checkInsuranceRecieve', RecieveObject)
 }
 //watching props pass data

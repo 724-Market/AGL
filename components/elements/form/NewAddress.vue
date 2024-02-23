@@ -12,7 +12,7 @@
       autocomplete="false"
     />
   </div> -->
-  <div class="col-sm-3 col-lg-3">
+  <!-- <div class="col-sm-3 col-lg-3">
     <FormKit
       type="select"
       label="คำนำหน้าผู้รับ"
@@ -22,9 +22,10 @@
       @change="handleTitleChange"
       :options="prefix"
       validation="required"
+      validation-visibility="live"
       :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
     />
-  </div>
+  </div> -->
   <div class="col-sm-4 col-lg-4">
     <FormKit
       type="text"
@@ -34,8 +35,9 @@
       v-model="FirstNameText"
       @change="handleFirstNameChange"
       validation="required"
+      validation-visibility="live"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-      autocomplete="false"
+      autocomplete="off"
     />
   </div>
   <div class="col-md-5 col-lg-5">
@@ -47,8 +49,9 @@
       v-model="LastNameText"
       @change="handleLastNameChange"
       validation="required"
+      validation-visibility="live"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-      autocomplete="false"
+      autocomplete="off"
     />
   </div>
 
@@ -62,8 +65,9 @@
       v-model="PhoneNumberText"
       @change="handlePhoneNumberChange"
       validation="required|matches:/^[0-9]{10}$/"
+      validation-visibility="live"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล', matches: 'หมายเลขโทรศัพท์ควรเป็นตัวเลข 10 หลัก' }"
-      autocomplete="false"
+      autocomplete="off"
     />
   </div>
 
@@ -227,8 +231,8 @@ watch(
 )
 watch(
   ()=>props.defaultAddressCache,
-  (newValue)=>{
-    defaultAddressCache.value = newValue
+  ()=>{
+    defaultAddressCache.value = props.defaultAddressCache
     if(props.defaultAddressCache){
       FirstNameText.value = defaultAddressCache.value?.FirstName ?? ""
       LastNameText.value = defaultAddressCache.value?.LastName ?? ""
@@ -270,7 +274,7 @@ const handlerChangeFullAddress = (addr:string, ObjectAddress:DefaultAddress)=>{
     ObjectAddress.AddressText = LabelAddressText.value
     ObjectAddress.PhoneNumber = PhoneNumberText.value
     ObjectAddress.PrefixID =  TitleText.value
-    ObjectAddress.PrefixName = prefixLabel
+    ObjectAddress.PrefixName = TitleText.value !="" ? prefixLabel : TitleText.value
     ObjectAddress.FirstName = FirstNameText.value
     ObjectAddress.LastName = LastNameText.value
 

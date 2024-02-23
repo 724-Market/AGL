@@ -148,9 +148,9 @@
               input: 'btn-primary',
               outer: 'form-actions',
             }"
-            :disabled="!checkSave"
             :loading="isLoading"
           /> 
+          <!-- :disabled="!checkSave" -->
 
           <!-- <button
             type="submit"
@@ -210,6 +210,7 @@ import type {
   LegalPersonProfile,
   TaxInvoiceDeliveryAddress,
   DeliveryMethod,
+  TaxInvoiceAddress,
 } from "~/shared/entities/placeorder-entity";
 import type { Order, OrderDetailRequest, OrderResponse } from "~/shared/entities/order-entity";
 
@@ -354,8 +355,36 @@ const onLoad = onMounted(async () => {
       useStateMenu().setStateMenu(1);
       router.push("/order/compulsory/information");
     }
-    
+      
     if (OrderInfo.value && OrderInfo.value.OrderNo != "") {
+      // set cache Data Step1
+      let cacheCar: CarDetailsExtension = OrderInfo.value.CarDetailsExtension as CarDetailsExtension
+      carDetailCache.value = cacheCar;
+
+      // set cache Data Step2
+      let cacheInsureDetail: PlaceOrderRequest = {
+        OrderNo: OrderInfo.value.OrderNo,
+        Package: OrderInfo.value.Package,
+        CarDetailsExtension: OrderInfo.value.CarDetailsExtension,
+        Customer: {
+          PersonProfile: OrderInfo.value.Customer?.PersonProfile,
+          LegalPersonProfile: OrderInfo.value.Customer?.LegalPersonProfile,
+          DefaultAddress: OrderInfo.value.Customer?.DefaultAddress,
+          DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
+          TaxInvoiceAddress: OrderInfo.value.Customer?.TaxInvoiceAddress,
+          TaxInvoiceDeliveryAddress: OrderInfo.value.Customer?.TaxInvoiceDeliveryAddress,
+          IsTaxInvoiceAddressSameAsDefault: OrderInfo.value.Customer?.IsTaxInvoiceAddressSameAsDefault,
+          IsTaxInvoiceDeliveryAddressSameAsDefault: OrderInfo.value.Customer?.IsTaxInvoiceDeliveryAddressSameAsDefault,
+          IsPerson: OrderInfo.value.Customer?.IsPerson,
+          IsBranch: OrderInfo.value.Customer?.IsBranch
+        },
+        DeliveryMethod1: OrderInfo.value.DeliveryMethod1,
+        DeliveryMethod2: OrderInfo.value.DeliveryMethod2,
+        IsTaxInvoice: OrderInfo.value.IsTaxInvoice
+      }
+      insureDetailCache.value = cacheInsureDetail;
+
+      // set cache Data Step3
       let insuranceRecieve: InsuranceRecieveObject = {
         ShippingPolicy: OrderInfo.value.DeliveryMethod1?.DeliveryType ?? "",
         Email: OrderInfo.value.DeliveryMethod1?.DeliveryEmail ?? "",
@@ -367,25 +396,41 @@ const onLoad = onMounted(async () => {
           DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
         },
       };
-      // set cache Data Step1
-      carDetailCache.value = OrderInfo.value.CarDetailsExtension;
-      // set cache Data Step2
-      insureDetailCache.value = OrderInfo.value;
-      // set cache Data Step3
       insuranceRecieveCache.value = insuranceRecieve;
+
       // set cache Data Step4
-      taxInvoiceCache.value = OrderInfo.value;
+      let cacheTaxInvoice: PlaceOrderRequest = {
+        OrderNo: OrderInfo.value.OrderNo,
+        Package: OrderInfo.value.Package,
+        CarDetailsExtension: OrderInfo.value.CarDetailsExtension,
+        Customer: {
+          PersonProfile: OrderInfo.value.Customer?.PersonProfile,
+          LegalPersonProfile: OrderInfo.value.Customer?.LegalPersonProfile,
+          DefaultAddress: OrderInfo.value.Customer?.DefaultAddress,
+          DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
+          TaxInvoiceAddress: OrderInfo.value.Customer?.TaxInvoiceAddress,
+          TaxInvoiceDeliveryAddress: OrderInfo.value.Customer?.TaxInvoiceDeliveryAddress,
+          IsTaxInvoiceAddressSameAsDefault: OrderInfo.value.Customer?.IsTaxInvoiceAddressSameAsDefault,
+          IsTaxInvoiceDeliveryAddressSameAsDefault: OrderInfo.value.Customer?.IsTaxInvoiceDeliveryAddressSameAsDefault,
+          IsPerson: OrderInfo.value.Customer?.IsPerson,
+          IsBranch: OrderInfo.value.Customer?.IsBranch
+        },
+        DeliveryMethod1: OrderInfo.value.DeliveryMethod1,
+        DeliveryMethod2: OrderInfo.value.DeliveryMethod2,
+        IsTaxInvoice: OrderInfo.value.IsTaxInvoice
+      }
+      taxInvoiceCache.value = cacheTaxInvoice;
 
       const info = sessionStorage.getItem("useStoreOrderSummary") ?
           JSON.parse(sessionStorage.getItem("useStoreOrderSummary") || "") as OrderResponse : undefined
       if(info) {
         const customer = info.Order?.Customer
         if(customer) {
-          insureFullAddress.value = `${customer.DeliveryAddress?.FirstName} ${customer.DeliveryAddress?.LastName} 
-                                     ${customer.DeliveryAddress?.No} ${customer.DeliveryAddress?.Moo} 
-                                     ${customer.DeliveryAddress?.Place} ${customer.DeliveryAddress?.Building} 
-                                     ${customer.DeliveryAddress?.Alley} ${customer.DeliveryAddress?.Road}
-                                     ${customer.DeliveryAddress?.ZipCode}`
+          insureFullAddress.value = `${customer.DefaultAddress?.FirstName} ${customer.DefaultAddress?.LastName} 
+                                     ${customer.DefaultAddress?.No} ${customer.DefaultAddress?.Moo} 
+                                     ${customer.DefaultAddress?.Place} ${customer.DefaultAddress?.Building} 
+                                     ${customer.DefaultAddress?.Alley} ${customer.DefaultAddress?.Road}
+                                     ${customer.DefaultAddress?.ZipCode}`
         }
       }
     }
@@ -419,118 +464,152 @@ const onLoad = onMounted(async () => {
 // Submit form event
 const submitOrder = async (formData: any) => {
   isLoading.value = true;
-
-  let orderNo = OrderInfo.value?.OrderNo;
-  if (insuranceRecieve.value?.ShippingPolicy == "postal") {
-    if (!insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
-      insureDetail.value.DeliveryAddress =
-        insuranceRecieve.value?.PostalDelivary?.DeliveryAddress;
+  if(checkSave.value) {
+    let orderNo = OrderInfo.value?.OrderNo;
+    if (insuranceRecieve.value?.ShippingPolicy == "postal") {
+      if (!insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
+        insureDetail.value.DeliveryAddress =
+          insuranceRecieve.value?.PostalDelivary?.DeliveryAddress;
+      }
     }
-  }
 
-  insureDetail.value.IsDeliveryAddressSameAsDefault =
-    insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault;
-  let DeliveryMethod = getDeliveryMethod();
-  let DeliveryMethod2 = null;
-  if (DeliveryMethod[1].MethodType != "") {
-    DeliveryMethod2 = DeliveryMethod[1];
-  }
+    insureDetail.value.IsDeliveryAddressSameAsDefault =
+      insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault;
+    let DeliveryMethod = getDeliveryMethod();
+    let DeliveryMethod2 = null;
+    if (DeliveryMethod[1].MethodType != "") {
+      DeliveryMethod2 = DeliveryMethod[1];
+    }
 
-  if(insureDetail.value.DefaultAddress?.AddressID) {
-    if(insureDetail.value.DeliveryAddress?.ProvinceID)
-      insureDetail.value.DeliveryAddress.AddressID = insureDetail.value.DefaultAddress?.AddressID
-    if(insureDetail.value.TaxInvoiceAddress?.ProvinceID)
-      insureDetail.value.TaxInvoiceAddress.AddressID = insureDetail.value.DefaultAddress?.AddressID
-    if(insureDetail.value.TaxInvoiceDeliveryAddress?.ProvinceID)
-      insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = insureDetail.value.DefaultAddress?.AddressID
-  }
-  const orderReq: PlaceOrderRequest = {
-    OrderNo: orderNo ?? undefined,
-    Package: {
-      UseCarCode: infomation.value?.CarUse ?? "",
-      CarTypeCode: infomation.value?.CarType ?? "",
-      CarCategoryID: infomation.value?.CarSize ?? "",
-      CarSalesYear: infomation.value?.CarYear ?? "",
-      CarBrandID: infomation.value?.CarBrand ?? "",
-      CarModelID: infomation.value?.CarModel ?? "",
-      SubCarModelID: infomation.value?.SubCarModel.split("|")[0] ?? "",
-      CompanyCode: packageSelect.value?.CompanyCode ?? "",
-      AgentCode: packageSelect.value?.AgentCode ?? "",
-      EffectiveType: infomation.value?.EffectiveType ?? "",
-      EffectiveDate: infomation.value?.EffectiveDate ?? "",
-      ExpireDate: infomation.value?.ExpireDate ?? "",
-    },
-    CarDetailsExtension: carDetail.value,
-    Customer: insureDetail.value,
-    DeliveryMethod1: DeliveryMethod[0],
-    DeliveryMethod2: RequestIncludeTax.value ? DeliveryMethod2 : null,
-    IsTaxInvoice: RequestIncludeTax.value,
-  };
-  storeOrder.setOrder(orderReq);
-  isError.value = false;
-  messageError.value = "";
+    console.log('insureDetail.value check', insureDetail.value)
 
-  console.log("orderReq", orderReq);
-  //create order
-   if (!orderReq.OrderNo || orderReq.OrderNo == "") {
-     const response = await useRepository().order.create(orderReq);
+    let customerOld = OrderInfo.value.Customer
+    if(insureDetail.value.DefaultAddress?.AddressID) {
+      if(insureDetail.value.DeliveryAddress?.ProvinceID) {
+        if(customerOld?.DefaultAddress?.AddressID == customerOld?.DeliveryAddress?.AddressID && !insureDetail.value.IsDeliveryAddressSameAsDefault) 
+          insureDetail.value.DeliveryAddress.AddressID = ''
+        else insureDetail.value.DeliveryAddress.AddressID = customerOld?.DeliveryAddress?.AddressID as string
 
-     if (
-       response.apiResponse.Status &&
-       response.apiResponse.Status == "200" &&
-       response.apiResponse.Data
-     ) {
-       orderReq.OrderNo = response.apiResponse.Data.OrderNo;
-     } else {
-       isError.value = true;
-       messageError.value = response.apiResponse.ErrorMessage ?? "";
-     }
-   } else {
-     // edit order
-     const response = await useRepository().order.save(orderReq);
+        // if(customerOld?.DefaultAddress?.AddressID == insureDetail.value.DeliveryAddress.AddressID && insureDetail.value.IsDeliveryAddressSameAsDefault==false)
+        // {
+        //   insureDetail.value.DeliveryAddress.AddressID=""
+        // }
+      }
 
-     if (
-       response.apiResponse.Status &&
-       response.apiResponse.Status == "200" &&
-       response.apiResponse.Data
-     ) {
-       orderReq.OrderNo = response.apiResponse.Data.OrderNo;
-     } else {
-       isError.value = true;
-       messageError.value = response.apiResponse.ErrorMessage ?? "";
-     }
-   }
-   if (!isError.value) {
-     // get order after save or create
-     const req: OrderDetailRequest = {
-       OrderNo: orderReq.OrderNo ?? "",
-     };
-     const getData = await useRepository().order.summary(req);
-     if (
-       getData.apiResponse.Status &&
-       getData.apiResponse.Status == "200" &&
-       getData.apiResponse.Data &&
-       getData.apiResponse.Data.length > 0
-     ) {
-        const summaryOrder = getData.apiResponse.Data[0].Order as Order
-        const orderSetStore: PlaceOrderRequest = {
-          OrderNo: orderReq.OrderNo,
-          Package: summaryOrder.Package,
-          CarDetailsExtension: summaryOrder.CarDetailsExtension,
-          Customer: summaryOrder.Customer,
-          DeliveryMethod1: summaryOrder.DeliveryMethod1,
-          DeliveryMethod2: summaryOrder.DeliveryMethod2,
-          IsTaxInvoice: summaryOrder.IsTaxInvoice,
+      if(insureDetail.value.TaxInvoiceAddress?.ProvinceID) {
+        if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceAddress?.AddressID && !insureDetail.value.IsTaxInvoiceAddressSameAsDefault) 
+          insureDetail.value.TaxInvoiceAddress.AddressID = ''
+        else insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.TaxInvoiceAddress?.AddressID ?? "" as string
+
+        // if(customerOld?.TaxInvoiceAddress?.AddressID == insureDetail.value.TaxInvoiceAddress.AddressID && insureDetail.value.IsTaxInvoiceAddressSameAsDefault==false)
+        // {
+        //   insureDetail.value.TaxInvoiceAddress.AddressID=""
+        // }
+      }
+
+      if(insureDetail.value.TaxInvoiceDeliveryAddress?.ProvinceID) {
+        if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceDeliveryAddress?.AddressID && !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault) 
+          insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.DefaultAddress?.AddressID ?? "" as string
+        else insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.TaxInvoiceDeliveryAddress?.AddressID ?? "" as string
+
+        // if(customerOld?.TaxInvoiceDeliveryAddress?.AddressID == insureDetail.value.TaxInvoiceDeliveryAddress.AddressID && insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault==false)
+        // {
+        //   insureDetail.value.TaxInvoiceDeliveryAddress.AddressID=""
+        // }
+      }
+    }
+
+    const orderReq: PlaceOrderRequest = {
+      OrderNo: orderNo ?? undefined,
+      Package: {
+        UseCarCode: infomation.value?.CarUse ?? "",
+        CarTypeCode: infomation.value?.CarType ?? "",
+        CarCategoryID: infomation.value?.CarSize ?? "",
+        CarSalesYear: infomation.value?.CarYear ?? "",
+        CarBrandID: infomation.value?.CarBrand ?? "",
+        CarModelID: infomation.value?.CarModel ?? "",
+        SubCarModelID: infomation.value?.SubCarModel.split("|")[0] ?? "",
+        CompanyCode: packageSelect.value?.CompanyCode ?? "",
+        AgentCode: packageSelect.value?.AgentCode ?? "",
+        EffectiveType: infomation.value?.EffectiveType ?? "",
+        EffectiveDate: infomation.value?.EffectiveDate ?? "",
+        ExpireDate: infomation.value?.ExpireDate ?? "",
+      },
+      CarDetailsExtension: carDetail.value,
+      Customer: insureDetail.value,
+      DeliveryMethod1: DeliveryMethod[0],
+      DeliveryMethod2: RequestIncludeTax.value ? DeliveryMethod2 : null,
+      IsTaxInvoice: RequestIncludeTax.value,
+    };
+    console.log("orderReq", orderReq);
+
+    storeOrder.setOrder(orderReq);
+    isError.value = false;
+    messageError.value = "";
+
+    // create order
+    if (!orderReq.OrderNo || orderReq.OrderNo == "") {
+      const response = await useRepository().order.create(orderReq);
+      if (
+        response.apiResponse.Status &&
+        response.apiResponse.Status == "200" &&
+        response.apiResponse.Data
+      ) {
+        orderReq.OrderNo = response.apiResponse.Data.OrderNo;
+      } else {
+        isError.value = true;
+        messageError.value = response.apiResponse.ErrorMessage ?? "";
+      }
+      } else {
+        // edit order
+        const response = await useRepository().order.save(orderReq);
+
+        if (
+          response.apiResponse.Status &&
+          response.apiResponse.Status == "200" &&
+          response.apiResponse.Data
+        ) {
+          orderReq.OrderNo = response.apiResponse.Data.OrderNo;
+        } else {
+          isError.value = true;
+          messageError.value = response.apiResponse.ErrorMessage ?? "";
+        }
+      }
+      if (!isError.value) {
+        // get order after save or create
+        const req: OrderDetailRequest = {
+          OrderNo: orderReq.OrderNo ?? "",
         };
+        const getData = await useRepository().order.summary(req);
+        if (
+          getData.apiResponse.Status &&
+          getData.apiResponse.Status == "200" &&
+          getData.apiResponse.Data &&
+          getData.apiResponse.Data.length > 0
+        ) {
+            const summaryOrder = getData.apiResponse.Data[0].Order as Order
+            const orderSetStore: PlaceOrderRequest = {
+              OrderNo: orderReq.OrderNo,
+              Package: summaryOrder.Package,
+              CarDetailsExtension: summaryOrder.CarDetailsExtension,
+              Customer: summaryOrder.Customer,
+              DeliveryMethod1: summaryOrder.DeliveryMethod1,
+              DeliveryMethod2: summaryOrder.DeliveryMethod2,
+              IsTaxInvoice: summaryOrder.IsTaxInvoice,
+            };
 
-        storeSummary.setOrderSummary(getData.apiResponse.Data[0]);
-        storeOrder.setOrder(orderSetStore);
-        useStateMenu().setStateMenu(4);
-        router.push("/order/compulsory/payment");
-     }
-   }
-   //set state menu
-
+            storeSummary.setOrderSummary(getData.apiResponse.Data[0]);
+            storeOrder.setOrder(orderSetStore);
+            useStateMenu().setStateMenu(4);
+            router.push("/order/compulsory/payment");
+        }
+      }
+      //set state menu
+  }
+  else {
+    alert('กรุณากรอกข้อมูลให้ครบถ้วนก่อน')
+  }
+  
   isLoading.value = false;
 };
 
@@ -708,72 +787,30 @@ const loadPapeRonHand = async () => {
   }
 };
 const loadProvince = async () => {
-  const response = await useRepository().master.province();
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      carProvince.value = response.apiResponse.Data.map((x) => {
-        const options: SelectOption = {
-          label: x.Name,
-          value: x.ID,
-        };
-        return options;
-      });
-    } else {
-      // data not found
-    }
-  } else {
-  }
-  addrProvinceForInsured.value = carProvince.value;
-  addrProvinceForRecieve.value = carProvince.value;
-  addrProvinceForTax.value = carProvince.value;
-  addrProvinceForTax2.value = carProvince.value;
+  const response = useRepository().master.provinceText();
+  carProvince.value = response
+  addrProvinceForInsured.value = response
+  addrProvinceForRecieve.value = response
+  addrProvinceForTax.value = response
+  addrProvinceForTax2.value = response
 };
 const loadDistrict = async (provId: string): Promise<SelectOption[]> => {
   let options: SelectOption[] = [];
   const req: DistrictReq = {
     ProvinceID: provId,
   };
-  const response = await useRepository().master.district(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      options = response.apiResponse.Data.map((x) => {
-        const opt: SelectOption = {
-          label: x.Name,
-          value: x.ID,
-        };
-        return opt;
-      });
-    } else {
-      // data not found
-    }
-  } else {
-  }
+  const response = useRepository().master.districtText(req);
+  
 
-  return options;
+  return response;
 };
 const loadSubDistrict = async (distId: string): Promise<SelectOption[]> => {
   let options: SelectOption[] = [];
   const req: SubDistrictReq = {
     DistrictID: distId,
   };
-  const response = await useRepository().master.subDistrict(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      options = response.apiResponse.Data.map((x) => {
-        const options: SelectOption = {
-          label: `${x.Name} (${x.ZipCode})`,
-          value: x.ID,
-          option: x.ZipCode ?? "",
-        };
-        return options;
-      });
-    } else {
-      // data not found
-    }
-  } else {
-  }
-
-  return options;
+  const response = await useRepository().master.subDistrictText(req);
+  return response;
 };
 const loadZipCodeForInsured = async (subDistId: string): Promise<string> => {
   let option = "";
@@ -930,6 +967,7 @@ const handlerChangeDistrictForRecieve = async (e: string) => {
   }
 };
 const handlerChangeDistrictForTax = async (e: string) => {
+  console.log('handlerChangeDistrictForTax',e)
   if (e) {
     isLoading.value = true;
     addrSubDistrictForTax.value = await loadSubDistrict(e);
@@ -1010,7 +1048,7 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
   }
 };
 const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
-  console.log("handleCheckCarDetail", objectCarDetail);
+  // console.log("handleCheckCarDetail", objectCarDetail);
   if (
     objectCarDetail.License.length > 0 &&
     objectCarDetail.LicenseProvinceID.length > 0 &&
@@ -1029,7 +1067,7 @@ const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
   carDetail.value = objectCarDetail;
 };
 const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject) => {
-  // console.log('RecieveObject', RecieveObject)
+  console.log('RecieveObject', RecieveObject)
   switch (RecieveObject.ShippingPolicy) {
     case "pdf":
       if (RecieveObject.Email.length > 0) checklist.value[2].className = "current";
@@ -1066,7 +1104,7 @@ const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject
   insuranceRecieve.value = RecieveObject;
 };
 const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
-  console.log("InsureDetail", InsureDetail);
+  // console.log("InsureDetail", InsureDetail);
   checklist.value[1].className = "";
   changeInsure.value = true;
   insureDetail.value = InsureDetail;
@@ -1195,8 +1233,6 @@ const handlerChangeTaxInvoice = (
   if (isIncludeTax) {
     if (insuranceRecieve.value) {
       // set ที่อยู่จีดส่งเอกสารใบกำกับภาษี กรณีเลือก วิธีรับกรมธรรม์ จัดส่งตัวจริง และเลือกเป็นจัดส่งพร้อมกรมธรรม์
-      console.log("insuranceRecieve.value", insuranceRecieve.value);
-      console.log("shippedPolicy", shippedPolicy);
       if (
         insuranceRecieve.value.ShippingPolicy == "postal" &&
         shippedPolicy == "together"
@@ -1211,6 +1247,10 @@ const handlerChangeTaxInvoice = (
         // ไม่ใช่ default จาก ที่อยู่ผู้เอาประกัน
         if (insureDetail.value.TaxInvoiceAddress) {
           if (
+            insureDetail.value.TaxInvoiceAddress.PhoneNumber.length > 0 &&
+            insureDetail.value.TaxInvoiceAddress.FirstName.length > 0 &&
+            insureDetail.value.TaxInvoiceAddress.LastName.length > 0 &&
+            insureDetail.value.TaxInvoiceAddress.TaxID.length == 13 &&
             insureDetail.value.TaxInvoiceAddress.No.length > 0 &&
             insureDetail.value.TaxInvoiceAddress.ProvinceID.length > 0 &&
             insureDetail.value.TaxInvoiceAddress.DistrictID.length > 0 &&
@@ -1231,6 +1271,9 @@ const handlerChangeTaxInvoice = (
         if (insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault == false) {
           if (insureDetail.value.TaxInvoiceDeliveryAddress) {
             if (
+              insureDetail.value.TaxInvoiceDeliveryAddress.PhoneNumber.length > 0 &&
+              insureDetail.value.TaxInvoiceDeliveryAddress.FirstName.length > 0 &&
+              insureDetail.value.TaxInvoiceDeliveryAddress.LastName.length > 0 &&
               insureDetail.value.TaxInvoiceDeliveryAddress.No.length > 0 &&
               insureDetail.value.TaxInvoiceDeliveryAddress.ProvinceID.length > 0 &&
               insureDetail.value.TaxInvoiceDeliveryAddress.DistrictID.length > 0 &&

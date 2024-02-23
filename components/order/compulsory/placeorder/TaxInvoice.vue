@@ -54,6 +54,7 @@
                     <FormKit
                       type="radio"
                       label="รายชื่อที่อยู่"
+                      name="AddressTax"
                       :options="[
                         {
                           label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
@@ -72,11 +73,14 @@
                     />
                   </div>
 
-                  <aside class="new-request-tax-address inner-section" v-if="addressIncludeTaxType=='addnew'">
+                  <aside
+                    class="new-request-tax-address inner-section"
+                    v-if="addressIncludeTaxType == 'addnew'"
+                  >
                     <h4>แก้ไขใบกำกับภาษี</h4>
 
                     <div class="row">
-                      <div class="col-sm-4 col-lg-3">
+                      <!-- <div class="col-sm-4 col-lg-3">
                         <FormKit
                           type="select"
                           label="คำนำหน้าผู้รับ"
@@ -85,18 +89,21 @@
                           :options="prefix"
                           validation="required"
                           v-model="taxInvoiceAddress.Prefix"
+                          validation-visibility="live"
                           :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
                         />
-                      </div>
+                      </div> -->
                       <div class="col-sm-8 col-lg-4">
                         <FormKit
                           type="text"
                           label="ชื่อผู้รับ"
                           name="NewFirstName"
                           placeholder="ชื่อ"
+                          validation-visibility="live"
                           validation="required"
                           :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-                          autocomplete="false"
+                          autocomplete="off"
+                          @keyup="handlerChangeTaxInvoice"
                           v-model="taxInvoiceAddress.FirstName"
                         />
                       </div>
@@ -106,9 +113,11 @@
                           label="นามสกุลผู้รับ"
                           name="NewLastName"
                           placeholder="นามสกุล"
+                          validation-visibility="live"
                           validation="required"
                           :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-                          autocomplete="false"
+                          autocomplete="off"
+                          @keyup="handlerChangeTaxInvoice"
                           v-model="taxInvoiceAddress.LastName"
                         />
                       </div>
@@ -118,24 +127,33 @@
                           label="หมายเลขโทรศัพท์"
                           name="NewPhoneNumber"
                           placeholder="098765XXXX"
+                          validation-visibility="live"
                           validation="required"
                           :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
-                          autocomplete="false"
+                          autocomplete="off"
+                          @keyup="handlerChangeTaxInvoice"
                           v-model="taxInvoiceAddress.PhoneNumber"
                         />
                       </div>
 
                       <div class="col-6">
-                        <FormKit type="number" label="ภาษี" mask="#-####-#####-##-#" 
-                          name="TaxID" placeholder="เลขบัตรประชาชน 13 หลัก"
+                        <FormKit
+                          type="text"
+                          label="ภาษี"
+                          mask="#-####-#####-##-#"
+                          name="TaxID"
+                          maxlength="13"
+                          placeholder="เลขบัตรประชาชน 13 หลัก"
                           v-model="taxInvoiceAddress.TaxID"
-                          validation="required|matches:/^[0-9]{13}$/" :validation-messages="{
+                          @keyup="handlerChangeTaxInvoice"
+                          validation-visibility="live"
+                          validation="required|matches:/^[0-9]{13}$/"
+                          :validation-messages="{
                             required: 'กรุณาใส่เลขบัตรประชาชน',
-                            matches: 'เลขบัตรประชาชนควรเป็นตัวเลข 13 หลัก'
+                            matches: 'เลขบัตรประชาชนควรเป็นตัวเลข 13 หลัก',
                           }"
                         />
                       </div>
-                      
                       <ElementsFormAddress
                         element-key="taxinvoice"
                         :addr-province="addrProvince"
@@ -150,17 +168,14 @@
                       />
                     </div>
 
-                    <button
-                     type="button"
-                      class="btn-primary btn-save"
-                      @click="handlerSubmitAddressTaxInvoice"
-                    >
-                      บันทึกข้อมูล
-                    </button>
+                    
                   </aside>
                 </section>
 
-                <div class="shippped-tax-type" v-show="shippingPolicy == 'postal' && requestIncludeTax.length > 0">
+                <div
+                  class="shippped-tax-type"
+                  v-show="shippingPolicy == 'postal' && requestIncludeTax.length > 0"
+                >
                   <div class="form-hide-label">
                     <ElementsFormRadioShippedPolicy
                       v-model="shippedPolicy"
@@ -219,7 +234,7 @@
                         {
                           label: 'เปลี่ยนที่อยู่ใหม่',
                           value: 'addnew',
-                          help: newTaxInvoiceDeliveryFullAddress,
+                          help: newTaxInvoiceDeliveryFullAddressTemp,
                           attrs: { addnewaddress: true },
                         },
                       ]"
@@ -227,11 +242,14 @@
                       v-model="addressDeliveryTaxType"
                     />
                   </div>
-                  <aside v-if="addressDeliveryTaxType=='addnew'" class="new-shipped-tax-address inner-section">
+                  <aside
+                    v-if="addressDeliveryTaxType == 'addnew'"
+                    class="new-shipped-tax-address inner-section"
+                  >
                     <h4>ที่อยู่จัดส่งใหม่</h4>
                     <div class="row">
                       <ElementsFormNewAddress
-                        key="taxinvoice_delivery"
+                        element-key="taxinvoice_delivery"
                         :addr-province="addrProvince2"
                         :addr-district="addrDistrict2"
                         :addr-sub-district="addrSubDistrict2"
@@ -245,13 +263,7 @@
                       />
                     </div>
 
-                    <button
-                      type="button"
-                      class="btn-primary btn-save"
-                      @click="handlerSubmitAddressTaxInvoiceDelivery"
-                    >
-                      บันทึกข้อมูล
-                    </button>
+                    
                   </aside>
                 </section>
               </div>
@@ -266,7 +278,7 @@
 import type { CustomerOrderRequest, DefaultAddress, PlaceOrderRequest, TaxInvoiceAddress, TaxInvoiceDeliveryAddress } from "~/shared/entities/placeorder-entity"
 import type { RadioOption, SelectOption } from "~/shared/entities/select-option"
 
-const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict','changeProvince2', 'changeDistrict2', 'changeSubDistrict2','changeTaxInvoice'])
+const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict', 'changeProvince2', 'changeDistrict2', 'changeSubDistrict2', 'changeTaxInvoice'])
 
 const props = defineProps({
   prefix: Array<SelectOption>,
@@ -282,8 +294,8 @@ const props = defineProps({
   insureFullAddress: String,
   isIncludeTax: String,//1,0
   shippingPolicy: String, // email,pdf,postal
-  cacheOrderRequest:{
-    type:Object as ()=> PlaceOrderRequest
+  cacheOrderRequest: {
+    type: Object as () => PlaceOrderRequest
   }
 })
 
@@ -306,82 +318,83 @@ const newTaxInvoiceDeliveryFullAddressTemp: globalThis.Ref<String> = ref('')
 const shippedPolicy = ref('together') //together,separately
 const shippedPolicyOption: globalThis.Ref<RadioOption[]> = ref([
   {
-      label: 'จัดส่งพร้อมกรมธรรม์',
-      value: 'together',
-    },
-    {
-      label: 'จัดส่งแยก',
-      value: 'separately',
-    },
+    label: 'จัดส่งพร้อมกรมธรรม์',
+    value: 'together',
+  },
+  {
+    label: 'จัดส่งแยก',
+    value: 'separately',
+  },
 ])
 const requestIncludeTax: globalThis.Ref<string[]> = ref([])
 const addressIncludeTaxType = ref('insured')
 const addressDeliveryTaxType = ref('insured')
 
-const taxInvoiceAddress:globalThis.Ref<TaxInvoiceAddress> = ref({
+const taxInvoiceAddress: globalThis.Ref<TaxInvoiceAddress> = ref({
   AddressID: '',
   ReferenceID: '',
-  ReferenceType:'',
+  ReferenceType: '',
   ProvinceID: '',
-  DistrictID:'',
-  SubDistrictID:'',
-  TaxID:'',
-  FirstName:'',
-  LastName:'',
-  PhoneNumber:'',
-  Email:'',
-  Name:'',
-  Type:'',
-  AddressLine1:'',
-  AddressLine2:'',
-  AddressText:'',
-  No:'',
-  Moo:'',
-  Place:'',
-  Building:'',
-  Floor:'',
-  Room:'',
-  Branch:'',
-  Alley:'',
-  Road:'',
+  DistrictID: '',
+  SubDistrictID: '',
+  TaxID: '',
+  FirstName: '',
+  LastName: '',
+  PhoneNumber: '',
+  Email: '',
+  Name: '',
+  Type: '',
+  AddressLine1: '',
+  AddressLine2: '',
+  AddressText: '',
+  No: '',
+  Moo: '',
+  Place: '',
+  Building: '',
+  Floor: '',
+  Room: '',
+  Branch: '',
+  Alley: '',
+  Road: '',
+  Prefix:'',
 })
-const taxInvoiceDeliveryAddress:globalThis.Ref<TaxInvoiceAddress> = ref({
+const taxInvoiceDeliveryAddress: globalThis.Ref<TaxInvoiceAddress> = ref({
   AddressID: '',
   ReferenceID: '',
-  ReferenceType:'',
+  ReferenceType: '',
   ProvinceID: '',
-  DistrictID:'',
-  SubDistrictID:'',
-  TaxID:'',
-  FirstName:'',
-  LastName:'',
-  PhoneNumber:'',
-  Email:'',
-  Name:'',
-  Type:'',
-  AddressLine1:'',
-  AddressLine2:'',
-  AddressText:'',
-  No:'',
-  Moo:'',
-  Place:'',
-  Building:'',
-  Floor:'',
-  Room:'',
-  Branch:'',
-  Alley:'',
-  Road:'',
+  DistrictID: '',
+  SubDistrictID: '',
+  TaxID: '',
+  FirstName: '',
+  LastName: '',
+  PhoneNumber: '',
+  Email: '',
+  Name: '',
+  Type: '',
+  AddressLine1: '',
+  AddressLine2: '',
+  AddressText: '',
+  No: '',
+  Moo: '',
+  Place: '',
+  Building: '',
+  Floor: '',
+  Room: '',
+  Branch: '',
+  Alley: '',
+  Road: '',
 })
 const ShippingMethodText = ref('')
 const ShippingMethodFee = ref('')
-const insureDetail:globalThis.Ref<CustomerOrderRequest> = ref({})
-const cacheDefaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref()
-  const onLoad = onMounted(async () => {
-    //console.log(props.cacheOrderRequest)
-    insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
-    if(props.cacheOrderRequest){
-      setCacheData()
-    }
+const insureDetail: globalThis.Ref<CustomerOrderRequest> = ref({})
+const cacheDefaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref()
+const onLoad = onMounted(async () => {
+  //console.log(props.cacheOrderRequest)
+  insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
+  if (props.cacheOrderRequest) {
+    setCacheData()
+  }
   if (props.prefix) {
     prefix.value = props.prefix
   }
@@ -426,15 +439,15 @@ const cacheDefaultAddress:globalThis.Ref<DefaultAddress|undefined> = ref()
 
 });
 // handler function for emit
-const handlerChangeDelivery = (e:any)=>{
+const handlerChangeDelivery = (e: any) => {
   const value = e.target.value
-  if(value){
-    const filter = delivery.value.filter(x=>x.value==value)
-  if(filter.length>0){
-    ShippingMethodFee.value = filter[0].option ?? ""
-  }
+  if (value) {
+    const filter = delivery.value.filter(x => x.value == value)
+    if (filter.length > 0) {
+      ShippingMethodFee.value = filter[0].option ?? ""
+    }
 
-  handlerChangeTaxInvoice()
+    handlerChangeTaxInvoice()
   }
 }
 const handlerChangeProvince = (e: string) => {
@@ -472,60 +485,72 @@ const handlerChangeFullAddressTaxInvoice = (addr: string, ObjectAddress: Default
   if (addr && ObjectAddress) {
     taxInvoiceAddress.value = ObjectAddress as TaxInvoiceAddress
     const prefixId = taxInvoiceAddress.value.Prefix
-    const prefixName = prefix.value.filter(x=>x.value==prefixId)[0]
+    const prefixName = prefix.value.filter(x => x.value == prefixId)[0]
     let prefixLabel = prefixName ? prefixName.label ?? '' : ''
-    newTaxInvoiceFullAddressTemp.value = `${prefixLabel} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
+    //newTaxInvoiceFullAddressTemp.value = `${prefixLabel} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
+    newTaxInvoiceFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
+
+    insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
+    newTaxInvoiceFullAddress.value = newTaxInvoiceFullAddressTemp.value
+    handlerChangeTaxInvoice()
   }
 }
 const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress: DefaultAddress) => {
   if (addr && ObjectAddress) {
     taxInvoiceDeliveryAddress.value = ObjectAddress as TaxInvoiceAddress
-    newTaxInvoiceDeliveryFullAddressTemp.value =  `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
+    //newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
+    newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
 
+    insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
+    newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
+    handlerChangeTaxInvoice()
   }
 }
-const handlerSubmitAddressTaxInvoice = ()=>{
+const handlerSubmitAddressTaxInvoice = () => {
   insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
   newTaxInvoiceFullAddress.value = newTaxInvoiceFullAddressTemp.value
   handlerChangeTaxInvoice()
 }
-const handlerSubmitAddressTaxInvoiceDelivery = ()=>{
+const handlerSubmitAddressTaxInvoiceDelivery = () => {
+  //alert("Not able")
   insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
-  newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
+  //newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
   handlerChangeTaxInvoice()
 }
-const handlerChangeTaxInvoice = ()=>{
-  insureDetail.value.IsTaxInvoiceAddressSameAsDefault = addressIncludeTaxType.value=='insured'
-  insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = addressDeliveryTaxType.value=='insured'
-  emit('changeTaxInvoice',insureDetail.value,requestIncludeTax.value.length > 0,shippedPolicy.value,ShippingMethodText.value)
+const handlerChangeTaxInvoice = () => {
+  insureDetail.value.IsTaxInvoiceAddressSameAsDefault = addressIncludeTaxType.value == 'insured'
+  insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = addressDeliveryTaxType.value == 'insured'
+  emit('changeTaxInvoice', insureDetail.value, requestIncludeTax.value.length > 0, shippedPolicy.value, ShippingMethodText.value)
 }
 
-const setCacheData = ()=>{
-  if(props.cacheOrderRequest){
-    requestIncludeTax.value =props.cacheOrderRequest.IsTaxInvoice==true? ['request'] : []
-    if(props.cacheOrderRequest.Customer){
-       console.log('props.cacheOrderRequest Customer', props.cacheOrderRequest.Customer)
-      
-      addressIncludeTaxType.value=props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault==true ? 'insured' : 'addnew'
-      addressDeliveryTaxType.value=props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault==true ? 'insured' : 'addnew'
+const setCacheData = () => {
+  if (props.cacheOrderRequest) {
+    requestIncludeTax.value = props.cacheOrderRequest.IsTaxInvoice == true ? ['request'] : []
+    if (props.cacheOrderRequest.Customer) {
+      addressIncludeTaxType.value = props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault == true ? 'insured' : 'addnew'
+      addressDeliveryTaxType.value = props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault == true ? 'insured' : 'addnew'
 
-      if(props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault==false && props.cacheOrderRequest.Customer.TaxInvoiceAddress?.ProvinceID != ''){
-        taxInvoiceAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceAddress as DefaultAddress
+      if (props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault == false && props.cacheOrderRequest.Customer.TaxInvoiceAddress?.ProvinceID != '') {
+          if(props.cacheOrderRequest.Customer.TaxInvoiceAddress)
+          {
+            taxInvoiceAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceAddress as DefaultAddress
+          }
+
       }
-      if(props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault==false && props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress?.ProvinceID != ''){
+      if (props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault == false && props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress?.ProvinceID != '') {
         cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress
         //const deliveryMethod1 = props.cacheOrderRequest.DeliveryMethod1
 
       }
       const deliveryMethod2 = props.cacheOrderRequest.DeliveryMethod2
-          if(props.delivery && deliveryMethod2){
-          const filter = props.delivery.filter(x=>x.value == deliveryMethod2.DeliveryChannelType)
-          if(filter.length>0){
-            shippedPolicy.value='separately'
-            ShippingMethodText.value = deliveryMethod2.DeliveryChannelType
-            ShippingMethodFee.value = filter[0].option ?? "0"
-          }
+      if (props.delivery && deliveryMethod2) {
+        const filter = props.delivery.filter(x => x.value == deliveryMethod2.DeliveryChannelType)
+        if (filter.length > 0) {
+          shippedPolicy.value = 'separately'
+          ShippingMethodText.value = deliveryMethod2.DeliveryChannelType
+          ShippingMethodFee.value = filter[0].option ?? "0"
         }
+      }
     }
     handlerChangeTaxInvoice()
   }
@@ -635,7 +660,7 @@ watch(
 watch(
   () => props.insureFullAddress,
   () => {
-    if(props.insureFullAddress){
+    if (props.insureFullAddress) {
       insureFullAddress.value = props.insureFullAddress
     }
 
@@ -644,7 +669,7 @@ watch(
 watch(
   addressIncludeTaxType,
   () => {
-    if(addressIncludeTaxType.value){
+    if (addressIncludeTaxType.value) {
       handlerChangeTaxInvoice()
     }
 
@@ -653,7 +678,7 @@ watch(
 watch(
   addressDeliveryTaxType,
   () => {
-    if(addressDeliveryTaxType.value){
+    if (addressDeliveryTaxType.value) {
       handlerChangeTaxInvoice()
     }
 
@@ -662,16 +687,16 @@ watch(
 watch(
   shippedPolicy,
   () => {
-    if(shippedPolicy.value){
+    if (shippedPolicy.value) {
       handlerChangeTaxInvoice()
     }
 
   }
 )
-watch(requestIncludeTax,()=>{
+watch(requestIncludeTax, () => {
   handlerChangeTaxInvoice()
 })
-watch(()=>props.cacheOrderRequest,(newValue)=>{
+watch(() => props.cacheOrderRequest, (newValue) => {
   setCacheData()
 })
 

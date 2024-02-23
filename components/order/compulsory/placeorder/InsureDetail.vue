@@ -48,7 +48,7 @@
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="false" />
+                          }" autocomplete="off" />
                       </div>
                       <div class="col-md-12 col-lg-5">
                         <FormKit type="text" label="นามสกุล" name="LastName" placeholder="นามสกุล"
@@ -57,7 +57,7 @@
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="false" />
+                          }" autocomplete="off" />
                       </div>
                       <div class="col-6">
                         <FormKit
@@ -91,11 +91,11 @@
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 10 ตัว',
                             number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
-                          }" autocomplete="false" />
+                          }" autocomplete="off" />
                       </div>
                       <div class="col-6">
                         <FormKit type="email" label="อีเมล" name="Email" placeholder="xxxxxx@email.com"
-                          autocomplete="false" v-model="personProfile.Email" @change="handlerChangePersonalProfile" />
+                          autocomplete="off" v-model="personProfile.Email" @change="handlerChangePersonalProfile" />
                       </div>
                     </div>
                   </section>
@@ -116,7 +116,7 @@
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="false" />
+                          }" autocomplete="off" />
                       </div>
                       <div class="col-md-12 col-lg-5">
                         <FormKit type="text" label="Lastname" name="LastName" v-model="personProfile.LastName"
@@ -125,7 +125,7 @@
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="false" />
+                          }" autocomplete="off" />
                       </div>
                       <div class="col-sm-4 col-lg-3">
                         <FormKit
@@ -169,12 +169,12 @@
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 10 ตัว',
                             number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
-                          }" autocomplete="false" v-model="personProfile.PhoneNumber"
+                          }" autocomplete="off" v-model="personProfile.PhoneNumber"
                           @change="handlerChangePersonalProfile" />
                       </div>
                       <div class="col-6">
                         <FormKit type="email" label="Email" name="Email" placeholder="xxxxxx@email.com"
-                          autocomplete="false" v-model="personProfile.Email" @change="handlerChangePersonalProfile" />
+                          autocomplete="off" v-model="personProfile.Email" @change="handlerChangePersonalProfile" />
                       </div>
                     </div>
                   </section>
@@ -255,6 +255,7 @@
                       <div class="col-md-12 col-lg-4">
                         <FormKit type="text" label="เลขประจำตัวผู้เสียภาษี" name="BranchTaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี" validation="required|length:13|number"
+                          maxlength="13"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 13 ตัว',
@@ -282,6 +283,7 @@
                       </div>
                       <div class="col-6">
                         <FormKit type="text" label="หมายเลขโทรศัพท์" name="BranchPhoneNumber" placeholder="098765XXXX"
+                          maxlength="10"
                           validation="required|+length:10|number" :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 10 ตัว',

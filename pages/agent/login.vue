@@ -97,9 +97,10 @@ const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = fa
 /////////////////////////////////////////
 // Submit page
 const submitLogin = async (formData: any) => {
+
   openLoadingDialog(true)
 
-  console.log(formData)
+  // console.log(formData)
 
   // User auth store
   const store = useStoreUserAuth()
@@ -121,16 +122,15 @@ const submitLogin = async (formData: any) => {
 
       } else {
 
+        openLoadingDialog(false)
         statusMessageTypeQ1.value = 'notice-warning'
         statusMessageQ1.value = data.value.ErrorMessage
 
         if (data.value.ErrorCode == '90000999') {
-
           statusMessageQ1.value = 'Username หรือ Password ไม่ถูกต้อง'
-
           return statusMessageQ1.value
-
         }
+
       }
     }
 
@@ -146,33 +146,62 @@ const submitLogin = async (formData: any) => {
     if (data && data.value) {
 
       if (data.value.Status == '200') {
-
         await goNext()
-
       } else {
 
+        openLoadingDialog(false)
         statusMessageTypeQ2.value = 'notice-warning'
         statusMessageQ2.value = data.value.ErrorMessage
 
         if (data.value.ErrorCode == '90000999') {
-
           statusMessageQ2.value = 'Username หรือ Password ไม่ถูกต้อง'
-
           return statusMessageQ2.value
-
         }
+
       }
     }
 
   }
 
-  openLoadingDialog(false)
+}
+
+const getAgentProfile = async () => {
+
+  const response = await useRepository().agent.getAgentProfile()
+  const resultCheck = useUtility().responseCheck(response)
+
+  if(resultCheck.status === 'pass') {
+    const AgentInfo = useUtility().getSession('AgentInfo')
+    if(Array.isArray(response.apiResponse.Data)) {
+      AgentInfo.AgentProfile = response.apiResponse.Data[0]
+    }
+    useUtility().setSession('AgentInfo', AgentInfo)
+  }
+
+}
+
+const getPlanProduct = async () => {
+
+  const response = await useRepository().agent.getPlanProduct()
+  const resultCheck = useUtility().responseCheck(response)
+
+  if(resultCheck.status === 'pass') {
+    const AgentInfo = useUtility().getSession('AgentInfo')
+    AgentInfo.PlanProduct = response.apiResponse.Data
+    useUtility().setSession('AgentInfo', AgentInfo)
+  }
+
 }
 
 /////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
+
+  useUtility().setSession('AgentInfo', { AgentProfile: [], PlanProduct: [] })
+  getAgentProfile()
+  getPlanProduct()
   router.push({ path: '/main' })
+
 }
 
 /////////////////////////////////////////

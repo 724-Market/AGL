@@ -422,6 +422,15 @@ export default () => {
         }
         return carDetail
     }
+    
+    const setSession = (key: string, value: any) => {
+        sessionStorage.setItem(key, JSON.stringify(value));
+    }
+
+    const getSession = (key: string) => {
+        const storedValue = sessionStorage.getItem(key);
+        return storedValue ? JSON.parse(storedValue) : null;
+    }
 
     return {
         getClassFromStatusOrder,
@@ -438,6 +447,8 @@ export default () => {
         getDeviceId,
         setStoretoStep,
         responseCheck,
-        createLoadingProps
+        createLoadingProps, 
+        setSession, 
+        getSession
     }
 }

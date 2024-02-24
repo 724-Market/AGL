@@ -13,19 +13,6 @@
 
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">รายละเอียด</h3>
-          </div>
-          <div class="card-body">
-
-            <div v-for="(value, key) in affiliateProductPlanDetails" :key="key">
-              {{ key }} : {{ value }}
-            </div>
-
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
             <h3 class="card-title">แพ็คเก็จ</h3>
           </div>
           <div class="card-body">
@@ -59,6 +46,11 @@
               <template v-for="(value3, key3) in value.Benefit" :key="key3">
                 <li>{{ value3.Name }}</li>
               </template>
+              <br>
+              <b>
+                <button type="button" class="btn-info" @click="selectPlan(value.Plan.ID)">เลือก</button>
+              </b>
+              <br>
               ------------------------------
               <br>
             </div>
@@ -78,6 +70,8 @@
 </template>
 
 <script setup lang="ts">
+
+const router = useRouter();
 
 // Define import
 const affiliateProductPlanList = ref()
@@ -111,7 +105,6 @@ const handleCloseModal = async () => {
 onMounted(async () => {
   openLoadingDialog(true)
   await loadAffiliateProductList()
-  await loadAffiliateProductPlan('EBE5C549694847E7AE579AB5135312C2', '00177311')
   openLoadingDialog(false)
 })
 
@@ -126,40 +119,21 @@ const loadAffiliateProductList = async () => {
 
   if (resultCheck.status == 'error') {
     //resultCheck.modalTitle = 'xxxxx'
-    // serverModal(resultCheck)
+    //serverModal(resultCheck)
   }
 
   if (resultCheck.status == 'server-error') {
-    // serverModal(resultCheck)
+    //serverModal(resultCheck)
   }
 
 }
 
-const loadAffiliateProductPlan = async (ProductPlanID: string, AgentID: string) => {
-
-  const affiliateProductPlanlReq = {
-    ProductPlanID: ProductPlanID,
-    AgentID: AgentID
+const selectPlan = async (id: string) => {
+  if(id) {
+    useUtility().getSession('AgentSelectPlan')
+    router.push({ path: '/main/select-plan/'+id })
   }
-
-  const response = await useRepository().affiliate.getAffiliateProductPlan(affiliateProductPlanlReq)
-  const resultCheck = useUtility().responseCheck(response)
-
-  if (resultCheck.status == 'pass') {
-    affiliateProductPlanDetails.value = response.apiResponse.Data
-  }
-
-  if (resultCheck.status == 'error') {
-    //resultCheck.modalTitle = 'xxxxx'
-    // serverModal(resultCheck)
-  }
-
-  if (resultCheck.status == 'server-error') {
-    // serverModal(resultCheck)
-  }
-
 }
-
 
 /////////////////////////////////////////
 // Define layout

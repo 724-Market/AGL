@@ -30,10 +30,10 @@
 </template>
 
 <script setup lang="ts">
-// // Define import
+// Define import
 import type { OrderListRes } from "~/shared/entities/paper-entity"
 
-// // Define props
+// Define props
 const props = defineProps({
     orderGet: {
         type: Object as () => OrderListRes
@@ -56,6 +56,8 @@ const orderStatusIconClass = computed(() => {
     switch (orderStatus.value) {
         case 'Prepare':
             return 'warning'
+        case 'Receive':
+            return 'warning'
         case 'Delivery':
             return 'info'
         case 'Success':
@@ -71,6 +73,8 @@ const orderStatusIconClass = computed(() => {
 const orderStatusClass = computed(() => {
     switch (orderStatus.value) {
         case 'Prepare':
+            return 'text-warning'
+        case 'Receive':
             return 'text-warning'
         case 'Delivery':
             return 'text-info'
@@ -91,7 +95,7 @@ const orderStatusText = computed(() => {
         case 'Receive':
             return 'เตรียมกระดาษ'
         case 'Delivery':
-            return 'จัดส่ง'
+            return 'จัดส่งแล้ว'
         case 'Success':
             return 'สำเร็จ'
         case 'Cancel':

@@ -1,16 +1,18 @@
 <template>
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
 
     <FormKit type="form" @submit="submitEditUser" :actions="false" id="form-user" form-class="form-order form-theme"
       :incomplete-message="false">
 
       <div class="row">
         <div class="col col-main">
+          <div class="has-sticky">
 
-          <UsersProfileDetail :key="renderKey" :user-details="userDetails" @on-delete-group="updateProfile"
-            v-if="userDetails" />
+            <UsersProfileDetail :key="renderKey" :user-details="userDetails" @on-delete-group="updateProfile"
+              v-if="userDetails" />
 
+          </div>
         </div>
 
         <div class="col col-sidebar">
@@ -180,6 +182,7 @@ const layout = "monito"
 const layoutClass = "layout-monito"
 const showPageSteps = false
 const showPageHeader = true
+const showLogoHeader = false
 
 // Define page meta
 const pageTitle = "แก้ไขข้อมูลผู้ช่วย"

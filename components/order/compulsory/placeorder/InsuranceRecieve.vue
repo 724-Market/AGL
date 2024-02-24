@@ -147,13 +147,6 @@
                       :loading="isLoading"
                     />-->
 
-                    <button 
-                      type="button"
-                      class="formkit-input btn btn-primary form-actions"
-                      @click="handleButtonSaveClick"
-                      label="บันทึกข้อมูล"
-                      :loading="isLoading"
-                    >บันทึกข้อมูล</button>
 
                   </aside>
                 </section>

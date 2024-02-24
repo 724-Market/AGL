@@ -73,10 +73,9 @@
                     />
                   </div>
 
-                  <aside
-                    class="new-request-tax-address inner-section"
-                    v-if="addressIncludeTaxType == 'addnew'"
-                  >
+                  <aside class="new-request-tax-address inner-section"  
+                    v-if="addressIncludeTaxType == 'addnew' && props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID == null" 
+                   >
                     <h4>แก้ไขใบกำกับภาษี</h4>
 
                     <div class="row">
@@ -170,6 +169,14 @@
 
                     
                   </aside>
+                  <aside class="new-request-tax-address inner-section"  
+                    v-if="addressIncludeTaxType == 'addnew' && props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID != null" 
+                  >
+                    <FormKit type="button" v-show="props.cacheOrderRequest?.OrderNo != null" label="แก้ไขใบกำกับ" name="tax-address" :classes="{
+                      input: 'btn-primary',
+                      }" @click="openDialogAddress" :disabled="isLoading" :loading="isLoading" 
+                    />
+                </aside>
                 </section>
 
                 <div
@@ -273,6 +280,14 @@
       </div>
     </div>
   </div>
+  
+  <ElementsDialogEditAddress v-if="isEditTaxAddress" :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress.Type"
+    :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID" 
+    :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID"
+    :address-data-array="isNewLabel ? newAddressUpdate : addressDataArray" 
+    :profile-data-array="isNewLabel ? newAddressUpdate : profileDataArray" 
+    :show="isEditTaxAddress" @close-address="closeModalAddress"
+    @on-edit-address="updateAddress"></ElementsDialogEditAddress> 
 </template>
 <script setup lang="ts">
 import type { CustomerOrderRequest, DefaultAddress, PlaceOrderRequest, TaxInvoiceAddress, TaxInvoiceDeliveryAddress } from "~/shared/entities/placeorder-entity"
@@ -329,6 +344,66 @@ const shippedPolicyOption: globalThis.Ref<RadioOption[]> = ref([
 const requestIncludeTax: globalThis.Ref<string[]> = ref([])
 const addressIncludeTaxType = ref('insured')
 const addressDeliveryTaxType = ref('insured')
+
+const isLoading = ref(false);
+const isEditTaxAddress = ref(false)
+const isEditTaxDelivery = ref(false)
+const isNewLabel = ref(false)
+
+interface AddressData {
+  No?: string
+  Moo?: string
+  Place?: string
+  Building?: string
+  Floor?: string
+  Alley?: string
+  Road?: string
+  Type?: string
+  ProvinceID?: string
+  DistrictID?: string
+  SubDistrictID?: string
+  postalCode?: string
+  ProvinceLabel?: string
+  DistrictLabel?: string
+  SubDistrictLabel?: string
+}
+
+interface ProfileData {
+  AddressID?: string
+  FirstName?: string
+  LastName?: string
+  Name?: string
+  PhoneNumber?: string
+  TaxID?: string
+}
+
+interface LabelAddressData {
+  AddressID?: string
+  FirstName?: string
+  LastName?: string
+  Name?: string
+  PhoneNumber?: string
+  TaxID?: string
+  No?: string
+  Moo?: string
+  Place?: string
+  Building?: string
+  Type: string
+  Floor?: string
+  Alley?: string
+  Road?: string
+  ProvinceID?: string
+  DistrictID?: string
+  SubDistrictID?: string
+  postalCode?: string
+  ProvinceName?: string
+  DistrictName?: string
+  SubDistrictName?: string
+}
+
+const addressDataArray = ref<AddressData>({})
+const profileDataArray = ref<ProfileData>({})
+const newAddressUpdate = ref<LabelAddressData>({})
 
 const taxInvoiceAddress: globalThis.Ref<TaxInvoiceAddress> = ref({
   AddressID: '',
@@ -438,6 +513,111 @@ const onLoad = onMounted(async () => {
   }
 
 });
+
+const openDialogAddress = (open: boolean) => {
+  mapAddressData();
+  mapProfileData();
+  isEditTaxAddress.value = false;
+  isEditTaxAddress.value = open;
+}
+
+const closeModalAddress = async (refresh: boolean) => {
+  if (refresh) {
+    isEditTaxAddress.value = true;
+    isEditTaxAddress.value = false;
+  }
+  isEditTaxAddress.value = false;
+}
+
+const openDialogDelivery = (open: boolean) => {
+  mapAddressData();
+  mapProfileData();
+  isEditTaxDelivery.value = false;
+  isEditTaxDelivery.value = open;
+}
+
+const closeModalDelivery = async (refresh: boolean) => {
+  if (refresh) {
+    isEditTaxDelivery.value = true;
+    isEditTaxDelivery.value = false;
+  }
+  isEditTaxDelivery.value = false;
+}
+
+//Mapdata to show at label waiting upgrade to const mapProfileData = async (newData: Object) version
+const mapProfileData = async () => {
+  profileDataArray.value = {
+    FirstName: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.FirstName || '',
+    LastName: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.LastName || '',
+    Name: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Name || '',
+    PhoneNumber: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.PhoneNumber || '',
+    TaxID: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.TaxID || '',
+    AddressID: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID || ''
+  };
+};
+
+const mapAddressData = async () => {
+  addressDataArray.value = {
+    No: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.No || '',
+    Moo: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Moo || '',
+    Place: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Place || '',
+    Building: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Building || '',
+    Floor: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Floor || '',
+    Alley: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Alley || '',
+    Road: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Road || '',
+    Type: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Type || '',
+    ProvinceID: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.ProvinceID || '',
+    DistrictID: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.DistrictID || '',
+    SubDistrictID: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.SubDistrictID || '',
+    postalCode: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.ZipCode || '',
+    ProvinceLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.ProvinceName || '',
+    DistrictLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.DistrictName || '',
+    SubDistrictLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.SubDistrictName || ''
+  };
+};
+// Update profile after save
+const updateAddress = async (e: string) => {
+  // get order after save or create
+  const req = {
+    CustomerID: e ?? "",
+  };
+
+
+  const getData = await useRepository().customer.AddressList(req);
+  if (getData.apiResponse.Status && getData.apiResponse.Status == "200" && getData.apiResponse.Data) {
+    const index = getData.apiResponse.Data.findIndex((item: any) => item.ID === props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID);
+
+    // Check if the index is valid
+    if (index !== -1) {
+      // Extract address data and assign to addressDataArray
+      newAddressUpdate.value = {
+        No: getData.apiResponse.Data[index].No,
+        Moo: getData.apiResponse.Data[index].Moo,
+        Place: getData.apiResponse.Data[index].Place,
+        Building: getData.apiResponse.Data[index].Building,
+        Floor: getData.apiResponse.Data[index].Floor,
+        Alley: getData.apiResponse.Data[index].Alley,
+        Road: getData.apiResponse.Data[index].Road,
+        ProvinceID: getData.apiResponse.Data[index].ProvinceID,
+        DistrictID: getData.apiResponse.Data[index].DistrictID,
+        SubDistrictID: getData.apiResponse.Data[index].SubDistrictID,
+        ZipCode: getData.apiResponse.Data[index].ZipCode,
+        ProvinceName: getData.apiResponse.Data[index].ProvinceName,
+        DistrictName: getData.apiResponse.Data[index].DistrictName,
+        SubDistrictName: getData.apiResponse.Data[index].SubDistrictName,
+        FirstName: getData.apiResponse.Data[index].FirstName,
+        LastName: getData.apiResponse.Data[index].LastName,
+        Name: getData.apiResponse.Data[index].Name,
+        PhoneNumber: getData.apiResponse.Data[index].PhoneNumber,
+        TaxID: getData.apiResponse.Data[index].TaxID
+      };
+
+      isNewLabel.value = true
+      await mapAddressData();
+      //await handlerChangeTaxInvoice();
+    }
+  }
+}
 // handler function for emit
 const handlerChangeDelivery = (e: any) => {
   const value = e.target.value

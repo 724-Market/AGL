@@ -306,11 +306,11 @@
                   <button type="button" v-show="props.cacheOrderRequest?.OrderNo != null" class="btn-gray btn-open-papers" @click="onModalEditAddress(true)"><i
                       class="fa-solid fa-layer-group"></i>Edit</button>
                        -->
-                  <FormKit type="button" v-show="props.cacheOrderRequest?.OrderNo != null" label="เพิ่มที่อยู่" name="register-submit" :classes="{
+                  <FormKit type="button" v-show="props.cacheOrderRequest?.OrderNo != null" label="แก้ไขที่อยู่" name="customer-address" :classes="{
                     input: 'btn-primary',
                   }" @click="openDialogAddress" :disabled="isLoading" :loading="isLoading" />
 
-                  <div class="row">
+                  <div class="row" v-if="props.cacheOrderRequest?.OrderNo==null">
                     <ElementsFormAddress element-key="insured" :order-No="props.cacheOrderRequest?.OrderNo"
                       :addr-province="addrProvince" :addr-district="addrDistrict" :addr-sub-district="addrSubDistrict"
                       :addr-zip-code="addrZipCode" :default-address-cache="defaultAddress"
@@ -318,6 +318,12 @@
                       @change-district="handlerChangeDistrict" @change-sub-district="handlerChangeSubDistrict"
                       @change-full-address="handlerChangeFullAddress" />
                   </div>
+                  <div class="row" v-else>
+                    <ElementsFormLabelDefaultAddress :label-address="isNewLabel 
+                    ? newAddressUpdate
+                    : props.cacheOrderRequest?.Customer?.DefaultAddress"/>
+                  </div>
+
                 </section>
               </div>
             </div>
@@ -327,9 +333,12 @@
     </div>
   </div>
   
-  <ElementsDialogEditAddress v-if="isEditAddress"
-    :customer-i-d="props.customerId" :address-i-d="insureDetail.DefaultAddress?.AddressID"
-    :address-data-array="addressDataArray" :show="isEditAddress" @close-address="closeModalAddress"
+  <ElementsDialogEditAddress v-if="isEditAddress" :address-type="props.cacheOrderRequest?.Customer?.DefaultAddress.Type"
+    :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID" 
+    :address-i-d="props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
+    :address-data-array="isNewLabel ? newAddressUpdate : addressDataArray" 
+    :profile-data-array="isNewLabel ? newAddressUpdate : profileDataArray" 
+    :show="isEditAddress" @close-address="closeModalAddress"
     @on-edit-address="updateAddress"></ElementsDialogEditAddress> 
 
 </template>
@@ -397,6 +406,7 @@ const prefixID = ref('')
 /////////////////////////////////////////
 // Button Loading
 const isLoading = ref(false)
+const isNewLabel = ref(false)
 
 interface AddressData {
   No?: string
@@ -406,6 +416,7 @@ interface AddressData {
   Floor?: string
   Alley?: string
   Road?: string
+  Type?: string
   ProvinceID?: string
   DistrictID?: string
   SubDistrictID?: string
@@ -415,7 +426,42 @@ interface AddressData {
   SubDistrictLabel?: string
 }
 
+interface ProfileData {
+  AddressID?: string
+  FirstName?: string
+  LastName?: string
+  Name?: string
+  PhoneNumber?: string
+  TaxID?: string
+}
+
+interface LabelAddressData {
+  AddressID?: string
+  FirstName?: string
+  LastName?: string
+  Name?: string
+  PhoneNumber?: string
+  TaxID?: string
+  No?: string
+  Moo?: string
+  Place?: string
+  Building?: string
+  Type: string
+  Floor?: string
+  Alley?: string
+  Road?: string
+  ProvinceID?: string
+  DistrictID?: string
+  SubDistrictID?: string
+  postalCode?: string
+  ProvinceName?: string
+  DistrictName?: string
+  SubDistrictName?: string
+}
+
 const addressDataArray = ref<AddressData>({})
+const profileDataArray = ref<ProfileData>({})
+const newAddressUpdate = ref<LabelAddressData>({})
 
 var isEditAddress = ref(false)
 
@@ -425,8 +471,8 @@ const effectiveMinDate: Date = new Date() // Format date explicitly
 const values = reactive({})
 const onLoad = onMounted(async () => {
   if (props.customerId) {
-    await updateAddress(props.customerId);
     await mapAddressData();
+    await mapProfileData();
   }
   if (props.prefix) {
     Prefix.value = props.prefix
@@ -484,6 +530,8 @@ const onLoad = onMounted(async () => {
 })
 
 const openDialogAddress = (open: boolean) => {
+  mapAddressData();
+  mapProfileData();
   isEditAddress.value = false;
   isEditAddress.value = open;
 }
@@ -496,57 +544,78 @@ const closeModalAddress = async (refresh: boolean) => {
   isEditAddress.value = false;
 }
 
+const mapProfileData = async () => {
+  profileDataArray.value = {
+    FirstName: props.cacheOrderRequest?.Customer?.DefaultAddress?.FirstName ?? '',
+    LastName: props.cacheOrderRequest?.Customer?.DefaultAddress?.LastName ?? '',
+    Name: props.cacheOrderRequest?.Customer?.DefaultAddress?.Name ?? '',
+    PhoneNumber: props.cacheOrderRequest?.Customer?.DefaultAddress?.PhoneNumber ?? '',
+    TaxID: props.cacheOrderRequest?.Customer?.DefaultAddress?.TaxID ?? '',
+    AddressID: props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID ?? ''
+  }
+}
+
 const mapAddressData = async () => {
   addressDataArray.value = {
-      No: defaultAddressCustomer.value?.No,
-      Moo: defaultAddressCustomer.value?.Moo,
-      Place: defaultAddressCustomer.value?.Place,
-      Building: defaultAddressCustomer.value?.Building,
-      Floor: defaultAddressCustomer.value?.Floor,
-      Alley: defaultAddressCustomer.value?.Alley,
-      Road: defaultAddressCustomer.value?.Road,
-      ProvinceID: defaultAddressCustomer.value?.ProvinceID,
-      DistrictID: defaultAddressCustomer.value?.DistrictID,
-      SubDistrictID: defaultAddressCustomer.value?.SubDistrictID,
-      postalCode: defaultAddressCustomer.value?.ZipCode,
-      ProvinceLabel: defaultAddressCustomer.value?.ProvinceName,
-      DistrictLabel: defaultAddressCustomer.value?.DistrictName,
-      SubDistrictLabel: defaultAddressCustomer.value?.SubDistrictName
-    }
+    No: props.cacheOrderRequest?.Customer?.DefaultAddress?.No ?? '',
+    Moo: props.cacheOrderRequest?.Customer?.DefaultAddress?.Moo ?? '',
+    Place: props.cacheOrderRequest?.Customer?.DefaultAddress?.Place ?? '',
+    Building: props.cacheOrderRequest?.Customer?.DefaultAddress?.Building ?? '',
+    Floor: props.cacheOrderRequest?.Customer?.DefaultAddress?.Floor ?? '',
+    Alley: props.cacheOrderRequest?.Customer?.DefaultAddress?.Alley ?? '',
+    Road: props.cacheOrderRequest?.Customer?.DefaultAddress?.Road ?? '',
+    Type: props.cacheOrderRequest?.Customer?.DefaultAddress?.Type ?? '',
+    ProvinceID: props.cacheOrderRequest?.Customer?.DefaultAddress?.ProvinceID ?? '',
+    DistrictID: props.cacheOrderRequest?.Customer?.DefaultAddress?.DistrictID ?? '',
+    SubDistrictID: props.cacheOrderRequest?.Customer?.DefaultAddress?.SubDistrictID ?? '',
+    postalCode: props.cacheOrderRequest?.Customer?.DefaultAddress?.ZipCode ?? '',
+    ProvinceLabel: props.cacheOrderRequest?.Customer?.DefaultAddress?.ProvinceName ?? '',
+    DistrictLabel: props.cacheOrderRequest?.Customer?.DefaultAddress?.DistrictName ?? '',
+    SubDistrictLabel: props.cacheOrderRequest?.Customer?.DefaultAddress?.SubDistrictName ?? ''
+  };
 };
-const replaceValues = () => {
-  if (!defaultAddressCustomer.value || !defaultAddress.value) return;
-
-  const defaultAddressKeys = Object.keys(defaultAddress.value);
-  const customerAddressKeys = Object.keys(defaultAddressCustomer.value);
-
-  customerAddressKeys.forEach((key) => {
-    if (defaultAddressKeys.includes(key) && !defaultAddress.value[key]) {
-      defaultAddress.value[key] = defaultAddressCustomer.value[key];
-    }
-  });
-};
-
 
 // Update profile after save
 const updateAddress = async (e: string) => {
+
   // get order after save or create
   const req: CustomerIDReq = {
     CustomerID: e ?? "",
   };
 
+
   const getData = await useRepository().customer.AddressList(req);
-  if (
-    getData.apiResponse.Status &&
-    getData.apiResponse.Status == "200" &&
-    getData.apiResponse.Data
-  ) {
-    defaultAddressCustomer.value = getData.apiResponse.Data[0];
-    await replaceValues();
-    //emit('changeProvince', defaultAddressCustomer.value?.ProvinceID)
-    //emit('changeDistrict', defaultAddressCustomer.value?.DistrictID)
-    //emit('changeSubDistrict', defaultAddressCustomer.value?.SubDistrictID)
+  if (getData.apiResponse.Status && getData.apiResponse.Status == "200" && getData.apiResponse.Data) {
+    const index = getData.apiResponse.Data.findIndex((item: any) => item.ID === props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID);
+
     await mapAddressData();
+    // Check if the index is valid
+    if (index !== -1) {
+      // Extract address data and assign to addressDataArray
+      newAddressUpdate.value = {
+        No: getData.apiResponse.Data[index].No,
+        Moo: getData.apiResponse.Data[index].Moo,
+        Place: getData.apiResponse.Data[index].Place,
+        Building: getData.apiResponse.Data[index].Building,
+        Floor: getData.apiResponse.Data[index].Floor,
+        Alley: getData.apiResponse.Data[index].Alley,
+        Road: getData.apiResponse.Data[index].Road,
+        ProvinceID: getData.apiResponse.Data[index].ProvinceID,
+        DistrictID: getData.apiResponse.Data[index].DistrictID,
+        SubDistrictID: getData.apiResponse.Data[index].SubDistrictID,
+        ZipCode: getData.apiResponse.Data[index].ZipCode,
+        ProvinceName: getData.apiResponse.Data[index].ProvinceName,
+        DistrictName: getData.apiResponse.Data[index].DistrictName,
+        SubDistrictName: getData.apiResponse.Data[index].SubDistrictName,
+        FirstName: getData.apiResponse.Data[index].FirstName,
+        LastName: getData.apiResponse.Data[index].LastName,
+        Name: getData.apiResponse.Data[index].Name,
+        PhoneNumber: getData.apiResponse.Data[index].PhoneNumber,
+        TaxID: getData.apiResponse.Data[index].TaxID
+      };
+
+      isNewLabel.value = true
+    }
   }
 }
 
@@ -599,6 +668,12 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
   }
 }
 const handlerChangePersonalProfile = () => {
+  profileDataArray.value = {
+    FirstName: personProfile.value.FirstName ?? '',
+    LastName: personProfile.value.LastName ?? '',
+    PhoneNumber: personProfile.value.PhoneNumber ?? '',
+    TaxID: personProfile.value.PersonalID ?? '',
+  }
   //console.log('handlerChangePersonalProfile',personProfile.value)
   insureDetail.value.PersonProfile = personProfile.value
   if (InsuredClassifierText.value == 'thai') {
@@ -608,6 +683,11 @@ const handlerChangePersonalProfile = () => {
   handlerChangeInsureDetail()
 }
 const handlerChangeLegalPersonProfile = () => {
+  profileDataArray.value = {
+    FirstName: legalPersonProfile.value.Name ?? '',
+    PhoneNumber: legalPersonProfile.value.ContactPhoneNumber ?? '',
+    TaxID: legalPersonProfile.value.BranchID ?? '',
+  }
 
   insureDetail.value.LegalPersonProfile = legalPersonProfile.value
 

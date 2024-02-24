@@ -54,6 +54,9 @@
             @change-district="handlerChangeDistrictForRecieve"
             @change-sub-district="handlerChangeSubDistrictForRecieve"
             @check-insurance-recieve="handleCheckInsuranceRecieve"
+            @new-address-i-d="updateNewAddressID"
+            :customer-id="OrderInfo.Customer?.PersonProfile?.CustomerID"
+            :address-default-i-d="OrderInfo.Customer?.DefaultAddress?.AddressID"
             :insure-full-address="insureFullAddress"
             :prefix="prefixRecieve"
             :delivery="delivery"
@@ -282,6 +285,8 @@ const isError = ref(false);
 const messageError = ref("");
 var checkSave: globalThis.Ref<Boolean> = ref(false);
 
+const newAddressDeliveryID = ref("")
+
 let values = reactive({});
 
 const checklist: globalThis.Ref<IChecklist[]> = ref([
@@ -486,9 +491,12 @@ const submitOrder = async (formData: any) => {
     let customerOld = OrderInfo.value.Customer
     if(insureDetail.value.DefaultAddress?.AddressID) {
       if(insureDetail.value.DeliveryAddress?.ProvinceID) {
-        if(customerOld?.DefaultAddress?.AddressID == customerOld?.DeliveryAddress?.AddressID && !insureDetail.value.IsDeliveryAddressSameAsDefault) 
-          insureDetail.value.DeliveryAddress.AddressID = ''
-        else insureDetail.value.DeliveryAddress.AddressID = customerOld?.DeliveryAddress?.AddressID as string
+        if(customerOld?.DefaultAddress?.AddressID == customerOld?.DeliveryAddress?.AddressID && !insureDetail.value.IsDeliveryAddressSameAsDefault) {
+          insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value
+          console.log("insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value"+insureDetail.value.DeliveryAddress.AddressID)
+        } else { 
+          insureDetail.value.DeliveryAddress.AddressID = customerOld?.DeliveryAddress?.AddressID as string
+        }
 
         // if(customerOld?.DefaultAddress?.AddressID == insureDetail.value.DeliveryAddress.AddressID && insureDetail.value.IsDeliveryAddressSameAsDefault==false)
         // {
@@ -716,6 +724,11 @@ const getDeliveryMethod = (): DeliveryMethod[] => {
   }
   return data;
 };
+
+const updateNewAddressID = async (newID: string) => {
+  newAddressDeliveryID.value = newID
+
+}
 // handle loading api & set refs
 const loadPrefix = async (isPerson: boolean) => {
   const req: PrefixReq = {

@@ -54,12 +54,12 @@
       <FormKit type="hidden" name="SubDistrictLabel" v-model="selectedSubDistrictLabel" />
     </div>
   </div>
-  <div class="col-md-12">{{ selectedSubDistrictLabel }}</div>
+  <!-- <div class="col-md-12">{{ selectedSubDistrictLabel }}</div>
   <div class="col-md-12">{{ selectedSubDistrict }}</div>
   <div class="col-md-12">{{ selectedDistrictLabel }}</div>
   <div class="col-md-12">{{ selectedDistrict }}</div>
   <div class="col-md-12">{{ selectedProvinceLabel }}</div>
-  <div class="col-md-12">{{ selectedProvince }}</div>
+  <div class="col-md-12">{{ selectedProvince }}</div> -->
 </template>
 <script setup lang="ts">
 import districtsData from "~/shared/data/districts-data";

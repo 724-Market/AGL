@@ -7,7 +7,7 @@
         <div class="has-sticky">
 
           <ElementsUtilitiesTracking v-if="orderTrack" :order-track="orderTrack" :index-sequence="sequenceIndex"
-            :index-current="currentIndex" :is-showchild="isShowChild"></ElementsUtilitiesTracking>
+            :index-current="currentIndex" :is-showchild="isShowChild" />
 
         </div>
       </div>
@@ -19,8 +19,7 @@
 
           <PapersSuborder :order-get="orderGet" :ordersub-feedelivery="ordersubFeeDel" :order-sub="orderSubAll"
             v-if="orderSubAll" @on-confirm-received="handleConfirmReceived"
-            @on-cancel-papers-order="handleCancelPapersOrder">
-          </PapersSuborder>
+            @on-cancel-papers-order="handleCancelPapersOrder" />
 
           <NuxtLink class="btn-back btn-gray" to="/papers">ย้อนกลับ</NuxtLink>
 

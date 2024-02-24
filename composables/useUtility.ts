@@ -22,22 +22,20 @@ export default () => {
     const config = useRuntimeConfig()
 
     const getClassFromStatusOrder = (statusCode: string | undefined): string => {
-        // Define your classes based on the value of statusCode
         if (statusCode === 'Success') {
-            return 'timeline-item is-success'
+            return 'is-success'
         } if (statusCode === 'CancelByUser') {
-            return 'timeline-item is-cancel'
+            return 'is-cancel'
         } else {
-            return 'timeline-item is-child'
+            return 'is-child'
         }
     }
 
     const getIconFromStatusOrder = (statusCode: string | undefined): string => {
-        // Define your classes based on the value of statusCode
         if (statusCode === 'Success') {
-            return 'icon check'
+            return 'check'
         } else if (statusCode === 'CancelByUser') {
-            return 'icon cross'
+            return 'cross'
         } else {
             return 'icon'
         }

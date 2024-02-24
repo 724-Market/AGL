@@ -57,6 +57,14 @@ class AgentModule {
     return await useCallApi().apiRepository(`${this.RESOURCE}/password/first/setup`, req)
   }
 
+  async getAgentProfile() {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/profile/get`, {})
+  }
+
+  async getPlanProduct() {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/product/plan/get`, {})
+  }
+
 }
 
 export default AgentModule;

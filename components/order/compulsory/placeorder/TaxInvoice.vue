@@ -73,10 +73,9 @@
                     />
                   </div>
 
-                  <aside
-                    class="new-request-tax-address inner-section"
-                    v-if="addressIncludeTaxType == 'addnew'"
-                  >
+                  <aside class="new-request-tax-address inner-section"  
+                    v-if="addressIncludeTaxType == 'addnew' && props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID == null" 
+                   >
                     <h4>แก้ไขใบกำกับภาษี</h4>
 
                     <div class="row">
@@ -170,6 +169,14 @@
 
                     
                   </aside>
+                  <aside class="new-request-tax-address inner-section"  
+                    v-if="addressIncludeTaxType == 'addnew' && props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID != null" 
+                  >
+                    <FormKit type="button" v-show="props.cacheOrderRequest?.OrderNo != null" label="แก้ไขใบกำกับ" name="tax-address" :classes="{
+                      input: 'btn-primary',
+                      }" @click="openDialogAddress" :disabled="isLoading" :loading="isLoading" 
+                    />
+                </aside>
                 </section>
 
                 <div
@@ -243,7 +250,8 @@
                     />
                   </div>
                   <aside
-                    v-if="addressDeliveryTaxType == 'addnew'"
+                    v-if="addressDeliveryTaxType == 'addnew' 
+                    && props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID == null"
                     class="new-shipped-tax-address inner-section"
                   >
                     <h4>ที่อยู่จัดส่งใหม่</h4>
@@ -265,6 +273,13 @@
 
                     
                   </aside>
+                  <aside v-if="addressDeliveryTaxType == 'addnew' 
+                  && props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID != null">
+                    <FormKit type="button" v-show="props.cacheOrderRequest?.OrderNo != null" label="แก้ไขที่อยู่จัดส่งใบกำกับ" name="tax-delivery" :classes="{
+                      input: 'btn-primary',
+                    }" @click="openDialogDelivery" :disabled="isLoading" :loading="isLoading" />
+                  </aside>
+
                 </section>
               </div>
             </div>
@@ -273,12 +288,27 @@
       </div>
     </div>
   </div>
+  
+  <ElementsDialogEditAddress v-if="isEditTaxAddress" :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress.Type"
+    :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID" 
+    :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID"
+    :address-data-array="isNewLabel ? newTaxAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceAddress" 
+    :profile-data-array="isNewLabel ? newTaxAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceAddress" 
+    :show="isEditTaxAddress" @close-address="closeModalAddress"
+    @on-edit-address="updateAddress"></ElementsDialogEditAddress> 
+  <ElementsDialogEditAddress v-if="isEditTaxDelivery" :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress.Type"
+    :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID" 
+    :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID"
+    :address-data-array="isNewLabel ? newTaxDeliveryAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress" 
+    :profile-data-array="isNewLabel ? newTaxDeliveryAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress" 
+    :show="isEditTaxDelivery" @close-address="closeModalDelivery"
+    @on-edit-address="updateAddress"></ElementsDialogEditAddress> 
 </template>
 <script setup lang="ts">
 import type { CustomerOrderRequest, DefaultAddress, PlaceOrderRequest, TaxInvoiceAddress, TaxInvoiceDeliveryAddress } from "~/shared/entities/placeorder-entity"
 import type { RadioOption, SelectOption } from "~/shared/entities/select-option"
 
-const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict', 'changeProvince2', 'changeDistrict2', 'changeSubDistrict2', 'changeTaxInvoice'])
+const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict', 'changeProvince2', 'changeDistrict2', 'changeSubDistrict2', 'changeTaxInvoice', 'newTaxID', 'newTaxAddressID'])
 
 const props = defineProps({
   prefix: Array<SelectOption>,
@@ -329,6 +359,68 @@ const shippedPolicyOption: globalThis.Ref<RadioOption[]> = ref([
 const requestIncludeTax: globalThis.Ref<string[]> = ref([])
 const addressIncludeTaxType = ref('insured')
 const addressDeliveryTaxType = ref('insured')
+const addressType = ref('')
+
+const isLoading = ref(false);
+const isEditTaxAddress = ref(false)
+const isEditTaxDelivery = ref(false)
+const isNewLabel = ref(false)
+
+interface AddressData {
+  No?: string
+  Moo?: string
+  Place?: string
+  Building?: string
+  Floor?: string
+  Alley?: string
+  Road?: string
+  Type?: string
+  ProvinceID?: string
+  DistrictID?: string
+  SubDistrictID?: string
+  postalCode?: string
+  ProvinceLabel?: string
+  DistrictLabel?: string
+  SubDistrictLabel?: string
+}
+
+interface ProfileData {
+  AddressID?: string
+  FirstName?: string
+  LastName?: string
+  Name?: string
+  PhoneNumber?: string
+  TaxID?: string
+}
+
+interface LabelAddressData {
+  AddressID?: string
+  FirstName?: string
+  LastName?: string
+  Name?: string
+  PhoneNumber?: string
+  TaxID?: string
+  No?: string
+  Moo?: string
+  Place?: string
+  Building?: string
+  Type: string
+  Floor?: string
+  Alley?: string
+  Road?: string
+  ProvinceID?: string
+  DistrictID?: string
+  SubDistrictID?: string
+  postalCode?: string
+  ProvinceName?: string
+  DistrictName?: string
+  SubDistrictName?: string
+}
+
+const taxAddressDataArray = ref<AddressData>({})
+const taxProfileDataArray = ref<ProfileData>({})
+const newTaxAddressUpdate = ref<LabelAddressData>({})
+const newTaxDeliveryAddressUpdate = ref<LabelAddressData>({})
 
 const taxInvoiceAddress: globalThis.Ref<TaxInvoiceAddress> = ref({
   AddressID: '',
@@ -438,6 +530,150 @@ const onLoad = onMounted(async () => {
   }
 
 });
+
+const openDialogAddress = (open: boolean) => {
+  addressType.value = 'TAXINVOICE'
+  mapAddressData();
+  mapProfileData();
+  isEditTaxAddress.value = false;
+  isEditTaxAddress.value = open;
+}
+
+const closeModalAddress = async (refresh: boolean) => {
+  if (refresh) {
+    isEditTaxAddress.value = true;
+    isEditTaxAddress.value = false;
+  }
+  isEditTaxAddress.value = false;
+}
+
+const openDialogDelivery = (open: boolean) => {
+  addressType.value = 'TAXINVOICE_DELIVERY'
+  mapAddressData();
+  mapProfileData();
+  isEditTaxDelivery.value = false;
+  isEditTaxDelivery.value = open;
+}
+
+const closeModalDelivery = async (refresh: boolean) => {
+  if (refresh) {
+    isEditTaxDelivery.value = true;
+    isEditTaxDelivery.value = false;
+  }
+  isEditTaxDelivery.value = false;
+}
+
+//Mapdata to show at label waiting upgrade to const mapProfileData = async (newData: Object) version
+const mapProfileData = async () => {
+  taxProfileDataArray.value = {
+    FirstName: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.FirstName || '',
+    LastName: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.LastName || '',
+    Name: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Name || '',
+    PhoneNumber: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.PhoneNumber || '',
+    TaxID: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.TaxID || '',
+    AddressID: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID || ''
+  };
+};
+
+const mapAddressData = async () => {
+  taxAddressDataArray.value = {
+    No: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.No || '',
+    Moo: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Moo || '',
+    Place: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Place || '',
+    Building: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Building || '',
+    Floor: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Floor || '',
+    Alley: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Alley || '',
+    Road: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Road || '',
+    Type: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Type || '',
+    ProvinceID: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.ProvinceID || '',
+    DistrictID: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.DistrictID || '',
+    SubDistrictID: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.SubDistrictID || '',
+    postalCode: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.ZipCode || '',
+    ProvinceLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.ProvinceName || '',
+    DistrictLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.DistrictName || '',
+    SubDistrictLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.SubDistrictName || ''
+  };
+};
+// Update profile after save
+const updateAddress = async (e: string, AddrID: string) => {
+  // get order after save or create
+  const req = {
+    CustomerID: e ?? "",
+  };
+
+
+  const getData = await useRepository().customer.AddressList(req);
+  if (getData.apiResponse.Status && getData.apiResponse.Status == "200" && getData.apiResponse.Data) {
+    const index = getData.apiResponse.Data.findIndex((item: any) => item.ID === props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID);
+
+    // Check if the index is valid
+    if (index !== -1) {
+      if(addressType.value == 'TAXINVOICE'){
+        // Extract address data and assign to addressDataArray
+        newTaxAddressUpdate.value = {
+          No: getData.apiResponse.Data[index].No,
+          Moo: getData.apiResponse.Data[index].Moo,
+          Place: getData.apiResponse.Data[index].Place,
+          Building: getData.apiResponse.Data[index].Building,
+          Floor: getData.apiResponse.Data[index].Floor,
+          Alley: getData.apiResponse.Data[index].Alley,
+          Road: getData.apiResponse.Data[index].Road,
+          ProvinceID: getData.apiResponse.Data[index].ProvinceID,
+          DistrictID: getData.apiResponse.Data[index].DistrictID,
+          SubDistrictID: getData.apiResponse.Data[index].SubDistrictID,
+          ZipCode: getData.apiResponse.Data[index].ZipCode,
+          ProvinceName: getData.apiResponse.Data[index].ProvinceName,
+          DistrictName: getData.apiResponse.Data[index].DistrictName,
+          SubDistrictName: getData.apiResponse.Data[index].SubDistrictName,
+          FirstName: getData.apiResponse.Data[index].FirstName,
+          LastName: getData.apiResponse.Data[index].LastName,
+          Name: getData.apiResponse.Data[index].Name,
+          PhoneNumber: getData.apiResponse.Data[index].PhoneNumber,
+          TaxID: getData.apiResponse.Data[index].TaxID
+        };
+
+        newTaxInvoiceFullAddressTemp.value = `${newTaxAddressUpdate.value.FirstName} ${newTaxAddressUpdate.value.LastName} 
+        ${newTaxAddressUpdate.value.PhoneNumber} ${newTaxAddressUpdate.value.DistrictName} ${newTaxAddressUpdate.value.SubDistrictName}
+        ${newTaxAddressUpdate.value.ProvinceName} ${newTaxAddressUpdate.value.ZipCode}`
+        emit('newTaxID', AddrID)
+
+      } else if (addressType.value == 'TAXINVOICE_DELIVERY'){
+        newTaxDeliveryAddressUpdate.value = {
+          No: getData.apiResponse.Data[index].No,
+          Moo: getData.apiResponse.Data[index].Moo,
+          Place: getData.apiResponse.Data[index].Place,
+          Building: getData.apiResponse.Data[index].Building,
+          Floor: getData.apiResponse.Data[index].Floor,
+          Alley: getData.apiResponse.Data[index].Alley,
+          Road: getData.apiResponse.Data[index].Road,
+          ProvinceID: getData.apiResponse.Data[index].ProvinceID,
+          DistrictID: getData.apiResponse.Data[index].DistrictID,
+          SubDistrictID: getData.apiResponse.Data[index].SubDistrictID,
+          ZipCode: getData.apiResponse.Data[index].ZipCode,
+          ProvinceName: getData.apiResponse.Data[index].ProvinceName,
+          DistrictName: getData.apiResponse.Data[index].DistrictName,
+          SubDistrictName: getData.apiResponse.Data[index].SubDistrictName,
+          FirstName: getData.apiResponse.Data[index].FirstName,
+          LastName: getData.apiResponse.Data[index].LastName,
+          Name: getData.apiResponse.Data[index].Name,
+          PhoneNumber: getData.apiResponse.Data[index].PhoneNumber,
+          TaxID: getData.apiResponse.Data[index].TaxID
+        };
+
+        newTaxInvoiceDeliveryFullAddressTemp.value = `${newTaxDeliveryAddressUpdate.value.FirstName} ${newTaxDeliveryAddressUpdate.value.LastName} 
+        ${newTaxDeliveryAddressUpdate.value.PhoneNumber} ${newTaxDeliveryAddressUpdate.value.DistrictName} ${newTaxDeliveryAddressUpdate.value.SubDistrictName}
+        ${newTaxDeliveryAddressUpdate.value.ProvinceName} ${newTaxDeliveryAddressUpdate.value.ZipCode}`
+        emit('newTaxAddressID', AddrID)
+      }
+        isNewLabel.value = true
+        await mapAddressData();
+        await handlerChangeFullLabelAddressTaxInvoice()
+      
+    }
+  }
+  emit('newTaxID', AddrID)
+  //emit('newTaxAddressID', AddrID)
+}
 // handler function for emit
 const handlerChangeDelivery = (e: any) => {
   const value = e.target.value
@@ -495,6 +731,10 @@ const handlerChangeFullAddressTaxInvoice = (addr: string, ObjectAddress: Default
     handlerChangeTaxInvoice()
   }
 }
+const handlerChangeFullLabelAddressTaxInvoice = () => {
+    newTaxInvoiceFullAddress.value = newTaxInvoiceFullAddressTemp.value
+    handlerChangeTaxInvoice()
+}
 const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress: DefaultAddress) => {
   if (addr && ObjectAddress) {
     taxInvoiceDeliveryAddress.value = ObjectAddress as TaxInvoiceAddress
@@ -505,6 +745,10 @@ const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress:
     newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
     handlerChangeTaxInvoice()
   }
+}
+const handlerChangeFullLabelAddressTaxInvoiceDelivery = () => {
+    newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
+    handlerChangeTaxInvoice()
 }
 const handlerSubmitAddressTaxInvoice = () => {
   insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value

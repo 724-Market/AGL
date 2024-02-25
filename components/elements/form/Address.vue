@@ -1,5 +1,5 @@
 <template>
-  <div v-if="ObjectAddress && props.orderNo==null" class="row" >
+  <div v-if="ObjectAddress" class="row" >
     <div class="col-6" >
       <FormKit
         type="text"
@@ -132,20 +132,6 @@
     </div>
   </div>
   
-  <div v-else class="row" >
-    <div > 
-      บ้านเลขที่ {{ props.defaultAddressCustomer?.No }} 
-      หมู่ที่ {{ props.defaultAddressCustomer?.Moo }} 
-      <!-- {{ props.defaultAddressCustomer?.Place }} 
-      หมู่บ้าน/อาคาร {{ props.defaultAddressCustomer?.Building }} 
-      ซอย/ตรอก/แยก {{ props.defaultAddressCustomer?.Alley }}  
-      ถนน {{ props.defaultAddressCustomer?.Road }} -->
-      {{ props.defaultAddressCustomer?.ProvinceName }}
-      {{ props.defaultAddressCustomer?.DistrictName }} 
-      {{ props.defaultAddressCustomer?.SubDistrictName }} 
-      {{ props.defaultAddressCustomer?.ZipCode }} 
-    </div>
-  </div>
 
 </template>
 <script setup lang="ts">

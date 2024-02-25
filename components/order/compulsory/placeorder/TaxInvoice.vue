@@ -250,7 +250,8 @@
                     />
                   </div>
                   <aside
-                    v-if="addressDeliveryTaxType == 'addnew'"
+                    v-if="addressDeliveryTaxType == 'addnew' 
+                    && props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID == null"
                     class="new-shipped-tax-address inner-section"
                   >
                     <h4>ที่อยู่จัดส่งใหม่</h4>
@@ -272,6 +273,13 @@
 
                     
                   </aside>
+                  <aside v-if="addressDeliveryTaxType == 'addnew' 
+                  && props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID != null">
+                    <FormKit type="button" v-show="props.cacheOrderRequest?.OrderNo != null" label="แก้ไขที่อยู่จัดส่งใบกำกับ" name="tax-delivery" :classes="{
+                      input: 'btn-primary',
+                    }" @click="openDialogDelivery" :disabled="isLoading" :loading="isLoading" />
+                  </aside>
+
                 </section>
               </div>
             </div>
@@ -288,12 +296,19 @@
     :profile-data-array="isNewLabel ? newAddressUpdate : profileDataArray" 
     :show="isEditTaxAddress" @close-address="closeModalAddress"
     @on-edit-address="updateAddress"></ElementsDialogEditAddress> 
+  <ElementsDialogEditAddress v-if="isEditTaxDelivery" :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress.Type"
+    :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID" 
+    :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID"
+    :address-data-array="isNewLabel ? newAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress" 
+    :profile-data-array="isNewLabel ? newAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress" 
+    :show="isEditTaxDelivery" @close-address="closeModalDelivery"
+    @on-edit-address="updateAddress"></ElementsDialogEditAddress> 
 </template>
 <script setup lang="ts">
 import type { CustomerOrderRequest, DefaultAddress, PlaceOrderRequest, TaxInvoiceAddress, TaxInvoiceDeliveryAddress } from "~/shared/entities/placeorder-entity"
 import type { RadioOption, SelectOption } from "~/shared/entities/select-option"
 
-const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict', 'changeProvince2', 'changeDistrict2', 'changeSubDistrict2', 'changeTaxInvoice'])
+const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict', 'changeProvince2', 'changeDistrict2', 'changeSubDistrict2', 'changeTaxInvoice', 'newTaxID'])
 
 const props = defineProps({
   prefix: Array<SelectOption>,
@@ -576,7 +591,7 @@ const mapAddressData = async () => {
   };
 };
 // Update profile after save
-const updateAddress = async (e: string) => {
+const updateAddress = async (e: string, AddrID: string) => {
   // get order after save or create
   const req = {
     CustomerID: e ?? "",
@@ -610,13 +625,18 @@ const updateAddress = async (e: string) => {
         Name: getData.apiResponse.Data[index].Name,
         PhoneNumber: getData.apiResponse.Data[index].PhoneNumber,
         TaxID: getData.apiResponse.Data[index].TaxID
-      };
+      };newTaxInvoiceFullAddressTemp
 
       isNewLabel.value = true
       await mapAddressData();
-      //await handlerChangeTaxInvoice();
+      newTaxInvoiceFullAddressTemp.value = `${newAddressUpdate.value.FirstName} ${newAddressUpdate.value.LastName} 
+      ${newAddressUpdate.value.PhoneNumber} ${newAddressUpdate.value.DistrictName} ${newAddressUpdate.value.SubDistrictName}
+      ${newAddressUpdate.value.ProvinceName} ${newAddressUpdate.value.ZipCode}`
+      
     }
   }
+  emit('newTaxID', AddrID)
+  //emit('newTaxAddressID', AddrID)
 }
 // handler function for emit
 const handlerChangeDelivery = (e: any) => {

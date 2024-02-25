@@ -82,6 +82,8 @@
             @change-province2="handlerChangeProvinceForTax2"
             @change-district2="handlerChangeDistrictForTax2"
             @change-sub-district2="handlerChangeSubDistrictForTax2"
+            @new-tax-i-d="updateNewTaxID"
+            @new-tax-address-i-d="updateNewTaxAddressID"
             :insure-full-address="insureFullAddress"
             :prefix="prefix"
             :delivery="delivery"
@@ -286,6 +288,8 @@ const messageError = ref("");
 var checkSave: globalThis.Ref<Boolean> = ref(false);
 
 const newAddressDeliveryID = ref("")
+const newAddressTaxID = ref("")
+const newTaxDeliveryID = ref("")
 
 let values = reactive({});
 
@@ -506,7 +510,7 @@ const submitOrder = async (formData: any) => {
 
       if(insureDetail.value.TaxInvoiceAddress?.ProvinceID) {
         if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceAddress?.AddressID && !insureDetail.value.IsTaxInvoiceAddressSameAsDefault) 
-          insureDetail.value.TaxInvoiceAddress.AddressID = ''
+          insureDetail.value.TaxInvoiceAddress.AddressID = newAddressTaxID.value
         else insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.TaxInvoiceAddress?.AddressID ?? "" as string
 
         // if(customerOld?.TaxInvoiceAddress?.AddressID == insureDetail.value.TaxInvoiceAddress.AddressID && insureDetail.value.IsTaxInvoiceAddressSameAsDefault==false)
@@ -517,7 +521,7 @@ const submitOrder = async (formData: any) => {
 
       if(insureDetail.value.TaxInvoiceDeliveryAddress?.ProvinceID) {
         if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceDeliveryAddress?.AddressID && !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault) 
-          insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.DefaultAddress?.AddressID ?? "" as string
+          insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = newTaxDeliveryID.value
         else insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.TaxInvoiceDeliveryAddress?.AddressID ?? "" as string
 
         // if(customerOld?.TaxInvoiceDeliveryAddress?.AddressID == insureDetail.value.TaxInvoiceDeliveryAddress.AddressID && insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault==false)
@@ -727,6 +731,16 @@ const getDeliveryMethod = (): DeliveryMethod[] => {
 
 const updateNewAddressID = async (newID: string) => {
   newAddressDeliveryID.value = newID
+
+}
+
+const updateNewTaxID = async (newID: string) => {
+  newAddressTaxID.value = newID
+
+}
+
+const updateNewTaxAddressID = async (newID: string) => {
+  newTaxDeliveryID.value = newID
 
 }
 // handle loading api & set refs

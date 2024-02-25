@@ -451,7 +451,6 @@ const mapAddressData = async () => {
 
 // Update profile after save
 const updateAddress = async (e: string, AddrID: string) => {
-  console.log("AddrID"+AddrID)
   
   // get order after save or create
   const req = {
@@ -487,10 +486,8 @@ const updateAddress = async (e: string, AddrID: string) => {
         PhoneNumber: getData.apiResponse.Data[index].PhoneNumber,
         TaxID: getData.apiResponse.Data[index].TaxID
       };
-      console.log("newAddressUpdate.Moo"+newAddressUpdate.value.Moo)
       isNewLabel.value = true
       await mapAddressData();
-      //emit('checkInsuranceRecieve', newAddressUpdate)
       insureFullNewAddress.value = `${newAddressUpdate.value.FirstName} ${newAddressUpdate.value.LastName} 
       ${newAddressUpdate.value.PhoneNumber} ${newAddressUpdate.value.DistrictName} ${newAddressUpdate.value.SubDistrictName}
       ${newAddressUpdate.value.ProvinceName} ${newAddressUpdate.value.ZipCode}`

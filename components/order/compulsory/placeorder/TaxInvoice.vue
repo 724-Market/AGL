@@ -292,6 +292,7 @@
   <ElementsDialogEditAddress v-if="isEditTaxAddress" :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress.Type"
     :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID" 
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID"
+    :address-default-i-d="props.addressDefaultID"
     :address-data-array="isNewLabel ? newTaxAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceAddress" 
     :profile-data-array="isNewLabel ? newTaxAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceAddress" 
     :show="isEditTaxAddress" @close-address="closeModalAddress"
@@ -299,6 +300,7 @@
   <ElementsDialogEditAddress v-if="isEditTaxDelivery" :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress.Type"
     :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID" 
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID"
+    :address-default-i-d="props.addressDefaultID"
     :address-data-array="isNewLabel ? newTaxDeliveryAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress" 
     :profile-data-array="isNewLabel ? newTaxDeliveryAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress" 
     :show="isEditTaxDelivery" @close-address="closeModalDelivery"
@@ -322,6 +324,7 @@ const props = defineProps({
   addrSubDistrict2: Array<SelectOption>,
   addrZipCode2: String,
   insureFullAddress: String,
+  addressDefaultID: String,
   isIncludeTax: String,//1,0
   shippingPolicy: String, // email,pdf,postal
   cacheOrderRequest: {
@@ -596,6 +599,7 @@ const mapAddressData = async () => {
 };
 // Update profile after save
 const updateAddress = async (e: string, AddrID: string) => {
+  alert("AddrID"+AddrID)
   // get order after save or create
   const req = {
     CustomerID: e ?? "",
@@ -604,7 +608,7 @@ const updateAddress = async (e: string, AddrID: string) => {
 
   const getData = await useRepository().customer.AddressList(req);
   if (getData.apiResponse.Status && getData.apiResponse.Status == "200" && getData.apiResponse.Data) {
-    const index = getData.apiResponse.Data.findIndex((item: any) => item.ID === props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID);
+    const index = getData.apiResponse.Data.findIndex((item: any) => item.ID === AddrID);
 
     // Check if the index is valid
     if (index !== -1) {

@@ -460,7 +460,7 @@ const updateAddress = async (e: string, AddrID: string) => {
 
   const getData = await useRepository().customer.AddressList(req);
   if (getData.apiResponse.Status && getData.apiResponse.Status == "200" && getData.apiResponse.Data) {
-    const index = getData.apiResponse.Data.findIndex((item: any) => item.ID === props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID);
+    const index = getData.apiResponse.Data.findIndex((item: any) => item.ID === AddrID);
 
     // Check if the index is valid
     if (index !== -1) {

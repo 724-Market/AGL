@@ -96,6 +96,7 @@
             :addr-sub-district2="addrSubDistrictForTax2"
             :addr-zip-code2="addrZipCodeForTax2"
             :is-include-tax="packageSelect.IsTaxInclude"
+            :address-default-i-d="OrderInfo.Customer?.DefaultAddress?.AddressID"
             :shipping-policy="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
             :cache-order-request="taxInvoiceCache"
             @change-tax-invoice="handlerChangeTaxInvoice"

@@ -11,6 +11,8 @@
         <div class="card-body">
           <div class="row">
             <p>{{ props.addressType }}</p>
+            <p>{{ props.addressID }}</p>
+            <p>{{ props.addressDefaultID }}</p>
             <RegisterFormProfile v-if="props.addressType=='CURRENT'" :profileData="profileDataArray" />
             <RegisterFormDelivery v-if="props.addressType=='DELIVERY'" :profileData="profileDataArray" />
             <RegisterFormTax v-if="props.addressType=='TAXINVOICE'" :profileData="profileDataArray" />
@@ -117,8 +119,8 @@ const submitEditAddress = async (formData: any) => {
       resCreate.apiResponse.Status &&
       resCreate.apiResponse.Status == "200"
     ) {
-
-      emit('onEditAddress', props.customerID, resCreate.apiResponse.Data)
+      const newAddressID = resCreate.apiResponse.Data.AddressID; // Assign the returned AddressID
+      emit('onEditAddress', props.customerID, newAddressID); // Emit with addressID
 
       closeModal(false);
     } else {

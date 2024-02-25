@@ -1,128 +1,91 @@
 <template>
-  <NuxtLayout
-    :name="layout"
-    :layout-class="layoutClass"
-    :page-title="pageTitle"
-    :page-category="pageCategory"
-    :show-page-steps="showPageSteps"
-    :show-page-header="showPageHeader"
-  >
-    <FormKit
-      type="form"
-      :actions="false"
-      id="form-order"
-      form-class="form-order form-theme"
-      v-model="values"
-      :incomplete-message="false"
-    >
+  <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
+
+    <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
+      :incomplete-message="false" v-model="values">
+
       <div class="row">
-        <div class="col-lg-7">
-          <OrderCompulsoryPaymentMethod
-            @pass-summary="handleSetSummary"
-            :order="orderInfo"
-            :calculate="calculate"
-            :credit-balance="creditBalance"
-          >
+        <div class="col col-main">
+
+          <OrderCompulsoryPaymentMethod @pass-summary="handleSetSummary" :order="orderInfo" :calculate="calculate"
+            :credit-balance="creditBalance">
           </OrderCompulsoryPaymentMethod>
+
         </div>
 
-        <div class="col-lg-5">
-          <aside class="card">
-            <div class="card-body">
-              <div class="accordion" id="accordion-summary-cart">
-                <div class="accordion-item">
-                  <h2 class="accordion-header">
-                    <button
-                      class="accordion-button"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#summary-cart"
-                      aria-expanded="false"
-                      aria-controls="summary-cart"
-                    >
-                      รายการที่เลือก
-                    </button>
-                  </h2>
-                  <div
-                    id="summary-cart"
-                    class="accordion-collapse collapse"
-                    data-bs-parent="#accordion-summary-cart"
-                  >
-                    <div class="accordion-body">
-                      <OrderCartCar
-                        v-if="carInfo && carDetail"
-                        :car-detail="carInfo.CarDetail"
-                        :car-use="carInfo.CarUse"
-                        :is-car-red="carDetail.IsRedLicense"
-                        :effective-date="carInfo.EffectiveDate"
-                        :expire-date="carInfo.ExpireDate"
-                        :insurance-day="carInfo.InsuranceDay"
-                      ></OrderCartCar>
+        <div class="col col-sidebar">
+          <section class="site-sidebar is-sticky">
 
-                      <OrderCartPackage
-                        v-if="packageSelect && packageSelect.CompanyName != ''"
-                        :package-select="packageSelect"
-                      />
+            <aside class="card">
+              <div class="card-body">
+                <div class="accordion" id="accordion-summary-cart">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#summary-cart" aria-expanded="false" aria-controls="summary-cart">
+                        รายการที่เลือก
+                      </button>
+                    </h2>
+                    <div id="summary-cart" class="accordion-collapse collapse" data-bs-parent="#accordion-summary-cart">
+                      <div class="accordion-body">
+                        <OrderCartCar v-if="carInfo && carDetail" :car-detail="carInfo.CarDetail"
+                          :car-use="carInfo.CarUse" :is-car-red="carDetail.IsRedLicense"
+                          :effective-date="carInfo.EffectiveDate" :expire-date="carInfo.ExpireDate"
+                          :insurance-day="carInfo.InsuranceDay"></OrderCartCar>
 
-                      <OrderCartInsure
-                        v-if="insureDetail && insuranceRecieve"
-                        :delivery-type="
-                          insuranceRecieve
-                            ? deleveryTypes[insuranceRecieve.ShippingPolicy]
-                            : ''
-                        "
-                        :is-person="insureDetail.IsPerson"
-                        v-model:person-profile.sync="personProfile"
-                        v-model:legal-person-profile="legalPersonProfile"
-                      ></OrderCartInsure>
+                        <OrderCartPackage v-if="packageSelect && packageSelect.CompanyName != ''"
+                          :package-select="packageSelect" />
+
+                        <OrderCartInsure v-if="insureDetail && insuranceRecieve" :delivery-type="insuranceRecieve
+                          ? deleveryTypes[insuranceRecieve.ShippingPolicy]
+                          : ''
+                          " :is-person="insureDetail.IsPerson" v-model:person-profile.sync="personProfile"
+                          v-model:legal-person-profile="legalPersonProfile"></OrderCartInsure>
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                <!-- <OrderCart v-if="packageSelect && packageSelect.CompanyName != ''" :is-online="packageSelect.IsOnlineActive"
+                  :company-name="packageSelect.CompanyName"
+                  :company-image="getCompanyPath(packageSelect.PackageResult[0].CompanyImage)"
+                  :price="getCurrency(packageSelect.PackageResult[0].PriceACT)" :price-discount="getCurrency(packageSelect.PackageResult[0].PriceACTDiscount)
+                    " :car-name="packageSelect.PackageResult[0].UseCarName" /> -->
               </div>
 
-              <!-- <OrderCart v-if="packageSelect && packageSelect.CompanyName != ''" :is-online="packageSelect.IsOnlineActive"
-                :company-name="packageSelect.CompanyName"
-                :company-image="getCompanyPath(packageSelect.PackageResult[0].CompanyImage)"
-                :price="getCurrency(packageSelect.PackageResult[0].PriceACT)" :price-discount="getCurrency(packageSelect.PackageResult[0].PriceACTDiscount)
-                  " :car-name="packageSelect.PackageResult[0].UseCarName" /> -->
-            </div>
+              <div class="card-body card-table">
+                <OrderCompulsoryPaymentSummaryDiscount :order="orderInfo" :packages="packageSelect"
+                  :summary="summaryDiscountObject" :calculate="calculate">
+                </OrderCompulsoryPaymentSummaryDiscount>
+              </div>
 
-            <div class="card-body card-table">
-              <OrderCompulsoryPaymentSummaryDiscount
-                :order="orderInfo"
-                :packages="packageSelect"
-                :summary="summaryDiscountObject"
-                :calculate="calculate"
-              >
-              </OrderCompulsoryPaymentSummaryDiscount>
-            </div>
+              <OrderChecklist :list="checklist" @change-check-save="handlerCheckSave" />
+            </aside>
 
-            <OrderChecklist :list="checklist" @change-check-save="handlerCheckSave" />
-          </aside>
-
-          <!-- <FormKit type="submit" label="ไปต่อ" name="order-submit" 
+            <!-- <FormKit type="submit" label="ไปต่อ" name="order-submit" 
             id="order-submit" :disabled="!checkSave" :loading="isLoading"
             :classes="{ input: 'btn-primary', outer: 'form-actions' }" /> -->
 
-          <button
-            type="button"
-            class="formkit-input btn btn-primary form-actions"
-            @click="submitOrder"
-            label="ไปต่อ"
-            name="order-submit"
-            id="order-submit"
-            :disabled="!checkSave"
-            :loading="isLoading"
-            style="display: block; margin-inline: auto; width: min(100%, 420px)"
-          >
-            ไปต่อ
-          </button>
+            <div class="formkit-outer form-actions" data-type="submit">
+              <div class="formkit-wrapper">
 
-          <NuxtLink @click="backStep()" class="btn btn-back mt-3">ย้อนกลับ</NuxtLink>
+                <button type="button" class="formkit-input btn-primary w-100" @click="submitOrder" label="ไปต่อ"
+                  name="order-submit" id="order-submit" :disabled="!checkSave" :loading="isLoading">ไปต่อ</button>
+
+              </div>
+            </div>
+
+            <NuxtLink @click="backStep()" class="btn-back btn-gray">ย้อนกลับ</NuxtLink>
+
+          </section>
         </div>
+
       </div>
     </FormKit>
+
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+
   </NuxtLayout>
 </template>
 
@@ -404,33 +367,35 @@ watch(
     console.log("CreditBalanceInfo", CreditBalanceInfo);
   }
 );
+
 // Define layout
-const layout = "monito";
-const layoutClass = "page-monito";
-const showPageSteps = true;
-const showPageHeader = true;
+const layout = 'monito'
+const layoutClass = 'page-monito'
+const showPageSteps = true
+const showPageHeader = true
+const showLogoHeader = false
 
 // Define page meta
-const pageTitle = "วิธีการชำระเงิน";
-const pageCategory = "แจ้งงาน พ.ร.บ.";
-const pageDescription = "Compulsory วิธีการชำระเงิน";
+const pageTitle = 'วิธีการชำระเงิน'
+const pageCategory = 'แจ้งงาน พ.ร.บ.'
+const pageDescription = 'Compulsory วิธีการชำระเงิน'
 
 // Define meta seo
 useHead({
   title: pageTitle,
-  meta: [{ name: "description", content: pageDescription }],
+  meta: [{ name: 'description', content: pageDescription }],
   bodyAttrs: {
-    class: "page-order category-compulsory single-payment",
+    class: 'page-order category-compulsory single-payment',
   },
-});
+})
 
 </script>
 <style setup>
-
-.form-order .inner-section{
+.form-order .inner-section {
   padding: 1rem !important
 }
-.form-order .discount-range .suffix{
-  width: 4.7ch!important;
+
+.form-order .discount-range .suffix {
+  width: 4.7ch !important;
 }
 </style>

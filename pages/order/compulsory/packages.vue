@@ -1,12 +1,13 @@
 <template>
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
-    <!-- Content -->
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
+
     <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
       :incomplete-message="false">
+
       <div class="row">
-        <div class="col-lg-8 col-xl-9">
-          <div class="card">
+        <div class="col col-main">
+          <div class="card" style="display: none">
             <div class="card-body">
               <div class="summary-detail">
                 <header class="topic">
@@ -22,40 +23,49 @@
               </div>
             </div>
           </div>
+
           <OrderCompulsoryPackagesList :is-loading="isLoading" :checklist="checklist" :is-error="isError"
             :message-error="messageError" :package-list="packageList" :pages="paging" @change-checklist="handlerCheckList"
             @change-select="handlerSelect" @change-page="handlerChangePage"></OrderCompulsoryPackagesList>
         </div>
 
-        <!-- Sidebar -->
-        <div class="col-lg-4 col-xl-3">
-          <aside class="card">
-            <!-- <div class="card-header" v-show="packageSelect && packageSelect.CompanyName != ''"> -->
-            <div class="card-header">
-              <h3 class="card-title">รายการที่เลือก</h3>
-            </div>
-            <div class="card-body">
-              <OrderCartCar v-if="informationSelect" :car-detail="informationSelect.CarDetail"
-                :car-use="informationSelect.CarUse" :is-car-red="false" :effective-date="informationSelect.EffectiveDate"
-                :expire-date="informationSelect.ExpireDate" :insurance-day="informationSelect.InsuranceDay">
-              </OrderCartCar>
-              <!-- <OrderCartPackage></OrderCartPackage> -->
-              <OrderCartPackage v-if="packageSelect && packageSelect.CompanyName != ''" :package-select="packageSelect" />
-            </div>
+        <div class="col col-sidebar">
+          <section class="site-sidebar is-sticky">
 
-            <OrderChecklist :list="checklist" />
-          </aside>
+            <aside class="card">
+              <!-- <div class="card-header" v-show="packageSelect && packageSelect.CompanyName != ''"> -->
+              <div class="card-header">
+                <h3 class="card-title">รายการที่เลือก</h3>
+              </div>
+              <div class="card-body">
+                <OrderCartCar v-if="informationSelect" :car-detail="informationSelect.CarDetail"
+                  :car-use="informationSelect.CarUse" :is-car-red="false"
+                  :effective-date="informationSelect.EffectiveDate" :expire-date="informationSelect.ExpireDate"
+                  :insurance-day="informationSelect.InsuranceDay">
+                </OrderCartCar>
+                <!-- <OrderCartPackage></OrderCartPackage> -->
+                <OrderCartPackage v-if="packageSelect && packageSelect.CompanyName != ''"
+                  :package-select="packageSelect" />
+              </div>
 
-          <FormKit type="submit" label="ไปกรอกข้อมูลสั่งซื้อ" name="order-submit" id="order-submit" :classes="{
-            input: 'btn-primary',
-            outer: 'form-actions',
-          }" :disabled="!isSelect" :loading="isLoading" />
+              <OrderChecklist :list="checklist" />
+            </aside>
 
-          <NuxtLink @click="backStep()" class="btn btn-back">ย้อนกลับ</NuxtLink>
+            <FormKit type="submit" label="ไปกรอกข้อมูลสั่งซื้อ" name="order-submit" id="order-submit" :classes="{
+              input: 'btn-primary',
+              outer: 'form-actions',
+            }" :disabled="!isSelect" :loading="isLoading" />
+
+            <NuxtLink @click="backStep()" class="btn-back btn-gray">ย้อนกลับ</NuxtLink>
+
+          </section>
         </div>
+
       </div>
     </FormKit>
+
     <OrderCoverageDetail />
+
   </NuxtLayout>
 </template>
 
@@ -297,16 +307,19 @@ const loadAgentInfo = async (): Promise<AgentInfo[]> => {
   }
   return data;
 };
+
 // Define layout
 const layout = 'monito'
 const layoutClass = 'page-monito'
 const showPageSteps = true
 const showPageHeader = true
+const showLogoHeader = false
 
 // Define page meta
 const pageTitle = 'เลือกแพ็คเกจ'
 const pageCategory = 'แจ้งงาน พ.ร.บ.'
 const pageDescription = 'Compulsory เลือกแพ็คเกจ'
+
 // Define meta seo
 useHead({
   title: pageTitle,

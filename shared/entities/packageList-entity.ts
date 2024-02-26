@@ -28,7 +28,7 @@ export interface IPackageResponse {
     CountOfPolicy: number
     Price: number
     PackageResult: PackageResult[]
-    IsTaxInclude: boolean
+    IsTaxInclude: string
     Paper?:Paper
     PaperBalance?:number
     AgentCode:string

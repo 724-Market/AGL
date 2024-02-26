@@ -43,7 +43,7 @@
                       </div>
                       <div class="col-sm-8 col-lg-4">
                         <FormKit type="text" label="ชื่อ" name="FirstName" placeholder="ชื่อ"
-                          v-model="personProfile.FirstName" @change="handlerChangePersonalProfile"
+                          v-model="personProfile.FirstName" @keyup="handlerChangePersonalProfile"
                           :validation-rules="{ special_characters }" validation="required|special_characters"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
@@ -52,7 +52,7 @@
                       </div>
                       <div class="col-md-12 col-lg-5">
                         <FormKit type="text" label="นามสกุล" name="LastName" placeholder="นามสกุล"
-                          v-model="personProfile.LastName" @change="handlerChangePersonalProfile"
+                          v-model="personProfile.LastName" @keyup="handlerChangePersonalProfile"
                           :validation-rules="{ special_characters }" validation="required|special_characters"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
@@ -111,7 +111,7 @@
                       </div>
                       <div class="col-sm-8 col-lg-4">
                         <FormKit type="text" label="Firstname" name="FirstName" placeholder="Firstname"
-                          v-model="personProfile.FirstName" @change="handlerChangePersonalProfile"
+                          v-model="personProfile.FirstName" @keyup="handlerChangePersonalProfile"
                           :validation-rules="{ special_characters }" validation="required|special_characters"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
@@ -120,7 +120,7 @@
                       </div>
                       <div class="col-md-12 col-lg-5">
                         <FormKit type="text" label="Lastname" name="LastName" v-model="personProfile.LastName"
-                          @change="handlerChangePersonalProfile" placeholder="Lastname"
+                        @keyup="handlerChangePersonalProfile" placeholder="Lastname"
                           :validation-rules="{ special_characters }" validation="required|special_characters"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',

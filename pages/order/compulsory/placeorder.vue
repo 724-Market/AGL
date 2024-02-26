@@ -144,7 +144,12 @@ import type {
   DeliveryMethod,
   TaxInvoiceAddress,
 } from "~/shared/entities/placeorder-entity";
-import type { Order, OrderDetailRequest, OrderResponse } from "~/shared/entities/order-entity";
+import type {
+  Customer,
+  Order,
+  OrderDetailRequest,
+  OrderResponse,
+} from "~/shared/entities/order-entity";
 
 // Define Variables
 // Loading state after form submiting
@@ -294,7 +299,8 @@ const onLoad = onMounted(async () => {
 
     if (OrderInfo.value && OrderInfo.value.OrderNo != "") {
       // set cache Data Step1
-      let cacheCar: CarDetailsExtension = OrderInfo.value.CarDetailsExtension as CarDetailsExtension
+      let cacheCar: CarDetailsExtension = OrderInfo.value
+        .CarDetailsExtension as CarDetailsExtension;
       carDetailCache.value = cacheCar;
 
       // set cache Data Step2
@@ -309,15 +315,17 @@ const onLoad = onMounted(async () => {
           DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
           TaxInvoiceAddress: OrderInfo.value.Customer?.TaxInvoiceAddress,
           TaxInvoiceDeliveryAddress: OrderInfo.value.Customer?.TaxInvoiceDeliveryAddress,
-          IsTaxInvoiceAddressSameAsDefault: OrderInfo.value.Customer?.IsTaxInvoiceAddressSameAsDefault,
-          IsTaxInvoiceDeliveryAddressSameAsDefault: OrderInfo.value.Customer?.IsTaxInvoiceDeliveryAddressSameAsDefault,
+          IsTaxInvoiceAddressSameAsDefault:
+            OrderInfo.value.Customer?.IsTaxInvoiceAddressSameAsDefault,
+          IsTaxInvoiceDeliveryAddressSameAsDefault:
+            OrderInfo.value.Customer?.IsTaxInvoiceDeliveryAddressSameAsDefault,
           IsPerson: OrderInfo.value.Customer?.IsPerson,
-          IsBranch: OrderInfo.value.Customer?.IsBranch
+          IsBranch: OrderInfo.value.Customer?.IsBranch,
         },
         DeliveryMethod1: OrderInfo.value.DeliveryMethod1,
         DeliveryMethod2: OrderInfo.value.DeliveryMethod2,
-        IsTaxInvoice: OrderInfo.value.IsTaxInvoice
-      }
+        IsTaxInvoice: OrderInfo.value.IsTaxInvoice,
+      };
       insureDetailCache.value = cacheInsureDetail;
 
       // set cache Data Step3
@@ -346,15 +354,17 @@ const onLoad = onMounted(async () => {
           DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
           TaxInvoiceAddress: OrderInfo.value.Customer?.TaxInvoiceAddress,
           TaxInvoiceDeliveryAddress: OrderInfo.value.Customer?.TaxInvoiceDeliveryAddress,
-          IsTaxInvoiceAddressSameAsDefault: OrderInfo.value.Customer?.IsTaxInvoiceAddressSameAsDefault,
-          IsTaxInvoiceDeliveryAddressSameAsDefault: OrderInfo.value.Customer?.IsTaxInvoiceDeliveryAddressSameAsDefault,
+          IsTaxInvoiceAddressSameAsDefault:
+            OrderInfo.value.Customer?.IsTaxInvoiceAddressSameAsDefault,
+          IsTaxInvoiceDeliveryAddressSameAsDefault:
+            OrderInfo.value.Customer?.IsTaxInvoiceDeliveryAddressSameAsDefault,
           IsPerson: OrderInfo.value.Customer?.IsPerson,
-          IsBranch: OrderInfo.value.Customer?.IsBranch
+          IsBranch: OrderInfo.value.Customer?.IsBranch,
         },
         DeliveryMethod1: OrderInfo.value.DeliveryMethod1,
         DeliveryMethod2: OrderInfo.value.DeliveryMethod2,
-        IsTaxInvoice: OrderInfo.value.IsTaxInvoice
-      }
+        IsTaxInvoice: OrderInfo.value.IsTaxInvoice,
+      };
       taxInvoiceCache.value = cacheTaxInvoice;
 
       const info = sessionStorage.getItem("useStoreOrderSummary") ?
@@ -362,11 +372,9 @@ const onLoad = onMounted(async () => {
       if (info) {
         const customer = info.Order?.Customer
         if (customer) {
+          const addr = await setFullAddress(customer);
           insureFullAddress.value = `${customer.DefaultAddress?.FirstName} ${customer.DefaultAddress?.LastName} 
-                                     ${customer.DefaultAddress?.No} ${customer.DefaultAddress?.Moo} 
-                                     ${customer.DefaultAddress?.Place} ${customer.DefaultAddress?.Building} 
-                                     ${customer.DefaultAddress?.Alley} ${customer.DefaultAddress?.Road}
-                                     ${customer.DefaultAddress?.ZipCode}`
+                                     : ${addr}`;
         }
       }
     }
@@ -417,7 +425,7 @@ const submitOrder = async (formData: any) => {
       DeliveryMethod2 = DeliveryMethod[1];
     }
 
-    console.log('insureDetail.value check', insureDetail.value)
+    console.log("insureDetail.value check", insureDetail.value);
 
     let customerOld = OrderInfo.value.Customer
     if (insureDetail.value.DefaultAddress?.AddressID) {
@@ -742,11 +750,11 @@ const loadPapeRonHand = async () => {
 };
 const loadProvince = async () => {
   const response = useRepository().master.provinceText();
-  carProvince.value = response
-  addrProvinceForInsured.value = response
-  addrProvinceForRecieve.value = response
-  addrProvinceForTax.value = response
-  addrProvinceForTax2.value = response
+  carProvince.value = response;
+  addrProvinceForInsured.value = response;
+  addrProvinceForRecieve.value = response;
+  addrProvinceForTax.value = response;
+  addrProvinceForTax2.value = response;
 };
 const loadDistrict = async (provId: string): Promise<SelectOption[]> => {
   let options: SelectOption[] = [];
@@ -754,7 +762,6 @@ const loadDistrict = async (provId: string): Promise<SelectOption[]> => {
     ProvinceID: provId,
   };
   const response = useRepository().master.districtText(req);
-
 
   return response;
 };
@@ -768,7 +775,7 @@ const loadSubDistrict = async (distId: string): Promise<SelectOption[]> => {
 };
 const loadZipCodeForInsured = async (subDistId: string): Promise<string> => {
   let option = "";
-  const filter = addrSubDistrictForInsured.value.filter((x) => x.value == subDistId);
+  const filter = addrSubDistrictForInsured.value.filter((x:SelectOption) => x.value == subDistId);
   if (filter.length > 0) {
     option = filter[0].option ?? "";
   }
@@ -776,7 +783,7 @@ const loadZipCodeForInsured = async (subDistId: string): Promise<string> => {
 };
 const loadZipCodeForRecieve = async (subDistId: string): Promise<string> => {
   let option = "";
-  const filter = addrSubDistrictForRecieve.value.filter((x) => x.value == subDistId);
+  const filter = addrSubDistrictForRecieve.value.filter((x:SelectOption) => x.value == subDistId);
   if (filter.length > 0) {
     option = filter[0].option ?? "";
   }
@@ -784,7 +791,7 @@ const loadZipCodeForRecieve = async (subDistId: string): Promise<string> => {
 };
 const loadZipCodeForTax = async (subDistId: string): Promise<string> => {
   let option = "";
-  const filter = addrSubDistrictForTax.value.filter((x) => x.value == subDistId);
+  const filter = addrSubDistrictForTax.value.filter((x:SelectOption) => x.value == subDistId);
   if (filter.length > 0) {
     option = filter[0].option ?? "";
   }
@@ -792,7 +799,7 @@ const loadZipCodeForTax = async (subDistId: string): Promise<string> => {
 };
 const loadZipCodeForTax2 = async (subDistId: string): Promise<string> => {
   let option = "";
-  const filter = addrSubDistrictForTax2.value.filter((x) => x.value == subDistId);
+  const filter = addrSubDistrictForTax2.value.filter((x:SelectOption) => x.value == subDistId);
   if (filter.length > 0) {
     option = filter[0].option ?? "";
   }
@@ -866,8 +873,8 @@ const handlerChangeProvinceForInsured = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrDistrictForInsured.value = await loadDistrict(e);
-    addrSubDistrictForInsured.value = []
-    addrZipCodeForInsured.value = ''
+    addrSubDistrictForInsured.value = [];
+    addrZipCodeForInsured.value = "";
 
     isLoading.value = false;
   }
@@ -876,8 +883,8 @@ const handlerChangeProvinceForRecieve = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrDistrictForRecieve.value = await loadDistrict(e);
-    addrSubDistrictForRecieve.value = []
-    addrZipCodeForRecieve.value = ''
+    addrSubDistrictForRecieve.value = [];
+    addrZipCodeForRecieve.value = "";
 
     isLoading.value = false;
   }
@@ -886,8 +893,8 @@ const handlerChangeProvinceForTax = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrDistrictForTax.value = await loadDistrict(e);
-    addrSubDistrictForTax.value = []
-    addrZipCodeForTax.value = ''
+    addrSubDistrictForTax.value = [];
+    addrZipCodeForTax.value = "";
 
     isLoading.value = false;
   }
@@ -896,8 +903,8 @@ const handlerChangeProvinceForTax2 = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrDistrictForTax2.value = await loadDistrict(e);
-    addrSubDistrictForTax2.value = []
-    addrZipCodeForTax2.value = ''
+    addrSubDistrictForTax2.value = [];
+    addrZipCodeForTax2.value = "";
 
     isLoading.value = false;
   }
@@ -906,7 +913,7 @@ const handlerChangeDistrictForInsured = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrSubDistrictForInsured.value = await loadSubDistrict(e);
-    addrZipCodeForInsured.value = ''
+    addrZipCodeForInsured.value = "";
 
     isLoading.value = false;
   }
@@ -915,7 +922,7 @@ const handlerChangeDistrictForRecieve = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrSubDistrictForRecieve.value = await loadSubDistrict(e);
-    addrZipCodeForRecieve.value = ''
+    addrZipCodeForRecieve.value = "";
 
     isLoading.value = false;
   }
@@ -925,7 +932,7 @@ const handlerChangeDistrictForTax = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrSubDistrictForTax.value = await loadSubDistrict(e);
-    addrZipCodeForTax.value = ''
+    addrZipCodeForTax.value = "";
 
     isLoading.value = false;
   }
@@ -934,7 +941,7 @@ const handlerChangeDistrictForTax2 = async (e: string) => {
   if (e) {
     isLoading.value = true;
     addrSubDistrictForTax2.value = await loadSubDistrict(e);
-    addrZipCodeForTax2.value = ''
+    addrZipCodeForTax2.value = "";
 
     isLoading.value = false;
   }
@@ -997,7 +1004,7 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
   }
   if (addr) {
     insureFullAddress.value =
-      `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` +
+      `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} :` +
       addr;
   }
 };
@@ -1021,7 +1028,7 @@ const handleCheckCarDetail = async (objectCarDetail: CarDetailsExtension) => {
   carDetail.value = objectCarDetail;
 };
 const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject) => {
-  console.log('RecieveObject', RecieveObject)
+  console.log("RecieveObject", RecieveObject);
   switch (RecieveObject.ShippingPolicy) {
     case "pdf":
       if (RecieveObject.Email.length > 0) checklist.value[2].className = "current";
@@ -1094,6 +1101,16 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
         } else {
           checklist.value[1].className = "";
         }
+        // add change fulladdress
+        if (insureFullAddress.value != "") {
+          const fulladdr = insureFullAddress.value.split(":");
+          const PrefixName = prefix.value.filter(
+            (x:SelectOption) => x.value == insureDetail.value.PersonProfile?.PrefixID
+          )[0].label;
+          insureFullAddress.value =
+            `${PrefixName} ${insureDetail.value.PersonProfile?.FirstName} ${insureDetail.value.PersonProfile?.LastName} :` +
+            fulladdr[1];
+        }
       } else {
         //บุคคลธรรมดา คนต่างชาติ
         if (
@@ -1112,6 +1129,17 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
           checklist.value[1].className = "current";
         } else {
           checklist.value[1].className = "";
+        }
+        // add change fulladdress
+        console.log(insureFullAddress.value);
+        if (insureFullAddress.value != "") {
+          const fulladdr = insureFullAddress.value.split(":");
+          const PrefixName = prefix.value.filter(
+            (x:SelectOption) => x.value == insureDetail.value.PersonProfile?.PrefixID
+          )[0].label;
+          insureFullAddress.value =
+            `${PrefixName} ${insureDetail.value.PersonProfile?.FirstName} ${insureDetail.value.PersonProfile?.LastName} :` +
+            fulladdr[1];
         }
       }
     } else if (
@@ -1151,9 +1179,71 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
           checklist.value[1].className = "";
         }
       }
+      // add change fulladdress
+      if (insureFullAddress.value != "") {
+        const fulladdr = insureFullAddress.value.split(":");
+        const PrefixName = prefix.value.filter(
+          (x:SelectOption) => x.value == insureDetail.value.LegalPersonProfile?.PrefixID
+        )[0].label;
+        insureFullAddress.value =
+          `${PrefixName} ${insureDetail.value.LegalPersonProfile?.Name} :` + fulladdr[1];
+      }
     }
   }
   changeInsure.value = false;
+};
+const setFullAddress = async (customer: Customer) => {
+  let fullAddress = "";
+  let zipcode = "";
+  if (customer.DefaultAddress) {
+    if (customer.DefaultAddress.No.length > 0) {
+      fullAddress += customer.DefaultAddress.No + " ";
+    }
+    if (customer.DefaultAddress.Moo.length > 0) {
+      fullAddress += "หมู่ที่ " + customer.DefaultAddress.Moo + " ";
+    }
+    if (customer.DefaultAddress.Building.length > 0) {
+      fullAddress += customer.DefaultAddress.Building + " ";
+    }
+    if (customer.DefaultAddress.Alley.length > 0) {
+      fullAddress += "ซอย " + customer.DefaultAddress.Alley + " ";
+    }
+    if (customer.DefaultAddress.Road.length > 0) {
+      fullAddress += "ถนน " + customer.DefaultAddress.Road + " ";
+    }
+    if (customer.DefaultAddress.SubDistrictID.length > 0) {
+      const id = customer.DefaultAddress.SubDistrictID;
+      const distid = customer.DefaultAddress.DistrictID;
+      const list = await loadSubDistrict(distid);
+      const filter = list.filter((x) => x.value == id);
+      if (filter.length > 0) {
+        fullAddress += filter[0].label.replace("(" + filter[0].option + ")", "") + " ";
+        zipcode = filter[0].option ?? "";
+      }
+    }
+    if (customer.DefaultAddress.DistrictID.length > 0) {
+      const id = customer.DefaultAddress.DistrictID;
+      const prov = customer.DefaultAddress.ProvinceID;
+      const list = await loadDistrict(prov);
+      const filter = list.filter((x) => x.value == id);
+      if (filter.length > 0) {
+        fullAddress += filter[0].label + " ";
+      }
+    }
+    if (customer.DefaultAddress.ProvinceID.length > 0) {
+      const id = customer.DefaultAddress.ProvinceID;
+      let prov = useRepository().master.provinceText();
+      const filter = prov.filter((x) => x.value == id);
+      if (filter.length > 0) {
+        fullAddress += filter[0].label + " ";
+      }
+    }
+    if (zipcode.length > 0) {
+      fullAddress += "รหัสไปรษณีย์ " + zipcode + " ";
+    }
+  }
+
+  return fullAddress;
 };
 const handlerChangeTaxInvoice = (
   InsureDetail: CustomerOrderRequest,
@@ -1178,11 +1268,13 @@ const handlerChangeTaxInvoice = (
   // if (InsureDetail.IsTaxInvoiceAddressSameAsDefault) {
   //   insureDetail.value.IsTaxInvoiceAddressSameAsDefault = InsureDetail.IsTaxInvoiceAddressSameAsDefault;
   // }
-  insureDetail.value.IsTaxInvoiceAddressSameAsDefault = InsureDetail.IsTaxInvoiceAddressSameAsDefault;
+  insureDetail.value.IsTaxInvoiceAddressSameAsDefault =
+    InsureDetail.IsTaxInvoiceAddressSameAsDefault;
   // if (InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault) {
   //   insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault;
   // }
-  insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault;
+  insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault =
+    InsureDetail.IsTaxInvoiceDeliveryAddressSameAsDefault;
 
   if (isIncludeTax) {
     if (insuranceRecieve.value) {

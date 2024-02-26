@@ -150,6 +150,21 @@
 
                   </aside>
                   <aside v-if="isAddnew && props.addressDefaultID != null">
+                    <div class="row" v-show="false">
+                      <ElementsFormCopyNewAddress
+                        element-key="delivery"
+                        :prefix="prefix"
+                        :addr-province="addrProvince"
+                        :addr-district="addrDistrict"
+                        :addr-sub-district="addrSubDistrict"
+                        :addr-zip-code="addrZipCode"
+                        :default-address-cache="newAddressCache"
+                        @change-province="handlerChangeProvince"
+                        @change-district="handlerChangeDistrict"
+                        @change-sub-district="handlerChangeSubDistrict"
+                        @change-full-address="handlerChangeFullAddress"
+                      />
+                    </div>
                     <FormKit type="button" v-show="props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID != null" 
                       label="แก้ไขที่อยู่" name="customer-delivery" :classes="{
                       input: 'btn-primary',
@@ -490,7 +505,7 @@ const updateAddress = async (e: string, AddrID: string) => {
       await mapAddressData();
       insureFullNewAddress.value = `${newAddressUpdate.value.FirstName} ${newAddressUpdate.value.LastName} 
       ${newAddressUpdate.value.PhoneNumber} ${newAddressUpdate.value.DistrictName} ${newAddressUpdate.value.SubDistrictName}
-      ${newAddressUpdate.value.ProvinceName} ${newAddressUpdate.value.ZipCode}`
+      ${newAddressUpdate.value.ProvinceName} ${newAddressUpdate.value.postalCode}`
       
       await setPostalAddressPolicy(insureFullAddress.value.toString(), insureFullNewAddress.value.toString())
       
@@ -612,7 +627,7 @@ const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddres
   if(addr && ObjectAddress){
     //TODO implement coding new address
     //insureFullNewAddress.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
-    insureFullNewAddress.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} `+addr
+    insureFullNewAddress.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} : `+addr
     newAddressObject.value = ObjectAddress
 
     await handleCheckInsuranceRecieve()

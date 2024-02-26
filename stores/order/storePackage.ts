@@ -17,7 +17,7 @@ export const useStorePackage = defineStore('useStorePackage', {
             Rate: 0,
             RefCompanyID: '',
             Vat: 0,
-            IsTaxInclude: '',
+            IsTaxInclude: false,
             PaperBalance: 0,
             AgentCode: ""
         }

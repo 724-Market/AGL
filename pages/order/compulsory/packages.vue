@@ -26,7 +26,7 @@
 
           <OrderCompulsoryPackagesList :is-loading="isLoading" :checklist="checklist" :is-error="isError"
             :message-error="messageError" :package-list="packageList" :pages="paging" @change-checklist="handlerCheckList"
-            @change-select="handlerSelect" @change-page="handlerChangePage"></OrderCompulsoryPackagesList>
+            @change-select="handlerSelect" @change-page="handlerChangePage" />
         </div>
 
         <div class="col col-sidebar">
@@ -105,7 +105,7 @@ const isError = ref(false);
 const messageError = ref("");
 
 const paging: globalThis.Ref<Paging> = ref({
-  Length: 5,
+  Length: 30,
   Page: 1,
   TotalRecord: 0,
   RedirectUrl: "/order/compulsory/packages",

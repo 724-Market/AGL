@@ -923,6 +923,7 @@ watch(
   addressIncludeTaxType,
   () => {
     if (addressIncludeTaxType.value) {
+      
       handlerChangeTaxInvoice()
     }
 
@@ -932,6 +933,37 @@ watch(
   addressDeliveryTaxType,
   () => {
     if (addressDeliveryTaxType.value) {
+      if(addressDeliveryTaxType.value == 'addnew' )
+      {
+        cacheDefaultAddress.value = {
+          AddressID:"",
+          AddressLine1:"",
+          AddressLine2:"",
+          AddressText:"",
+          Alley:"",
+          Branch:"",
+          Building:"",
+          DistrictID:"",
+          Email:"",
+          FirstName:"",
+          Floor:"",
+          LastName:"",
+          Moo:"",
+          Name:"",
+          No:"",
+          PhoneNumber:"",
+          Place:"",
+          ProvinceID:"",
+          ReferenceID:"",
+          ReferenceType:"",
+          Road:"",
+          Room:"",
+          SubDistrictID:"",
+          TaxID:"",
+          Type:""
+        } 
+      }
+
       handlerChangeTaxInvoice()
     }
 

@@ -9,6 +9,10 @@ import type {
   class CustomerModule {
     private RESOURCE = '/Customer';
   
+    async AddressCreate(req: any) {
+      return await useCallApi().apiRepository(`${this.RESOURCE}/address/create`, req)
+    }
+  
     async AddressSave(req: any) {
       return await useCallApi().apiRepository(`${this.RESOURCE}/address/save`, req)
     }

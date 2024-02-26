@@ -113,7 +113,7 @@
                     </FormKit>
                   </div>
 
-                  <aside v-if="isAddnew" class="new-shipping-address inner-section">
+                  <aside v-if="isAddnew && props.addressDefaultID == null" class="new-shipping-address inner-section">
                     <h4>ที่อยู่จัดส่งใหม่</h4>
 
                     <div class="row">
@@ -147,14 +147,21 @@
                       :loading="isLoading"
                     />-->
 
-                    <button 
-                      type="button"
-                      class="formkit-input btn btn-primary form-actions"
-                      @click="handleButtonSaveClick"
-                      label="บันทึกข้อมูล"
-                      :loading="isLoading"
-                    >บันทึกข้อมูล</button>
 
+                  </aside>
+                  <aside v-if="isAddnew && props.addressDefaultID != null">
+                    <FormKit type="button" v-show="props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID != null" 
+                      label="แก้ไขที่อยู่" name="customer-delivery" :classes="{
+                      input: 'btn-primary',
+                      }" @click="openDialogAddress" :disabled="isLoading" :loading="isLoading" 
+                    />
+                    <!-- Move to report at radio
+                    <ElementsFormLabelAddress v-if="props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID != null"
+                      :label-address="isNewLabel 
+                      ? newAddressUpdate
+                      : props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress"
+                      />
+                       -->
                   </aside>
                 </section>
               </div>
@@ -164,6 +171,17 @@
       </div>
     </div>
   </div>
+  
+  <ElementsDialogEditAddress v-if="isEditDeliveryAddress"
+    :address-type="props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.Type"
+    :customer-i-d="props.customerId" 
+    :address-default-i-d="props.addressDefaultID"
+    :address-i-d="props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID"
+    :address-data-array="isNewLabel ? newAddressUpdate : addressDataArray" 
+    :profile-data-array="isNewLabel ? newAddressUpdate : profileDataArray" 
+    :show="isEditDeliveryAddress" @close-address="closeModalAddress"
+    @on-edit-address="updateAddress"
+    ></ElementsDialogEditAddress> 
 </template>
 
 <style scoped>
@@ -182,7 +200,7 @@ import type { IPackageResponse } from "~/shared/entities/packageList-entity";
 import type { SelectOption, RadioOption } from "~/shared/entities/select-option";
 import type { DefaultAddress, DeliveryAddress, InsuranceRecieveObject } from "~/shared/entities/placeorder-entity";
 
-const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict','checkInsuranceRecieve'])
+const emit = defineEmits(['changeProvince','changeDistrict','changeSubDistrict','checkInsuranceRecieve', 'newAddressID'])
 
 const props = defineProps({
   prefix:Array<SelectOption>,
@@ -191,6 +209,8 @@ const props = defineProps({
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
   addrZipCode:String,
+  customerId: String,
+  addressDefaultID: String,
   insureFullAddress:String,
   packageSelect: {
     type: Object as () => IPackageResponse,
@@ -201,6 +221,63 @@ const props = defineProps({
 })
 
 const isLoading = ref(false);
+
+const isEditDeliveryAddress = ref(false);
+
+const isNewLabel = ref(false)
+
+interface AddressData {
+  No?: string
+  Moo?: string
+  Place?: string
+  Building?: string
+  Floor?: string
+  Alley?: string
+  Road?: string
+  ProvinceID?: string
+  DistrictID?: string
+  SubDistrictID?: string
+  postalCode?: string
+  ProvinceLabel?: string
+  DistrictLabel?: string
+  SubDistrictLabel?: string
+}
+
+interface ProfileData {
+  AddressID?: string
+  FirstName?: string
+  LastName?: string
+  Name?: string
+  PhoneNumber?: string
+  TaxID?: string
+}
+
+interface LabelAddressData {
+  AddressID?: string
+  FirstName?: string
+  LastName?: string
+  Name?: string
+  PhoneNumber?: string
+  TaxID?: string
+  No?: string
+  Moo?: string
+  Place?: string
+  Building?: string
+  Floor?: string
+  Alley?: string
+  Road?: string
+  ProvinceID?: string
+  DistrictID?: string
+  SubDistrictID?: string
+  postalCode?: string
+  ProvinceName?: string
+  DistrictName?: string
+  SubDistrictName?: string
+}
+
+const addressDataArray = ref<AddressData>({})
+const profileDataArray = ref<ProfileData>({})
+const newAddressUpdate = ref<LabelAddressData>({})
 
 const insuranceRecieveCache: globalThis.Ref<InsuranceRecieveObject | undefined> = ref()
 const newAddressCache: globalThis.Ref<DefaultAddress | undefined> = ref()
@@ -327,11 +404,108 @@ const onLoad = onMounted(async () => {
     await setPostalAddressPolicy(insureFullAddress.value.toString(), '')
 });
 
+const openDialogAddress = (open: boolean) => {
+  mapAddressData();
+  mapProfileData();
+  isEditDeliveryAddress.value = false;
+  isEditDeliveryAddress.value = open;
+}
+
+const closeModalAddress = async (refresh: boolean) => {
+  if (refresh) {
+    isEditDeliveryAddress.value = true;
+    isEditDeliveryAddress.value = false;
+  }
+  isEditDeliveryAddress.value = false;
+}
+
+const mapProfileData = async () => {
+  profileDataArray.value = {
+    FirstName: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.FirstName || '',
+    LastName: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.LastName || '',
+    Name: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.Name || '',
+    PhoneNumber: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.PhoneNumber || '',
+    TaxID: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.TaxID || '',
+    AddressID: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID || ''
+  };
+};
+
+const mapAddressData = async () => {
+  addressDataArray.value = {
+    No: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.No || '',
+    Moo: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.Moo || '',
+    Place: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.Place || '',
+    Building: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.Building || '',
+    Floor: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.Floor || '',
+    Alley: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.Alley || '',
+    Road: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.Road || '',
+    ProvinceID: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.ProvinceID || '',
+    DistrictID: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.DistrictID || '',
+    SubDistrictID: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.SubDistrictID || '',
+    postalCode: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.ZipCode || '',
+    ProvinceLabel: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.ProvinceName || '',
+    DistrictLabel: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.DistrictName || '',
+    SubDistrictLabel: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.SubDistrictName || ''
+  };
+};
+
+// Update profile after save
+const updateAddress = async (e: string, AddrID: string) => {
+  
+  // get order after save or create
+  const req = {
+    CustomerID: e ?? "",
+  };
+
+
+  const getData = await useRepository().customer.AddressList(req);
+  if (getData.apiResponse.Status && getData.apiResponse.Status == "200" && getData.apiResponse.Data) {
+    const index = getData.apiResponse.Data.findIndex((item: any) => item.ID === props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID);
+
+    // Check if the index is valid
+    if (index !== -1) {
+      // Extract address data and assign to addressDataArray
+      newAddressUpdate.value = {
+        No: getData.apiResponse.Data[index].No,
+        Moo: getData.apiResponse.Data[index].Moo,
+        Place: getData.apiResponse.Data[index].Place,
+        Building: getData.apiResponse.Data[index].Building,
+        Floor: getData.apiResponse.Data[index].Floor,
+        Alley: getData.apiResponse.Data[index].Alley,
+        Road: getData.apiResponse.Data[index].Road,
+        ProvinceID: getData.apiResponse.Data[index].ProvinceID,
+        DistrictID: getData.apiResponse.Data[index].DistrictID,
+        SubDistrictID: getData.apiResponse.Data[index].SubDistrictID,
+        ZipCode: getData.apiResponse.Data[index].ZipCode,
+        ProvinceName: getData.apiResponse.Data[index].ProvinceName,
+        DistrictName: getData.apiResponse.Data[index].DistrictName,
+        SubDistrictName: getData.apiResponse.Data[index].SubDistrictName,
+        FirstName: getData.apiResponse.Data[index].FirstName,
+        LastName: getData.apiResponse.Data[index].LastName,
+        Name: getData.apiResponse.Data[index].Name,
+        PhoneNumber: getData.apiResponse.Data[index].PhoneNumber,
+        TaxID: getData.apiResponse.Data[index].TaxID
+      };
+      isNewLabel.value = true
+      await mapAddressData();
+      insureFullNewAddress.value = `${newAddressUpdate.value.FirstName} ${newAddressUpdate.value.LastName} 
+      ${newAddressUpdate.value.PhoneNumber} ${newAddressUpdate.value.DistrictName} ${newAddressUpdate.value.SubDistrictName}
+      ${newAddressUpdate.value.ProvinceName} ${newAddressUpdate.value.ZipCode}`
+      
+      await setPostalAddressPolicy(insureFullAddress.value.toString(), insureFullNewAddress.value.toString())
+      
+    }
+  }
+  
+  emit('newAddressID', AddrID)
+}
+
 watch(shippingPolicyText, async (newShippingPolicy) => {
   await handleRadioShippingPolicyChange(newShippingPolicy)
 })
 
 watch(postalAddressPolicyText, async (newAddressPolicy) => {
+  //await openDialogAddress(!isAddnew.value)
   await handleRadioPostalAddressPolicyChange(newAddressPolicy)
 })
 
@@ -433,6 +607,7 @@ const handlerChangeSubDistrict = (e: string)=>{
     emit('changeSubDistrict',e)
   }
 }
+
 const handlerChangeFullAddress = async (addr:string, ObjectAddress:DefaultAddress)=>{
   if(addr && ObjectAddress){
     //TODO implement coding new address

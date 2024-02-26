@@ -1,25 +1,11 @@
 <template>
-  <NuxtLayout
-    :name="layout"
-    :layout-class="layoutClass"
-    :page-title="pageTitle"
-    :page-category="pageCategory"
-    :show-page-steps="showPageSteps"
-    :show-page-header="showPageHeader"
-  >
-    <!-- Content -->
-    <FormKit
-      type="form"
-      @submit="submitOrder"
-      :actions="false"
-      id="form-order"
-      form-class="form-order form-theme"
-      #default="{ value }"
-      v-model="values"
-      :incomplete-message="false"
-    >
+  <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
+
+    <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
+      #default="{ value }" v-model="values" :incomplete-message="false">
       <div class="row">
-        <div class="col-lg-8 col-xl-9">
+        <div class="col col-main">
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">ระบุข้อมูลรถยนต์</h3>
@@ -34,117 +20,52 @@
               </div>
 
               <div class="form-inline">
-                <FormKit
-                  type="select"
-                  label="ประเภทรถยนต์"
-                  name="CarType"
-                  placeholder="เลือกข้อมูล"
-                  :options="carType"
-                  :value="carType.value"
-                  v-model="carTypeText"
-                  @change="handleCarTypeChange()"
-                  validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                />
+                <FormKit type="select" label="ประเภทรถยนต์" name="CarType" placeholder="เลือกข้อมูล" :options="carType"
+                  :value="carType.value" v-model="carTypeText" @change="handleCarTypeChange()" validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
                 <!-- <ElementsFormSelectCarType :options="carType" :value="carType.value" v-model="carTypeText"
                   @change="handleCarTypeChange" /> -->
               </div>
 
               <div class="form-inline">
-                <FormKit
-                  type="select"
-                  label="ขนาดรถยนต์"
-                  name="CarSize"
-                  placeholder="เลือกข้อมูล"
-                  :options="carSize"
-                  :value="carSize.value"
-                  v-model="carSizeText"
-                  @change="handleCarSizeChange"
-                  validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                />
+                <FormKit type="select" label="ขนาดรถยนต์" name="CarSize" placeholder="เลือกข้อมูล" :options="carSize"
+                  :value="carSize.value" v-model="carSizeText" @change="handleCarSizeChange" validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
               </div>
 
               <div class="form-inline">
-                <FormKit
-                  type="select"
-                  label="ปีที่จดทะเบียน"
-                  name="CarYear"
-                  placeholder="เลือกข้อมูล"
-                  :options="carYesrs"
-                  :value="carYesrs.value"
-                  v-model="carYesrsText"
-                  @change="handleCarYesrsChange"
-                  validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                />
+                <FormKit type="select" label="ปีที่จดทะเบียน" name="CarYear" placeholder="เลือกข้อมูล" :options="carYesrs"
+                  :value="carYesrs.value" v-model="carYesrsText" @change="handleCarYesrsChange" validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
               </div>
 
               <div class="form-inline">
-                <FormKit
-                  type="select"
-                  label="ยี่ห้อรถ"
-                  name="CarBrand"
-                  placeholder="เลือกข้อมูล"
-                  :options="carBrand"
-                  :value="carBrand.value"
-                  v-model="carBrandText"
-                  @change="handleCarBrandChange"
-                  validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                />
+                <FormKit type="select" label="ยี่ห้อรถ" name="CarBrand" placeholder="เลือกข้อมูล" :options="carBrand"
+                  :value="carBrand.value" v-model="carBrandText" @change="handleCarBrandChange" validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
               </div>
 
               <div class="form-inline">
-                <FormKit
-                  type="select"
-                  label="รุ่นรถ"
-                  name="CarModel"
-                  placeholder="เลือกข้อมูล"
-                  :options="carModel"
-                  :value="carModel.value"
-                  v-model="carModelText"
-                  @change="handleCarModelChange"
-                  validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                />
+                <FormKit type="select" label="รุ่นรถ" name="CarModel" placeholder="เลือกข้อมูล" :options="carModel"
+                  :value="carModel.value" v-model="carModelText" @change="handleCarModelChange" validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
               </div>
 
               <div class="form-inline">
-                <FormKit
-                  type="select"
-                  label="รุ่นย่อย"
-                  name="SubCarModel"
-                  placeholder="เลือกข้อมูล"
-                  :options="subcarModel"
-                  :value="subcarModel.value"
-                  v-model="subcarModelText"
-                  @change="handleSubcarModelChange"
-                  validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                />
+                <FormKit type="select" label="รุ่นย่อย" name="SubCarModel" placeholder="เลือกข้อมูล"
+                  :options="subcarModel" :value="subcarModel.value" v-model="subcarModelText"
+                  @change="handleSubcarModelChange" validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
               </div>
 
               <div class="form-inline" v-if="subcarModelText == 'other'">
-                <FormKit
-                  type="text"
-                  label="รุ่นย่อย (ระบุด้วยตนเอง)"
-                  name="customSubCarModel"
-                  placeholder="กรอกข้อมูล"
-                  v-model="customSubCarModel"
-                  @change="handleCustomSubcarModelChange"
-                />
+                <FormKit type="text" label="รุ่นย่อย (ระบุด้วยตนเอง)" name="customSubCarModel" placeholder="กรอกข้อมูล"
+                  v-model="customSubCarModel" @change="handleCustomSubcarModelChange" />
               </div>
 
               <div class="form-inline" v-if="subcarModelText != 'unknown'">
-                <FormKit
-                  type="text"
-                  label="ขนาดเครื่องยนต์"
-                  name="CarCC"
-                  placeholder="ระบุ cc ของเครื่องยนต์"
-                  disabled="true"
-                  v-model="carCC"
-                />
+                <FormKit type="text" label="ขนาดเครื่องยนต์" name="CarCC" placeholder="ระบุ cc ของเครื่องยนต์"
+                  disabled="true" v-model="carCC" />
               </div>
             </div>
           </div>
@@ -159,54 +80,27 @@
               </div>
 
               <div class="form-inline">
-                <FormKit
-                  type="radio"
-                  label="เลือกวันคุ้มครอง" format="DD/MM/YYYY"
-                  name="EffectiveType"
-                  :options="{
-                    FULLYEAR: 'คุ้มครอง 1 ปี',
-                    NOTFULLYEAR: 'เลือกวันคุ้มครองเอง',
-                  }"
-                  v-model="effectiveType"
-                  @input="handleEffectiveTypeChange"
-                  validation="required"
-                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                  options-class="option-block-inline"
-                />
+                <FormKit type="radio" label="เลือกวันคุ้มครอง" format="DD/MM/YYYY" name="EffectiveType" :options="{
+                  FULLYEAR: 'คุ้มครอง 1 ปี',
+                  NOTFULLYEAR: 'เลือกวันคุ้มครองเอง',
+                }" v-model="effectiveType" @input="handleEffectiveTypeChange" validation="required"
+                  :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block-inline" />
               </div>
               <div class="form-inline">
-                <FormKit
-                  type="datepicker"
-                  label="เริ่มต้น"
-                  name="EffectiveDate"
-                  placeholder="วัน/เดือน/ปี ค.ศ."
-                  format="DD/MM/YYYY" value-format="YYYY-MM-DD"
-                  picker-only
-                  :min-date="effectiveMinDate"
-                  :max-date="effectiveMaxDate"
-                  v-model="effectiveDateText"
-                  validation="required"
-                  :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
-                />
+                <FormKit type="datepicker" label="เริ่มต้น" name="EffectiveDate" placeholder="วัน/เดือน/ปี ค.ศ."
+                  format="DD/MM/YYYY" value-format="YYYY-MM-DD" picker-only :min-date="effectiveMinDate"
+                  :max-date="effectiveMaxDate" v-model="effectiveDateText" validation="required"
+                  :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" />
                 <!-- <FormKit type="datepicker" label="เริ่มต้น" name="EffectiveDate" 
                   placeholder="วัน/เดือน/ปี ค.ศ." format="DD/MM/YYYY" picker-only
                   validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" /> -->
               </div>
               <div class="form-inline">
-                <FormKit
-                  type="datepicker"
-                  label="สิ้นสุด"
-                  name="ExpireDate"
-                  placeholder="วัน/เดือน/ปี ค.ศ"
-                  format="DD/MM/YYYY" value-format="YYYY-MM-DD"
-                  picker-only
-                  :min-date="expireMinDate"
-                  :max-date="expireMaxDate"
-                  v-model="expireDateText"
-                  :disabled="effectiveType == 'FULLYEAR' || effectiveDateText == ''"
-                  validation="required"
-                  :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
-                />
+                <FormKit type="datepicker" label="สิ้นสุด" name="ExpireDate" placeholder="วัน/เดือน/ปี ค.ศ"
+                  format="DD/MM/YYYY" value-format="YYYY-MM-DD" picker-only :min-date="expireMinDate"
+                  :max-date="expireMaxDate" v-model="expireDateText"
+                  :disabled="effectiveType == 'FULLYEAR' || effectiveDateText == ''" validation="required"
+                  :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" />
                 <!-- <FormKit type="datepicker" label="สิ้นสุด" name="ExpireDate" 
                   placeholder="วัน/เดือน/ปี ค.ศ" format="DD/MM/YYYY" picker-only 
                   validation="required" :validation-messages="{ required: 'กรุณากรอกข้อมูล' }" /> -->
@@ -219,31 +113,29 @@
           </div>
         </div>
 
-        <!-- Sidebar -->
-        <div class="col-lg-4 col-xl-3">
-          <aside class="card">
-            <div class="card-header">
-              <h3 class="card-title">รายการที่เลือก</h3>
-            </div>
+        <div class="col col-sidebar">
+          <section class="site-sidebar is-sticky">
 
-            <OrderChecklist :list="checklist" />
-          </aside>
+            <aside class="card">
+              <div class="card-header">
+                <h3 class="card-title">รายการที่เลือก</h3>
+              </div>
 
-          <FormKit
-            type="submit"
-            label="ไปเลือกแพ็กเกจ"
-            name="order-submit"
-            id="order-submit"
-            :classes="{ input: 'btn-primary', outer: 'form-actions' }"
-            :disabled="
-              checklist[0].className != 'current' || checklist[1].className != 'current'
-            "
-            :loading="isLoading"
-          />
+              <OrderChecklist :list="checklist" />
+            </aside>
+
+            <FormKit type="submit" label="ไปเลือกแพ็กเกจ" name="order-submit" id="order-submit"
+              :classes="{ input: 'btn-primary', outer: 'form-actions' }" :disabled="checklist[0].className != 'current' || checklist[1].className != 'current'
+                " :loading="isLoading" />
+
+          </section>
         </div>
+
       </div>
     </FormKit>
+
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+
   </NuxtLayout>
 </template>
 
@@ -791,9 +683,8 @@ const getCarDetail = async () => {
 
   if (subcarModelText.value && subcarModelText.value != "") {
     if (!otherSubcarModel.includes(subcarModelText.value)) {
-      carDetail = `${carDetail} ${
-        subcarModel.value.find((e) => e.value == subcarModelText.value)?.label
-      }`;
+      carDetail = `${carDetail} ${subcarModel.value.find((e) => e.value == subcarModelText.value)?.label
+        }`;
     }
   }
   if (carYesrsText.value && carYesrsText.value != "") {
@@ -830,22 +721,23 @@ const submitOrder = async (formData: any) => {
 };
 
 // Define layout
-const layout = "monito";
-const layoutClass = "page-monito";
-const showPageSteps = true;
-const showPageHeader = true;
+const layout = 'monito'
+const layoutClass = 'page-monito'
+const showPageSteps = true
+const showPageHeader = true
+const showLogoHeader = false
 
 // Define page meta
-const pageTitle = "กรอกข้อมูล";
-const pageCategory = "แจ้งงาน พ.ร.บ.";
-const pageDescription = "กรอกข้อมูลและรายละเอียดของรถยนต์ที่ต้องการซื้อ พ.ร.บ.";
+const pageTitle = 'กรอกข้อมูล'
+const pageCategory = 'แจ้งงาน พ.ร.บ.'
+const pageDescription = 'กรอกข้อมูลและรายละเอียดของรถยนต์ที่ต้องการซื้อ พ.ร.บ.'
 
 // Define meta seo
 useHead({
   title: pageTitle,
-  meta: [{ name: "description", content: pageDescription }],
+  meta: [{ name: 'description', content: pageDescription }],
   bodyAttrs: {
-    class: "page-order category-compulsory single-information",
+    class: 'page-order category-compulsory single-information',
   },
-});
+})
 </script>

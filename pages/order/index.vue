@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
-    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
     <div class="row">
       <div class="col">
 
@@ -320,15 +320,16 @@ const handlerChangeTable = async (datatable: any) => {
 // };
 
 // Define layout
-const layout = "monito";
-const layoutClass = "page-monito";
-const showPageSteps = false;
-const showPageHeader = true;
+const layout = "monito"
+const layoutClass = "page-monito"
+const showPageSteps = false
+const showPageHeader = true
+const showLogoHeader = false
 
 // Define page meta
-const pageTitle = "ประวัติการทำรายการ";
-const pageCategory = "ข้อมูลประวัติ";
-const pageDescription = "";
+const pageTitle = "ประวัติการทำรายการ"
+const pageCategory = "ข้อมูลประวัติ"
+const pageDescription = ""
 
 // Define meta seo
 useHead({
@@ -337,5 +338,5 @@ useHead({
   bodyAttrs: {
     class: "page-history single-history template-datatable",
   },
-});
+})
 </script>

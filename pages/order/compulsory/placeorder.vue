@@ -1,178 +1,105 @@
 <template>
-  <NuxtLayout
-    :name="layout"
-    :layout-class="layoutClass"
-    :page-title="pageTitle"
-    :page-category="pageCategory"
-    :show-page-steps="showPageSteps"
-    :show-page-header="showPageHeader"
-  >
-    <FormKit
-      type="form"
-      @submit="submitOrder"
-      :actions="false"
-      id="form-order"
-      form-class="form-order form-theme"
-      :incomplete-message="false"
-      v-model="values"
-    >
+  <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
+
+    <FormKit type="form" @submit="submitOrder" :actions="false" id="form-order" form-class="form-order form-theme"
+      :incomplete-message="false" v-model="values">
+
       <div class="row">
-        <div class="col-lg-8 col-xl-9">
+        <div class="col col-main">
+
           <!-- # # # # # # # # # # # # # # # # # # # # # รายละเอียดรถ # # # # # # # # # # # # # # # # # # # # #-->
-          <OrderCompulsoryPlaceorderCarDetail
-            @check-car-detail="handleCheckCarDetail"
-            :car-color="carColor"
-            :car-province="carProvince"
-            :info="infomation"
-            :car-detail-cache="carDetailCache"
-          ></OrderCompulsoryPlaceorderCarDetail>
+          <OrderCompulsoryPlaceorderCarDetail @check-car-detail="handleCheckCarDetail" :car-color="carColor"
+            :car-province="carProvince" :info="infomation" :car-detail-cache="carDetailCache">
+          </OrderCompulsoryPlaceorderCarDetail>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลผู้เอาประกันภัย # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderInsureDetail
-            v-if="
-              prefix.length > 0 &&
-              nationality.length > 0 &&
-              addrProvinceForInsured.length > 0
-            "
-            @change-province="handlerChangeProvinceForInsured"
-            @change-district="handlerChangeDistrictForInsured"
-            @change-sub-district="handlerChangeSubDistrictForInsured"
-            @change-customer-type="handlerChangeCustomerType"
-            @change-full-address="handlerChangeFullAddress"
-            @change-insure-detail="handlerChangeInsureDetail"
-            :customer-id="OrderInfo.Customer?.PersonProfile?.CustomerID"
-            :prefix="prefix"
-            :nationality="nationality"
-            :addr-province="addrProvinceForInsured"
-            :addr-district="addrDistrictForInsured"
-            :addr-sub-district="addrSubDistrictForInsured"
-            :addr-zip-code="addrZipCodeForInsured"
-            :cache-order-request="insureDetailCache"
-          ></OrderCompulsoryPlaceorderInsureDetail>
+            v-if="prefix.length > 0 && nationality.length > 0 && addrProvinceForInsured.length > 0"
+            @change-province="handlerChangeProvinceForInsured" @change-district="handlerChangeDistrictForInsured"
+            @change-sub-district="handlerChangeSubDistrictForInsured" @change-customer-type="handlerChangeCustomerType"
+            @change-full-address="handlerChangeFullAddress" @change-insure-detail="handlerChangeInsureDetail"
+            :customer-id="OrderInfo.Customer?.PersonProfile?.CustomerID" :prefix="prefix" :nationality="nationality"
+            :addr-province="addrProvinceForInsured" :addr-district="addrDistrictForInsured"
+            :addr-sub-district="addrSubDistrictForInsured" :addr-zip-code="addrZipCodeForInsured"
+            :cache-order-request="insureDetailCache"></OrderCompulsoryPlaceorderInsureDetail>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # วิธีการรับกรมธรรม์ # # # # # # # # # # # # # # # # # # # # #-->
-          <OrderCompulsoryPlaceorderInsuranceRecieve
-            v-if="prefix.length > 0 && addrProvinceForRecieve.length > 0"
-            @change-province="handlerChangeProvinceForRecieve"
-            @change-district="handlerChangeDistrictForRecieve"
+          <OrderCompulsoryPlaceorderInsuranceRecieve v-if="prefix.length > 0 && addrProvinceForRecieve.length > 0"
+            @change-province="handlerChangeProvinceForRecieve" @change-district="handlerChangeDistrictForRecieve"
             @change-sub-district="handlerChangeSubDistrictForRecieve"
-            @check-insurance-recieve="handleCheckInsuranceRecieve"
-            :insure-full-address="insureFullAddress"
-            :prefix="prefixRecieve"
-            :delivery="delivery"
-            :addr-province="addrProvinceForRecieve"
-            :addr-district="addrDistrictForRecieve"
-            :addr-sub-district="addrSubDistrictForRecieve"
-            :addr-zip-code="addrZipCodeForRecieve"
-            :package-select="packageSelect"
-            :insurance-recieve-cache="insuranceRecieveCache"
-          ></OrderCompulsoryPlaceorderInsuranceRecieve>
+            @check-insurance-recieve="handleCheckInsuranceRecieve" @new-address-i-d="updateNewAddressID"
+            :customer-id="OrderInfo.Customer?.PersonProfile?.CustomerID"
+            :address-default-i-d="OrderInfo.Customer?.DefaultAddress?.AddressID" :insure-full-address="insureFullAddress"
+            :prefix="prefixRecieve" :delivery="delivery" :addr-province="addrProvinceForRecieve"
+            :addr-district="addrDistrictForRecieve" :addr-sub-district="addrSubDistrictForRecieve"
+            :addr-zip-code="addrZipCodeForRecieve" :package-select="packageSelect"
+            :insurance-recieve-cache="insuranceRecieveCache"></OrderCompulsoryPlaceorderInsuranceRecieve>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ใบกำกับภาษี # # # # # # # # # # # # # # # # # # # # #-->
-          <OrderCompulsoryPlaceorderTaxInvoice
-            v-if="
-              packageSelect &&
-              prefix.length > 0 &&
-              delivery.length > 0 &&
-              addrProvinceForTax.length > 0 &&
-              insuranceRecieve
-            "
-            @change-province="handlerChangeProvinceForTax"
-            @change-district="handlerChangeDistrictForTax"
-            @change-sub-district="handlerChangeSubDistrictForTax"
-            @change-province2="handlerChangeProvinceForTax2"
-            @change-district2="handlerChangeDistrictForTax2"
-            @change-sub-district2="handlerChangeSubDistrictForTax2"
-            :insure-full-address="insureFullAddress"
-            :prefix="prefix"
-            :delivery="delivery"
-            :addr-province="addrProvinceForTax"
-            :addr-district="addrDistrictForTax"
-            :addr-sub-district="addrSubDistrictForTax"
-            :addr-zip-code="addrZipCodeForTax"
-            :addr-province2="addrProvinceForTax2"
-            :addr-district2="addrDistrictForTax2"
-            :addr-sub-district2="addrSubDistrictForTax2"
-            :addr-zip-code2="addrZipCodeForTax2"
+          <OrderCompulsoryPlaceorderTaxInvoice v-if="packageSelect &&
+            prefix.length > 0 &&
+            delivery.length > 0 &&
+            addrProvinceForTax.length > 0
+            " @change-province="handlerChangeProvinceForTax" @change-district="handlerChangeDistrictForTax"
+            @change-sub-district="handlerChangeSubDistrictForTax" @change-province2="handlerChangeProvinceForTax2"
+            @change-district2="handlerChangeDistrictForTax2" @change-sub-district2="handlerChangeSubDistrictForTax2"
+            @new-tax-i-d="updateNewTaxID" @new-tax-address-i-d="updateNewTaxAddressID"
+            :insure-full-address="insureFullAddress" :prefix="prefix" :delivery="delivery"
+            :addr-province="addrProvinceForTax" :addr-district="addrDistrictForTax"
+            :addr-sub-district="addrSubDistrictForTax" :addr-zip-code="addrZipCodeForTax"
+            :addr-province2="addrProvinceForTax2" :addr-district2="addrDistrictForTax2"
+            :addr-sub-district2="addrSubDistrictForTax2" :addr-zip-code2="addrZipCodeForTax2"
             :is-include-tax="packageSelect.IsTaxInclude"
             :shipping-policy="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
-            :cache-order-request="taxInvoiceCache"
-            @change-tax-invoice="handlerChangeTaxInvoice"
-          ></OrderCompulsoryPlaceorderTaxInvoice>
-          <ElementsModalAlert
-            v-if="isError"
-            :is-error="isError"
-            :message="messageError"
-            :reload="false"
-          />
+            :cache-order-request="taxInvoiceCache" @change-tax-invoice="handlerChangeTaxInvoice">
+          </OrderCompulsoryPlaceorderTaxInvoice>
+          <ElementsModalAlert v-if="isError" :is-error="isError" :message="messageError" :reload="false" />
         </div>
 
         <!-- # # # # # # # # # # # # # # # # # # # # # Right Slide Bar # # # # # # # # # # # # # # # # # # # # #-->
-        <div class="col-lg-4 col-xl-3">
-          <aside class="card">
-            <div class="card-header">
-              <h3 class="card-title">รายการที่เลือก</h3>
-            </div>
-            <div class="card-body">
-              <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลรถ # # # # # # # # # # # # # # # # # # # # #-->
-              <OrderCartCar
-                v-if="infomation && carDetail"
-                :car-detail="infomation.CarDetail"
-                :car-use="infomation.CarUse"
-                :is-car-red="carDetail.IsRedLicense"
-                :effective-date="infomation.EffectiveDate"
-                :expire-date="infomation.ExpireDate"
-                :insurance-day="infomation.InsuranceDay"
-              ></OrderCartCar>
+        <div class="col col-sidebar">
+          <section class="site-sidebar is-sticky">
 
-              <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลแพคเกจ # # # # # # # # # # # # # # # # # # # # #-->
-              <OrderCartPackage
-                v-if="packageSelect && packageSelect.CompanyName != ''"
-                :package-select="packageSelect"
-              />
-              <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลผู้เอาประกัน # # # # # # # # # # # # # # # # # # # # #-->
-              <OrderCartInsure
-                v-if="insureDetail && insuranceRecieve"
-                :delivery-type="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
-                :is-person="insureDetail.IsPerson"
-                v-model:person-profile.sync="personProfile"
-                v-model:legal-person-profile="legalPersonProfile"
-              ></OrderCartInsure>
-            </div>
+            <aside class="card">
+              <div class="card-header">
+                <h3 class="card-title">รายการที่เลือก</h3>
+              </div>
+              <div class="card-body">
+                <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลรถ # # # # # # # # # # # # # # # # # # # # #-->
+                <OrderCartCar v-if="infomation && carDetail" :car-detail="infomation.CarDetail"
+                  :car-use="infomation.CarUse" :is-car-red="carDetail.IsRedLicense"
+                  :effective-date="infomation.EffectiveDate" :expire-date="infomation.ExpireDate"
+                  :insurance-day="infomation.InsuranceDay"></OrderCartCar>
 
-            <OrderChecklist :list="checklist" @change-check-save="handlerCheckSave" />
-          </aside>
+                <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลแพคเกจ # # # # # # # # # # # # # # # # # # # # #-->
+                <OrderCartPackage v-if="packageSelect && packageSelect.CompanyName != ''"
+                  :package-select="packageSelect" />
+                <!-- # # # # # # # # # # # # # # # # # # # # # ข้อมูลผู้เอาประกัน # # # # # # # # # # # # # # # # # # # # #-->
+                <OrderCartInsure v-if="insureDetail && insuranceRecieve"
+                  :delivery-type="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
+                  :is-person="insureDetail.IsPerson" v-model:person-profile.sync="personProfile"
+                  v-model:legal-person-profile="legalPersonProfile"></OrderCartInsure>
+              </div>
 
-          <FormKit
-            type="submit"
-            label="ไปเลือกวิธีชำระเงิน"
-            name="order-submit"
-            id="order-submit"
-            :classes="{
+              <OrderChecklist :list="checklist" @change-check-save="handlerCheckSave" />
+            </aside>
+
+            <FormKit type="submit" label="ไปเลือกวิธีชำระเงิน" name="order-submit" id="order-submit" :classes="{
               input: 'btn-primary',
               outer: 'form-actions',
-            }"
-            :disabled="!checkSave"
-            :loading="isLoading"
-          />
-          <!-- :disabled="!checkSave" -->
+            }" :loading="isLoading" />
 
-          <!-- <button
-            type="submit"
-            class="formkit-input btn btn-primary form-actions"
-            label="ไปเลือกวิธีชำระเงิน"
-            name="order-submit"
-            id="order-submit"
-            :loading="isLoading"
-          >
-            ไปเลือกวิธีชำระเงิน
-          </button> -->
+            <NuxtLink @click="backStep()" class="btn-back btn-gray">ย้อนกลับ</NuxtLink>
 
-          <NuxtLink @click="backStep()" class="btn btn-back mt-3">ย้อนกลับ</NuxtLink>
+          </section>
         </div>
+
       </div>
     </FormKit>
+
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+
   </NuxtLayout>
 </template>
 
@@ -291,6 +218,10 @@ const PaperCount = ref(0);
 const isError = ref(false);
 const messageError = ref("");
 var checkSave: globalThis.Ref<Boolean> = ref(false);
+
+const newAddressDeliveryID = ref("")
+const newAddressTaxID = ref("")
+const newTaxDeliveryID = ref("")
 
 let values = reactive({});
 
@@ -436,13 +367,10 @@ const onLoad = onMounted(async () => {
       };
       taxInvoiceCache.value = cacheTaxInvoice;
 
-      const info = sessionStorage.getItem("useStoreOrderSummary")
-        ? (JSON.parse(
-            sessionStorage.getItem("useStoreOrderSummary") || ""
-          ) as OrderResponse)
-        : undefined;
+      const info = sessionStorage.getItem("useStoreOrderSummary") ?
+        JSON.parse(sessionStorage.getItem("useStoreOrderSummary") || "") as OrderResponse : undefined
       if (info) {
-        const customer = info.Order?.Customer;
+        const customer = info.Order?.Customer
         if (customer) {
           const addr = await setFullAddress(customer);
           insureFullAddress.value = `${customer.DefaultAddress?.FirstName} ${customer.DefaultAddress?.LastName} 
@@ -499,18 +427,15 @@ const submitOrder = async (formData: any) => {
 
     console.log("insureDetail.value check", insureDetail.value);
 
-    let customerOld = OrderInfo.value.Customer;
+    let customerOld = OrderInfo.value.Customer
     if (insureDetail.value.DefaultAddress?.AddressID) {
       if (insureDetail.value.DeliveryAddress?.ProvinceID) {
-        if (
-          customerOld?.DefaultAddress?.AddressID ==
-            customerOld?.DeliveryAddress?.AddressID &&
-          insureDetail.value.IsDeliveryAddressSameAsDefault == false
-        )
-          insureDetail.value.DeliveryAddress.AddressID = "";
-        else
-          insureDetail.value.DeliveryAddress.AddressID = customerOld?.DeliveryAddress
-            ?.AddressID as string;
+        if (customerOld?.DefaultAddress?.AddressID == customerOld?.DeliveryAddress?.AddressID && !insureDetail.value.IsDeliveryAddressSameAsDefault) {
+          insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value
+          console.log("insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value" + insureDetail.value.DeliveryAddress.AddressID)
+        } else {
+          insureDetail.value.DeliveryAddress.AddressID = customerOld?.DeliveryAddress?.AddressID as string
+        }
 
         // if(customerOld?.DefaultAddress?.AddressID == insureDetail.value.DeliveryAddress.AddressID && insureDetail.value.IsDeliveryAddressSameAsDefault==false)
         // {
@@ -519,15 +444,9 @@ const submitOrder = async (formData: any) => {
       }
 
       if (insureDetail.value.TaxInvoiceAddress?.ProvinceID) {
-        if (
-          customerOld?.DefaultAddress?.AddressID ==
-            customerOld?.TaxInvoiceAddress?.AddressID &&
-          insureDetail.value.IsTaxInvoiceAddressSameAsDefault == false
-        )
-          insureDetail.value.TaxInvoiceAddress.AddressID = "";
-        else
-          insureDetail.value.TaxInvoiceAddress.AddressID =
-            customerOld?.TaxInvoiceAddress?.AddressID ?? ("" as string);
+        if (customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceAddress?.AddressID && !insureDetail.value.IsTaxInvoiceAddressSameAsDefault)
+          insureDetail.value.TaxInvoiceAddress.AddressID = newAddressTaxID.value
+        else insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.TaxInvoiceAddress?.AddressID ?? "" as string
 
         // if(customerOld?.TaxInvoiceAddress?.AddressID == insureDetail.value.TaxInvoiceAddress.AddressID && insureDetail.value.IsTaxInvoiceAddressSameAsDefault==false)
         // {
@@ -536,16 +455,9 @@ const submitOrder = async (formData: any) => {
       }
 
       if (insureDetail.value.TaxInvoiceDeliveryAddress?.ProvinceID) {
-        if (
-          customerOld?.DefaultAddress?.AddressID ==
-            customerOld?.TaxInvoiceDeliveryAddress?.AddressID &&
-          insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault == false
-        )
-          insureDetail.value.TaxInvoiceDeliveryAddress.AddressID =
-            customerOld?.DefaultAddress?.AddressID ?? ("" as string);
-        else
-          insureDetail.value.TaxInvoiceDeliveryAddress.AddressID =
-            customerOld?.TaxInvoiceDeliveryAddress?.AddressID ?? ("" as string);
+        if (customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceDeliveryAddress?.AddressID && !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault)
+          insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = newTaxDeliveryID.value
+        else insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.TaxInvoiceDeliveryAddress?.AddressID ?? "" as string
 
         // if(customerOld?.TaxInvoiceDeliveryAddress?.AddressID == insureDetail.value.TaxInvoiceDeliveryAddress.AddressID && insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault==false)
         // {
@@ -622,7 +534,7 @@ const submitOrder = async (formData: any) => {
         getData.apiResponse.Data &&
         getData.apiResponse.Data.length > 0
       ) {
-        const summaryOrder = getData.apiResponse.Data[0].Order as Order;
+        const summaryOrder = getData.apiResponse.Data[0].Order as Order
         const orderSetStore: PlaceOrderRequest = {
           OrderNo: orderReq.OrderNo,
           Package: summaryOrder.Package,
@@ -640,8 +552,9 @@ const submitOrder = async (formData: any) => {
       }
     }
     //set state menu
-  } else {
-    alert("กรุณากรอกข้อมูลให้ครบถ้วนก่อน");
+  }
+  else {
+    alert('กรุณากรอกข้อมูลให้ครบถ้วนก่อน')
   }
 
   isLoading.value = false;
@@ -750,59 +663,21 @@ const getDeliveryMethod = (): DeliveryMethod[] => {
   }
   return data;
 };
-const setFullAddress = async (customer: Customer) => {
-  let fullAddress = "";
-  let zipcode = "";
-  if (customer.DefaultAddress) {
-    if (customer.DefaultAddress.No.length > 0) {
-      fullAddress += customer.DefaultAddress.No + " ";
-    }
-    if (customer.DefaultAddress.Moo.length > 0) {
-      fullAddress += "หมู่ที่ " + customer.DefaultAddress.Moo + " ";
-    }
-    if (customer.DefaultAddress.Building.length > 0) {
-      fullAddress += customer.DefaultAddress.Building + " ";
-    }
-    if (customer.DefaultAddress.Alley.length > 0) {
-      fullAddress += "ซอย " + customer.DefaultAddress.Alley + " ";
-    }
-    if (customer.DefaultAddress.Road.length > 0) {
-      fullAddress += "ถนน " + customer.DefaultAddress.Road + " ";
-    }
-    if (customer.DefaultAddress.SubDistrictID.length > 0) {
-      const id = customer.DefaultAddress.SubDistrictID;
-      const distid = customer.DefaultAddress.DistrictID;
-      const list = await loadSubDistrict(distid);
-      const filter = list.filter((x) => x.value == id);
-      if (filter.length > 0) {
-        fullAddress += filter[0].label.replace("(" + filter[0].option + ")", "") + " ";
-        zipcode = filter[0].option ?? "";
-      }
-    }
-    if (customer.DefaultAddress.DistrictID.length > 0) {
-      const id = customer.DefaultAddress.DistrictID;
-      const prov = customer.DefaultAddress.ProvinceID;
-      const list = await loadDistrict(prov);
-      const filter = list.filter((x) => x.value == id);
-      if (filter.length > 0) {
-        fullAddress += filter[0].label + " ";
-      }
-    }
-    if (customer.DefaultAddress.ProvinceID.length > 0) {
-      const id = customer.DefaultAddress.ProvinceID;
-      let prov = useRepository().master.provinceText();
-      const filter = prov.filter((x) => x.value == id);
-      if (filter.length > 0) {
-        fullAddress += filter[0].label + " ";
-      }
-    }
-    if (zipcode.length > 0) {
-      fullAddress += "รหัสไปรษณีย์ " + zipcode + " ";
-    }
-  }
 
-  return fullAddress;
-};
+const updateNewAddressID = async (newID: string) => {
+  newAddressDeliveryID.value = newID
+
+}
+
+const updateNewTaxID = async (newID: string) => {
+  newAddressTaxID.value = newID
+
+}
+
+const updateNewTaxAddressID = async (newID: string) => {
+  newTaxDeliveryID.value = newID
+
+}
 // handle loading api & set refs
 const loadPrefix = async (isPerson: boolean) => {
   const req: PrefixReq = {
@@ -900,7 +775,7 @@ const loadSubDistrict = async (distId: string): Promise<SelectOption[]> => {
 };
 const loadZipCodeForInsured = async (subDistId: string): Promise<string> => {
   let option = "";
-  const filter = addrSubDistrictForInsured.value.filter((x) => x.value == subDistId);
+  const filter = addrSubDistrictForInsured.value.filter((x:SelectOption) => x.value == subDistId);
   if (filter.length > 0) {
     option = filter[0].option ?? "";
   }
@@ -908,7 +783,7 @@ const loadZipCodeForInsured = async (subDistId: string): Promise<string> => {
 };
 const loadZipCodeForRecieve = async (subDistId: string): Promise<string> => {
   let option = "";
-  const filter = addrSubDistrictForRecieve.value.filter((x) => x.value == subDistId);
+  const filter = addrSubDistrictForRecieve.value.filter((x:SelectOption) => x.value == subDistId);
   if (filter.length > 0) {
     option = filter[0].option ?? "";
   }
@@ -916,7 +791,7 @@ const loadZipCodeForRecieve = async (subDistId: string): Promise<string> => {
 };
 const loadZipCodeForTax = async (subDistId: string): Promise<string> => {
   let option = "";
-  const filter = addrSubDistrictForTax.value.filter((x) => x.value == subDistId);
+  const filter = addrSubDistrictForTax.value.filter((x:SelectOption) => x.value == subDistId);
   if (filter.length > 0) {
     option = filter[0].option ?? "";
   }
@@ -924,7 +799,7 @@ const loadZipCodeForTax = async (subDistId: string): Promise<string> => {
 };
 const loadZipCodeForTax2 = async (subDistId: string): Promise<string> => {
   let option = "";
-  const filter = addrSubDistrictForTax2.value.filter((x) => x.value == subDistId);
+  const filter = addrSubDistrictForTax2.value.filter((x:SelectOption) => x.value == subDistId);
   if (filter.length > 0) {
     option = filter[0].option ?? "";
   }
@@ -1053,7 +928,7 @@ const handlerChangeDistrictForRecieve = async (e: string) => {
   }
 };
 const handlerChangeDistrictForTax = async (e: string) => {
-  console.log("handlerChangeDistrictForTax", e);
+  console.log('handlerChangeDistrictForTax', e)
   if (e) {
     isLoading.value = true;
     addrSubDistrictForTax.value = await loadSubDistrict(e);
@@ -1230,7 +1105,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
         if (insureFullAddress.value != "") {
           const fulladdr = insureFullAddress.value.split(":");
           const PrefixName = prefix.value.filter(
-            (x) => x.value == insureDetail.value.PersonProfile?.PrefixID
+            (x:SelectOption) => x.value == insureDetail.value.PersonProfile?.PrefixID
           )[0].label;
           insureFullAddress.value =
             `${PrefixName} ${insureDetail.value.PersonProfile?.FirstName} ${insureDetail.value.PersonProfile?.LastName} :` +
@@ -1260,7 +1135,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
         if (insureFullAddress.value != "") {
           const fulladdr = insureFullAddress.value.split(":");
           const PrefixName = prefix.value.filter(
-            (x) => x.value == insureDetail.value.PersonProfile?.PrefixID
+            (x:SelectOption) => x.value == insureDetail.value.PersonProfile?.PrefixID
           )[0].label;
           insureFullAddress.value =
             `${PrefixName} ${insureDetail.value.PersonProfile?.FirstName} ${insureDetail.value.PersonProfile?.LastName} :` +
@@ -1308,7 +1183,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
       if (insureFullAddress.value != "") {
         const fulladdr = insureFullAddress.value.split(":");
         const PrefixName = prefix.value.filter(
-          (x) => x.value == insureDetail.value.LegalPersonProfile?.PrefixID
+          (x:SelectOption) => x.value == insureDetail.value.LegalPersonProfile?.PrefixID
         )[0].label;
         insureFullAddress.value =
           `${PrefixName} ${insureDetail.value.LegalPersonProfile?.Name} :` + fulladdr[1];
@@ -1316,6 +1191,59 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
     }
   }
   changeInsure.value = false;
+};
+const setFullAddress = async (customer: Customer) => {
+  let fullAddress = "";
+  let zipcode = "";
+  if (customer.DefaultAddress) {
+    if (customer.DefaultAddress.No.length > 0) {
+      fullAddress += customer.DefaultAddress.No + " ";
+    }
+    if (customer.DefaultAddress.Moo.length > 0) {
+      fullAddress += "หมู่ที่ " + customer.DefaultAddress.Moo + " ";
+    }
+    if (customer.DefaultAddress.Building.length > 0) {
+      fullAddress += customer.DefaultAddress.Building + " ";
+    }
+    if (customer.DefaultAddress.Alley.length > 0) {
+      fullAddress += "ซอย " + customer.DefaultAddress.Alley + " ";
+    }
+    if (customer.DefaultAddress.Road.length > 0) {
+      fullAddress += "ถนน " + customer.DefaultAddress.Road + " ";
+    }
+    if (customer.DefaultAddress.SubDistrictID.length > 0) {
+      const id = customer.DefaultAddress.SubDistrictID;
+      const distid = customer.DefaultAddress.DistrictID;
+      const list = await loadSubDistrict(distid);
+      const filter = list.filter((x) => x.value == id);
+      if (filter.length > 0) {
+        fullAddress += filter[0].label.replace("(" + filter[0].option + ")", "") + " ";
+        zipcode = filter[0].option ?? "";
+      }
+    }
+    if (customer.DefaultAddress.DistrictID.length > 0) {
+      const id = customer.DefaultAddress.DistrictID;
+      const prov = customer.DefaultAddress.ProvinceID;
+      const list = await loadDistrict(prov);
+      const filter = list.filter((x) => x.value == id);
+      if (filter.length > 0) {
+        fullAddress += filter[0].label + " ";
+      }
+    }
+    if (customer.DefaultAddress.ProvinceID.length > 0) {
+      const id = customer.DefaultAddress.ProvinceID;
+      let prov = useRepository().master.provinceText();
+      const filter = prov.filter((x) => x.value == id);
+      if (filter.length > 0) {
+        fullAddress += filter[0].label + " ";
+      }
+    }
+    if (zipcode.length > 0) {
+      fullAddress += "รหัสไปรษณีย์ " + zipcode + " ";
+    }
+  }
+
+  return fullAddress;
 };
 const handlerChangeTaxInvoice = (
   InsureDetail: CustomerOrderRequest,
@@ -1431,22 +1359,23 @@ const handlerCheckSave = (check: boolean) => {
 };
 
 // Define layout
-const layout = "monito";
-const layoutClass = "page-monito";
-const showPageSteps = true;
-const showPageHeader = true;
+const layout = 'monito'
+const layoutClass = 'page-monito'
+const showPageSteps = true
+const showPageHeader = true
+const showLogoHeader = false
 
 // Define page meta
-const pageTitle = "ข้อมูลสั่งซื้อ";
-const pageCategory = "แจ้งงาน พ.ร.บ.";
-const pageDescription = "Compulsory ข้อมูลสั่งซื้อ";
+const pageTitle = 'ข้อมูลสั่งซื้อ'
+const pageCategory = 'แจ้งงาน พ.ร.บ.'
+const pageDescription = 'Compulsory ข้อมูลสั่งซื้อ'
 
 // Define meta seo
 useHead({
   title: pageTitle,
-  meta: [{ name: "description", content: pageDescription }],
+  meta: [{ name: 'description', content: pageDescription }],
   bodyAttrs: {
-    class: "page-order category-compulsory single-placeholder",
+    class: 'page-order category-compulsory single-placeholder',
   },
-});
+})
 </script>

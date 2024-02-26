@@ -10,6 +10,10 @@ class AffiliateModule {
     return await useCallApi().apiRepository(`${this.RESOURCE}/product/plan/by-user/summary/get`, req)
   }
 
+  async createAffiliateOrder(req: any) {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/order/create`, req)
+  }
+
 }
 
 export default AffiliateModule;

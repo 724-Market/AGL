@@ -55,8 +55,8 @@ const storeCredit = useStoreCreditBalance()
 
 
 const onLoad = onMounted(async () => {
-  //Hidden to implement pledge 
-  //await loadPledgeCreditBalance()
+  // Hidden to implement pledge 
+  // await loadPledgeCreditBalance()
 });
 
 const handlerOpenWallet = (open: boolean) => {

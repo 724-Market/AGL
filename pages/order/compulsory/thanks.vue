@@ -1,23 +1,14 @@
 <template>
-  <NuxtLayout
-    :name="layout"
-    :layout-class="layoutClass"
-    :page-title="pageTitle"
-    :page-category="pageCategory"
-    :show-page-steps="showPageSteps"
-    :show-page-header="showPageHeader"
-  >
+  <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
+
     <div class="row">
       <div class="col-lg-6">
-        <OrderCompulsoryThanksSuccess
-          v-if="paymentGetInfo && status == 'Success'"
-          :payment-get="paymentGetInfo"
-        ></OrderCompulsoryThanksSuccess>
+        <OrderCompulsoryThanksSuccess v-if="paymentGetInfo && status == 'Success'" :payment-get="paymentGetInfo">
+        </OrderCompulsoryThanksSuccess>
 
-        <OrderCompulsoryThanksCancel
-          v-if="paymentGetInfo && status == 'Cancel'"
-          :payment-get="paymentGetInfo"
-        ></OrderCompulsoryThanksCancel>
+        <OrderCompulsoryThanksCancel v-if="paymentGetInfo && status == 'Cancel'" :payment-get="paymentGetInfo">
+        </OrderCompulsoryThanksCancel>
       </div>
 
       <div class="col-lg-6">
@@ -87,8 +78,8 @@ const router = useRouter();
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
     isLoading.value = true;
-    if(!OrderSummaryInfo.value) {
-        router.push("/order");
+    if (!OrderSummaryInfo.value) {
+      router.push("/order");
     }
     const route = useRoute();
     if (PaymentGetInfo.value && PaymentGetInfo.value.PaymentNo != "") {
@@ -182,22 +173,23 @@ const clearStore = async () => {
 };
 
 // Define layout
-const layout = "monito";
-const layoutClass = "page-monito";
-const showPageSteps = false;
-const showPageHeader = true;
+const layout = 'monito'
+const layoutClass = 'page-monito'
+const showPageSteps = false
+const showPageHeader = true
+const showLogoHeader = false
 
 // Define page meta
-const pageTitle = "ผลการทำรายการ";
-const pageCategory = "แจ้งงาน พ.ร.บ.";
-const pageDescription = "";
+const pageTitle = 'ผลการทำรายการ'
+const pageCategory = 'แจ้งงาน พ.ร.บ.'
+const pageDescription = ''
 
 // Define meta seo
 useHead({
   title: pageTitle,
-  meta: [{ name: "description", content: pageDescription }],
+  meta: [{ name: 'description', content: pageDescription }],
   bodyAttrs: {
-    class: "page-order category-compulsory single-thanks",
+    class: 'page-order category-compulsory single-thanks',
   },
-});
+})
 </script>

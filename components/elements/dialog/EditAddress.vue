@@ -10,6 +10,11 @@
         :incomplete-message="false">
         <div class="card-body">
           <div class="row">
+            <p>{{ props.addressType }}</p>
+            <RegisterFormProfile v-if="props.addressType=='CURRENT'" :profileData="profileDataArray" />
+            <RegisterFormDelivery v-if="props.addressType=='DELIVERY'" :profileData="profileDataArray" />
+            <RegisterFormTax v-if="props.addressType=='TAXINVOICE'" :profileData="profileDataArray" />
+            <RegisterFormDelivery v-if="props.addressType=='TAXINVOICE_DELIVERY'" :profileData="profileDataArray" />
             <RegisterFormAddress v-if="addressDataArray" :addressData="addressDataArray" />
           </div>
         </div>
@@ -56,9 +61,12 @@ const subDistrictIDsel = ref('')
 const props = defineProps({
   show: Boolean,
   addressDataArray: Object,
+  profileDataArray: Object,
+  addressType: String,
   elementKey: String,
   customerID: String,
   addressID: String,
+  addressDefaultID: String,
   addrProvince: Array<SelectOption>,
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
@@ -86,6 +94,12 @@ const submitEditAddress = async (formData: any) => {
   const reqSaveAddress = {
       CustomerID: props.customerID,
       AddressID: props.addressID,
+      Type: props.addressType,
+      FirstName: formData.FirstName,
+      LastName: formData.LastName,
+      Name: formData.Name,
+      PhoneNumber: formData.PhoneNumber,
+      TaxID: formData.TaxID,
       No: formData.No,
       Moo: formData.Moo,
       Place: formData.Place,
@@ -97,20 +111,35 @@ const submitEditAddress = async (formData: any) => {
       DistrictID: formData.DistrictID,
       SubDistrictID: formData.SubDistrictID
   }
-  const resCreate = await useRepository().customer.AddressSave(reqSaveAddress);
-  if (
-    resCreate.apiResponse.Status &&
-    resCreate.apiResponse.Status == "200"
-  ) {
+  if(props.addressID == props.addressDefaultID && props.addressType != 'CURRENT'){
+    const resCreate = await useRepository().customer.AddressCreate(reqSaveAddress);
+    if (
+      resCreate.apiResponse.Status &&
+      resCreate.apiResponse.Status == "200"
+    ) {
 
-    emit('onEditAddress', props.customerID)
+      emit('onEditAddress', props.customerID, resCreate.apiResponse.Data)
 
-    closeModal(false);
+      closeModal(false);
+    } else {
+      alert(resCreate.apiResponse.ErrorMessage);
+    }
   } else {
-    alert(resCreate.apiResponse.ErrorMessage);
-  }
+    const resCreate = await useRepository().customer.AddressSave(reqSaveAddress);
+    if (
+      resCreate.apiResponse.Status &&
+      resCreate.apiResponse.Status == "200"
+    ) {
 
+      emit('onEditAddress', props.customerID, props.addressID)
+
+      closeModal(false);
+    } else {
+      alert(resCreate.apiResponse.ErrorMessage);
+    }
+  }
 };
+
 watch(
   () => props.show,
   () => {

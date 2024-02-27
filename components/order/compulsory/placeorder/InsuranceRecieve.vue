@@ -150,6 +150,21 @@
 
                   </aside>
                   <aside v-if="isAddnew && props.addressDefaultID != null">
+                    <div class="row" v-show="false">
+                      <ElementsFormCopyNewAddress
+                        element-key="delivery"
+                        :prefix="prefix"
+                        :addr-province="addrProvince"
+                        :addr-district="addrDistrict"
+                        :addr-sub-district="addrSubDistrict"
+                        :addr-zip-code="addrZipCode"
+                        :default-address-cache="newAddressCache"
+                        @change-province="handlerChangeProvince"
+                        @change-district="handlerChangeDistrict"
+                        @change-sub-district="handlerChangeSubDistrict"
+                        @change-full-address="handlerChangeFullAddress"
+                      />
+                    </div>
                     <FormKit type="button" v-show="props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID != null" 
                       label="แก้ไขที่อยู่" name="customer-delivery" :classes="{
                       input: 'btn-primary',
@@ -460,7 +475,7 @@ const updateAddress = async (e: string, AddrID: string) => {
 
   const getData = await useRepository().customer.AddressList(req);
   if (getData.apiResponse.Status && getData.apiResponse.Status == "200" && getData.apiResponse.Data) {
-    const index = getData.apiResponse.Data.findIndex((item: any) => item.ID === props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID);
+    const index = getData.apiResponse.Data.findIndex((item: any) => item.ID === AddrID);
 
     // Check if the index is valid
     if (index !== -1) {
@@ -490,7 +505,7 @@ const updateAddress = async (e: string, AddrID: string) => {
       await mapAddressData();
       insureFullNewAddress.value = `${newAddressUpdate.value.FirstName} ${newAddressUpdate.value.LastName} 
       ${newAddressUpdate.value.PhoneNumber} ${newAddressUpdate.value.DistrictName} ${newAddressUpdate.value.SubDistrictName}
-      ${newAddressUpdate.value.ProvinceName} ${newAddressUpdate.value.ZipCode}`
+      ${newAddressUpdate.value.ProvinceName} ${newAddressUpdate.value.postalCode}`
       
       await setPostalAddressPolicy(insureFullAddress.value.toString(), insureFullNewAddress.value.toString())
       

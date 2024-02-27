@@ -53,7 +53,7 @@ export const useStoreUserAuth = defineStore('useStoreUserAuth', {
 
             const date = new Date()
             date.setSeconds(date.getSeconds()+this.$state.expiresIn)
-            this.$state.issuedDate = date.toISOString()
+            this.$state.issuedDate = date.toISOString()+"+07:00"
 
             return this.$state
         },

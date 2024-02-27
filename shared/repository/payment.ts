@@ -27,7 +27,10 @@ class PaymentModule {
     return await useCallApi().apiRepository<PaymentConfirmResponse[]>(`${this.RESOURCE}/confirm`, req)
   }
   async gateway(req:PaymentGatewayRequest): Promise<IAPIPaymentGatewayResponse<PaymentGatewayResponse>> {
-    return await useCallApi().postGateway<PaymentGatewayResponse>(``, req)
+    return await useCallApi().postGateway<PaymentGatewayResponse>(req)
+  }
+  async paymentGateway(req: any) {
+    return await useCallApi().postPaymentGateway(req)
   }
 }
   

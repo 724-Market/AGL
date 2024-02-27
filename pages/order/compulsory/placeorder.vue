@@ -51,6 +51,7 @@
             :addr-province2="addrProvinceForTax2" :addr-district2="addrDistrictForTax2"
             :addr-sub-district2="addrSubDistrictForTax2" :addr-zip-code2="addrZipCodeForTax2"
             :is-include-tax="packageSelect.IsTaxInclude"
+            :address-default-i-d="OrderInfo.Customer?.DefaultAddress?.AddressID"
             :shipping-policy="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
             :cache-order-request="taxInvoiceCache" @change-tax-invoice="handlerChangeTaxInvoice">
           </OrderCompulsoryPlaceorderTaxInvoice>
@@ -408,9 +409,10 @@ const onLoad = onMounted(async () => {
 // Submit form event
 const submitOrder = async (formData: any) => {
   isLoading.value = true;
-  if (checkSave.value) {
+  if(checkSave.value || OrderInfo.value?.OrderNo != null) {
     let orderNo = OrderInfo.value?.OrderNo;
     if (insuranceRecieve.value?.ShippingPolicy == "postal") {
+      console.log("Placeorder insuranceRecieve"+insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefaul)
       if (!insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
         insureDetail.value.DeliveryAddress =
           insuranceRecieve.value?.PostalDelivary?.DeliveryAddress;
@@ -422,15 +424,17 @@ const submitOrder = async (formData: any) => {
     let DeliveryMethod = getDeliveryMethod();
     let DeliveryMethod2 = null;
     if (DeliveryMethod[1].MethodType != "") {
+      console.log("Placeorder DeliveryMethod[1].MethodType"+DeliveryMethod[1].MethodType)
       DeliveryMethod2 = DeliveryMethod[1];
     }
 
     console.log("insureDetail.value check", insureDetail.value);
 
     let customerOld = OrderInfo.value.Customer
-    if (insureDetail.value.DefaultAddress?.AddressID) {
-      if (insureDetail.value.DeliveryAddress?.ProvinceID) {
-        if (customerOld?.DefaultAddress?.AddressID == customerOld?.DeliveryAddress?.AddressID && !insureDetail.value.IsDeliveryAddressSameAsDefault) {
+
+    if(insureDetail.value.DefaultAddress?.AddressID) {
+      if(insureDetail.value.DeliveryAddress?.ProvinceID) {
+        if(customerOld?.DefaultAddress?.AddressID == customerOld?.DeliveryAddress?.AddressID && !insureDetail.value.IsDeliveryAddressSameAsDefault) {
           insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value
           console.log("insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value" + insureDetail.value.DeliveryAddress.AddressID)
         } else {
@@ -454,8 +458,9 @@ const submitOrder = async (formData: any) => {
         // }
       }
 
-      if (insureDetail.value.TaxInvoiceDeliveryAddress?.ProvinceID) {
-        if (customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceDeliveryAddress?.AddressID && !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault)
+      if(insureDetail.value.TaxInvoiceDeliveryAddress?.ProvinceID) {
+        if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceDeliveryAddress?.AddressID 
+        && !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault) 
           insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = newTaxDeliveryID.value
         else insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.TaxInvoiceDeliveryAddress?.AddressID ?? "" as string
 

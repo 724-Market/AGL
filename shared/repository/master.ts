@@ -19,7 +19,7 @@ class MasterModule {
     filter.sort((a, b) => a.label.localeCompare(b.label, 'th', { sensitivity: 'base' }));
     return filter
   }
-   subDistrictText(req: SubDistrictReq): SelectOption[] {
+  subDistrictText(req: SubDistrictReq): SelectOption[] {
     const filter = districtData.filter(x=>x.value==req.DistrictID).map(x=>x.subDistricts.map(sub=>{
       const options: SelectOption = {
         label: `${sub.label} (${sub.postalCode})`,

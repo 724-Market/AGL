@@ -120,7 +120,7 @@
                       </div>
                       <div class="col-md-12 col-lg-5">
                         <FormKit type="text" label="Lastname" name="LastName" v-model="personProfile.LastName"
-                        @keyup="handlerChangePersonalProfile" placeholder="Lastname"
+                          @keyup="handlerChangePersonalProfile" placeholder="Lastname"
                           :validation-rules="{ special_characters }" validation="required|special_characters"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',

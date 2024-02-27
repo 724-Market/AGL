@@ -855,6 +855,7 @@ const handlerSubmitAddressTaxInvoiceDelivery = () => {
   handlerChangeTaxInvoice()
 }
 const handlerChangeTaxInvoice = () => {
+
   insureDetail.value.IsTaxInvoiceAddressSameAsDefault = addressIncludeTaxType.value == 'insured'
   insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = addressDeliveryTaxType.value == 'insured'
   emit('changeTaxInvoice', insureDetail.value, requestIncludeTax.value.length > 0, shippedPolicy.value, ShippingMethodText.value)
@@ -880,7 +881,6 @@ const setCacheData = () => {
       if (props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault == false && props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress?.ProvinceID != '') {
         cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress
         //const deliveryMethod1 = props.cacheOrderRequest.DeliveryMethod1
-
       }
       else{
         cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress

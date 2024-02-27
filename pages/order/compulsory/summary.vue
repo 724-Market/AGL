@@ -1,23 +1,13 @@
 <template>
-  <NuxtLayout
-    :name="layout"
-    :layout-class="layoutClass"
-    :page-title="pageTitle"
-    :page-category="pageCategory"
-    :show-page-steps="showPageSteps"
-    :show-page-header="showPageHeader"
-  >
-    <FormKit
-      type="form"
-      @submit="submitOrder"
-      :actions="false"
-      id="form-summary"
-      form-class="form-order form-theme"
-      v-model="values"
-      :incomplete-message="false"
-    >
+  <NuxtLayout :name="layout" :layout-class="layoutClass" :page-title="pageTitle" :page-category="pageCategory"
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader" :show-logo-header="showLogoHeader">
+
+    <FormKit type="form" @submit="submitOrder" :actions="false" id="form-summary" form-class="form-order form-theme"
+      :incomplete-message="false" v-model="values">
+
       <div class="row">
-        <div class="col-lg-7">
+        <div class="col col-main">
+
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">สรุปข้อมูลประกันภัย</h3>
@@ -26,78 +16,54 @@
             <div class="card-body">
               <div class="notice-warning">
                 <i class="fa-regular fa-circle-info"></i> ข้อมูลมีผลต่อความคุ้มครอง
-                กรุณาตรวจสอบความถูกต้องของข้อมูลก่อนชำระเงิน <br /><b
-                  ><u>ไม่รับคืนเงินทั้งสิ้น ทุกกรณี</u></b
-                >
+                กรุณาตรวจสอบความถูกต้องของข้อมูลก่อนชำระเงิน <br /><b><u>ไม่รับคืนเงินทั้งสิ้น ทุกกรณี</u></b>
               </div>
             </div>
 
-            <OrderCompulsorySummaryInsureDetail
-              :order-detail="orderDetail"
-              v-if="orderDetail"
-            ></OrderCompulsorySummaryInsureDetail>
+            <OrderCompulsorySummaryInsureDetail :order-detail="orderDetail" v-if="orderDetail">
+            </OrderCompulsorySummaryInsureDetail>
           </div>
         </div>
 
-        <div class="col-lg-5">
-          <aside class="card">
-            <div class="card-body" v-if="paymentDetail && orderDetail">
-              <OrderCompulsorySummaryPurchaseDetail
-                :payment="paymentDetail"
-                :order-no="orderDetail.OrderNo"
-                :create-date="orderDetail.OrderDate"
-                :credit-balance="creditBalance"
-              ></OrderCompulsorySummaryPurchaseDetail>
-              <OrderCompulsorySummaryPaymentStatus
-                :payment="paymentDetail"
-                :options="optionDetail"
-                @open-wallet="handlerOpenWallet"
-              ></OrderCompulsorySummaryPaymentStatus>
-            </div>
+        <div class="col col-sidebar">
+          <section class="site-sidebar is-sticky">
 
-            <div class="card-footer">
-              <div class="form-hide-label">
-                <FormKit
-                  type="checkbox"
-                  value="pdpa"
-                  name="PDPA"
-                  label="ยอมรับเงื่อนไขความคุ้มครองและข้อยกเว้นการทำประกัน และรับทราบนโยบายคุ้มครองข้อมูลส่วนบุคคล"
-                  validation="required"
-                  :validation-messages="{ required: 'กรุณาคลิกยอมรับเงื่อนไขและนโยบายฯ' }"
-                  v-model="isConsent"
-                />
+            <aside class="card">
+              <div class="card-body" v-if="paymentDetail && orderDetail">
+                <OrderCompulsorySummaryPurchaseDetail :payment="paymentDetail" :order-no="orderDetail.OrderNo"
+                  :create-date="orderDetail.OrderDate" :credit-balance="creditBalance">
+                </OrderCompulsorySummaryPurchaseDetail>
+                <OrderCompulsorySummaryPaymentStatus :payment="paymentDetail" :options="optionDetail"
+                  @open-wallet="handlerOpenWallet"></OrderCompulsorySummaryPaymentStatus>
               </div>
-            </div>
-          </aside>
-          <FormKit
-            type="submit"
-            label="ยืนยันการชำระ"
-            name="order-submit"
-            id="order-submit"
-            :classes="{ input: 'btn-primary', outer: 'form-actions' }"
-            :disabled="!isConsent"
-            :loading="isLoading"
-          />
-          <!-- validatePaymment() -->
-          <!-- :to="'placeorder?orderNo=' + orderDetail.OrderNo" -->
-          <NuxtLink v-if="orderDetail" to="payment" class="btn btn-back"
-            >ย้อนกลับ</NuxtLink
-          >
+
+              <div class="card-footer">
+                <div class="form-hide-label">
+                  <FormKit type="checkbox" value="pdpa" name="PDPA"
+                    label="ยอมรับเงื่อนไขความคุ้มครองและข้อยกเว้นการทำประกัน และรับทราบนโยบายคุ้มครองข้อมูลส่วนบุคคล"
+                    validation="required" :validation-messages="{ required: 'กรุณาคลิกยอมรับเงื่อนไขและนโยบายฯ' }"
+                    v-model="isConsent" />
+                </div>
+              </div>
+            </aside>
+
+            <FormKit type="submit" label="ยืนยันการชำระ" name="order-submit" id="order-submit"
+              :classes="{ input: 'btn-primary', outer: 'form-actions' }" :disabled="!isConsent" :loading="isLoading" />
+            <!-- validatePaymment() -->
+            <!-- :to="'placeorder?orderNo=' + orderDetail.OrderNo" -->
+            <NuxtLink v-if="orderDetail" to="payment" class="btn-back btn-gray">ย้อนกลับ</NuxtLink>
+
+          </section>
         </div>
+
       </div>
     </FormKit>
-    <PaymentWalletModalWallet
-    v-if="showWallet"
-      :show="showWallet"
-      @close-wallet="handleCloseWallet"
-      @topup-confirm="handleTopupConfirm"
-      :wallet-payment-gateway="walletPaymentGateway"
-      :credit-order="paymentConfirm"
-    ></PaymentWalletModalWallet>
-    <PaymentWalletModalWarningWallet
-      :show="showWarningWallet"
-      @close-warning="handleCloseWarning"
-    ></PaymentWalletModalWarningWallet>
+
+    <PaymentWalletModalWallet v-if="showWallet" :show="showWallet" @close-wallet="handleCloseWallet"
+      @topup-confirm="handleTopupConfirm" :wallet-payment-gateway="walletPaymentGateway" :credit-order="paymentConfirm">
+    </PaymentWalletModalWallet>
+    <PaymentWalletModalWarningWallet :show="showWarningWallet" @close-warning="handleCloseWarning">
+    </PaymentWalletModalWarningWallet>
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
     <ElementsModalAlert v-if="isError" :is-error="isError" :message="messageError" :reload="true" />
   </NuxtLayout>
@@ -153,7 +119,7 @@ const { OrderSummaryInfo } = storeToRefs(store);
 
 const infomation = useStoreInformation();
 
-const storePackage = useStorePackage(); 
+const storePackage = useStorePackage();
 
 const placeorder = useStorePlaceorder();
 const { OrderInfo } = storeToRefs(placeorder);
@@ -180,12 +146,10 @@ const paging: globalThis.Ref<Paging> = ref({
 
 const d = new Date();
 const getMonth = d.getMonth() + 1;
-const EffectiveDate = `${d.getFullYear()}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
-  d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
-}`;
-const ExpireDate = `${d.getFullYear() + 1}-${getMonth > 9 ? getMonth : "0" + getMonth}-${
-  d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
-}`;
+const EffectiveDate = `${d.getFullYear()}-${getMonth > 9 ? getMonth : "0" + getMonth}-${d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
+  }`;
+const ExpireDate = `${d.getFullYear() + 1}-${getMonth > 9 ? getMonth : "0" + getMonth}-${d.getDate() > 9 ? d.getDate() : "0" + d.getDate()
+  }`;
 
 const orderDetail: globalThis.Ref<OrderDetails | undefined> = ref();
 const paymentDetail: globalThis.Ref<PaymentDetails | undefined> = ref();
@@ -205,13 +169,11 @@ const setOrderNo = useStoreOrderNo();
 
 let values = reactive({});
 
-const validatePaymment = ():boolean=>{
+const validatePaymment = (): boolean => {
   validatePayment.value = false
-  if(isConsent)
-  {
-    if(paymentDetail.value && paymentDetail.value.PaymentType=="PLEDGE")
-    {
-      if(creditBalance.value && creditBalance.value.AvailableBalance<paymentDetail.value.OrderAmount){
+  if (isConsent) {
+    if (paymentDetail.value && paymentDetail.value.PaymentType == "PLEDGE") {
+      if (creditBalance.value && creditBalance.value.AvailableBalance < paymentDetail.value.OrderAmount) {
         validatePayment.value = true
       }
     }
@@ -306,7 +268,7 @@ const loadPledgeFeeLimit = async () => {
 const onLoad = onMounted(async () => {
   const route = useRoute();
   console.log(setOrderNo.value);
-  if(setOrderNo.value != ''){
+  if (setOrderNo.value != '') {
     OrderInfo.value.OrderNo = setOrderNo.value;
   }
   if (OrderInfo.value && OrderInfo.value.OrderNo) {
@@ -478,12 +440,12 @@ const handleTopupConfirm = async (
       let gatewayInfo = responseGateway.data as PaymentGatewayResponse;
       walletPaymentGateway.value = gatewayInfo;
     }
-   else{
-    isError.value = true
-    messageError.value = responseGateway.message ?? ""
-   }
+    else {
+      isError.value = true
+      messageError.value = responseGateway.message ?? ""
+    }
   }
-  else{
+  else {
     isError.value = true
     messageError.value = response.apiResponse.Message ?? ""
   }
@@ -505,22 +467,23 @@ const handleCloseWarning = async () => {
   }
 };
 // Define layout
-const layout = "monito";
-const layoutClass = "page-monito";
-const showPageSteps = true;
-const showPageHeader = true;
+const layout = 'monito'
+const layoutClass = 'page-monito'
+const showPageSteps = true
+const showPageHeader = true
+const showLogoHeader = false
 
 // Define page meta
-const pageTitle = "สรุปรายการ";
-const pageCategory = "แจ้งงาน พ.ร.บ.";
-const pageDescription = "Compulsory สรุปข้อมูล";
+const pageTitle = 'สรุปรายการ'
+const pageCategory = 'แจ้งงาน พ.ร.บ.'
+const pageDescription = 'Compulsory สรุปข้อมูล'
 
 // Define meta seo
 useHead({
   title: pageTitle,
-  meta: [{ name: "description", content: pageDescription }],
+  meta: [{ name: 'description', content: pageDescription }],
   bodyAttrs: {
-    class: "page-order category-compulsory single-summary",
+    class: 'page-order category-compulsory single-summary',
   },
-});
+})
 </script>

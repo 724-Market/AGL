@@ -853,6 +853,7 @@ const handlerSubmitAddressTaxInvoiceDelivery = () => {
   handlerChangeTaxInvoice()
 }
 const handlerChangeTaxInvoice = () => {
+
   insureDetail.value.IsTaxInvoiceAddressSameAsDefault = addressIncludeTaxType.value == 'insured'
   insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault = addressDeliveryTaxType.value == 'insured'
   emit('changeTaxInvoice', insureDetail.value, requestIncludeTax.value.length > 0, shippedPolicy.value, ShippingMethodText.value)
@@ -878,7 +879,6 @@ const setCacheData = () => {
       if (props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault == false && props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress?.ProvinceID != '') {
         cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress
         //const deliveryMethod1 = props.cacheOrderRequest.DeliveryMethod1
-
       }
       else{
         cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress
@@ -1012,6 +1012,7 @@ watch(
   addressIncludeTaxType,
   () => {
     if (addressIncludeTaxType.value) {
+      
       handlerChangeTaxInvoice()
     }
 
@@ -1021,6 +1022,37 @@ watch(
   addressDeliveryTaxType,
   () => {
     if (addressDeliveryTaxType.value) {
+      if(addressDeliveryTaxType.value == 'addnew' )
+      {
+        cacheDefaultAddress.value = {
+          AddressID:"",
+          AddressLine1:"",
+          AddressLine2:"",
+          AddressText:"",
+          Alley:"",
+          Branch:"",
+          Building:"",
+          DistrictID:"",
+          Email:"",
+          FirstName:"",
+          Floor:"",
+          LastName:"",
+          Moo:"",
+          Name:"",
+          No:"",
+          PhoneNumber:"",
+          Place:"",
+          ProvinceID:"",
+          ReferenceID:"",
+          ReferenceType:"",
+          Road:"",
+          Room:"",
+          SubDistrictID:"",
+          TaxID:"",
+          Type:""
+        } 
+      }
+
       handlerChangeTaxInvoice()
     }
 

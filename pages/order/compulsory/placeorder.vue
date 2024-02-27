@@ -435,9 +435,11 @@ const submitOrder = async (formData: any) => {
     if(insureDetail.value.DefaultAddress?.AddressID) {
       if(insureDetail.value.DeliveryAddress?.ProvinceID) {
         if(customerOld?.DefaultAddress?.AddressID == customerOld?.DeliveryAddress?.AddressID && !insureDetail.value.IsDeliveryAddressSameAsDefault) {
+          console.log("DeliveryAddress?.AddressID "+newAddressDeliveryID.value)
           insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value
-          console.log("insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value" + insureDetail.value.DeliveryAddress.AddressID)
-        } else {
+
+        } else { 
+
           insureDetail.value.DeliveryAddress.AddressID = customerOld?.DeliveryAddress?.AddressID as string
         }
 
@@ -447,10 +449,14 @@ const submitOrder = async (formData: any) => {
         // }
       }
 
+
       if (insureDetail.value.TaxInvoiceAddress?.ProvinceID) {
         if (customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceAddress?.AddressID && !insureDetail.value.IsTaxInvoiceAddressSameAsDefault)
+
           insureDetail.value.TaxInvoiceAddress.AddressID = newAddressTaxID.value
-        else insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.TaxInvoiceAddress?.AddressID ?? "" as string
+        } else {
+          insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.TaxInvoiceAddress?.AddressID ?? "" as string
+        }
 
         // if(customerOld?.TaxInvoiceAddress?.AddressID == insureDetail.value.TaxInvoiceAddress.AddressID && insureDetail.value.IsTaxInvoiceAddressSameAsDefault==false)
         // {
@@ -460,9 +466,12 @@ const submitOrder = async (formData: any) => {
 
       if(insureDetail.value.TaxInvoiceDeliveryAddress?.ProvinceID) {
         if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceDeliveryAddress?.AddressID 
-        && !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault) 
+        && !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault) {
+          console.log("TaxInvoiceDeliveryAddress.AddressID "+newTaxDeliveryID.value)
           insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = newTaxDeliveryID.value
-        else insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.TaxInvoiceDeliveryAddress?.AddressID ?? "" as string
+        } else {
+          insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.TaxInvoiceDeliveryAddress?.AddressID ?? "" as string
+        }
 
         // if(customerOld?.TaxInvoiceDeliveryAddress?.AddressID == insureDetail.value.TaxInvoiceDeliveryAddress.AddressID && insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault==false)
         // {
@@ -670,16 +679,19 @@ const getDeliveryMethod = (): DeliveryMethod[] => {
 };
 
 const updateNewAddressID = async (newID: string) => {
+  console.log("updateNewAddressID "+newID)
   newAddressDeliveryID.value = newID
 
 }
 
 const updateNewTaxID = async (newID: string) => {
+  console.log("updateNewTaxID "+newID)
   newAddressTaxID.value = newID
 
 }
 
 const updateNewTaxAddressID = async (newID: string) => {
+  console.log("updateNewTaxAddressID "+newID)
   newTaxDeliveryID.value = newID
 
 }

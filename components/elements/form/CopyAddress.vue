@@ -8,8 +8,6 @@
         placeholder="บ้านเลขที่"
         v-model="ObjectAddress.No"
         @keyup="handlerChangeFullAddress"
-        validation="required|address_characters"
-        validation-visibility="live"
         autocomplete="off"
       />
     </div>
@@ -66,10 +64,7 @@
         placeholder="จังหวัด"
         @change="handlerChangeProvince"
         :options="province"
-        validation="required"
-        validation-visibility="live"
         v-model="ObjectAddress.ProvinceID"
-        :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
       />
     </div>
     <div class="col-6">
@@ -80,10 +75,7 @@
         placeholder="เขต/อำเภอ"
         :options="addrDistrict"
         @change="handlerChangeDistrict"
-        validation="required"
-        validation-visibility="live"
         v-model="ObjectAddress.DistrictID"
-        :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
       />
     </div>
     <div class="col-6">

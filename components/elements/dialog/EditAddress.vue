@@ -11,8 +11,8 @@
         <div class="card-body">
           <div class="row">
             <p>{{ props.addressType }}</p>
-            <p>{{ props.addressID }}</p>
-            <p>{{ props.addressDefaultID }}</p>
+            <!-- <p>{{ props.addressID }}</p>
+            <p>{{ props.addressDefaultID }}</p> -->
             <RegisterFormProfile v-if="props.addressType=='CURRENT'" :profileData="profileDataArray" />
             <RegisterFormDelivery v-if="props.addressType=='DELIVERY'" :profileData="profileDataArray" />
             <RegisterFormTax v-if="props.addressType=='TAXINVOICE'" :profileData="profileDataArray" />

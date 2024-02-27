@@ -127,13 +127,50 @@ export default () => {
 
     }
 
-    const postGateway = async<T>(url: string, params: any): Promise<IAPIPaymentGatewayResponse<T>> => {
+    const postGateway = async<T>(params: any): Promise<IAPIPaymentGatewayResponse<T>> => {
         const result: IAPIPaymentGatewayResponse<T> =
         {
             message: '',
             status: '',
         }
-        params.URL = url
+        const { data, pending, error, refresh } = await useFetch('/api/gateway', {
+            method: "POST",
+            body: params,
+            onResponse({ request, response }) {
+
+                if (response.status == 200) {
+                    result.status = response._data.status
+                    result.message = response._data.message
+                    result.data = response._data.data
+                }
+            }
+        })
+        return result
+    }
+
+    const postPaymentGateway = async(params: any) => {
+        const result =
+        {
+            message: '',
+            status: '',
+            data: {
+                orderid: '',
+                refno1: '',
+                refno2: '',
+                amount: 0.00,
+                payment_id: '',
+                payment_type: '',
+                endpoint_code: '',
+                payment_channel: '',
+                payment_expired: '',
+                payment_status: '',
+                payment_code: '',
+                payment_date: '',
+                pgc_url: '',
+                payment_url: '',
+                payment_qr: '',
+            }
+        }
         const { data, pending, error, refresh } = await useFetch('/api/gateway', {
             method: "POST",
             body: params,
@@ -230,6 +267,7 @@ export default () => {
         get,
         post,
         postGateway,
+        postPaymentGateway, 
         postDataTable,
         apiRepository
     }

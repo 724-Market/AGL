@@ -326,6 +326,7 @@ const submitOrder = async (formData: any) => {
       let reqGateway: PaymentGatewayRequest;
       if (paymentType == "bill_payment") {
         reqGateway = {
+          URL: "/payment", 
           payment_type: paymentType,
           endpoint_code: "insurance_payment",
           orderid: paymentConfirmRes?.OrderNo ?? "",
@@ -336,6 +337,7 @@ const submitOrder = async (formData: any) => {
         };
       } else {
         reqGateway = {
+          URL: "/payment",
           payment_type: paymentType,
           endpoint_code: "insurance_payment",
           orderid: paymentConfirmRes?.OrderNo ?? "",
@@ -425,6 +427,7 @@ const handleTopupConfirm = async (
     paymentConfirm.value = response.apiResponse.Data[0];
 
     const reqGateway: PaymentGatewayRequest = {
+      URL: "/payment",
       payment_type: "bill_payment",
       endpoint_code: "credit_payment",
       orderid: paymentConfirm.value.CreditOrderNo,

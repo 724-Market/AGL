@@ -49,6 +49,14 @@ export const useStoreUserAuth = defineStore('useStoreUserAuth', {
 
             return this.$state
         },
+        async updateTokenExpire(): Promise<IUserAuth> {
+
+            const date = new Date()
+            date.setSeconds(date.getSeconds()+this.$state.expiresIn)
+            this.$state.issuedDate = date.toISOString()+"+07:00"
+
+            return this.$state
+        },
         checkTokenExpire() {
             if (this.$state.accessToken && this.$state.accessToken != "") {
                 const issued = new Date(this.$state.issuedDate)

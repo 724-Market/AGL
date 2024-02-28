@@ -40,7 +40,26 @@ export default () => {
             return 'icon'
         }
     }
+const getTokenExpire = async(): Promise<string> => {
+    let refreshToken = "";
+    const store = useStoreUserAuth()
+    const checkToken = store.checkTokenExpire()
+    const { AuthenInfo } = storeToRefs(store)
+    if(checkToken==false)
+    {
+        if(AuthenInfo.value)
+        {
+            refreshToken = AuthenInfo.value.refresh_token
+        }
+    }
 
+    return refreshToken
+}
+const updateTokenExpire = async(): Promise<void> => {
+    const store = useStoreUserAuth()
+    store.updateTokenExpire()
+
+}
     const getToken = async (): Promise<string> => {
         let token = ""
         // check token expire
@@ -435,7 +454,9 @@ export default () => {
         getIconFromStatusOrder,
         getCompanyImage,
         getCurrency,
+        getTokenExpire,
         getToken,
+        updateTokenExpire,
         getStepMenuFromUri,
         getPaging,
         formatDate,

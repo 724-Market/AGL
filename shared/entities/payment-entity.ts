@@ -160,6 +160,7 @@ export interface PaymentGetResponse{
 }
 
 export interface PaymentGatewayRequest{
+    URL:string
     payment_type:string
     endpoint_code:string
     orderid:string

@@ -5,24 +5,21 @@
     </figure>
 
     <div class="detail">
-      <h4 class="topic">พ.ร.บ. สำหรับรถยนต์นั่ง{{ packageSelect.PackageResult[0].UseCarName }}</h4>
+      <h4 class="topic">พ.ร.บ. สำหรับ{{ packageSelect.CarTypeName }}{{ packageSelect.PackageResult[0].UseCarName }}</h4>
       <div class="info">
         <span class="price">{{ getCurrency(packageSelect.PackageResult[0].PriceACT) }}</span>
-        <p class="description">ค่าส่งเสริมการขาย {{ getCurrency(packageSelect.PackageResult[0].AgentComDiscount) }} บาท</p>
+        <p class="description">ค่าส่งเสริมการขาย {{ getCurrency(packageSelect.PackageResult[0].AgentComDiscount) }} บาท
+        </p>
       </div>
     </div>
 
     <div class="meta">
       <div class="tags">
-        <span class="badge-bg-success" v-if="packageSelect.IsOnlineActive"
-          ><i class="fa-solid fa-bolt"></i>ได้กรมธรรม์ทันที</span
-        >
-        <span class="badge-bg-orange" v-else
-          ><i class="fa-solid fa-clock-four"></i>ได้กรมธรรม์ 1-3 วันทำการ</span
-        >
-        <span class="badge-secondary" v-if="packageSelect.IsTaxInclude=='1'"
-          ><i class="fa-regular fa-memo-circle-check"></i>พร้อมใบกำกับภาษี</span
-        >
+        <span class="badge-bg-success" v-if="packageSelect.IsOnlineActive"><i
+            class="fa-solid fa-bolt"></i>ได้กรมธรรม์ทันที</span>
+        <span class="badge-bg-orange" v-else><i class="fa-solid fa-clock-four"></i>ได้กรมธรรม์ 1-3 วันทำการ</span>
+        <span class="badge-secondary" v-if="packageSelect.IsTaxInclude"><i
+            class="fa-regular fa-memo-circle-check"></i>พร้อมใบกำกับภาษี</span>
       </div>
     </div>
   </div>
@@ -32,16 +29,15 @@
 import type { IPackageResponse } from '~/shared/entities/packageList-entity';
 
 const props = defineProps({
-  packageSelect:Object,
+  packageSelect: Object,
 
 });
 
 const packageSelect: globalThis.Ref<IPackageResponse | undefined> = ref();
-const onLoad = onMounted(()=>{
+const onLoad = onMounted(() => {
 
-  
-  if(props.packageSelect)
-  {
+
+  if (props.packageSelect) {
     const _packageSelect = props.packageSelect as IPackageResponse
     packageSelect.value = _packageSelect
   }
@@ -59,11 +55,11 @@ const getCurrency = (currency: number): string => {
 };
 
 watch(
-  ()=>props.packageSelect,
-  ()=>{
-    if(props.packageSelect){
+  () => props.packageSelect,
+  () => {
+    if (props.packageSelect) {
       const _packageSelect = props.packageSelect as IPackageResponse
-    packageSelect.value = _packageSelect
+      packageSelect.value = _packageSelect
 
     }
   }

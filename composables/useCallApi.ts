@@ -2,7 +2,7 @@ import type { IAPIResponse, IAPIPaymentGatewayResponse, IDataTableResponse } fro
 import type { WrapperResponse } from "~/shared/entities/wrapper-response"
 
 export default () => {
-    const getResponse = <T>(response: any, params: any): IAPIResponse<T> => {
+    const getResponse = async <T> (response: any, params: any): Promise<IAPIResponse<T>> => {
         const wrapper: WrapperResponse<T> = {
             Status: "",
         }
@@ -15,12 +15,17 @@ export default () => {
             statusMessageType: "",
             apiResponse: wrapper,
         }
+
+        const refreshToken = response._data.renewToken
+        if(refreshToken!="")
+        {
+           await useUtility().updateTokenExpire()
+        }
         if (response.status == 200) {
 
-            let jsonData = response._data
-            if(typeof response._data==="string")
-            {
-                jsonData = JSON.parse(response._data)
+            let jsonData = response._data.data
+            if (typeof jsonData === "string") {
+                jsonData = JSON.parse(jsonData)
             }
 
             if (jsonData.Status == 200) {
@@ -122,13 +127,50 @@ export default () => {
 
     }
 
-    const postGateway = async<T>(url: string, params: any): Promise<IAPIPaymentGatewayResponse<T>> => {
+    const postGateway = async<T>(params: any): Promise<IAPIPaymentGatewayResponse<T>> => {
         const result: IAPIPaymentGatewayResponse<T> =
         {
             message: '',
             status: '',
         }
-        params.URL = url
+        const { data, pending, error, refresh } = await useFetch('/api/gateway', {
+            method: "POST",
+            body: params,
+            onResponse({ request, response }) {
+
+                if (response.status == 200) {
+                    result.status = response._data.status
+                    result.message = response._data.message
+                    result.data = response._data.data
+                }
+            }
+        })
+        return result
+    }
+
+    const postPaymentGateway = async(params: any) => {
+        const result =
+        {
+            message: '',
+            status: '',
+            data: {
+                orderid: '',
+                refno1: '',
+                refno2: '',
+                amount: 0.00,
+                payment_id: '',
+                payment_type: '',
+                endpoint_code: '',
+                payment_channel: '',
+                payment_expired: '',
+                payment_status: '',
+                payment_code: '',
+                payment_date: '',
+                pgc_url: '',
+                payment_url: '',
+                payment_qr: '',
+            }
+        }
         const { data, pending, error, refresh } = await useFetch('/api/gateway', {
             method: "POST",
             body: params,
@@ -152,18 +194,23 @@ export default () => {
             recordsTotal: 0,
             recordsFiltered: 0
         }
+        params.refreshToken = await useUtility().getTokenExpire()
         params.URL = url
         const { data, pending, error, refresh } = await useFetch('/api/aglove', {
             method: "POST",
             body: params,
             onResponse({ request, response }) {
+                if (response._data.renewToken && response._data.renewToken != "") {
+                    useUtility().updateTokenExpire();
+                }
 
                 if (response.status == 200) {
-                    result.status = response._data.status
-                    result.draw = response._data.draw
-                    result.recordsTotal = response._data.recordsTotal
-                    result.recordsFiltered = response._data.recordsFiltered
-                    result.data = response._data.data
+                    const res = response._data.data
+                    result.status = res.status
+                    result.draw = res.draw
+                    result.recordsTotal = res.recordsTotal
+                    result.recordsFiltered = res.recordsFiltered
+                    result.data = res.data
                 }
             }
         })
@@ -190,10 +237,11 @@ export default () => {
         else if (!params.RefreshToken && !url.toLowerCase().includes('/token/get')) { // get token is not refresh token
             // check token expire
             params.Token = await useUtility().getToken()
+            params.refreshToken = await useUtility().getTokenExpire()
         }
 
         params.URL = url
-        if (!method ||( method != "get" && method != "GET")) {
+        if (!method || (method != "get" && method != "GET")) {
 
             const { data, pending, error, refresh } = await useFetch('/api/aglove', {
                 method: method ?? "POST",
@@ -203,8 +251,8 @@ export default () => {
                 }
             })
         }
-        else{
-            const { data, pending, error, refresh } = await useFetch('/api/aglove?url='+ params.URL+"&token="+params.Token, {
+        else {
+            const { data, pending, error, refresh } = await useFetch('/api/aglove?url=' + params.URL + "&token=" + params.Token, {
                 method: method,
                 onResponse({ request, response }) {
                     result = getResponse<T>(response, params)
@@ -219,6 +267,7 @@ export default () => {
         get,
         post,
         postGateway,
+        postPaymentGateway, 
         postDataTable,
         apiRepository
     }

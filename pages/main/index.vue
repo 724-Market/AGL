@@ -9,7 +9,7 @@
 
         <MainStatCards />
 
-        <ElementsUtilitiesPackagesCards />
+        <ElementsUtilitiesPackagesCards :planList="affiliateProductPlanList" @on-select-package="handleSelectPackage" />
 
         <div class="card">
           <div class="card-header">
@@ -98,16 +98,33 @@ const handleCloseModal = async () => {
   isShowModal.value = false
 }
 
-// const serverModal = async (serverCheck: any) => {
-//   resp = serverCheck
-// }
+/////////////////////////////////////////
+// Define emit function from emit events on package component
+const emit = defineEmits(['onSelectPackage'])
 
+// Function to handle select package events
+const handleSelectPackage = (payload: any) => {
+
+  openLoadingDialog(true)
+
+  const { planId, planCode } = payload
+
+  new Promise((r) => setTimeout(r, 3000))
+
+  alert(`Selected: Plan ID - ${planId}, Plan Code - ${planCode}`)
+
+  openLoadingDialog(false)
+}
+
+/////////////////////////////////////////
+// Mounted
 onMounted(async () => {
   openLoadingDialog(true)
   await loadAffiliateProductList()
   openLoadingDialog(false)
 })
 
+/////////////////////////////////////////
 const loadAffiliateProductList = async () => {
 
   const response = await useRepository().affiliate.getAffiliateProductPlanList()
@@ -129,9 +146,9 @@ const loadAffiliateProductList = async () => {
 }
 
 const selectPlan = async (id: string) => {
-  if(id) {
+  if (id) {
     useUtility().getSession('AgentSelectPlan')
-    router.push({ path: '/main/select-plan/'+id })
+    router.push({ path: '/main/select-plan/' + id })
   }
 }
 

@@ -2,14 +2,8 @@
   <div class="accordion" id="accordion-summary" v-if="orderDetail">
     <div class="accordion-item">
       <h3 class="accordion-header">
-        <button
-          class="accordion-button"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#panel-summary-1"
-          aria-expanded="true"
-          aria-controls="panel-summary-1"
-        >
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panel-summary-1"
+          aria-expanded="true" aria-controls="panel-summary-1">
           ข้อมูลผู้เอาประกันภัย
         </button>
       </h3>
@@ -63,14 +57,8 @@
     </div>
     <div class="accordion-item">
       <h3 class="accordion-header">
-        <button
-          class="accordion-button collapsed"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#panel-summary-2"
-          aria-expanded="false"
-          aria-controls="panel-summary-2"
-        >
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#panel-summary-2" aria-expanded="false" aria-controls="panel-summary-2">
           ข้อมูลรถที่ทำประกันภัย
         </button>
       </h3>
@@ -83,9 +71,8 @@
                 {{ orderDetail.CarDetails.CarBrand }} รุ่น
                 {{ orderDetail.CarDetails.CarModel }} รุ่นย่อย
                 {{ orderDetail.CarDetails.SubCarModel ?? "ไม่ทราบ" }} ปี
-                {{ orderDetail.CarDetails.CarYear }} ({{
-                  orderDetail.CarDetails.CarColor
-                }})
+                {{ orderDetail.CarDetails.CarYear }}
+                ({{ orderDetail.CarDetails.CarColor }})
               </p>
             </div>
             <div class="summary-item">
@@ -123,14 +110,8 @@
     </div>
     <div class="accordion-item">
       <h3 class="accordion-header">
-        <button
-          class="accordion-button collapsed"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#panel-summary-3"
-          aria-expanded="false"
-          aria-controls="panel-summary-3"
-        >
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#panel-summary-3" aria-expanded="false" aria-controls="panel-summary-3">
           ข้อมูลประกันภัย
         </button>
       </h3>
@@ -156,10 +137,8 @@
               <h4 class="topic">กรมธรรม์คุ้มครอง</h4>
               <p>
                 {{ getFormatDate(orderDetail.InsureDetails.ActiveStartDate) }} -
-                {{ getFormatDate(orderDetail.InsureDetails.ActiveEndDate) }} ({{
-                  getDayOfYear()
-                }}
-                วัน)
+                {{ getFormatDate(orderDetail.InsureDetails.ActiveEndDate) }}
+                ({{ getDayOfYear() }} วัน)
               </p>
             </div>
 
@@ -172,14 +151,8 @@
     </div>
     <div class="accordion-item" v-if="orderDetail.DeliveryPolicyDetails">
       <h3 class="accordion-header">
-        <button
-          class="accordion-button collapsed"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#panel-summary-4"
-          aria-expanded="false"
-          aria-controls="panel-summary-4"
-        >
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#panel-summary-4" aria-expanded="false" aria-controls="panel-summary-4">
           ข้อมูลจัดส่งกรมธรรม์
         </button>
       </h3>
@@ -220,14 +193,8 @@
     </div>
     <div class="accordion-item" v-if="orderDetail.IsTaxInvoice && orderDetail.TaxInvoiceDetails">
       <h3 class="accordion-header">
-        <button
-          class="accordion-button collapsed"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#panel-summary-5"
-          aria-expanded="false"
-          aria-controls="panel-summary-5"
-        >
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#panel-summary-5" aria-expanded="false" aria-controls="panel-summary-5">
           ข้อมูลจัดส่งใบกำกับภาษี
         </button>
       </h3>
@@ -266,8 +233,8 @@
             <div class="summary-item">
               <h4 class="topic">ชื่อผู้รับ</h4>
               <p v-if="orderDetail.DeliveryTaxInvoiceDetails">
-                {{ orderDetail.DeliveryTaxInvoiceDetails.AddressFirstName
-                }}{{ orderDetail.DeliveryTaxInvoiceDetails.AddressLastName }}
+                {{ orderDetail.DeliveryTaxInvoiceDetails.AddressFirstName }}
+                {{ orderDetail.DeliveryTaxInvoiceDetails.AddressLastName }}
               </p>
               <p v-else>-</p>
             </div>

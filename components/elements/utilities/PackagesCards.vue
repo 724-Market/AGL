@@ -67,8 +67,8 @@
           <p class="package-excerpt">เหมาะและดีที่สุดสำหรับนายหน้าที่ต้องการเครื่องมือที่สมบูรณ์แบบ ปลดทุกข้อจำกัดจัดเต็ม
             Max</p>
           <h5 class="package-name"><span>990 บาท</span><small>/ปี</small></h5>
-          <a href="#" class="btn-secondary btn-action" title="อัปเกรด"><i
-              class="fa-regular fa-rocket-launch fa-beat fa-xs"></i>อัปเกรด</a>
+          <a href="#" class="btn-secondary btn-action" title="อัปเกรดแพ็กเกจ"><i
+              class="fa-regular fa-rocket-launch fa-beat fa-xs"></i>อัปเกรดแพ็กเกจ</a>
           <div class="package-detail">
             <h6 class="topic">รายการสินค้า</h6>
             <ul class="check-list">
@@ -101,7 +101,8 @@
       <div class="pricing-table -card-style">
 
         <template v-for="(item, planIndex) in planList" :key="planIndex">
-          <div :class="['pricing-card', recommendClass(item.Plan.IsRecommend)]">
+          <div :class="['pricing-card', recommendClass(item.Plan.IsRecommend)]" :data-plan-id="item.Plan.ID"
+            :data-plan-code="item.Plan.Code">
 
             <div class="package-header">
               <h4 class="package-title">{{ item.Plan.Title }}</h4>
@@ -111,10 +112,11 @@
             <p class="package-excerpt">{{ item.Plan.Details }}</p>
             <h5 class="package-name"><span>{{ item.Plan.Name }}</span></h5>
 
-            <button v-if="item.Plan.IsRecommend" type="button" class="btn-secondary btn-action" title="อัปเกรด"><i
-                class="fa-regular fa-rocket-launch fa-beat fa-xs"></i>อัปเกรด</button>
-            <button v-else type="button" class="btn-gray btn-action"
-              title="สมัครใช้งานแพ็กเกจนี้">สมัครใช้งานแพ็กเกจนี้</button>
+            <button v-if="item.Plan.IsRecommend" type="button" class="btn-secondary btn-action" title="อัปเกรดแพ็กเกจ"
+              @click="selectPackage(item.Plan.ID, item.Plan.Code)"><i
+                class="fa-regular fa-rocket-launch fa-beat fa-xs"></i>อัปเกรดแพ็กเกจ</button>
+            <button v-else type="button" class="btn-gray btn-action" title="สมัครใช้งานแพ็กเกจนี้"
+              @click="selectPackage(item.Plan.ID, item.Plan.Code)">สมัครใช้งานแพ็กเกจนี้</button>
 
             <div class="package-detail">
               <h6 class="topic">รายการสินค้า</h6>
@@ -138,44 +140,6 @@
           </div>
         </template>
 
-        <!-- <div v-for="(value, key) in affiliateProductPlanList" :key="key">
-              <div><b><u>Title : {{ value.Plan.Title }}</u></b></div>
-              <div>ID : {{ value.Plan.ID }}</div>
-              <div>Code : {{ value.Plan.Code }}</div>
-              <div>Name : {{ value.Plan.Name }}</div>
-              <div>Details : {{ value.Plan.Details }}</div>
-              <div>Price : {{ value.Plan.Price }}</div>
-              <div>PeriodDay : {{ value.Plan.PeriodDay }}</div>
-              <div>PeriodMinute : {{ value.Plan.PeriodMinute }}</div>
-              <div>Sequence : {{ value.Plan.Sequence }}</div>
-              <div>Tier : {{ value.Plan.Tier }}</div>
-              <div>MinModelAgentNo : {{ value.Plan.MinModelAgentNo }}</div>
-              <div>IsMain : {{ value.Plan.IsMain }}</div>
-              <div>IsPublic : {{ value.Plan.IsPublic }}</div>
-              <div>IsActive : {{ value.Plan.IsActive }}</div>
-              <div>IsRecommend : {{ value.Plan.IsRecommend }}</div>
-              <div>IsLicenseRequire : {{ value.Plan.IsLicenseRequire }}</div>
-              <div>IsOneTime : {{ value.Plan.IsOneTime }}</div>
-              <br>
-              <b>Feature</b>
-              <br>
-              <template v-for="(value2, key2) in value.Feature" :key="key2">
-                <li>{{ value2.Name }}</li>
-              </template>
-              <b>Benefit</b>
-              <br>
-              <template v-for="(value3, key3) in value.Benefit" :key="key3">
-                <li>{{ value3.Name }}</li>
-              </template>
-              <br>
-              <b>
-                <button type="button" class="btn-info" @click="selectPlan(value.Plan.ID)">เลือก</button>
-              </b>
-              <br>
-              ------------------------------
-              <br>
-            </div> -->
-
       </div>
 
     </div>
@@ -183,11 +147,20 @@
 </template>
 
 <script setup>
+/////////////////////////////////////////
+// Define emit function to emit events on package
+const emit = defineEmits(['onSelectPackage'])
+
+// Function to emit the 'onSelectPackage' event with payload
+const selectPackage = (planId, planCode) => emit('onSelectPackage', { planId, planCode })
+
+/////////////////////////////////////////
 // Define props for the component
 const props = defineProps({
   planList: Array
 })
 
+/////////////////////////////////////////
 // Compute the class based on the value of Feature IsActive
 const featureClass = (IsActive) => {
   switch (String(IsActive)) {

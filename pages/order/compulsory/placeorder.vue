@@ -293,9 +293,9 @@ const isError = ref(false);
 const messageError = ref("");
 var checkSave: globalThis.Ref<Boolean> = ref(false);
 
-const newAddressDeliveryID = ref(null)
-const newAddressTaxID = ref(null)
-const newTaxDeliveryID = ref(null)
+const newAddressDeliveryID = ref("")
+const newAddressTaxID = ref("")
+const newTaxDeliveryID = ref("")
 
 let values = reactive({});
 
@@ -398,6 +398,7 @@ const onLoad = onMounted(async () => {
         DeliveryMethod2: OrderInfo.value.DeliveryMethod2,
         IsTaxInvoice: OrderInfo.value.IsTaxInvoice
       }
+      console.log("cacheInsureDetail "+cacheInsureDetail.Customer?.IsTaxInvoiceDeliveryAddressSameAsDefault)
       insureDetailCache.value = cacheInsureDetail;
 
       // set cache Data Step3

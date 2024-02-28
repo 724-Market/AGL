@@ -503,7 +503,6 @@ const updateAddress = async (e: string, AddrID: string) => {
         TaxID: address.TaxID
       };
       isNewLabel.value = true
-      await mapAddressData();
       insureFullNewAddress.value = `${newAddressUpdate.value.FirstName} ${newAddressUpdate.value.LastName} 
       ${newAddressUpdate.value.PhoneNumber} ${newAddressUpdate.value.DistrictName} ${newAddressUpdate.value.SubDistrictName}
       ${newAddressUpdate.value.ProvinceName} ${newAddressUpdate.value.postalCode}`
@@ -515,6 +514,9 @@ const updateAddress = async (e: string, AddrID: string) => {
       //await setPostalAddressPolicy(insureFullAddress.value.toString(), insureFullNewAddress.value.toString())
       
     }
+    
+    await mapAddressData();
+    await mapProfileData();
   }
   
   emit('newAddressID', AddrID)

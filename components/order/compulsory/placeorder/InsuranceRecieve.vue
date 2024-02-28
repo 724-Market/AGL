@@ -480,36 +480,43 @@ const updateAddress = async (e: string, AddrID: string) => {
     // Check if the index is valid
     if (index !== -1) {
       // Extract address data and assign to addressDataArray
+      const address = getData.apiResponse.Data[index];
       newAddressUpdate.value = {
-        No: getData.apiResponse.Data[index].No,
-        Moo: getData.apiResponse.Data[index].Moo,
-        Place: getData.apiResponse.Data[index].Place,
-        Building: getData.apiResponse.Data[index].Building,
-        Floor: getData.apiResponse.Data[index].Floor,
-        Alley: getData.apiResponse.Data[index].Alley,
-        Road: getData.apiResponse.Data[index].Road,
-        ProvinceID: getData.apiResponse.Data[index].ProvinceID,
-        DistrictID: getData.apiResponse.Data[index].DistrictID,
-        SubDistrictID: getData.apiResponse.Data[index].SubDistrictID,
-        ZipCode: getData.apiResponse.Data[index].ZipCode,
-        ProvinceName: getData.apiResponse.Data[index].ProvinceName,
-        DistrictName: getData.apiResponse.Data[index].DistrictName,
-        SubDistrictName: getData.apiResponse.Data[index].SubDistrictName,
-        FirstName: getData.apiResponse.Data[index].FirstName,
-        LastName: getData.apiResponse.Data[index].LastName,
-        Name: getData.apiResponse.Data[index].Name,
-        PhoneNumber: getData.apiResponse.Data[index].PhoneNumber,
-        TaxID: getData.apiResponse.Data[index].TaxID
+        No: address.No,
+        Moo: address.Moo,
+        Place: address.Place,
+        Building: address.Building,
+        Floor: address.Floor,
+        Alley: address.Alley,
+        Road: address.Road,
+        ProvinceID: address.ProvinceID,
+        DistrictID: address.DistrictID,
+        SubDistrictID: address.SubDistrictID,
+        postalCode: address.ZipCode,
+        ProvinceName: address.ProvinceName,
+        DistrictName: address.DistrictName,
+        SubDistrictName: address.SubDistrictName,
+        FirstName: address.FirstName,
+        LastName: address.LastName,
+        Name: address.Name,
+        PhoneNumber: address.PhoneNumber,
+        TaxID: address.TaxID
       };
       isNewLabel.value = true
-      await mapAddressData();
       insureFullNewAddress.value = `${newAddressUpdate.value.FirstName} ${newAddressUpdate.value.LastName} 
       ${newAddressUpdate.value.PhoneNumber} ${newAddressUpdate.value.DistrictName} ${newAddressUpdate.value.SubDistrictName}
       ${newAddressUpdate.value.ProvinceName} ${newAddressUpdate.value.postalCode}`
+
+      newAddressObject.value = newAddressUpdate.value
+
+      await handleCheckInsuranceRecieve() 
       
-      await setPostalAddressPolicy(insureFullAddress.value.toString(), insureFullNewAddress.value.toString())
+      //await setPostalAddressPolicy(insureFullAddress.value.toString(), insureFullNewAddress.value.toString())
       
     }
+    
+    await mapAddressData();
+    await mapProfileData();
   }
   
   emit('newAddressID', AddrID)

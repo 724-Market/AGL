@@ -712,7 +712,7 @@ const updateAddress = async (e: string, AddrID: string) => {
           ProvinceID: getData.apiResponse.Data[index].ProvinceID,
           DistrictID: getData.apiResponse.Data[index].DistrictID,
           SubDistrictID: getData.apiResponse.Data[index].SubDistrictID,
-          ZipCode: getData.apiResponse.Data[index].ZipCode,
+          postalCode: getData.apiResponse.Data[index].ZipCode,
           ProvinceName: getData.apiResponse.Data[index].ProvinceName,
           DistrictName: getData.apiResponse.Data[index].DistrictName,
           SubDistrictName: getData.apiResponse.Data[index].SubDistrictName,
@@ -725,7 +725,9 @@ const updateAddress = async (e: string, AddrID: string) => {
 
         newTaxInvoiceFullAddressTemp.value = `${newTaxAddressUpdate.value.FirstName} ${newTaxAddressUpdate.value.LastName} 
         ${newTaxAddressUpdate.value.PhoneNumber} ${newTaxAddressUpdate.value.DistrictName} ${newTaxAddressUpdate.value.SubDistrictName}
-        ${newTaxAddressUpdate.value.ProvinceName} ${newTaxAddressUpdate.value.ZipCode}`
+        ${newTaxAddressUpdate.value.ProvinceName} ${newTaxAddressUpdate.value.postalCode}`
+        insureDetail.value.TaxInvoiceAddress =  newTaxAddressUpdate.value
+        await handlerChangeTaxInvoice()
         emit('newTaxID', AddrID)
 
       } else if (addressType.value == 'TAXINVOICE_DELIVERY'){
@@ -740,7 +742,7 @@ const updateAddress = async (e: string, AddrID: string) => {
           ProvinceID: getData.apiResponse.Data[index].ProvinceID,
           DistrictID: getData.apiResponse.Data[index].DistrictID,
           SubDistrictID: getData.apiResponse.Data[index].SubDistrictID,
-          ZipCode: getData.apiResponse.Data[index].ZipCode,
+          postalCode: getData.apiResponse.Data[index].ZipCode,
           ProvinceName: getData.apiResponse.Data[index].ProvinceName,
           DistrictName: getData.apiResponse.Data[index].DistrictName,
           SubDistrictName: getData.apiResponse.Data[index].SubDistrictName,
@@ -753,13 +755,14 @@ const updateAddress = async (e: string, AddrID: string) => {
 
         newTaxInvoiceDeliveryFullAddressTemp.value = `${newTaxDeliveryAddressUpdate.value.FirstName} ${newTaxDeliveryAddressUpdate.value.LastName} 
         ${newTaxDeliveryAddressUpdate.value.PhoneNumber} ${newTaxDeliveryAddressUpdate.value.DistrictName} ${newTaxDeliveryAddressUpdate.value.SubDistrictName}
-        ${newTaxDeliveryAddressUpdate.value.ProvinceName} ${newTaxDeliveryAddressUpdate.value.ZipCode}`
+        ${newTaxDeliveryAddressUpdate.value.ProvinceName} ${newTaxDeliveryAddressUpdate.value.postalCode}`
+        insureDetail.value.TaxInvoiceDeliveryAddress =  newTaxDeliveryAddressUpdate.value
+        await handlerChangeTaxInvoice()
         emit('newTaxAddressID', AddrID)
       }
       isNewLabel.value = true
       await mapAddressData();
-      await handlerChangeTaxInvoice()
-      await handlerChangeFullLabelAddressTaxInvoice()
+      await mapProfileData();
       
     }
   }

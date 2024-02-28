@@ -293,9 +293,9 @@ const isError = ref(false);
 const messageError = ref("");
 var checkSave: globalThis.Ref<Boolean> = ref(false);
 
-const newAddressDeliveryID = ref("")
-const newAddressTaxID = ref("")
-const newTaxDeliveryID = ref("")
+const newAddressDeliveryID = ref(null)
+const newAddressTaxID = ref(null)
+const newTaxDeliveryID = ref(null)
 
 let values = reactive({});
 
@@ -480,10 +480,10 @@ const onLoad = onMounted(async () => {
 // Submit form event
 const submitOrder = async (formData: any) => {
   isLoading.value = true;
-  if(checkSave.value || OrderInfo.value?.OrderNo != null) {
+  //if(checkSave.value || OrderInfo.value?.OrderNo != null) {
+  if(checkSave.value) {
     let orderNo = OrderInfo.value?.OrderNo;
     if (insuranceRecieve.value?.ShippingPolicy == "postal") {
-      console.log("Placeorder insuranceRecieve"+insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefaul)
       if (!insuranceRecieve.value?.PostalDelivary?.IsDeliveryAddressSameAsDefault) {
         insureDetail.value.DeliveryAddress =
           insuranceRecieve.value?.PostalDelivary?.DeliveryAddress;
@@ -495,55 +495,68 @@ const submitOrder = async (formData: any) => {
     let DeliveryMethod = getDeliveryMethod();
     let DeliveryMethod2 = null;
     if (DeliveryMethod[1].MethodType != "") {
-      console.log("Placeorder DeliveryMethod[1].MethodType"+DeliveryMethod[1].MethodType)
       DeliveryMethod2 = DeliveryMethod[1];
     }
 
     console.log("insureDetail.value check", insureDetail.value);
 
     let customerOld = OrderInfo.value.Customer
-    if(insureDetail.value.DefaultAddress?.AddressID) {
-      if(insureDetail.value.DeliveryAddress?.ProvinceID) {
-        if(customerOld?.DefaultAddress?.AddressID == customerOld?.DeliveryAddress?.AddressID && !insureDetail.value.IsDeliveryAddressSameAsDefault) {
-          console.log("DeliveryAddress?.AddressID "+newAddressDeliveryID.value)
-          insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value
-        } else { 
-          insureDetail.value.DeliveryAddress.AddressID = customerOld?.DeliveryAddress?.AddressID as string
-        }
+    // Old version waiting to test all new function
+    // if(insureDetail.value.DefaultAddress?.AddressID) {
+    //   if(insureDetail.value.DeliveryAddress?.ProvinceID) {
+    //     if(customerOld?.DefaultAddress?.AddressID == customerOld?.DeliveryAddress?.AddressID && !insureDetail.value.IsDeliveryAddressSameAsDefault) {
+    //       console.log("DeliveryAddress?.AddressID "+newAddressDeliveryID.value)
+    //       insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value
+    //     } else { 
+    //       insureDetail.value.DeliveryAddress.AddressID = customerOld?.DeliveryAddress?.AddressID as string
+    //     }
 
-        // if(customerOld?.DefaultAddress?.AddressID == insureDetail.value.DeliveryAddress.AddressID && insureDetail.value.IsDeliveryAddressSameAsDefault==false)
-        // {
-        //   insureDetail.value.DeliveryAddress.AddressID=""
-        // }
+    //     // if(customerOld?.DefaultAddress?.AddressID == insureDetail.value.DeliveryAddress.AddressID && insureDetail.value.IsDeliveryAddressSameAsDefault==false)
+    //     // {
+    //     //   insureDetail.value.DeliveryAddress.AddressID=""
+    //     // }
+    //   }
+
+    //   if(insureDetail.value.TaxInvoiceAddress?.ProvinceID) {
+    //     if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceAddress?.AddressID && !insureDetail.value.IsTaxInvoiceAddressSameAsDefault){ 
+    //       console.log("TaxInvoiceAddress?.AddressID "+newAddressTaxID.value)
+    //       insureDetail.value.TaxInvoiceAddress.AddressID = newAddressTaxID.value
+    //     } else {
+    //       insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.TaxInvoiceAddress?.AddressID ?? "" as string
+    //     }
+
+    //     // if(customerOld?.TaxInvoiceAddress?.AddressID == insureDetail.value.TaxInvoiceAddress.AddressID && insureDetail.value.IsTaxInvoiceAddressSameAsDefault==false)
+    //     // {
+    //     //   insureDetail.value.TaxInvoiceAddress.AddressID=""
+    //     // }
+    //   }
+      
+    //   if(insureDetail.value.TaxInvoiceDeliveryAddress?.ProvinceID) {
+    //     if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceDeliveryAddress?.AddressID 
+    //     && !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault) {
+    //       console.log("TaxInvoiceDeliveryAddress.AddressID "+newTaxDeliveryID.value)
+    //       insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = newTaxDeliveryID.value
+    //     } else {
+    //       console.log("Else TaxInvoiceDeliveryAddress.AddressID")
+    //       insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.TaxInvoiceDeliveryAddress?.AddressID ?? "" as string
+    //     }
+
+    //     // if(customerOld?.TaxInvoiceDeliveryAddress?.AddressID == insureDetail.value.TaxInvoiceDeliveryAddress.AddressID && insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault==false)
+    //     // {
+    //     //   insureDetail.value.TaxInvoiceDeliveryAddress.AddressID=""
+    //     // }
+    //   }
+    // }
+
+    if (insureDetail.value.DefaultAddress?.AddressID) {
+      if (!insureDetail.value.IsDeliveryAddressSameAsDefault && insureDetail.value.DeliveryAddress != null) {
+        insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value ?? insureDetail.value.DeliveryAddress.AddressID;
       }
-
-      if(insureDetail.value.TaxInvoiceAddress?.ProvinceID) {
-        if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceAddress?.AddressID && !insureDetail.value.IsTaxInvoiceAddressSameAsDefault){ 
-          console.log("TaxInvoiceAddress?.AddressID "+newAddressTaxID.value)
-          insureDetail.value.TaxInvoiceAddress.AddressID = newAddressTaxID.value
-        } else {
-          insureDetail.value.TaxInvoiceAddress.AddressID = customerOld?.TaxInvoiceAddress?.AddressID ?? "" as string
-        }
-
-        // if(customerOld?.TaxInvoiceAddress?.AddressID == insureDetail.value.TaxInvoiceAddress.AddressID && insureDetail.value.IsTaxInvoiceAddressSameAsDefault==false)
-        // {
-        //   insureDetail.value.TaxInvoiceAddress.AddressID=""
-        // }
+      if (!insureDetail.value.IsTaxInvoiceAddressSameAsDefault && insureDetail.value.TaxInvoiceAddress != null) {
+        insureDetail.value.TaxInvoiceAddress.AddressID = newAddressTaxID.value ?? insureDetail.value.TaxInvoiceAddress.AddressID;
       }
-
-      if(insureDetail.value.TaxInvoiceDeliveryAddress?.ProvinceID) {
-        if(customerOld?.DefaultAddress?.AddressID == customerOld?.TaxInvoiceDeliveryAddress?.AddressID 
-        && !insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault) {
-          console.log("TaxInvoiceDeliveryAddress.AddressID "+newTaxDeliveryID.value)
-          insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = newTaxDeliveryID.value
-        } else {
-          insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = customerOld?.TaxInvoiceDeliveryAddress?.AddressID ?? "" as string
-        }
-
-        // if(customerOld?.TaxInvoiceDeliveryAddress?.AddressID == insureDetail.value.TaxInvoiceDeliveryAddress.AddressID && insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault==false)
-        // {
-        //   insureDetail.value.TaxInvoiceDeliveryAddress.AddressID=""
-        // }
+      if (!insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault && insureDetail.value.TaxInvoiceDeliveryAddress != null) {
+        insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = newTaxDeliveryID.value ?? insureDetail.value.TaxInvoiceDeliveryAddress.AddressID;
       }
     }
 

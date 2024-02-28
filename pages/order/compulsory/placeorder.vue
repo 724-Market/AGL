@@ -550,14 +550,14 @@ const submitOrder = async (formData: any) => {
     // }
 
     if (insureDetail.value.DefaultAddress?.AddressID) {
-      if (!insureDetail.value.IsDeliveryAddressSameAsDefault && insureDetail.value.DeliveryAddress != null) {
-        insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value ?? insureDetail.value.DeliveryAddress.AddressID;
+      if (!insureDetail.value.IsDeliveryAddressSameAsDefault && insureDetail.value.DeliveryAddress == null) {
+        insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value;
       }
-      if (!insureDetail.value.IsTaxInvoiceAddressSameAsDefault && insureDetail.value.TaxInvoiceAddress != null) {
-        insureDetail.value.TaxInvoiceAddress.AddressID = newAddressTaxID.value ?? insureDetail.value.TaxInvoiceAddress.AddressID;
+      if (!insureDetail.value.IsTaxInvoiceAddressSameAsDefault && insureDetail.value.TaxInvoiceAddress == null) {
+        insureDetail.value.TaxInvoiceAddress.AddressID = newAddressTaxID.value;
       }
-      if (!insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault && insureDetail.value.TaxInvoiceDeliveryAddress != null) {
-        insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = newTaxDeliveryID.value ?? insureDetail.value.TaxInvoiceDeliveryAddress.AddressID;
+      if (!insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault && insureDetail.value.TaxInvoiceDeliveryAddress == null) {
+        insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = newTaxDeliveryID.value;
       }
     }
 
@@ -760,19 +760,16 @@ const getDeliveryMethod = (): DeliveryMethod[] => {
 };
 
 const updateNewAddressID = async (newID: string) => {
-  console.log("updateNewAddressID "+newID)
   newAddressDeliveryID.value = newID
 
 }
 
 const updateNewTaxID = async (newID: string) => {
-  console.log("updateNewTaxID "+newID)
   newAddressTaxID.value = newID
 
 }
 
 const updateNewTaxAddressID = async (newID: string) => {
-  console.log("updateNewTaxAddressID "+newID)
   newTaxDeliveryID.value = newID
 
 }

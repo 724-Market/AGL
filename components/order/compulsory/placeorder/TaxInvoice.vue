@@ -74,7 +74,7 @@
 
                   <aside class="new-request-tax-address inner-section"  
                     v-if="addressIncludeTaxType == 'addnew' 
-                    && props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID == null" 
+                    && props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID == null" 
                   >
                     <h4>แก้ไขใบกำกับภาษี</h4>
 
@@ -171,7 +171,7 @@
                   </aside>
                   <aside class="new-request-tax-address inner-section"  
                     v-if="addressIncludeTaxType == 'addnew' 
-                    && props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID != null" 
+                    && props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID != null" 
                   >
                   
                   <div class="row" v-show="false">
@@ -314,7 +314,7 @@
                   </div>
                   <aside
                     v-if="addressDeliveryTaxType == 'addnew' 
-                    && props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID == null"
+                    && props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID == null"
                     class="new-shipped-tax-address inner-section"
                   >
                     <h4>ที่อยู่จัดส่งใหม่</h4>
@@ -337,7 +337,7 @@
                     
                   </aside>
                   <aside v-if="addressDeliveryTaxType == 'addnew' 
-                  && props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID != null">
+                  && props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID != null">
                   <div class="row" v-show="false">
                       <ElementsFormCopyNewAddress
                         element-key="taxinvoice_delivery"
@@ -566,8 +566,6 @@ const cacheDefaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref()
 const onLoad = onMounted(async () => {
   //console.log(props.cacheOrderRequest)
   insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value 
-  console.log("taxInvoiceAddress.value"+taxInvoiceAddress.value.AddressID)
-  console.log("insureDetail.value.TaxInvoiceAddress.AddressID"+insureDetail.value.TaxInvoiceAddress.AddressID)
   if (props.cacheOrderRequest) {
     setCacheData()
   }

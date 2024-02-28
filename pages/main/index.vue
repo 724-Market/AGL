@@ -9,7 +9,7 @@
 
         <MainStatCards />
 
-        <ElementsUtilitiesPackagesCards />
+        <ElementsUtilitiesPackagesCards :planList="affiliateProductPlanList" />
 
         <div class="card">
           <div class="card-header">
@@ -129,9 +129,9 @@ const loadAffiliateProductList = async () => {
 }
 
 const selectPlan = async (id: string) => {
-  if(id) {
+  if (id) {
     useUtility().getSession('AgentSelectPlan')
-    router.push({ path: '/main/select-plan/'+id })
+    router.push({ path: '/main/select-plan/' + id })
   }
 }
 

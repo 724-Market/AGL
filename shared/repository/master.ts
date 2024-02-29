@@ -10,13 +10,16 @@ class MasterModule {
 
   provinceText(): SelectOption[] {
     const prov = provinceData as SelectOption[]
+    prov.sort((a, b) => a.label.localeCompare(b.label, 'th', { sensitivity: 'base' }));
+
     return  prov
   }
   districtText(req: DistrictReq): SelectOption[] {
     const filter = districtData.filter(x=>x.province==req.ProvinceID) as SelectOption[]
+    filter.sort((a, b) => a.label.localeCompare(b.label, 'th', { sensitivity: 'base' }));
     return filter
   }
-   subDistrictText(req: SubDistrictReq): SelectOption[] {
+  subDistrictText(req: SubDistrictReq): SelectOption[] {
     const filter = districtData.filter(x=>x.value==req.DistrictID).map(x=>x.subDistricts.map(sub=>{
       const options: SelectOption = {
         label: `${sub.label} (${sub.postalCode})`,
@@ -25,6 +28,7 @@ class MasterModule {
       };
       return options
     }))
+    filter[0].sort((a, b) => a.label.localeCompare(b.label, 'th', { sensitivity: 'base' }));
     return filter[0]
   }
 

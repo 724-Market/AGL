@@ -110,10 +110,10 @@ const create_order = async () => {
 
   if (resultCheck.status == 'pass') {
 
-    console.log(response)
+    //console.log(response)
 
     const reqGateway = {
-      URL: '',
+      URL: "/payment",
       payment_type: 'bill_payment',
       endpoint_code: "affiliate_payment",
       orderid: response.apiResponse.Data.OrderNo,
@@ -127,7 +127,7 @@ const create_order = async () => {
 
     if(responseGateway.status == "0000") {
       // console.log(responseGateway)
-      router.push({ path: '/payment/affiliate-qrcode/' + response.apiResponse.Data.PaymentNo })
+      router.push({ path: '/payment/affiliate/qrcode-' + response.apiResponse.Data.PaymentNo })
     } 
     else {
       alert(responseGateway.message)

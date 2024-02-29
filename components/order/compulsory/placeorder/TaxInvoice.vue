@@ -79,6 +79,7 @@
                       props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID ==
                         null
                     "
+
                   >
                     <h4>แก้ไขใบกำกับภาษี</h4>
 
@@ -171,6 +172,7 @@
                       />
                     </div>
                   </aside>
+
                   <aside
                     class="new-request-tax-address inner-section"
                     v-if="
@@ -178,6 +180,7 @@
                       props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID !=
                         null
                     "
+
                   >
                     <div class="row" v-show="false">
                       <div class="col-sm-8 col-lg-4">
@@ -326,11 +329,13 @@
                     />
                   </div>
                   <aside
+
                     v-if="
                       addressDeliveryTaxType == 'addnew' &&
                       props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress
                         ?.AddressID == null
                     "
+
                     class="new-shipped-tax-address inner-section"
                   >
                     <h4>ที่อยู่จัดส่งใหม่</h4>
@@ -350,6 +355,7 @@
                       />
                     </div>
                   </aside>
+
                   <aside
                     v-if="
                       addressDeliveryTaxType == 'addnew' &&
@@ -358,6 +364,7 @@
                     "
                   >
                     <div class="row" v-show="false">
+
                       <ElementsFormCopyNewAddress
                         element-key="taxinvoice_delivery"
                         :addr-province="addrProvince2"
@@ -616,9 +623,9 @@ const insureDetail: globalThis.Ref<CustomerOrderRequest> = ref({})
 const cacheDefaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref()
 const onLoad = onMounted(async () => {
   //console.log(props.cacheOrderRequest)
-  insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
-  console.log("taxInvoiceAddress.value"+taxInvoiceAddress.value.AddressID)
-  console.log("insureDetail.value.TaxInvoiceAddress.AddressID"+insureDetail.value.TaxInvoiceAddress.AddressID)
+
+  insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value 
+
   if (props.cacheOrderRequest) {
     setCacheData()
   }

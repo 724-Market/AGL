@@ -72,9 +72,14 @@
                     />
                   </div>
 
-                  <aside class="new-request-tax-address inner-section"  
-                    v-if="addressIncludeTaxType == 'addnew' 
-                    && props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID == null" 
+                  <aside
+                    class="new-request-tax-address inner-section"
+                    v-if="
+                      addressIncludeTaxType == 'addnew' &&
+                      props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID ==
+                        null
+                    "
+
                   >
                     <h4>แก้ไขใบกำกับภาษี</h4>
 
@@ -166,15 +171,18 @@
                         @change-full-address="handlerChangeFullAddressTaxInvoice"
                       />
                     </div>
-
-                    
                   </aside>
-                  <aside class="new-request-tax-address inner-section"  
-                    v-if="addressIncludeTaxType == 'addnew' 
-                    && props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID != null" 
+
+                  <aside
+                    class="new-request-tax-address inner-section"
+                    v-if="
+                      addressIncludeTaxType == 'addnew' &&
+                      props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID !=
+                        null
+                    "
+
                   >
-                  
-                  <div class="row" v-show="false">
+                    <div class="row" v-show="false">
                       <div class="col-sm-8 col-lg-4">
                         <FormKit
                           type="text"
@@ -235,9 +243,17 @@
                       />
                     </div>
 
-                    <FormKit type="button" v-show="props.cacheOrderRequest?.OrderNo != null" label="แก้ไขใบกำกับ" name="tax-address" :classes="{
-                      input: 'btn-primary',
-                      }" @click="openDialogAddress" :disabled="isLoading" :loading="isLoading" 
+                    <FormKit
+                      type="button"
+                      v-show="props.cacheOrderRequest?.OrderNo != null"
+                      label="แก้ไขใบกำกับ"
+                      name="tax-address"
+                      :classes="{
+                        input: 'btn-primary',
+                      }"
+                      @click="openDialogAddress"
+                      :disabled="isLoading"
+                      :loading="isLoading"
                     />
                   </aside>
                 </section>
@@ -313,8 +329,13 @@
                     />
                   </div>
                   <aside
-                    v-if="addressDeliveryTaxType == 'addnew' 
-                    && props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID == null"
+
+                    v-if="
+                      addressDeliveryTaxType == 'addnew' &&
+                      props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress
+                        ?.AddressID == null
+                    "
+
                     class="new-shipped-tax-address inner-section"
                   >
                     <h4>ที่อยู่จัดส่งใหม่</h4>
@@ -333,12 +354,17 @@
                         @change-full-address="handlerChangeFullAddressTaxInvoiceDelivery"
                       />
                     </div>
-
-                    
                   </aside>
-                  <aside v-if="addressDeliveryTaxType == 'addnew' 
-                  && props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID != null">
-                  <div class="row" v-show="false">
+
+                  <aside
+                    v-if="
+                      addressDeliveryTaxType == 'addnew' &&
+                      props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress
+                        ?.AddressID != null
+                    "
+                  >
+                    <div class="row" v-show="false">
+
                       <ElementsFormCopyNewAddress
                         element-key="taxinvoice_delivery"
                         :addr-province="addrProvince2"
@@ -353,12 +379,20 @@
                         @change-full-address="handlerChangeFullAddressTaxInvoiceDelivery"
                       />
                     </div>
-                    
-                    <FormKit type="button" v-show="props.cacheOrderRequest?.OrderNo != null" label="แก้ไขที่อยู่จัดส่งใบกำกับ" name="tax-delivery" :classes="{
-                      input: 'btn-primary',
-                    }" @click="openDialogDelivery" :disabled="isLoading" :loading="isLoading" />
-                  </aside>
 
+                    <FormKit
+                      type="button"
+                      v-show="props.cacheOrderRequest?.OrderNo != null"
+                      label="แก้ไขที่อยู่จัดส่งใบกำกับ"
+                      name="tax-delivery"
+                      :classes="{
+                        input: 'btn-primary',
+                      }"
+                      @click="openDialogDelivery"
+                      :disabled="isLoading"
+                      :loading="isLoading"
+                    />
+                  </aside>
                 </section>
               </div>
             </div>
@@ -367,23 +401,47 @@
       </div>
     </div>
   </div>
-  
-  <ElementsDialogEditAddress v-if="isEditTaxAddress" :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress.Type"
-    :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID" 
+
+  <ElementsDialogEditAddress
+    v-if="isEditTaxAddress"
+    :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress.Type"
+    :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID"
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"
-    :address-data-array="isNewLabel ? newTaxAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceAddress" 
-    :profile-data-array="isNewLabel ? newTaxAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceAddress" 
-    :show="isEditTaxAddress" @close-address="closeModalAddress"
-    @on-edit-address="updateAddress"></ElementsDialogEditAddress> 
-  <ElementsDialogEditAddress v-if="isEditTaxDelivery" :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress.Type"
-    :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID" 
+    :address-data-array="
+      isNewLabel
+        ? newTaxAddressUpdate
+        : props.cacheOrderRequest?.Customer?.TaxInvoiceAddress
+    "
+    :profile-data-array="
+      isNewLabel
+        ? newTaxAddressUpdate
+        : props.cacheOrderRequest?.Customer?.TaxInvoiceAddress
+    "
+    :show="isEditTaxAddress"
+    @close-address="closeModalAddress"
+    @on-edit-address="updateAddress"
+  ></ElementsDialogEditAddress>
+  <ElementsDialogEditAddress
+    v-if="isEditTaxDelivery"
+    :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress.Type"
+    :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID"
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"
-    :address-data-array="isNewLabel ? newTaxDeliveryAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress" 
-    :profile-data-array="isNewLabel ? newTaxDeliveryAddressUpdate : props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress" 
-    :show="isEditTaxDelivery" @close-address="closeModalDelivery"
-    @on-edit-address="updateAddress"></ElementsDialogEditAddress> 
+    :address-data-array="
+      isNewLabel
+        ? newTaxDeliveryAddressUpdate
+        : props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress
+    "
+    :profile-data-array="
+      isNewLabel
+        ? newTaxDeliveryAddressUpdate
+        : props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress
+    "
+    :show="isEditTaxDelivery"
+    @close-address="closeModalDelivery"
+    @on-edit-address="updateAddress"
+  ></ElementsDialogEditAddress>
 </template>
 <script setup lang="ts">
 import type { CustomerOrderRequest, DefaultAddress, PlaceOrderRequest, TaxInvoiceAddress, TaxInvoiceDeliveryAddress } from "~/shared/entities/placeorder-entity"
@@ -565,7 +623,9 @@ const insureDetail: globalThis.Ref<CustomerOrderRequest> = ref({})
 const cacheDefaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref()
 const onLoad = onMounted(async () => {
   //console.log(props.cacheOrderRequest)
+
   insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value 
+
   if (props.cacheOrderRequest) {
     setCacheData()
   }
@@ -721,7 +781,7 @@ const updateAddress = async (e: string, AddrID: string) => {
           TaxID: getData.apiResponse.Data[index].TaxID
         };
 
-        newTaxInvoiceFullAddressTemp.value = `${newTaxAddressUpdate.value.FirstName} ${newTaxAddressUpdate.value.LastName} 
+        newTaxInvoiceFullAddressTemp.value = `${newTaxAddressUpdate.value.FirstName} ${newTaxAddressUpdate.value.LastName}
         ${newTaxAddressUpdate.value.PhoneNumber} ${newTaxAddressUpdate.value.DistrictName} ${newTaxAddressUpdate.value.SubDistrictName}
         ${newTaxAddressUpdate.value.ProvinceName} ${newTaxAddressUpdate.value.postalCode}`
         insureDetail.value.TaxInvoiceAddress =  newTaxAddressUpdate.value
@@ -751,7 +811,7 @@ const updateAddress = async (e: string, AddrID: string) => {
           TaxID: getData.apiResponse.Data[index].TaxID
         };
 
-        newTaxInvoiceDeliveryFullAddressTemp.value = `${newTaxDeliveryAddressUpdate.value.FirstName} ${newTaxDeliveryAddressUpdate.value.LastName} 
+        newTaxInvoiceDeliveryFullAddressTemp.value = `${newTaxDeliveryAddressUpdate.value.FirstName} ${newTaxDeliveryAddressUpdate.value.LastName}
         ${newTaxDeliveryAddressUpdate.value.PhoneNumber} ${newTaxDeliveryAddressUpdate.value.DistrictName} ${newTaxDeliveryAddressUpdate.value.SubDistrictName}
         ${newTaxDeliveryAddressUpdate.value.ProvinceName} ${newTaxDeliveryAddressUpdate.value.postalCode}`
         insureDetail.value.TaxInvoiceDeliveryAddress =  newTaxDeliveryAddressUpdate.value
@@ -761,7 +821,7 @@ const updateAddress = async (e: string, AddrID: string) => {
       isNewLabel.value = true
       await mapAddressData();
       await mapProfileData();
-      
+
     }
   }
   //emit('newTaxAddressID', AddrID)
@@ -1013,7 +1073,7 @@ watch(
   addressIncludeTaxType,
   () => {
     if (addressIncludeTaxType.value) {
-      
+
       handlerChangeTaxInvoice()
     }
 
@@ -1023,9 +1083,11 @@ watch(
   addressDeliveryTaxType,
   () => {
     if (addressDeliveryTaxType.value) {
-      if(addressDeliveryTaxType.value == 'addnew' )
-      {
-        cacheDefaultAddress.value = {
+      if(addressDeliveryTaxType.value != 'addnew' ){
+        handlerChangeTaxInvoice()
+      }
+      else{
+  cacheDefaultAddress.value = {
           AddressID:"",
           AddressLine1:"",
           AddressLine2:"",
@@ -1051,10 +1113,10 @@ watch(
           SubDistrictID:"",
           TaxID:"",
           Type:""
-        } 
+        }
       }
 
-      handlerChangeTaxInvoice()
+
     }
 
   }

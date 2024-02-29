@@ -19,7 +19,7 @@ export default () => {
         const refreshToken = response._data.renewToken
         if(refreshToken!="")
         {
-           await useUtility().updateTokenExpire()
+           //await useUtility().updateTokenExpire()
         }
         if (response.status == 200) {
 
@@ -201,7 +201,7 @@ export default () => {
             body: params,
             onResponse({ request, response }) {
                 if (response._data.renewToken && response._data.renewToken != "") {
-                    useUtility().updateTokenExpire();
+                    //useUtility().updateTokenExpire();
                 }
 
                 if (response.status == 200) {

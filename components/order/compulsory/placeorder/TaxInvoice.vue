@@ -544,7 +544,7 @@ interface LabelAddressData {
   Moo?: string
   Place?: string
   Building?: string
-  Type: string
+  Type?: string
   Floor?: string
   Alley?: string
   Road?: string
@@ -759,26 +759,27 @@ const updateAddress = async (e: string, AddrID: string) => {
     if (index !== -1) {
       if(addressType.value == 'TAXINVOICE'){
         // Extract address data and assign to addressDataArray
+        const taxAddress = getData.apiResponse.Data[index];
         newTaxAddressUpdate.value = {
-          No: getData.apiResponse.Data[index].No,
-          Moo: getData.apiResponse.Data[index].Moo,
-          Place: getData.apiResponse.Data[index].Place,
-          Building: getData.apiResponse.Data[index].Building,
-          Floor: getData.apiResponse.Data[index].Floor,
-          Alley: getData.apiResponse.Data[index].Alley,
-          Road: getData.apiResponse.Data[index].Road,
-          ProvinceID: getData.apiResponse.Data[index].ProvinceID,
-          DistrictID: getData.apiResponse.Data[index].DistrictID,
-          SubDistrictID: getData.apiResponse.Data[index].SubDistrictID,
-          postalCode: getData.apiResponse.Data[index].ZipCode,
-          ProvinceName: getData.apiResponse.Data[index].ProvinceName,
-          DistrictName: getData.apiResponse.Data[index].DistrictName,
-          SubDistrictName: getData.apiResponse.Data[index].SubDistrictName,
-          FirstName: getData.apiResponse.Data[index].FirstName,
-          LastName: getData.apiResponse.Data[index].LastName,
-          Name: getData.apiResponse.Data[index].Name,
-          PhoneNumber: getData.apiResponse.Data[index].PhoneNumber,
-          TaxID: getData.apiResponse.Data[index].TaxID
+          No: taxAddress.No,
+          Moo: taxAddress.Moo,
+          Place: taxAddress.Place,
+          Building: taxAddress.Building,
+          Floor: taxAddress.Floor,
+          Alley: taxAddress.Alley,
+          Road: taxAddress.Road,
+          ProvinceID: taxAddress.ProvinceID,
+          DistrictID: taxAddress.DistrictID,
+          SubDistrictID: taxAddress.SubDistrictID,
+          postalCode: taxAddress.ZipCode,
+          ProvinceName: taxAddress.ProvinceName,
+          DistrictName: taxAddress.DistrictName,
+          SubDistrictName: taxAddress.SubDistrictName,
+          FirstName: taxAddress.FirstName,
+          LastName: taxAddress.LastName,
+          Name: taxAddress.Name,
+          PhoneNumber: taxAddress.PhoneNumber,
+          TaxID: taxAddress.TaxID
         };
 
         newTaxInvoiceFullAddressTemp.value = `${newTaxAddressUpdate.value.FirstName} ${newTaxAddressUpdate.value.LastName}
@@ -789,32 +790,33 @@ const updateAddress = async (e: string, AddrID: string) => {
         emit('newTaxID', AddrID)
 
       } else if (addressType.value == 'TAXINVOICE_DELIVERY'){
+        const taxDelivery = getData.apiResponse.Data[index];
         newTaxDeliveryAddressUpdate.value = {
-          No: getData.apiResponse.Data[index].No,
-          Moo: getData.apiResponse.Data[index].Moo,
-          Place: getData.apiResponse.Data[index].Place,
-          Building: getData.apiResponse.Data[index].Building,
-          Floor: getData.apiResponse.Data[index].Floor,
-          Alley: getData.apiResponse.Data[index].Alley,
-          Road: getData.apiResponse.Data[index].Road,
-          ProvinceID: getData.apiResponse.Data[index].ProvinceID,
-          DistrictID: getData.apiResponse.Data[index].DistrictID,
-          SubDistrictID: getData.apiResponse.Data[index].SubDistrictID,
-          postalCode: getData.apiResponse.Data[index].ZipCode,
-          ProvinceName: getData.apiResponse.Data[index].ProvinceName,
-          DistrictName: getData.apiResponse.Data[index].DistrictName,
-          SubDistrictName: getData.apiResponse.Data[index].SubDistrictName,
-          FirstName: getData.apiResponse.Data[index].FirstName,
-          LastName: getData.apiResponse.Data[index].LastName,
-          Name: getData.apiResponse.Data[index].Name,
-          PhoneNumber: getData.apiResponse.Data[index].PhoneNumber,
-          TaxID: getData.apiResponse.Data[index].TaxID
+          No: taxDelivery.No,
+          Moo: taxDelivery.Moo,
+          Place: taxDelivery.Place,
+          Building: taxDelivery.Building,
+          Floor: taxDelivery.Floor,
+          Alley: taxDelivery.Alley,
+          Road: taxDelivery.Road,
+          ProvinceID: taxDelivery.ProvinceID,
+          DistrictID: taxDelivery.DistrictID,
+          SubDistrictID: taxDelivery.SubDistrictID,
+          postalCode: taxDelivery.ZipCode,
+          ProvinceName: taxDelivery.ProvinceName,
+          DistrictName: taxDelivery.DistrictName,
+          SubDistrictName: taxDelivery.SubDistrictName,
+          FirstName: taxDelivery.FirstName,
+          LastName: taxDelivery.LastName,
+          Name: taxDelivery.Name,
+          PhoneNumber: taxDelivery.PhoneNumber,
+          TaxID: taxDelivery.TaxID
         };
 
         newTaxInvoiceDeliveryFullAddressTemp.value = `${newTaxDeliveryAddressUpdate.value.FirstName} ${newTaxDeliveryAddressUpdate.value.LastName}
         ${newTaxDeliveryAddressUpdate.value.PhoneNumber} ${newTaxDeliveryAddressUpdate.value.DistrictName} ${newTaxDeliveryAddressUpdate.value.SubDistrictName}
         ${newTaxDeliveryAddressUpdate.value.ProvinceName} ${newTaxDeliveryAddressUpdate.value.postalCode}`
-        insureDetail.value.TaxInvoiceDeliveryAddress =  newTaxDeliveryAddressUpdate.value
+        insureDetail.value.TaxInvoiceDeliveryAddress = newTaxDeliveryAddressUpdate.value
         await handlerChangeTaxInvoice()
         emit('newTaxAddressID', AddrID)
       }

@@ -347,7 +347,7 @@ const updateTokenExpire = async(): Promise<void> => {
                 CarTypeCode: reqInfo.CarType,
                 EffectiveDate: EffectiveDate,
                 EffectiveType: reqInfo.EffectiveType,
-                ExpireDate: ExpireDate,
+                ExpireDate: reqInfo.ExpireDate,
                 SubCarModelID: reqInfo.SubCarModel.split("|")[0],
                 UseCarCode: reqInfo.CarUse,
                 Paging: paging.value,
@@ -355,7 +355,7 @@ const updateTokenExpire = async(): Promise<void> => {
             const packageList = await store.getPackageList(request)
             const packageSelect = packageList.Data?.find(
                 (o) => o.CompanyCode == order.Package.CompanyCode
-            ) as IPackageResponse
+            ) as IPackageResponse;
             packageSelect.Price = order.InsureDetails.Total
             packageSelect.PackageResult[0].PriceACT = order.InsureDetails.Total
             packageSelect.PackageResult[0].AgentComDiscount = order.InsureDetails.ComValue

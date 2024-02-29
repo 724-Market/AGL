@@ -816,7 +816,7 @@ const updateAddress = async (e: string, AddrID: string) => {
         newTaxInvoiceDeliveryFullAddressTemp.value = `${newTaxDeliveryAddressUpdate.value.FirstName} ${newTaxDeliveryAddressUpdate.value.LastName}
         ${newTaxDeliveryAddressUpdate.value.PhoneNumber} ${newTaxDeliveryAddressUpdate.value.DistrictName} ${newTaxDeliveryAddressUpdate.value.SubDistrictName}
         ${newTaxDeliveryAddressUpdate.value.ProvinceName} ${newTaxDeliveryAddressUpdate.value.postalCode}`
-        insureDetail.value.TaxInvoiceDeliveryAddress =  newTaxDeliveryAddressUpdate.value
+        insureDetail.value.TaxInvoiceDeliveryAddress = newTaxDeliveryAddressUpdate.value
         await handlerChangeTaxInvoice()
         emit('newTaxAddressID', AddrID)
       }

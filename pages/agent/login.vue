@@ -28,9 +28,9 @@
 
                   <div :class="statusMessageTypeQ1" v-if="statusMessageQ1">{{ statusMessageQ1 }}</div>
 
-                  <ElementsFormAgentCode label="รหัสสมาชิก AM00000003" id="username" name="username" />
+                  <ElementsFormAgentCode label="รหัสสมาชิก" id="username" name="username" />
 
-                  <ElementsFormPasswordWithForgot label="รหัสผ่าน Qwerty1234@" id="password" name="password" />
+                  <ElementsFormPasswordWithForgot label="รหัสผ่าน" id="password" name="password" />
 
                 </div>
                 <div class="option" v-else>
@@ -170,9 +170,9 @@ const getAgentProfile = async () => {
   const response = await useRepository().agent.getAgentProfile()
   const resultCheck = useUtility().responseCheck(response)
 
-  if(resultCheck.status === 'pass') {
+  if (resultCheck.status === 'pass') {
     const AgentInfo = useUtility().getSession('AgentInfo')
-    if(Array.isArray(response.apiResponse.Data)) {
+    if (Array.isArray(response.apiResponse.Data)) {
       AgentInfo.AgentProfile = response.apiResponse.Data[0]
     }
     useUtility().setSession('AgentInfo', AgentInfo)
@@ -185,7 +185,7 @@ const getPlanProduct = async () => {
   const response = await useRepository().agent.getPlanProduct()
   const resultCheck = useUtility().responseCheck(response)
 
-  if(resultCheck.status === 'pass') {
+  if (resultCheck.status === 'pass') {
     const AgentInfo = useUtility().getSession('AgentInfo')
     AgentInfo.PlanProduct = response.apiResponse.Data
     useUtility().setSession('AgentInfo', AgentInfo)

@@ -332,8 +332,7 @@
 
                     v-if="
                       addressDeliveryTaxType == 'addnew' &&
-                      props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress
-                        ?.AddressID == null
+                      props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID == null
                     "
 
                     class="new-shipped-tax-address inner-section"
@@ -358,10 +357,8 @@
 
                   <aside
                     v-if="
-                      addressDeliveryTaxType == 'addnew' &&
-                      props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress
-                        ?.AddressID != null
-                    "
+                      addressDeliveryTaxType == 'addnew' 
+                      && props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID != null"
                   >
                     <div class="row" v-show="false">
 
@@ -404,7 +401,7 @@
 
   <ElementsDialogEditAddress
     v-if="isEditTaxAddress"
-    :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress.Type"
+    :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Type"
     :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID"
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"
@@ -424,7 +421,7 @@
   ></ElementsDialogEditAddress>
   <ElementsDialogEditAddress
     v-if="isEditTaxDelivery"
-    :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress.Type"
+    :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.Type"
     :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID"
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"

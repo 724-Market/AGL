@@ -199,6 +199,7 @@ const submitSurvey = async (formData: any) => {
     }
     else if (resultCheck.status === 'server-error') {
       serverModal(resultCheck)
+      openLoadingDialog(false)
     }
 
   }

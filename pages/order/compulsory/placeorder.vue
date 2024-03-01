@@ -479,13 +479,13 @@ const submitOrder = async (formData: any) => {
     // }
 
     if (insureDetail.value.DefaultAddress?.AddressID) {
-      if (!insureDetail.value.IsDeliveryAddressSameAsDefault && insureDetail.value.DeliveryAddress == null) {
+      if (!insureDetail.value.IsDeliveryAddressSameAsDefault && insureDetail.value.DeliveryAddress != null) {
         insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value ?? insureDetail.value.DeliveryAddress.AddressID;
       }
-      if (!insureDetail.value.IsTaxInvoiceAddressSameAsDefault && insureDetail.value.TaxInvoiceAddress == null) {
+      if (!insureDetail.value.IsTaxInvoiceAddressSameAsDefault && insureDetail.value.TaxInvoiceAddress != null) {
         insureDetail.value.TaxInvoiceAddress.AddressID = newAddressTaxID.value ?? insureDetail.value.TaxInvoiceAddress.AddressID;
       }
-      if (!insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault && insureDetail.value.TaxInvoiceDeliveryAddress == null) {
+      if (!insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault && insureDetail.value.TaxInvoiceDeliveryAddress != null) {
         insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = newTaxDeliveryID.value ?? insureDetail.value.TaxInvoiceDeliveryAddress.AddressID;
       }
     }

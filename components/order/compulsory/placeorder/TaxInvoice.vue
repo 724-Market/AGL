@@ -76,7 +76,7 @@
                     class="new-request-tax-address inner-section"
                     v-if="
                       addressIncludeTaxType == 'addnew' &&
-                      props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID ==
+                      props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID ==
                         null
                     "
 
@@ -177,9 +177,7 @@
                     class="new-request-tax-address inner-section"
                     v-if="
                       addressIncludeTaxType == 'addnew' &&
-                      props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID !=
-                        null
-                    "
+                      props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID != null"
 
                   >
                     <div class="row" v-show="false">
@@ -332,9 +330,7 @@
 
                     v-if="
                       addressDeliveryTaxType == 'addnew' &&
-                      props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress
-                        ?.AddressID == null
-                    "
+                      props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID == null"
 
                     class="new-shipped-tax-address inner-section"
                   >
@@ -359,9 +355,7 @@
                   <aside
                     v-if="
                       addressDeliveryTaxType == 'addnew' &&
-                      props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress
-                        ?.AddressID != null
-                    "
+                      props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID != null"
                   >
                     <div class="row" v-show="false">
 

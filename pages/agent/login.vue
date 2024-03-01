@@ -93,7 +93,15 @@ const loadingProps = ref({})
 const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = false) => {
   loadingProps.value = useUtility().createLoadingProps(isShowLoading, showLogo, showText)
 }
-
+const setCookie = (name: string, value: string, days: number) => {
+  let expires = "";
+  if (days) {
+    const date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+};
 /////////////////////////////////////////
 // Submit page
 const submitLogin = async (formData: any) => {
@@ -117,6 +125,10 @@ const submitLogin = async (formData: any) => {
     if (data && data.value) {
 
       if (data.value.Status == '200') {
+        const auth = data.value.Data
+         // Setting a cookie
+         setCookie("access_token", auth?.access_token ?? "", 1);
+         setCookie("refresh_token", auth?.refresh_token ?? "", 1);
 
         await goNext()
 

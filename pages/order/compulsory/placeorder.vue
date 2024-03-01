@@ -40,7 +40,8 @@
           <OrderCompulsoryPlaceorderTaxInvoice v-if="packageSelect &&
             prefix.length > 0 &&
             delivery.length > 0 &&
-            addrProvinceForTax.length > 0
+            addrProvinceForTax.length > 0 &&
+            insuranceRecieve 
             " @change-province="handlerChangeProvinceForTax" @change-district="handlerChangeDistrictForTax"
             @change-sub-district="handlerChangeSubDistrictForTax" @change-province2="handlerChangeProvinceForTax2"
             @change-district2="handlerChangeDistrictForTax2" @change-sub-district2="handlerChangeSubDistrictForTax2"

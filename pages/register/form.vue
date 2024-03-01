@@ -173,7 +173,7 @@ const submitRegister = async (formData: any) => {
 
   if (registerType.value === 'agent') {
 
-    if (addressDataArray.value.Province) {
+    if (addressDataArray.value.ProvinceID) {
 
       const registerAgentReq = {
         AgentCode: regAgentAgentCode,
@@ -181,7 +181,39 @@ const submitRegister = async (formData: any) => {
         FirstName: formData.firstname,
         LastName: formData.lastname,
         ReferralID: regReferralID,
-        TemporaryPhone: formData.phonenumber
+        TemporaryPhone: formData.phonenumber, 
+        Address: {
+          AddressID: "", 
+          ReferenceID: "",
+          ReferenceType: "",
+          ProvinceID: addressDataArray.value.ProvinceID,
+          DistrictID: addressDataArray.value.DistrictID,
+          SubDistrictID: addressDataArray.value.SubDistrictID,
+          ZipCode: addressDataArray.value.postalCode,
+          TaxID: "",
+          FirstName: formData.firstname,
+          LastName: formData.lastname,
+          PhoneNumber: formData.phonenumber,
+          Email: "",
+          Name: "",
+          Type: "",
+          AddressLine1: "",
+          AddressLine2: "",
+          AddressText: "",
+          No: addressDataArray.value.No,
+          Moo: addressDataArray.value.Moo,
+          Place: addressDataArray.value.Place,
+          Building: addressDataArray.value.Building,
+          Floor: addressDataArray.value.Floor,
+          Room: "",
+          Branch: "",
+          Alley: addressDataArray.value.Alley,
+          Road: addressDataArray.value.Road,
+        }, 
+        CertificateLicense: {
+          No: "9000000000",
+          ExpireDate: "2025-12-31"
+        }
       }
 
       const response = await useRepository().agent.registerAgent(registerAgentReq)
@@ -202,6 +234,7 @@ const submitRegister = async (formData: any) => {
       }
       else if (resultCheck.status === 'server-error') {
         serverModal(resultCheck)
+        openLoadingDialog(false)
       }
 
     }

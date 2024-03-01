@@ -480,13 +480,13 @@ const submitOrder = async (formData: any) => {
 
     if (insureDetail.value.DefaultAddress?.AddressID) {
       if (!insureDetail.value.IsDeliveryAddressSameAsDefault && insureDetail.value.DeliveryAddress != null) {
-        insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value ?? insureDetail.value.DeliveryAddress.AddressID;
+        insureDetail.value.DeliveryAddress.AddressID = newAddressDeliveryID.value != null && newAddressDeliveryID.value != '' ? newAddressDeliveryID.value : insureDetail.value.DeliveryAddress.AddressID;
       }
       if (!insureDetail.value.IsTaxInvoiceAddressSameAsDefault && insureDetail.value.TaxInvoiceAddress != null) {
-        insureDetail.value.TaxInvoiceAddress.AddressID = newAddressTaxID.value ?? insureDetail.value.TaxInvoiceAddress.AddressID;
+        insureDetail.value.TaxInvoiceAddress.AddressID = newAddressTaxID.value != null && newAddressTaxID.value != '' ? newAddressTaxID.value : insureDetail.value.TaxInvoiceAddress.AddressID;
       }
       if (!insureDetail.value.IsTaxInvoiceDeliveryAddressSameAsDefault && insureDetail.value.TaxInvoiceDeliveryAddress != null) {
-        insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = newTaxDeliveryID.value ?? insureDetail.value.TaxInvoiceDeliveryAddress.AddressID;
+        insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = newTaxDeliveryID.value != null && newTaxDeliveryID.value != '' ? newTaxDeliveryID.value : insureDetail.value.TaxInvoiceDeliveryAddress.AddressID;
       }
     }
     

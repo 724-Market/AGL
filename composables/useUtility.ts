@@ -55,11 +55,6 @@ const getTokenExpire = async(): Promise<string> => {
 
     return refreshToken
 }
-const updateTokenExpire = async(): Promise<void> => {
-    const store = useStoreUserAuth()
-    store.updateTokenExpire()
-
-}
     const getToken = async (): Promise<string> => {
         let token = ""
         // check token expire
@@ -456,7 +451,6 @@ const updateTokenExpire = async(): Promise<void> => {
         getCurrency,
         getTokenExpire,
         getToken,
-        updateTokenExpire,
         getStepMenuFromUri,
         getPaging,
         formatDate,

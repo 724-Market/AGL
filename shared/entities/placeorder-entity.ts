@@ -139,6 +139,9 @@ export interface TaxInvoiceAddress {
   ProvinceID: string
   DistrictID: string
   SubDistrictID: string
+  ProvinceName: string
+  DistrictName: string
+  SubDistrictName: string
   TaxID: string
   Prefix?:string
   FirstName: string

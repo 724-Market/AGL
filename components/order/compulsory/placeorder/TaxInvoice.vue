@@ -398,9 +398,10 @@
 
   <ElementsDialogEditAddress
     v-if="isEditTaxAddress"
-    :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress.Type"
+    :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Type"
     :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID"
-    :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID"
+    :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID 
+    ?? props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"
     :address-data-array="
       isNewLabel
@@ -418,9 +419,10 @@
   ></ElementsDialogEditAddress>
   <ElementsDialogEditAddress
     v-if="isEditTaxDelivery"
-    :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress.Type"
+    :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.Type"
     :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID"
-    :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID"
+    :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID 
+    ?? props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"
     :address-data-array="
       isNewLabel

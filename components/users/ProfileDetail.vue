@@ -112,8 +112,7 @@
           </div>
           <div class="col-md-6">
             <FormKit type="email" label="อีเมล" name="Email" :value="props.userDetails?.Email"
-              placeholder="ตัวอย่าง abc@email.com" validation="required|email" :validation-messages="{
-                required: 'กรุณาใส่อีเมล',
+              placeholder="ตัวอย่าง abc@email.com" validation="email" :validation-messages="{
                 email: 'รูปแบบอีเมลไม่ถูกต้อง'
               }" autocomplete="off" />
           </div>

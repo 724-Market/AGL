@@ -84,7 +84,7 @@
                         <ElementsFormIdCard label="เลขบัตรประชาชน" name="idCard" v-model="personProfile.PersonalID" />
                       </div>
                       <div class="col-6">
-                        <ElementsFormPhoneNumber autocomplete="off"  name="PhoneNumber" v-model="personProfile.PhoneNumber"
+                        <ElementsFormPhoneNumber autocomplete="off" label="เบอร์โทรศัพท์"  name="PhoneNumber" v-model="personProfile.PhoneNumber"
                           @change="handlerChangePersonalProfile"></ElementsFormPhoneNumber>
                       </div>
                       <div class="col-6">

@@ -1,4 +1,4 @@
-import { getCookie, setCookie } from 'h3'
+import { getCookie } from 'h3'
 
 interface DecodedToken {
     exp: number;
@@ -7,16 +7,10 @@ interface DecodedToken {
 export default defineEventHandler(async (event) => {
     const { res } = event;
 
-    // Construct a cookie string
-    const cookieValue = 'your_cookie_value';
-    const maxAge = 60 * 60 * 24 * 1; // 1 week in seconds
-    const cookieString = `testCookie=${cookieValue}; Max-Age=${maxAge}; Path=/;`;
 
-    // Set the cookie in the response header
-    res.setHeader('Set-Cookie', cookieString);
     const url = getRequestURL(event)
 
-    console.log('middleware url: ' + url.pathname)
+    //console.log('middleware url: ' + url.pathname)
 
     if (url.pathname.includes('/api/')) {
         const req = await readBody(event)

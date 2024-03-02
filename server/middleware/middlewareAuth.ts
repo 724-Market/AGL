@@ -7,13 +7,13 @@ interface DecodedToken {
 export default defineEventHandler(async (event) => {
     const { res } = event;
 
-  // Construct a cookie string
-  const cookieValue = 'your_cookie_value';
-  const maxAge = 60 * 60 * 24 * 1; // 1 week in seconds
-  const cookieString = `testCookie=${cookieValue}; Max-Age=${maxAge}; Path=/;`;
+    // Construct a cookie string
+    const cookieValue = 'your_cookie_value';
+    const maxAge = 60 * 60 * 24 * 1; // 1 week in seconds
+    const cookieString = `testCookie=${cookieValue}; Max-Age=${maxAge}; Path=/;`;
 
-  // Set the cookie in the response header
-  res.setHeader('Set-Cookie', cookieString);
+    // Set the cookie in the response header
+    res.setHeader('Set-Cookie', cookieString);
     const url = getRequestURL(event)
 
     console.log('middleware url: ' + url.pathname)
@@ -33,14 +33,15 @@ export default defineEventHandler(async (event) => {
 
             const accessToken = getCookie(event, 'access_token');
             const refresh_token = getCookie(event, 'refresh_token');
-            console.log(accessToken, refresh_token)
             // Redirect to login if no access or refresh token
             if (!accessToken || !refresh_token) {
                 //sendRedirect(event, '/login');
                 return;
             }
             else {
+
                 // If access token is expired but refresh token is not, try to get a new access token
+                
                 if (isTokenExpired(accessToken)) {
                     try {
                         const req = {
@@ -50,19 +51,24 @@ export default defineEventHandler(async (event) => {
                         const response = await fetch(config.public.BaseUrl + baseurl, {
                             method: "POST",
                             headers: {
-                                Authorization: accessToken != "" ? "Bearer " + accessToken : ""
+                                'Content-Type': 'application/json',
+                                'Authorization': accessToken != "" ? "Bearer " + accessToken : ""
                             },
                             body: JSON.stringify(req)
                         })
                         if (response.ok) {
-                            const data = await response.json();
-                            console.log('data.access_token', data.access_token)
-                            console.log('data.refresh_token', data.refresh_token)
-                            const cookieToken = `access_token=${data.access_token}; Max-Age=${maxAge}; Path=/;`;
-                            const cookieRefreshToken = `refresh_token=${data.refresh_token}; Max-Age=${maxAge}; Path=/;`;
-                            // Set the cookie in the response header
-                            res.setHeader('Set-Cookie', [cookieToken,cookieRefreshToken]);
-                            
+                             const json = await response.json();
+                            const data = json.Data
+                            // console.log('data',data)
+                            // console.log('data.access_token', data.access_token)
+                            // console.log('data.refresh_token', data.refresh_token)
+                            if (data.access_token && data.refresh_token) {
+                                const cookieToken = `access_token=${data.access_token}; Max-Age=${maxAge}; Path=/;`;
+                                const cookieRefreshToken = `refresh_token=${data.refresh_token}; Max-Age=${maxAge}; Path=/;`;
+                                // Set the cookie in the response header
+                                res.setHeader('Set-Cookie', [cookieToken, cookieRefreshToken]);
+                            }
+
                         }
 
 

@@ -16,14 +16,9 @@ export default () => {
             apiResponse: wrapper,
         }
 
-        const refreshToken = response._data.renewToken
-        if(refreshToken!="")
-        {
-           //await useUtility().updateTokenExpire()
-        }
         if (response.status == 200) {
 
-            let jsonData = response._data.data
+            let jsonData = response._data
             if (typeof jsonData === "string") {
                 jsonData = JSON.parse(jsonData)
             }
@@ -179,7 +174,7 @@ export default () => {
                 if (response.status == 200) {
                     result.status = response._data.status
                     result.message = response._data.message
-                    result.data = response._data.data
+                    result.data = response._data
                 }
             }
         })
@@ -194,18 +189,15 @@ export default () => {
             recordsTotal: 0,
             recordsFiltered: 0
         }
-        params.refreshToken = await useUtility().getTokenExpire()
+        //params.refreshToken = await useUtility().getTokenExpire()
         params.URL = url
         const { data, pending, error, refresh } = await useFetch('/api/aglove', {
             method: "POST",
             body: params,
             onResponse({ request, response }) {
-                if (response._data.renewToken && response._data.renewToken != "") {
-                    //useUtility().updateTokenExpire();
-                }
 
                 if (response.status == 200) {
-                    const res = response._data.data
+                    const res = response._data
                     result.status = res.status
                     result.draw = res.draw
                     result.recordsTotal = res.recordsTotal
@@ -231,13 +223,11 @@ export default () => {
             apiResponse: wrapper
         }
 
-        if (params.Token2) {
-            params.Token = params.Token2
-        }
-        else if (!params.RefreshToken && !url.toLowerCase().includes('/token/get')) { // get token is not refresh token
+        
+        if (!params.RefreshToken && !url.toLowerCase().includes('/token/get')) { // get token is not refresh token
             // check token expire
-            params.Token = await useUtility().getToken()
-            params.refreshToken = await useUtility().getTokenExpire()
+            //params.Token = await useUtility().getToken()
+            //params.refreshToken = await useUtility().getTokenExpire()
         }
 
         params.URL = url

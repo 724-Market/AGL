@@ -84,14 +84,8 @@
                         <ElementsFormIdCard label="เลขบัตรประชาชน" name="idCard" v-model="personProfile.PersonalID" />
                       </div>
                       <div class="col-6">
-                        <FormKit type="text" label="หมายเลขโทรศัพท์" name="PhoneNumber" maxlength="10"
-                          placeholder="098765XXXX" v-model="personProfile.PhoneNumber"
-                          @change="handlerChangePersonalProfile" validation="required|+length:10|number"
-                          :validation-messages="{
-                            required: 'กรุณาใส่ข้อมูล',
-                            length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 10 ตัว',
-                            number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
-                          }" autocomplete="off" />
+                        <ElementsFormPhoneNumber autocomplete="off" label="เบอร์โทรศัพท์"  name="PhoneNumber" v-model="personProfile.PhoneNumber"
+                          @change="handlerChangePersonalProfile"></ElementsFormPhoneNumber>
                       </div>
                       <div class="col-6">
                         <FormKit type="email" label="อีเมล" name="Email" placeholder="xxxxxx@email.com"
@@ -164,13 +158,9 @@
                           @change="handlerChangePersonalProfile" />
                       </div>
                       <div class="col-6">
-                        <FormKit type="text" label="Phone Number" name="PhoneNumber" placeholder="098765XXXX"
-                          validation="required|+length:10|number" maxlength="10" :validation-messages="{
-                            required: 'กรุณาใส่ข้อมูล',
-                            length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 10 ตัว',
-                            number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
-                          }" autocomplete="off" v-model="personProfile.PhoneNumber"
-                          @change="handlerChangePersonalProfile" />
+                        <ElementsFormPhoneNumber autocomplete="off" v-model="personProfile.PhoneNumber"
+                          @change="handlerChangePersonalProfile"></ElementsFormPhoneNumber>
+                       
                       </div>
                       <div class="col-6">
                         <FormKit type="email" label="Email" name="Email" placeholder="xxxxxx@email.com"

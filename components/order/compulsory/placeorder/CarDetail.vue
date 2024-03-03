@@ -24,9 +24,7 @@
               <div class="form-placeorder">
                 <div class="row">
                   <div class="col">
-                    <label for="CarLicense">
-                      ทะเบียนรถ 
-                    </label>
+                    <label for="CarLicense"> ทะเบียนรถ </label>
                     <FormKit
                       type="text"
                       id="CarLicense"
@@ -143,7 +141,7 @@
                       help="รองรับไฟล์นามสกุล pdf, jpg, png เท่านั้น"
                       v-model="CarLicenseFileText"
                       @change="handleFileChange"
-                      :src="base64FileString"
+                      
                       :validation="
                         SubCarModel == 'unknown' || SubCarModel == 'other'
                           ? 'required'
@@ -152,10 +150,17 @@
                       :validation-messages="{ required: 'กรุณาอัปโหลดไฟล์เอกสาร' }"
                     />
                   </div>
-                  <div v-if="FileName != '-' && Base64File != ''" class="d-flex justify-content-end">
+                  <div
+                    v-if="FileName != '-' && Base64File != ''"
+                    class="d-flex justify-content-end"
+                  >
                     <div class="m-1">
-                      <button type="button" class="btn btn-warning" @click="handleDowloadFile">
-                        {{FileName}}
+                      <button
+                        type="button"
+                        class="btn btn-warning"
+                        @click="handleDowloadFile"
+                      >
+                        {{ FileName }}
                       </button>
                     </div>
                   </div>
@@ -218,6 +223,7 @@ var LicenseFileID: string = ""
 
 var FileName: string = "-"
 var Base64File: string = ""
+var FileNameList = ref([]);
 
 const onLoad = onMounted(async () => {
   if(props.carProvince)
@@ -237,7 +243,7 @@ const onLoad = onMounted(async () => {
   if(carDetailCache.value){
     carLicenseText.value = carDetailCache.value.License
     carProvinceText.value = carDetailCache.value.LicenseProvinceID
-    carLicenseClassifierText.value = carDetailCache.value.IsRedLicense 
+    carLicenseClassifierText.value = carDetailCache.value.IsRedLicense
     carColorText.value = carDetailCache.value.ColorID
     carBodyNumberText.value = carDetailCache.value.BodyNo
     carEngineNumberText.value = carDetailCache.value.EngineNo
@@ -286,7 +292,9 @@ const handleFileChange = async (event: any) => {
   isLoading.value = true;
   let file = event.target.files[0]
   let base64FileString = await convertFileToBase64(file)
-  let uploadFileReq: UploadFileRequest = {
+  if(base64FileString && base64FileString!="")
+  {
+    let uploadFileReq: UploadFileRequest = {
     Base64: base64FileString,
     FileNameWithExtension: file.name.toString()
   }
@@ -299,11 +307,15 @@ const handleFileChange = async (event: any) => {
     // messageError.value = response.apiResponse.ErrorMessage ?? "";
   }
   await handleCheckCarDetail()
+  }
+
   isLoading.value = false;
 }
 
 const convertFileToBase64 = async (file: File): Promise<string> => {
-  return new Promise<string>((resolve, reject) => {
+  if(file)
+  {
+    return new Promise<string>((resolve, reject) => {
     const reader = new FileReader()
 
     reader.onload = () => {
@@ -315,9 +327,17 @@ const convertFileToBase64 = async (file: File): Promise<string> => {
     reader.onerror = (error) => {
       reject(error);
     }
+    if(file)
+    {
+      reader.readAsDataURL(file)
+    }
 
-    reader.readAsDataURL(file)
   })
+  }
+  else{
+    return ""
+  }
+
 }
 
 const getFile = async (fileId: string) => {
@@ -417,7 +437,7 @@ watch(
 
       carProvinceText.value = carDetailCache.value.LicenseProvinceID
 
-      carLicenseClassifierText.value = carDetailCache.value.IsRedLicense 
+      carLicenseClassifierText.value = carDetailCache.value.IsRedLicense
       carLicenseClassifierValue = carDetailCache.value.IsRedLicense
 
       carColorText.value = carDetailCache.value.ColorID
@@ -431,7 +451,7 @@ watch(
       CarLicenseFileText.value = ''
       LicenseFileID = carDetailCache.value.LicenseFileID
       if(LicenseFileID != ''){
-        
+
         getFile(LicenseFileID);
       }
 

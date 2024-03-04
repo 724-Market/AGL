@@ -14,7 +14,7 @@
       </div>
 
       <div class="stat-info">
-        <template v-if="usersLimitRes?.CurrentCount && usersLimitRes?.CurrentCount < usersLimitRes?.MaxCount">
+        <template v-if="usersLimitRes?.CurrentCount < usersLimitRes?.MaxCount">
           <NuxtLink class="btn-secondary" to="/users/create">
             <i class="fa-solid fa-user-plus"></i>เพิ่มผู้ช่วย
           </NuxtLink>

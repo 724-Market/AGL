@@ -102,12 +102,12 @@ const getTokenExpire = async(): Promise<string> => {
 
         if (typeof mobileNumber === 'string' && /^\d{10}$/.test(mobileNumber)) {
             // Extract the parts of the mobile number
-            const prefix = mobileNumber.slice(0, 2);
+            const prefix = mobileNumber.slice(0, 3);
             const middlePart = mobileNumber.slice(2, 5);
             const lastPart = mobileNumber.slice(8);
 
             // Format the mobile number
-            const formattedNumber = `${prefix}-XXX-X${lastPart}`;
+            const formattedNumber = `${prefix}-XXX-XX${lastPart}`;
             return formattedNumber;
         } else {
             console.error('Invalid mobile number format');

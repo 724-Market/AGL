@@ -110,6 +110,9 @@ export interface DeliveryAddress {
   ProvinceID: string
   DistrictID: string
   SubDistrictID: string
+  ProvinceName: string
+  DistrictName: string
+  SubDistrictName: string
   TaxID: string
   FirstName: string
   LastName: string

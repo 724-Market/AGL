@@ -19,6 +19,7 @@
             @change-province="handlerChangeProvinceForInsured" @change-district="handlerChangeDistrictForInsured"
             @change-sub-district="handlerChangeSubDistrictForInsured" @change-customer-type="handlerChangeCustomerType"
             @change-full-address="handlerChangeFullAddress" @change-insure-detail="handlerChangeInsureDetail"
+            @change-default-address="handlerDefaultAddress"
             :customer-id="OrderInfo.Customer?.PersonProfile?.CustomerID" :prefix="prefix" :nationality="nationality"
             :addr-province="addrProvinceForInsured" :addr-district="addrDistrictForInsured"
             :addr-sub-district="addrSubDistrictForInsured" :addr-zip-code="addrZipCodeForInsured"
@@ -1024,6 +1025,9 @@ const handlerChangeSubDistrictForTax2 = async (e: string) => {
 //     isLoading.value = false;
 //   }
 // };
+const handlerDefaultAddress = async (labelDefaultAddress: string) => {
+  insureFullAddress.value = labelDefaultAddress
+};
 const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) => {
   if (ObjectAddress) {
     defaultAddress.value = ObjectAddress;

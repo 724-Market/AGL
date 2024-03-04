@@ -144,12 +144,13 @@ const submitSetPassword = async (formData: any) => {
       regCodeReference.value = ''
       regToken.value = ''
       regReferenceID.value = ''
-      
+
       modalRedirectPath.value = '/agent'
       resultCheck.modalType = 'success'
       resultCheck.modalTitle = 'ยินดีต้อนรับสมาชิกใหม่'
       resultCheck.modalText = 'การลงทะเบียนสำเร็จ เราจะพาท่านไปหน้าเข้าสู่ระบบ'
       serverModal(resultCheck)
+      openLoadingDialog(false)
 
     }
     else if (resultCheck.status === 'error') {
@@ -167,6 +168,7 @@ const submitSetPassword = async (formData: any) => {
   }
   else if (registerType.value === 'member') {
 
+    openLoadingDialog(false)
     isShowModal.value = true
     modalType.value = 'warning'
     modalTitle.value = 'ยังไม่เปิดลงทะเบียนสมาชิกทั่วไป'

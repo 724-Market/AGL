@@ -107,7 +107,7 @@ const emit = defineEmits(['onCloseModal'])
 const submitSetPassword = async (formData: any) => {
   openLoadingDialog(true)
 
-  console.log(formData)
+  // console.log(formData)
 
   const formRequest = {
     password: formData.password,

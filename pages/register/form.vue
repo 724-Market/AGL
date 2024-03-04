@@ -27,11 +27,8 @@
 
                 <ElementsFormPhoneNumber label="หมายเลขโทรศัพท์ (ที่รับ OTP ได้)" name="phonenumber" id="phonenumber" />
 
-                <ElementsFormAddressInfo :addressData="addressDataArray" />
-
-                <FormKit type="button" label="เพิ่มที่อยู่" name="register-submit" :classes="{
-                  input: 'btn-primary',
-                }" @click="openDialogAddress" :disabled="isLoading" :loading="isLoading" />
+                <ElementsFormAddressInfo :addressData="addressDataArray"
+                  :addressDataNotValidation="addressDataNotValidation" @click="openDialogAddress" />
 
               </div>
 
@@ -67,8 +64,8 @@
     <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
       :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
 
-    <ElementsDialogAddress :addressData="addressDataArray" :isOpenDialogAddress="isOpenDialogAddress" @on-close-address="closeModalAddress"
-      @on-save-address="saveAddress" />
+    <ElementsDialogAddress :addressData="addressDataArray" :isOpenDialogAddress="isOpenDialogAddress"
+      @on-close-address="closeModalAddress" @on-save-address="saveAddress" />
 
   </NuxtLayout>
 </template>
@@ -79,9 +76,11 @@ interface AddressData {
   No?: string
   Moo?: string
   Place?: string
+  Room?: string
   Building?: string
   Floor?: string
   Alley?: string
+  Branch?: string
   Road?: string
   ProvinceID?: string
   DistrictID?: string
@@ -109,6 +108,8 @@ definePageMeta({
 
 // Define import
 import { getNode } from '@formkit/core'
+
+const addressDataNotValidation = ref(false)
 
 /////////////////////////////////////////
 // Define router and route
@@ -181,9 +182,9 @@ const submitRegister = async (formData: any) => {
         FirstName: formData.firstname,
         LastName: formData.lastname,
         ReferralID: regReferralID,
-        TemporaryPhone: formData.phonenumber, 
+        TemporaryPhone: formData.phonenumber,
         Address: {
-          AddressID: "", 
+          AddressID: "",
           ReferenceID: "",
           ReferenceType: "",
           ProvinceID: addressDataArray.value.ProvinceID,
@@ -205,11 +206,11 @@ const submitRegister = async (formData: any) => {
           Place: addressDataArray.value.Place,
           Building: addressDataArray.value.Building,
           Floor: addressDataArray.value.Floor,
-          Room: "",
-          Branch: "",
+          Room: addressDataArray.value.Room,
+          Branch: addressDataArray.value.Branch,
           Alley: addressDataArray.value.Alley,
           Road: addressDataArray.value.Road,
-        }, 
+        },
         CertificateLicense: {
           No: "9000000000",
           ExpireDate: "2025-12-31"
@@ -239,17 +240,20 @@ const submitRegister = async (formData: any) => {
 
     }
     else {
+      openLoadingDialog(false)
       isShowModal.value = true
       modalType.value = 'warning'
-      modalTitle.value = 'กรุณาระบุที่อยู่'
+      modalTitle.value = 'กรุณาใส่ที่อยู่'
       modalText.value = ''
       modalButton.value = 'ตกลง'
-      openLoadingDialog(false)
+
+      addressDataNotValidation.value = true
     }
 
   }
   else if (registerType.value === 'member') {
 
+    openLoadingDialog(false)
     isShowModal.value = true
     modalType.value = 'warning'
     modalTitle.value = 'ยังไม่เปิดลงทะเบียนสมาชิกทั่วไป'
@@ -268,7 +272,6 @@ const goNext = async () => {
 
 /////////////////////////////////////////
 // Define for this page
-
 let agentReferralDetails = ref()
 let Referral = ref()
 
@@ -359,6 +362,7 @@ const addressDataArray = ref<AddressData>({})
 
 const saveAddress = async (addressData: any) => {
   addressDataArray.value = addressData
+  addressDataNotValidation.value = false
   isOpenDialogAddress.value = false
 }
 

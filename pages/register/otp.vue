@@ -123,7 +123,7 @@ const handleResendOTP = async () => {
 /////////////////////////////////////////
 // Function request OTP
 const requestOTP = async () => {
-  
+
   console.log('request OTP')
   await resetOTPField()
 
@@ -215,7 +215,7 @@ const submitOTP = async (formData: any) => {
     }
     else if (resultCheck.status === 'error') {
 
-      if(response.apiResponse.ErrorCode === '1103807') {
+      if (response.apiResponse.ErrorCode === '1103807') {
         resultCheck.modalTitle = 'รหัส OTP ไม่ถูกต้อง'
         resultCheck.modalText = 'กรุณาทำการยืนยัน OTP ใหม่อีกครั้ง'
       }
@@ -226,11 +226,13 @@ const submitOTP = async (formData: any) => {
     }
     else if (resultCheck.status === 'server-error') {
       serverModal(resultCheck)
+      openLoadingDialog(false)
     }
 
   }
   else if (registerType.value === 'member') {
 
+    openLoadingDialog(false)
     isShowModal.value = true
     modalType.value = 'warning'
     modalTitle.value = 'ยังไม่เปิดลงทะเบียนสมาชิกทั่วไป'

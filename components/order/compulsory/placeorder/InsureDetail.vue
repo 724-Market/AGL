@@ -337,7 +337,7 @@ import type { DefaultAddress, CustomerOrderRequest, LegalPersonProfile, PersonPr
 import type { SelectOption } from "~/shared/entities/select-option";
 import type { CustomerIDReq, CustomerAddressListRes } from "~/shared/entities/customer-entity";
 
-const emit = defineEmits(['changeCustomerType', 'changeProvince', 'changeDistrict', 'changeSubDistrict', 'changeFullAddress', 'changeInsureDetail'])
+const emit = defineEmits(['changeCustomerType', 'changeProvince', 'changeDistrict', 'changeSubDistrict', 'changeFullAddress', 'changeInsureDetail', 'changeDefaultAddress'])
 const props = defineProps({
   prefix: Array<SelectOption>,
   nationality: Array<SelectOption>,
@@ -380,6 +380,7 @@ const legalPersonProfile: globalThis.Ref<LegalPersonProfile> = ref({
 })
 // const legalPersonProfile:globalThis.Ref<LegalPersonProfile|undefined> = ref()
 const defaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref()
+const newDefaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref()
 const defaultAddressCustomer: globalThis.Ref<CustomerAddressListRes | undefined> = ref()
 
 const InsuredTypeText: globalThis.Ref<String> = ref('person')
@@ -593,7 +594,7 @@ const updateAddress = async (e: string) => {
         ProvinceID: getData.apiResponse.Data[index].ProvinceID,
         DistrictID: getData.apiResponse.Data[index].DistrictID,
         SubDistrictID: getData.apiResponse.Data[index].SubDistrictID,
-        ZipCode: getData.apiResponse.Data[index].ZipCode,
+        postalCode: getData.apiResponse.Data[index].ZipCode,
         ProvinceName: getData.apiResponse.Data[index].ProvinceName,
         DistrictName: getData.apiResponse.Data[index].DistrictName,
         SubDistrictName: getData.apiResponse.Data[index].SubDistrictName,
@@ -603,6 +604,11 @@ const updateAddress = async (e: string) => {
         PhoneNumber: getData.apiResponse.Data[index].PhoneNumber,
         TaxID: getData.apiResponse.Data[index].TaxID
       };
+      newDefaultAddress.value = `${newAddressUpdate.value.FirstName} ${newAddressUpdate.value.LastName} 
+      ${newAddressUpdate.value.PhoneNumber} ${newAddressUpdate.value.DistrictName} ${newAddressUpdate.value.SubDistrictName}
+      ${newAddressUpdate.value.ProvinceName} ${newAddressUpdate.value.postalCode}`
+
+      emit('changeDefaultAddress', newDefaultAddress.value)
 
       isNewLabel.value = true
     }

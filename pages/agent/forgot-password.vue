@@ -79,7 +79,7 @@ const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = fa
 const submitForgotpassword = async (formData: any) => {
   openLoadingDialog(true)
 
-  console.log(formData)
+  // console.log(formData)
 
   // User auth store
   const store = useStoreUserAuth()
@@ -99,6 +99,7 @@ const submitForgotpassword = async (formData: any) => {
 
     } else {
 
+      openLoadingDialog(false)
       statusMessageType.value = 'notice-warning'
       statusMessage.value = data.value.ErrorMessage
 
@@ -111,8 +112,6 @@ const submitForgotpassword = async (formData: any) => {
       }
     }
   }
-
-  openLoadingDialog(false)
 }
 
 /////////////////////////////////////////

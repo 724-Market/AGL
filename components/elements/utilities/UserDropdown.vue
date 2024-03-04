@@ -64,6 +64,7 @@ const logout = (event) => {
         sessionStorage.removeItem('useStorePayment')
         sessionStorage.removeItem('useStorePackageList')
         sessionStorage.removeItem('useStoreFeeLimit')
+        sessionStorage.removeItem('AgentInfo')
 
         // Remove localStorage
         localStorage.removeItem('useStoreInformation')

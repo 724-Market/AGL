@@ -85,7 +85,7 @@
                   v-model:legal-person-profile="legalPersonProfile"></OrderCartInsure>
               </div>
 
-              <OrderChecklist :list="checklist" @change-check-save="handlerCheckSave" />
+              <OrderChecklist :list="checklist" :is-tax-include="RequestIncludeTax" @change-check-save="handlerCheckSave" />
             </aside>
 
             <FormKit type="submit" label="ไปเลือกวิธีชำระเงิน" name="order-submit" id="order-submit" :classes="{

@@ -1,6 +1,6 @@
 <template>
   <FormKit
-    type="number"
+    type="mask"
     mask="#-####-#####-##-#"
     v-model="idCard"
     placeholder="เลขบัตรประชาชน 13 หลัก"

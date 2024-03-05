@@ -8,11 +8,13 @@
             <!-- <img src="/uploads/team-5.jpg" alt="" /> -->
           </figure>
           <div class="info">
-            <h3 class="name">AM00125633</h3>
-            <span class="level"><i class="fa-duotone fa-sparkles"></i> ระดับ 5</span>
+            <h3 class="name">{{ props.agentInfo.AgentProfile.UpdateUser }}</h3>
+            <span class="level"><i class="fa-duotone fa-sparkles"></i> {{ agentLevel }}</span>
             <ul class="profile-meta">
-              <li>ชื่อแพ็กเกจปัจจุบัน</li>
-              <li>• หมดอายุ 15/09/2567</li>
+              <!-- <li>{{ props.agentInfo.PlanProduct.Main[0].ProductPlanName }}</li> -->
+              <li>AM012311334</li>
+              <!-- <li>• หมดอายุ {{ useUtility().formatDate(props.agentInfo.PlanProduct.Main[0].ExpireDate, "D MMM BBBB") }}</li> -->
+              <li>• หมดอายุ 19 มีนาคม 2567</li>
               <li class="link">( <a href="#" title="ต่ออายุ">ต่ออายุ</a> | <a href="#" title="อัปเกรด">อัปเกรด</a> )
               </li>
             </ul>
@@ -29,4 +31,21 @@
 </template>
 
 <script setup lang="ts">
+const props = defineProps(['agentInfo'])
+
+// Computed property to determine the class based on ModelAgent
+const agentLevel = computed(() => {
+  switch (props.agentInfo.AgentProfile.ModelAgent) {
+    case '1':
+      return 'Level I'
+    case '2':
+      return 'Level II'
+    case '3':
+      return 'Level III'
+    case '4':
+      return 'Level IV'
+    default:
+      return 'Level V'
+  }
+})
 </script>

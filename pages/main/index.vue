@@ -5,7 +5,7 @@
     <div class="row">
       <div class="col col-main">
 
-        <ElementsUtilitiesUserProfileBar />
+        <ElementsUtilitiesUserProfileBar :agent-info="AgentInfo" />
 
         <MainStatCards />
 
@@ -76,6 +76,7 @@ const router = useRouter();
 // Define import
 const affiliateProductPlanList = ref()
 const affiliateProductPlanDetails = ref()
+const AgentInfo = useUtility().getSession('AgentInfo') 
 
 /////////////////////////////////////////
 // Modal Loading

@@ -79,6 +79,7 @@
                         :options="delivery"
                         validation="required"
                         :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                        readonly
                       />
                     </div>
 

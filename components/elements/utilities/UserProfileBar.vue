@@ -31,7 +31,7 @@
 <script setup lang="ts">
 const props = defineProps(['agentInfo'])
 
-// Computed property to determine the class based on modalType
+// Computed property to determine the class based on ModelAgent
 const agentLevel = computed(() => {
   switch (props.agentInfo.AgentProfile.ModelAgent) {
     case '1':

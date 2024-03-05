@@ -92,6 +92,7 @@ const logout = (event) => {
     router.push('/agent/login')
 }
 
+// Computed property to determine the class base on ModelAgent
 const agentLevel = computed(() => {
   switch (props.agentInfo.AgentProfile.ModelAgent) {
     case '1':
@@ -107,6 +108,7 @@ const agentLevel = computed(() => {
   }
 })
 
+// Computed property to determine the class base on PlanProduct ExpireDate
 const affiliateExpireClass = computed(() => {
   if (differenceInDays < 30) {  
       return 'is-warning'

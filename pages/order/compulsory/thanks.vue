@@ -140,7 +140,7 @@ const onLoad = onMounted(async () => {
         response.apiResponse.Status == "200" &&
         response.apiResponse.Data
       ) {
-        paymentGetInfo.value = response.apiResponse.Data[0];
+        paymentGetInfo.value = response.apiResponse.Data.Payment[0];
         status.value =
           paymentGetInfo.value.IsSuccess && !paymentGetInfo.value.IsDelete
             ? "Success"

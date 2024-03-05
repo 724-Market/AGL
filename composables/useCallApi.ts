@@ -223,6 +223,9 @@ export default () => {
             apiResponse: wrapper
         }
 
+        if (params.Token2) {
+            params.Token = params.Token2
+        }
         
         if (!params.RefreshToken && !url.toLowerCase().includes('/token/get')) { // get token is not refresh token
             // check token expire

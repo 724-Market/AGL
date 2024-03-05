@@ -11,8 +11,10 @@
             <h3 class="name">{{ props.agentInfo.AgentProfile.UpdateUser }}</h3>
             <span class="level"><i class="fa-duotone fa-sparkles"></i> {{ agentLevel }}</span>
             <ul class="profile-meta">
-              <li>{{ props.agentInfo.PlanProduct.Main[0].ProductPlanName }}</li>
-              <li>• หมดอายุ {{ useUtility().formatDate(props.agentInfo.PlanProduct.Main[0].ExpireDate, "D MMM BBBB") }}</li>
+              <!-- <li>{{ props.agentInfo.PlanProduct.Main[0].ProductPlanName }}</li> -->
+              <li>AM012311334</li>
+              <!-- <li>• หมดอายุ {{ useUtility().formatDate(props.agentInfo.PlanProduct.Main[0].ExpireDate, "D MMM BBBB") }}</li> -->
+              <li>• หมดอายุ 19 มีนาคม 2567</li>
               <li class="link">( <a href="#" title="ต่ออายุ">ต่ออายุ</a> | <a href="#" title="อัปเกรด">อัปเกรด</a> )
               </li>
             </ul>

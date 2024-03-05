@@ -57,10 +57,12 @@ export default defineEventHandler(async (event) => {
                             // console.log('data.access_token', data.access_token)
                             // console.log('data.refresh_token', data.refresh_token)
                             if (data.access_token && data.refresh_token) {
+                                const maxAge = 60 * 60 * 24 * 1; // 1 week in seconds
                                 const cookieToken = `access_token=${data.access_token}; Max-Age=${maxAge}; Path=/;`;
+                                const cookieTokenId = `id_token=${data.id_token}; Max-Age=${maxAge}; Path=/;`;
                                 const cookieRefreshToken = `refresh_token=${data.refresh_token}; Max-Age=${maxAge}; Path=/;`;
                                 // Set the cookie in the response header
-                                res.setHeader('Set-Cookie', [cookieToken, cookieRefreshToken]);
+                                res.setHeader('Set-Cookie', [cookieToken,cookieTokenId, cookieRefreshToken]);
                             }
 
                         }

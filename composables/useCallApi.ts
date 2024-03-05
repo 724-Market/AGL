@@ -104,10 +104,7 @@ export default () => {
             apiResponse: wrapper
         }
 
-        if (!params.RefreshToken) { // get token is not refresh token
-            // check token expire
-            params.Token = await useUtility().getToken()
-        }
+        
 
         const { data, pending, error, refresh } = await useFetch('/api/aglove', {
             method: "POST",
@@ -226,13 +223,6 @@ export default () => {
         if (params.Token2) {
             params.Token = params.Token2
         }
-        
-        if (!params.RefreshToken && !url.toLowerCase().includes('/token/get')) { // get token is not refresh token
-            // check token expire
-            //params.Token = await useUtility().getToken()
-            //params.refreshToken = await useUtility().getTokenExpire()
-        }
-
         params.URL = url
         if (!method || (method != "get" && method != "GET")) {
 

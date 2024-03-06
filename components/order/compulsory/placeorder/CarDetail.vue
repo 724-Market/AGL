@@ -32,11 +32,39 @@
                       placeholder="เลขป้ายทะเบียนรถ"
                       v-model="carLicenseText"
                       @change="handleCarLicenseChange"
-                      :validation="[['required'], ['length', 0, 7]]"
+                      maxlength="3"
+                      :validation="[
+                        ['required'], 
+                        ['length', 2, 3]
+                      ]"
                       validation-visibility="live"
                       :validation-messages="{
                         required: 'กรุณาใส่ข้อมูล',
-                        length: 'ทะเบียนรถควรมีไม่เกิน 7 ตัว',
+                        length: 'ตัวอักษรควรมีอย่างน้อย 2 ตัว และไม่เกิน 3 ตัว',
+                      }"
+                      autocomplete="off"
+                    />
+                  </div>
+                  <div class="col">
+                    <label for="CarLicense"> ทะเบียนรถ </label>
+                    <FormKit
+                      type="text"
+                      id="CarLicense2"
+                      name="CarLicense2"
+                      placeholder="เลขป้ายทะเบียนรถ"
+                      v-model="carLicense2Text"
+                      @change="handleCarLicense2Change"
+                      maxlength="4"
+                      :validation="[
+                        ['required'], 
+                        ['length', 0, 4],
+                        ['matches', /^[0-9]+$/]
+                      ]"
+                      validation-visibility="live"
+                      :validation-messages="{
+                        required: 'กรุณาใส่ข้อมูล',
+                        matches: 'ทะเบียนรถควรเป็นตัวเลขเท่านั้น',
+                        length: 'ทะเบียนรถควรมีไม่เกิน 4 ตัว',
                       }"
                       autocomplete="off"
                     />
@@ -130,7 +158,6 @@
                     />
                   </div>
                 </div>
-
                 <div class="row">
                   <div class="col">
                     <FormKit
@@ -141,10 +168,14 @@
                       help="รองรับไฟล์นามสกุล pdf, jpg, png เท่านั้น"
                       v-model="CarLicenseFileText"
                       @change="handleFileChange"
-                      
                       :validation="
                         SubCarModel == 'unknown' || SubCarModel == 'other'
                           ? 'required'
+                          : ''
+                      "
+                      :validation-visibility="
+                        SubCarModel == 'unknown' || SubCarModel == 'other'
+                          ? 'live'
                           : ''
                       "
                       :validation-messages="{ required: 'กรุณาอัปโหลดไฟล์เอกสาร' }"
@@ -202,6 +233,9 @@ const carDetailCache: globalThis.Ref<CarDetailsExtension | undefined> = ref()
 
 var carLicenseText = ref("");
 var carLicenseValue: string = ""
+
+var carLicense2Text = ref("");
+var carLicense2Value: string = ""
 
 const carProvince: globalThis.Ref<SelectOption[]> = ref([])
 var carProvinceText = ref("");
@@ -261,6 +295,11 @@ watch(carLicenseClassifierText, async (newValue) => {
 
 const handleCarLicenseChange = async (event: any) => {
   carLicenseValue = event.target.value
+  await handleCheckCarDetail()
+}
+
+const handleCarLicense2Change = async (event: any) => {
+  carLicense2Value = event.target.value
   await handleCheckCarDetail()
 }
 
@@ -343,7 +382,6 @@ const convertFileToBase64 = async (file: File): Promise<string> => {
 const getFile = async (fileId: string) => {
   isLoading.value = true;
   const response = await useRepository().file.get(fileId)
-  console.log('response', response)
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
     if(response.apiResponse.Data){
       FileName = `${response.apiResponse.Data?.Name}${response.apiResponse.Data?.Extension}` ?? ''
@@ -397,9 +435,8 @@ const handleDowloadFile = async (fileId: string) => {
 
 
 const handleCheckCarDetail = async () => {
-  console.log('LicenseFileID', LicenseFileID)
   let carDetail: CarDetailsExtension = {
-    License: carLicenseValue,
+    License: `${carLicenseValue}-${carLicense2Value}`,
     BodyNo: carBodyNumberValue,
     EngineNo: carEngineNumberValue,
     ColorID: carColorText.value,
@@ -425,6 +462,14 @@ watch(
     if(props.carColor && props.carColor.length>0){
       carColor.value = props.carColor
     }
+  }
+)
+watch(
+  ()=>props.info,
+  ()=>{
+    if(props.info){
+    SubCarModel = props.info.SubCarModel
+  }
   }
 )
 watch(

@@ -120,7 +120,7 @@
         autocomplete="off"
       />
     </div>
-    <div class="col-xs-12 col-md-6">
+    <!-- <div class="col-xs-12 col-md-6">
       <FormKit
         type="text"
         label="ระบุที่อยู่เอง กรณีไม่มีข้อมูลให้เลือก"
@@ -129,7 +129,7 @@
         v-model="ObjectAddress.AddressText"
         @keyup="handlerChangeFullAddress"
       />
-    </div>
+    </div> -->
   </div>
   
 

@@ -8,7 +8,7 @@
       </div>
       <div class="status-item">
         <h5 class="topic">จำนวนเงิน</h5>
-        <p>{{ useUtility().getCurrency(parseInt($props.paymenGatewayInfo.amount)) }} บาท</p>
+        <p>{{ $props.paymenGatewayInfo.amount }} บาท</p>
       </div>
       <div class="status-item" v-if="$props.paymentType == 'wallet'">
         <h5 class="topic">ค่าธรรมเนียม</h5>

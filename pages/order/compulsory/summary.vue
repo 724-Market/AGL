@@ -200,9 +200,7 @@ const loadOrderSummary = async (orderNo: string) => {
         data.Order.OrderNo = orderNo;
       }
       store.setOrderSummary(data);
-      console.log("Before")
       await useUtility().setStoretoStep(data, orderNo, orderDetail.value as OrderDetails)
-      console.log("After")
       // setStoretoStep(data, orderNo);
     }
   }
@@ -381,7 +379,7 @@ const submitOrder = async (formData: any) => {
         responsePaymentGet.apiResponse.Status == "200" &&
         responsePaymentGet.apiResponse.Data
       ) {
-        await paymentGat.setPaymentGet(responsePaymentGet.apiResponse.Data[0]);
+        await paymentGat.setPaymentGet(responsePaymentGet.apiResponse.Data.Payment[0]);
         router.push("/order/compulsory/thanks");
       } else {
         if (responsePaymentGet.apiResponse.Message) {

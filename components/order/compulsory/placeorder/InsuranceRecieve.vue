@@ -79,7 +79,8 @@
                         :options="delivery"
                         validation="required"
                         :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                      />
+                        readonly
+                      /> 
                     </div>
 
                     <div class="col-6">
@@ -571,6 +572,10 @@ const handleRadioShippingPolicyChange = async (event: String) => {
       isPdfShipping.value = false
       isPrintShipping.value = false
       isPostalShipping.value = true
+      if (props.delivery && props.delivery.length > 0) {
+        RecieveShippingMethodText.value = props.delivery[0].value ?? '';
+        ShippingFeeText.value = props.delivery[0].option ?? '';
+      }
       await handleCheckInsuranceRecieve()
       break
   }

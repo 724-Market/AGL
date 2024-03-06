@@ -15,7 +15,9 @@
       <div class="col col-sidebar">
         <section class="site-sidebar is-sticky">
 
-          <PapersOrderDetail :order-get="orderGet" v-if="orderGet" />
+          <PapersOrderDetail :order-get="orderGet"
+          :order-address="getOrderAddress" 
+          v-if="orderGet" />
 
           <PapersSuborder :order-get="orderGet" :ordersub-feedelivery="ordersubFeeDel" :order-sub="orderSubAll"
             v-if="orderSubAll" @on-confirm-received="handleConfirmReceived"
@@ -41,12 +43,13 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia"
-import type { OrderListReq, OrderListRes, SubOrderListRes, RemarkListRes, RemarkListReq } from "~/shared/entities/paper-entity"
+import type { DeliveryAddressRes, OrderListReq, OrderListRes, SubOrderListRes, RemarkListRes, RemarkListReq } from "~/shared/entities/paper-entity"
 import type { TrackOrderReq, TrackOrderRes } from "~/shared/entities/track-entity"
 import { useStoreUserAuth } from "~~/stores/user/storeUserAuth"
 
 // Define Variables
 const orderGet: globalThis.Ref<OrderListRes | undefined> = ref()
+const getOrderAddress: globalThis.Ref<DeliveryAddressRes | undefined> = ref();
 const orderSub: globalThis.Ref<SubOrderListRes[] | undefined> = ref([])
 const orderTrack: globalThis.Ref<TrackOrderRes[] | undefined> = ref([])
 const ordersubFeeDel: globalThis.Ref<SubOrderListRes[] | undefined> = ref([])
@@ -294,6 +297,7 @@ const loadOrderDetail = async (orderNo: string) => {
   if (resultCheck.status === 'pass') {
     if (Array.isArray(response.apiResponse.Data)) {
       orderGet.value = response.apiResponse.Data[0].Order
+      getOrderAddress.value = response.apiResponse.Data[0].DeliveryAddress;
     }
   }
   else if (resultCheck.status === 'error') {

@@ -158,7 +158,7 @@ const classNameExchange = ref("");
 const onLoad = onMounted(async () => {
   await usePagePaper().onClearExchangePaper();
   if (AuthenInfo.value) {
-    await loadDeliveryChanel();
+    // await loadDeliveryChanel();
     await loadDeliveryPaperType();
   } else {
     router.push("/login");

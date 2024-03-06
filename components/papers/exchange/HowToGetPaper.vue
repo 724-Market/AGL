@@ -146,6 +146,8 @@ var isEditMode = ref(false)
 var isDeleteConfirm = ref(false)
 var textDeleteConfirm = ref('')
 
+const deliveryChanels: globalThis.Ref<IDeliveryResponse[] | undefined> = ref();
+
 const agentAddress: globalThis.Ref<RadioOption[]> = ref([]);
 const agentAddressList: globalThis.Ref<AgentAddressListRes[]> = ref([]);
 var agentAddressText = ref("")
@@ -174,25 +176,25 @@ const onLoad = onMounted(async () => {
       }
     ]
   }
-  if (props.deliveryChanel) {
-    shippingMethodOption.value = props.deliveryChanel.map((item, index) => {
-      const options: RadioOption = {
-        label: item.Name,
-        value: item.Type,
-        option: item.Cost.toString()
-      }
-      return options
-    })
-  }
+  // if (props.deliveryChanel) {
+  //   shippingMethodOption.value = props.deliveryChanel.map((item, index) => {
+  //     const options: RadioOption = {
+  //       label: item.Name,
+  //       value: item.Type,
+  //       option: item.Cost.toString()
+  //     }
+  //     return options
+  //   })
+  // }
   if (props.paymentFeeLimit) {
     paymentFeeLimitMin.value = props.paymentFeeLimit[0].Min
   }
   if (props.isSubmit) {
     isSubmit.value = props.isSubmit
   }
-  await loadAgentAddress();
-  await loadPrefix();
-  await loadProvince();
+  // await loadAgentAddress();
+  // await loadPrefix();
+  // await loadProvince();
 })
 
 const handleCloseModal = async (event: boolean) => {
@@ -210,6 +212,8 @@ const handleAcdordian = async () => {
 }
 
 watch(shippingPaperText, async (newshippingPaperType) => {
+  await loadDeliveryChanel();
+  await loadAgentAddress();
   agentAddressText.value = ''
   isAcdordian.value = false
   isShowComponentAddress.value = false
@@ -236,6 +240,7 @@ const onShippingMethodChange = async (event: any) => {
 
 watch(agentAddressText, async (newAgentAddressText) => {
   if (newAgentAddressText == 'addnew') {
+    await loadProvince();
     newAddressObjectCache.value = undefined
     newAddressObject.value = undefined
     isShowComponentAddress.value = true
@@ -377,6 +382,7 @@ const handleEdit = async (event: any) => {
   if (newAddressObjectCache.value && newAddressObjectCache.value.AddressID != '') {
     isEditMode.value = true
     isShowComponentAddress.value = true
+    await loadProvince();
     await handleCheckInsuranceRecieve()
     // newAddressObjectCache.value =  {
     //   AddressID: addressSelect.ID,
@@ -459,73 +465,98 @@ const handleCheckInsuranceRecieve = async () => {
 }
 
 const loadAgentAddress = async () => {
-  isLoading.value = true;
-  var response = await useRepository().agent.GetAddressList();
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      agentAddressList.value = response.apiResponse.Data
-      agentAddress.value = agentAddressList.value.map((x) => {
-        const options: RadioOption = {
-          label: `${x.FirstName} ${x.LastName}`,
-          value: x.ID,
-          help: `${x.No} ${x.Moo} ${x.Place} ${x.Building}
-                 ${x.Floor} ${x.Room} ${x.Branch} ${x.Alley}
-                 ${x.Road} ${x.ProvinceName} ${x.DistrictName} ${x.SubDistrictName}
-                 ${x.ZipCode}`
-        };
-        return options;
-      });
-
+  if(agentAddress.value.length == 0) {
+    isLoading.value = true;
+    var response = await useRepository().agent.GetAddressList();
+    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+      if (response.apiResponse.Data) {
+        agentAddressList.value = response.apiResponse.Data
+        agentAddress.value = agentAddressList.value.map((x) => {
+          const options: RadioOption = {
+            label: `${x.FirstName} ${x.LastName}`,
+            value: x.ID,
+            help: `${x.No} ${x.Moo} ${x.Place} ${x.Building}
+                  ${x.Floor} ${x.Room} ${x.Branch} ${x.Alley}
+                  ${x.Road} ${x.ProvinceName} ${x.DistrictName} ${x.SubDistrictName}
+                  ${x.ZipCode}`
+          };
+          return options;
+        });
+      }
     }
+    agentAddress.value.push({
+      label: '+ เพิ่มที่อยู่ใหม่',
+      value: 'addnew'
+    })
+    isLoading.value = false;
   }
-  agentAddress.value.push({
-    label: '+ เพิ่มที่อยู่ใหม่',
-    value: 'addnew'
-  })
-  isLoading.value = false;
+};
+
+const loadDeliveryChanel = async () => {
+  if(shippingMethodOption.value.length == 0) {
+    isLoading.value = true;
+      var res = await useRepository().delivery.channel();
+      if (res.apiResponse.Status && res.apiResponse.Status == "200") {
+        if (res.apiResponse.Data) {
+          shippingMethodOption.value = res.apiResponse.Data.map((item, index) => {
+            const options: RadioOption = {
+              label: item.Name,
+              value: item.Type,
+              option: item.Cost.toString()
+            }
+            return options
+          })
+        }
+      }
+    isLoading.value = false;
+  }
 };
 
 const loadPrefix = async () => {
-  const req: PrefixReq = {
-    IsPerson: true
-  };
-  const response = await useRepository().master.prefix(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      prefix.value = response.apiResponse.Data.map((x) => {
-        const options: SelectOption = {
-          label: x.Name,
-          value: x.ID,
-        };
-        return options;
-      });
-      prefix.value.unshift({
-        label: "เลือกคำนำหน้า",
-        value: "",
-        attrs: { disabled: true },
-      });
+  if(prefix.value.length == 0) {
+    const req: PrefixReq = {
+      IsPerson: true
+    };
+    const response = await useRepository().master.prefix(req);
+    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+      if (response.apiResponse.Data) {
+        prefix.value = response.apiResponse.Data.map((x) => {
+          const options: SelectOption = {
+            label: x.Name,
+            value: x.ID,
+          };
+          return options;
+        });
+        prefix.value.unshift({
+          label: "เลือกคำนำหน้า",
+          value: "",
+          attrs: { disabled: true },
+        });
+      } else {
+        // data not found
+      }
     } else {
-      // data not found
     }
-  } else {
   }
 }
 
 const loadProvince = async () => {
-  const response = await useRepository().master.province();
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      addrProvince.value = response.apiResponse.Data.map((x) => {
-        const options: SelectOption = {
-          label: x.Name,
-          value: x.ID,
-        };
-        return options;
-      });
+  if(addrProvince.value.length == 0) {
+    const response = await useRepository().master.province();
+    if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+      if (response.apiResponse.Data) {
+        addrProvince.value = response.apiResponse.Data.map((x) => {
+          const options: SelectOption = {
+            label: x.Name,
+            value: x.ID,
+          };
+          return options;
+        });
+      } else {
+        // data not found
+      }
     } else {
-      // data not found
     }
-  } else {
   }
 }
 
@@ -588,21 +619,21 @@ const loadZipCode = async (subDistId: string): Promise<string> => {
   return option;
 }
 
-watch(
-  () => props.deliveryChanel,
-  async () => {
-    if (props.deliveryChanel) {
-      shippingMethodOption.value = props.deliveryChanel.map((item, index) => {
-        const options: RadioOption = {
-          label: item.Name,
-          value: item.Type,
-          option: item.Cost.toString()
-        }
-        return options
-      })
-    }
-  }
-)
+// watch(
+//   () => props.deliveryChanel,
+//   async () => {
+//     if (props.deliveryChanel) {
+//       shippingMethodOption.value = props.deliveryChanel.map((item, index) => {
+//         const options: RadioOption = {
+//           label: item.Name,
+//           value: item.Type,
+//           option: item.Cost.toString()
+//         }
+//         return options
+//       })
+//     }
+//   }
+// )
 
 watch(
   () => props.shippingPaperType,

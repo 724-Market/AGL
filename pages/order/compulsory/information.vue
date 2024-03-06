@@ -217,8 +217,8 @@ var carCC: globalThis.Ref<String> = ref("");
 var effectiveType: globalThis.Ref<String> = ref("FULLYEAR");
 
 const dateNow: Date = new Date();
-dateNow.setDate(dateNow.getDate() - 1);
-const effectiveMinDate: String = dateNow.toISOString(); // en-CA or sv => yyyy-MM-dd
+const effectiveMinDate: string = dateNow.toISOString().split('T')[0]; // Get only the date part
+
 // const effectiveMaxDate: String = new Date(
 //   dateNow.setDate(dateNow.getDate() + defineEventHandler.compulsory.CoverageFuture)
 // ).toISOString();

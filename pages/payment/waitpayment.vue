@@ -106,7 +106,7 @@ const checkPayment = async () => {
       response.apiResponse.Status == "200" &&
       response.apiResponse.Data
     ) {
-      await paymentGat.setPaymentGet(response.apiResponse.Data[0]);
+      await paymentGat.setPaymentGet(response.apiResponse.Data.Payment[0]);
       router.push("/order/compulsory/thanks");
     }
 };

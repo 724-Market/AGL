@@ -1129,6 +1129,12 @@ watch(
   shippedPolicy,
   () => {
     if (shippedPolicy.value) {
+      if(shippedPolicy.value == 'separately'){
+        if (props.delivery && props.delivery.length > 0) {
+          ShippingMethodText.value = props.delivery[0].value ?? '';
+          ShippingMethodFee.value = props.delivery[0].option ?? '';
+        }
+      }
       handlerChangeTaxInvoice()
     }
 

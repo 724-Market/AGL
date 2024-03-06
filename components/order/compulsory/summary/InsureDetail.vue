@@ -136,8 +136,8 @@
             <div class="summary-item">
               <h4 class="topic">กรมธรรม์คุ้มครอง</h4>
               <p>
-                {{ getFormatDate(orderDetail.InsureDetails.ActiveStartDate) }} -
-                {{ getFormatDate(orderDetail.InsureDetails.ActiveEndDate) }}
+                {{ useUtility().formatDate(orderDetail.InsureDetails.ActiveStartDate, "ShortDate") }} -
+                {{ useUtility().formatDate(orderDetail.InsureDetails.ActiveEndDate, "ShortDate") }}
                 ({{ getDayOfYear() }} วัน)
               </p>
             </div>

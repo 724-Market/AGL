@@ -23,6 +23,16 @@
                     <h5 class="topic">สถานะ</h5>
                     <p :class="orderStatusClass">{{ orderStatusText }}</p>
                 </div>
+                <div class="status-item" v-if="orderAddress">
+                    <h5 class="topic">ที่อยู่</h5>
+                    <p>
+                        {{ orderAddress.FirstName ? ('ชื่อ ' + orderAddress.FirstName) : '' }}  
+                        {{ orderAddress.LastName ?? '' }}
+                        {{ orderAddress.No ?? '' }}
+                        {{ orderAddress.SubDistrictName ?? ''}}
+                        {{ orderAddress.ProvinceName ? ('จังหวัด ' + orderAddress.ProvinceName) : '' }}
+                        {{ orderAddress.ZipCode  ?? '' }} </p>
+                </div>
             </div>
 
         </div>
@@ -31,12 +41,15 @@
 
 <script setup lang="ts">
 // Define import
-import type { OrderListRes } from "~/shared/entities/paper-entity"
+import type { DeliveryAddressRes, OrderListRes } from "~/shared/entities/paper-entity"
 
 // Define props
 const props = defineProps({
     orderGet: {
         type: Object as () => OrderListRes
+    },
+    orderAddress: {
+        type: Object as () => DeliveryAddressRes
     }
 })
 

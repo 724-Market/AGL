@@ -7,7 +7,17 @@
 
         <ElementsUtilitiesUserProfileBar />
 
-        <MainStatCards />
+        <div id="checkpoints" class="card-checkpoint-stack">
+
+          <ElementsCheckpointCheckPointOTP />
+
+          <ElementsCheckpointCheckPointBankAccount />
+
+          <ElementsCheckpointCheckPointNonLifeLicense />
+
+          <ElementsCheckpointCheckPointEKYC />
+
+        </div>
 
         <ElementsUtilitiesPackagesCards :planList="affiliateProductPlanList" @on-select-package="handleSelectPackage" />
 
@@ -43,6 +53,7 @@
               </template>
               <b>Benefit</b>
               <br>
+
               <template v-for="(value3, key3) in value.Benefit" :key="key3">
                 <li>{{ value3.Name }}</li>
               </template>

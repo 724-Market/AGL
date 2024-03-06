@@ -7,8 +7,7 @@
     </div>
 
     <div class="col-md-12">
-      <FormKit type="text" label="Moo" name="Moo" v-model="addressData.Moo" placeholder="Moo" validation="required"
-        :validation-messages="{ required: 'กรุณาระบุ Moo' }" autocomplete="off" />
+      <FormKit type="text" label="Moo" name="Moo" v-model="addressData.Moo" placeholder="Moo" autocomplete="off" />
     </div>
 
     <div class="col-md-12">

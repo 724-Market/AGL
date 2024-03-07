@@ -23,11 +23,11 @@
               <div class="form-hide-label topup-value">
                 <FormKit type="number" label="จำนวนเงินที่ต้องการเติม" name="amount"
                   :validation="`required|number|min:${paymentList.Min}|max:${paymentList.Max}`" :validation-messages="{
-                    required: 'กรุณากรอกจำนวนเงิน',
-                    number: 'กรุณากรอกเป็นตัวเลขเท่านั้น',
-                    min: `ขั้นต่ำ ${minVolumn} บาท`,
-                    max: `สูงสุดไม่เกิน ${maxVolumn}บาท`,
-                  }" step="1" inputmode="numeric" autocomplete="off" v-model="Amount" />
+      required: 'กรุณากรอกจำนวนเงิน',
+      number: 'กรุณากรอกเป็นตัวเลขเท่านั้น',
+      min: `ขั้นต่ำ ${minVolumn} บาท`,
+      max: `สูงสุดไม่เกิน ${maxVolumn} บาท`,
+    }" step="1" inputmode="numeric" autocomplete="off" v-model="Amount" />
               </div>
 
               <div class="topup">
@@ -53,9 +53,9 @@
               </div>
 
               <FormKit type="submit" label="ยืนยันการเติมเงิน" name="pledge-submit" id="pledge-submit" :classes="{
-                input: 'btn-primary btn-accept',
-                outer: 'pledge-action',
-              }" :disabled="isLoading" :loading="isLoading" />
+      input: 'btn-primary btn-accept',
+      outer: 'pledge-action',
+    }" :disabled="isLoading" :loading="isLoading" />
             </FormKit>
           </div>
 
@@ -65,7 +65,8 @@
               :fee-amount="feeAmount" @on-check-payment="handlerCheckPayment"></PaymentQrDetail>
           </div>
 
-          <div v-if="paymentResponse" :class="isStep3 ? 'card-body pledge-step-3 is-active' : 'card-body pledge-step-3'">
+          <div v-if="paymentResponse"
+            :class="isStep3 ? 'card-body pledge-step-3 is-active' : 'card-body pledge-step-3'">
             <div class="status-list" v-if="isSuccess">
               <figure class="status-icon">
                 <div class="icon check success"></div>
@@ -83,11 +84,11 @@
                 <h5 class="topic">วันที่ทำรายการสำเร็จ</h5>
                 <p>
                   {{
-                    useUtility().formatDate(
-                      paymentResponse.CreateDate,
-                      "D MMMM BBBB HH:mm:ss"
-                    )
-                  }}
+      useUtility().formatDate(
+        paymentResponse.CreateDate,
+        "D MMMM BBBB HH:mm:ss"
+      )
+    }}
                 </p>
               </div>
               <div class="status-item text-success">
@@ -137,6 +138,7 @@
     </dialog>
   </Teleport>
 </template>
+
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
 import type {

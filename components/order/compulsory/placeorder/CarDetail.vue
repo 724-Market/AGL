@@ -32,6 +32,24 @@
                       placeholder="เลขป้ายทะเบียนรถ"
                       v-model="carLicenseText"
                       @change="handleCarLicenseChange"
+                      :validation="[['required'], ['length', 0, 7]]"
+                      validation-visibility="live"
+                      :validation-messages="{
+                        required: 'กรุณาใส่ข้อมูล',
+                        length: 'ทะเบียนรถควรมีไม่เกิน 7 ตัว',
+                      }"
+                      autocomplete="off"
+                    />
+                  </div>
+                  <!-- <div class="col">
+                    <label for="CarLicense"> ทะเบียนรถ </label>
+                    <FormKit
+                      type="text"
+                      id="CarLicense"
+                      name="CarLicense"
+                      placeholder="เลขป้ายทะเบียนรถ"
+                      v-model="carLicenseText"
+                      @change="handleCarLicenseChange"
                       maxlength="3"
                       :validation="[
                         ['required'], 
@@ -44,8 +62,8 @@
                       }"
                       autocomplete="off"
                     />
-                  </div>
-                  <div class="col">
+                  </div> -->
+                  <!-- <div class="col">
                     <label for="CarLicense"> ทะเบียนรถ </label>
                     <FormKit
                       type="text"
@@ -68,7 +86,7 @@
                       }"
                       autocomplete="off"
                     />
-                  </div>
+                  </div> -->
                   <div class="col">
                     <FormKit
                       type="select"
@@ -234,8 +252,8 @@ const carDetailCache: globalThis.Ref<CarDetailsExtension | undefined> = ref()
 var carLicenseText = ref("");
 var carLicenseValue: string = ""
 
-var carLicense2Text = ref("");
-var carLicense2Value: string = ""
+// var carLicense2Text = ref("");
+// var carLicense2Value: string = ""
 
 const carProvince: globalThis.Ref<SelectOption[]> = ref([])
 var carProvinceText = ref("");
@@ -298,10 +316,10 @@ const handleCarLicenseChange = async (event: any) => {
   await handleCheckCarDetail()
 }
 
-const handleCarLicense2Change = async (event: any) => {
-  carLicense2Value = event.target.value
-  await handleCheckCarDetail()
-}
+// const handleCarLicense2Change = async (event: any) => {
+//   carLicense2Value = event.target.value
+//   await handleCheckCarDetail()
+// }
 
 const handleCarProvinceChange = async (event: any) => {
   await handleCheckCarDetail()
@@ -436,7 +454,7 @@ const handleDowloadFile = async (fileId: string) => {
 
 const handleCheckCarDetail = async () => {
   let carDetail: CarDetailsExtension = {
-    License: `${carLicenseValue}-${carLicense2Value}`,
+    License: carLicenseValue,
     BodyNo: carBodyNumberValue,
     EngineNo: carEngineNumberValue,
     ColorID: carColorText.value,
@@ -477,8 +495,9 @@ watch(
   ()=>{
     if(props.carDetailCache){
       carDetailCache.value = props.carDetailCache
-      carLicenseText.value = carDetailCache.value.License.split('-')[0]
-      carLicense2Text.value = carDetailCache.value.License.split('-')[1]
+      carLicenseText.value = carDetailCache.value.License
+      // carLicenseText.value = carDetailCache.value.License.split('-')[0]
+      // carLicense2Text.value = carDetailCache.value.License.split('-')[1]
       carLicenseValue = carDetailCache.value.License
 
       carProvinceText.value = carDetailCache.value.LicenseProvinceID

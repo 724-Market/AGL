@@ -398,7 +398,7 @@
 
   <ElementsDialogEditAddress
     v-if="isEditTaxAddress"
-    :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Type"
+    :address-type="'TAXINVOICE'"
     :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID"
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID 
     ?? props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
@@ -406,12 +406,12 @@
     :address-data-array="
       isNewLabel
         ? newTaxAddressUpdate
-        : props.cacheOrderRequest?.Customer?.TaxInvoiceAddress
+        : taxInvoiceAddr
     "
     :profile-data-array="
       isNewLabel
         ? newTaxAddressUpdate
-        : props.cacheOrderRequest?.Customer?.TaxInvoiceAddress
+        : taxInvoiceProfile
     "
     :show="isEditTaxAddress"
     @close-address="closeModalAddress"
@@ -419,7 +419,7 @@
   ></ElementsDialogEditAddress>
   <ElementsDialogEditAddress
     v-if="isEditTaxDelivery"
-    :address-type="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.Type"
+    :address-type="'TAXINVOICE_DELIVERY'"
     :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID"
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID 
     ?? props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
@@ -427,12 +427,12 @@
     :address-data-array="
       isNewLabel
         ? newTaxDeliveryAddressUpdate
-        : props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress
+        : taxDeliveryAddr
     "
     :profile-data-array="
       isNewLabel
         ? newTaxDeliveryAddressUpdate
-        : props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress
+        : taxDeliveryProfile
     "
     :show="isEditTaxDelivery"
     @close-address="closeModalDelivery"
@@ -553,8 +553,10 @@ interface LabelAddressData {
   SubDistrictName?: string
 }
 
-const taxAddressDataArray = ref<AddressData>({})
-const taxProfileDataArray = ref<ProfileData>({})
+const taxInvoiceAddr = ref<AddressData>({})
+const taxInvoiceProfile = ref<ProfileData>({})
+const taxDeliveryAddr = ref<AddressData>({})
+const taxDeliveryProfile = ref<ProfileData>({})
 const newTaxAddressUpdate = ref<LabelAddressData>({})
 const newTaxDeliveryAddressUpdate = ref<LabelAddressData>({})
 
@@ -716,7 +718,7 @@ const closeModalDelivery = async (refresh: boolean) => {
 
 //Mapdata to show at label waiting upgrade to const mapProfileData = async (newData: Object) version
 const mapProfileData = async () => {
-  taxProfileDataArray.value = {
+  taxInvoiceProfile.value = {
     FirstName: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.FirstName || '',
     LastName: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.LastName || '',
     Name: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Name || '',
@@ -724,10 +726,18 @@ const mapProfileData = async () => {
     TaxID: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.TaxID || '',
     AddressID: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID || ''
   };
+  taxDeliveryProfile.value = {
+    FirstName: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.FirstName || '',
+    LastName: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.LastName || '',
+    Name: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.Name || '',
+    PhoneNumber: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.PhoneNumber || '',
+    TaxID: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.TaxID || '',
+    AddressID: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID || ''
+  };
 };
 
 const mapAddressData = async () => {
-  taxAddressDataArray.value = {
+  taxInvoiceAddr.value = {
     No: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.No || '',
     Moo: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Moo || '',
     Place: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.Place || '',
@@ -743,6 +753,23 @@ const mapAddressData = async () => {
     ProvinceLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.ProvinceName || '',
     DistrictLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.DistrictName || '',
     SubDistrictLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.SubDistrictName || ''
+  };
+  taxDeliveryAddr.value = {
+    No: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.No || '',
+    Moo: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.Moo || '',
+    Place: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.Place || '',
+    Building: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.Building || '',
+    Floor: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.Floor || '',
+    Alley: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.Alley || '',
+    Road: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.Road || '',
+    Type: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.Type || '',
+    ProvinceID: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.ProvinceID || '',
+    DistrictID: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.DistrictID || '',
+    SubDistrictID: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.SubDistrictID || '',
+    postalCode: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.ZipCode || '',
+    ProvinceLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.ProvinceName || '',
+    DistrictLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.DistrictName || '',
+    SubDistrictLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.SubDistrictName || ''
   };
 };
 // Update profile after save

@@ -361,7 +361,7 @@ const handleFileChange = async (event: any) => {
       LicenseFileID = response.apiResponse.Data[0]?.ID ?? ''
     }
   } else {
-    // messageError.value = response.apiResponse.ErrorMessage ?? "";
+    // messageError.value = response.apiResponse.ErrorMessage ?? '';
   }
   await handleCheckCarDetail()
   }
@@ -392,7 +392,7 @@ const convertFileToBase64 = async (file: File): Promise<string> => {
   })
   }
   else{
-    return ""
+    return ''
   }
 
 }

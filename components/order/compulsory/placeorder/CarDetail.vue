@@ -293,7 +293,7 @@ const onLoad = onMounted(async () => {
   }
 
   if(carDetailCache.value){
-    carLicenseText.value = carDetailCache.value.License
+    carLicenseText.value = carDetailCache.value.License.replace(/-/g, '');
     carProvinceText.value = carDetailCache.value.LicenseProvinceID
     carLicenseClassifierText.value = carDetailCache.value.IsRedLicense
     carColorText.value = carDetailCache.value.ColorID
@@ -311,10 +311,28 @@ watch(carLicenseClassifierText, async (newValue) => {
   await handleCarLicenseClassifierChange(newValue);
 })
 
+// const handleCarLicenseChange = async (event: any) => {
+//   carLicenseValue = event.target.value
+//   await handleCheckCarDetail()
+// }
+
 const handleCarLicenseChange = async (event: any) => {
-  carLicenseValue = event.target.value
-  await handleCheckCarDetail()
-}
+  carLicenseValue  = event.target.value;
+
+  // Find the position of the last consonant ('z') License format xyz-xxxx
+  const lastConsonantIndex = carLicenseValue.split('').reverse().join('').search(/[ก-ฮ]/g);
+  
+  // Calculate the index from the end
+  const lastIndexFromEnd = carLicenseValue.length - lastConsonantIndex - 1;
+
+  // Insert '-' after the last consonant if found
+  if (lastConsonantIndex !== -1) {
+    carLicenseValue = carLicenseValue.slice(0, lastIndexFromEnd + 1) + '-' + carLicenseValue.slice(lastIndexFromEnd + 1);
+  }
+  
+  // Use carLicenseValue for further processing or set it as needed
+  await handleCheckCarDetail();
+};
 
 // const handleCarLicense2Change = async (event: any) => {
 //   carLicense2Value = event.target.value
@@ -495,7 +513,7 @@ watch(
   ()=>{
     if(props.carDetailCache){
       carDetailCache.value = props.carDetailCache
-      carLicenseText.value = carDetailCache.value.License
+      carLicenseText.value = carDetailCache.value.License.replace(/-/g, '');
       // carLicenseText.value = carDetailCache.value.License.split('-')[0]
       // carLicense2Text.value = carDetailCache.value.License.split('-')[1]
       carLicenseValue = carDetailCache.value.License

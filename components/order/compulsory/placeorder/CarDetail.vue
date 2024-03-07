@@ -477,7 +477,8 @@ watch(
   ()=>{
     if(props.carDetailCache){
       carDetailCache.value = props.carDetailCache
-      carLicenseText.value = carDetailCache.value.License
+      carLicenseText.value = carDetailCache.value.License.split('-')[0]
+      carLicense2Text.value = carDetailCache.value.License.split('-')[1]
       carLicenseValue = carDetailCache.value.License
 
       carProvinceText.value = carDetailCache.value.LicenseProvinceID

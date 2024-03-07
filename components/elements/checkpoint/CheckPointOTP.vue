@@ -15,3 +15,10 @@
   </div>
 
 </template>
+
+<script setup>
+// import { storeAgentInfo } from '~/stores/user/storeAgentInfo.ts'
+
+// const store = useStoreAgentInfo()
+
+</script>

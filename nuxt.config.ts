@@ -27,7 +27,7 @@ export default defineNuxtConfig({
 				{ name: 'description', content: 'Welcome to Agent Love Club website' },
 			],
 			link: [
-				{ rel: 'stylesheet', href: '/assets/css/login.css' },
+				// { rel: 'stylesheet', href: '/assets/css/login.css' },
 				{ rel: 'stylesheet', href: '/assets/css/monito.css' },
 				{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' },
 			],

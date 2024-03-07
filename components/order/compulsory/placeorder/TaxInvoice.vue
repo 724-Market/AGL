@@ -951,17 +951,18 @@ const handlerChangeTaxInvoice = () => {
   emit('changeTaxInvoice', insureDetail.value, requestIncludeTax.value.length > 0, shippedPolicy.value, ShippingMethodText.value)
 }
 
-const setCacheData = () => {
+const setCacheData = async () => {
   if (props.cacheOrderRequest) {
     requestIncludeTax.value = props.cacheOrderRequest.IsTaxInvoice == true ? ['request'] : []
     if (props.cacheOrderRequest.Customer) {
       addressIncludeTaxType.value = props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault == true ? 'insured' : 'addnew'
       addressDeliveryTaxType.value = props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault == true ? 'insured' : 'addnew'
-
+      await mapAddressData();
       if (props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault == false && props.cacheOrderRequest.Customer.TaxInvoiceAddress?.ProvinceID != '') {
           if(props.cacheOrderRequest.Customer.TaxInvoiceAddress)
           {
             taxInvoiceAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceAddress as DefaultAddress
+            newTaxInvoiceFullAddress.value = taxInvoiceAddr.value
           }
      }
      else{
@@ -970,6 +971,7 @@ const setCacheData = () => {
      insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
       if (props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault == false && props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress?.ProvinceID != '') {
         cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress
+        newTaxInvoiceDeliveryFullAddressTemp.value = taxDeliveryAddr.value
         //const deliveryMethod1 = props.cacheOrderRequest.DeliveryMethod1
       }
       else{
@@ -989,6 +991,7 @@ const setCacheData = () => {
     handlerChangeTaxInvoice()
   }
 }
+
 //watching props pass data
 watch(
   () => props.addrProvince,

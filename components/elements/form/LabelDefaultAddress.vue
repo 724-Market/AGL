@@ -4,7 +4,7 @@
       {{ props.labelAddress?.DistrictName }} 
       {{ props.labelAddress?.SubDistrictName }} 
       จังหวัด{{ props.labelAddress?.ProvinceName }}
-      {{ props.labelAddress?.postalCode }}
+      {{ props.labelAddress?.ZipCode }}
 
     </div>
 </template>

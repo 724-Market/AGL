@@ -316,10 +316,10 @@ const handleCarLicenseChange = async (event: any) => {
   await handleCheckCarDetail()
 }
 
-const handleCarLicense2Change = async (event: any) => {
-  carLicense2Value = event.target.value
-  await handleCheckCarDetail()
-}
+// const handleCarLicense2Change = async (event: any) => {
+//   carLicense2Value = event.target.value
+//   await handleCheckCarDetail()
+// }
 
 const handleCarProvinceChange = async (event: any) => {
   await handleCheckCarDetail()

@@ -138,7 +138,9 @@
               <p>
                 {{ useUtility().formatDate(orderDetail.InsureDetails.ActiveStartDate, "ShortDate") }} -
                 {{ useUtility().formatDate(orderDetail.InsureDetails.ActiveEndDate, "ShortDate") }}
-                ({{ getDayOfYear() }} วัน)
+                (
+                  {{ orderDetail.InsureDetails.EffectiveType == 'FULLYEAR' ? 'คุ้มครอง 1 ปี' : 'เลือกวันคุ้มครองเอง' }}
+                )
               </p>
             </div>
 

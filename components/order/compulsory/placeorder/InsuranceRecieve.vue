@@ -349,8 +349,7 @@ const onLoad = onMounted(async () => {
     }
     if(props.insureFullAddress)
     {
-      console.log("props.insureFullAddress "+props.insureFullAddress)
-      insureFullAddress.value = props.insureFullAddress
+            insureFullAddress.value = props.insureFullAddress
     }
     if(props.packageSelect){
       packageSelect.value = props.packageSelect

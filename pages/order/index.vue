@@ -194,7 +194,7 @@ const handleCloasModal = async (refresh: Boolean) => {
 };
 
 const loadHistoryStatus = async (filter?: Filter[]) => {
-  isLoading.value = true;
+  // isLoading.value = true;
   var statusRes = await useRepository().order.statusGroup(filter);
   if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
     if (statusRes.apiResponse.Data) {

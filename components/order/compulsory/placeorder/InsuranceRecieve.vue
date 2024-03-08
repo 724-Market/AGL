@@ -349,6 +349,7 @@ const onLoad = onMounted(async () => {
     }
     if(props.insureFullAddress)
     {
+      console.log("props.insureFullAddress "+props.insureFullAddress)
       insureFullAddress.value = props.insureFullAddress
     }
     if(props.packageSelect){
@@ -504,8 +505,8 @@ const updateAddress = async (e: string, AddrID: string) => {
         TaxID: address.TaxID
       };
       isNewLabel.value = true
-      insureFullNewAddress.value = `${newAddressUpdate.value.FirstName} ${newAddressUpdate.value.LastName} 
-      ${newAddressUpdate.value.PhoneNumber} ${newAddressUpdate.value.DistrictName} ${newAddressUpdate.value.SubDistrictName}
+      insureFullNewAddress.value = `${newAddressUpdate.value.FirstName} ${newAddressUpdate.value.LastName} ${newAddressUpdate.value.PhoneNumber} 
+      ${newAddressUpdate.value.No} ${newAddressUpdate.value.DistrictName} ${newAddressUpdate.value.SubDistrictName}
       ${newAddressUpdate.value.ProvinceName} ${newAddressUpdate.value.postalCode}`
 
       newAddressObject.value = newAddressUpdate.value

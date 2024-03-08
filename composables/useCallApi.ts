@@ -235,8 +235,8 @@ export default () => {
             })
         }
         else {
-            const { data, pending, error, refresh } = await useFetch('/api/aglove?url=' + params.URL + "&token=" + params.Token, {
-                method: method,
+            const { data, pending, error, refresh } = await useFetch('/api/aglove?url=' + params.URL, {
+                method: 'GET',
                 onResponse({ request, response }) {
                     result = getResponse<T>(response, params)
                 }

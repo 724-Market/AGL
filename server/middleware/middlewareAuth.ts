@@ -10,11 +10,23 @@ export default defineEventHandler(async (event) => {
 
     const url = getRequestURL(event)
 
-    //console.log('middleware url: ' + url.pathname)
+
 
     if (url.pathname.includes('/api/')) {
-        const req = await readBody(event)
-        if (!req.URL.includes("Session/token/get")) {
+        //console.log('middleware url: ' + url.pathname)
+        //console.log('middleware event ' + event.method)
+        let req = {URL:""}
+        if (event.method == 'POST') {
+            req = await readBody(event)
+        }
+        else{
+            const query = await getQuery(event)
+            req = {
+                URL:query.url?.toString() ?? ""
+            }
+        }
+        if ( !req.URL.includes("Session/token/get")) {
+            //console.log('middleware url: ' + req.URL)
             const config = useRuntimeConfig()
             // Function to decode and check token expiration
             const isTokenExpired = (token: string) => {
@@ -35,7 +47,7 @@ export default defineEventHandler(async (event) => {
             else {
 
                 // If access token is expired but refresh token is not, try to get a new access token
-                
+
                 if (isTokenExpired(accessToken)) {
                     try {
                         const req = {
@@ -51,7 +63,7 @@ export default defineEventHandler(async (event) => {
                             body: JSON.stringify(req)
                         })
                         if (response.ok) {
-                             const json = await response.json();
+                            const json = await response.json();
                             const data = json.Data
                             // console.log('data',data)
                             // console.log('data.access_token', data.access_token)
@@ -62,7 +74,7 @@ export default defineEventHandler(async (event) => {
                                 const cookieTokenId = `id_token=${data.id_token}; Max-Age=${maxAge}; Path=/;`;
                                 const cookieRefreshToken = `refresh_token=${data.refresh_token}; Max-Age=${maxAge}; Path=/;`;
                                 // Set the cookie in the response header
-                                res.setHeader('Set-Cookie', [cookieToken,cookieTokenId, cookieRefreshToken]);
+                                res.setHeader('Set-Cookie', [cookieToken, cookieTokenId, cookieRefreshToken]);
                             }
 
                         }

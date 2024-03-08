@@ -23,7 +23,7 @@
             <div class="accordion-body">
               <div class="form-placeorder">
                 <div class="row">
-                  <div class="col">
+                  <!-- <div class="col">
                     <label for="CarLicense"> ทะเบียนรถ </label>
                     <FormKit
                       type="text"
@@ -40,14 +40,14 @@
                       }"
                       autocomplete="off"
                     />
-                  </div>
-                  <!-- <div class="col">
-                    <label for="CarLicense"> ทะเบียนรถ </label>
+                  </div> -->
+                  <div class="col">
+                    <label for="CarLicense"> เลขทะเบียนรถ </label>
                     <FormKit
                       type="text"
                       id="CarLicense"
                       name="CarLicense"
-                      placeholder="เลขป้ายทะเบียนรถ"
+                      placeholder="ตัวอย่าง : 1กข"
                       v-model="carLicenseText"
                       @change="handleCarLicenseChange"
                       maxlength="3"
@@ -62,17 +62,16 @@
                       }"
                       autocomplete="off"
                     />
-                  </div> -->
-                  <!-- <div class="col">
-                    <label for="CarLicense"> ทะเบียนรถ </label>
+                  </div>
+                  <div class="col">
+                    <label for="CarLicense"> &nbsp; </label>
                     <FormKit
                       type="text"
                       id="CarLicense2"
                       name="CarLicense2"
-                      placeholder="เลขป้ายทะเบียนรถ"
+                      placeholder="ตัวอย่าง : 1234"
                       v-model="carLicense2Text"
                       @change="handleCarLicense2Change"
-                      maxlength="4"
                       :validation="[
                         ['required'], 
                         ['length', 0, 4],
@@ -81,12 +80,12 @@
                       validation-visibility="live"
                       :validation-messages="{
                         required: 'กรุณาใส่ข้อมูล',
-                        matches: 'ทะเบียนรถควรเป็นตัวเลขเท่านั้น',
+                        matches: 'เลขทะเบียนรถควรเป็นตัวเลขเท่านั้น',
                         length: 'ทะเบียนรถควรมีไม่เกิน 4 ตัว',
                       }"
                       autocomplete="off"
                     />
-                  </div> -->
+                  </div>
                   <div class="col">
                     <FormKit
                       type="select"
@@ -252,8 +251,8 @@ const carDetailCache: globalThis.Ref<CarDetailsExtension | undefined> = ref()
 var carLicenseText = ref("");
 var carLicenseValue: string = ""
 
-// var carLicense2Text = ref("");
-// var carLicense2Value: string = ""
+var carLicense2Text = ref("");
+var carLicense2Value: string = ""
 
 const carProvince: globalThis.Ref<SelectOption[]> = ref([])
 var carProvinceText = ref("");
@@ -311,33 +310,33 @@ watch(carLicenseClassifierText, async (newValue) => {
   await handleCarLicenseClassifierChange(newValue);
 })
 
-// const handleCarLicenseChange = async (event: any) => {
-//   carLicenseValue = event.target.value
-//   await handleCheckCarDetail()
-// }
-
 const handleCarLicenseChange = async (event: any) => {
-  carLicenseValue  = event.target.value;
+  carLicenseValue = event.target.value
+  await handleCheckCarDetail()
+}
 
-  // Find the position of the last consonant ('z') License format xyz-xxxx
-  const lastConsonantIndex = carLicenseValue.split('').reverse().join('').search(/[ก-ฮ]/g);
+// const handleCarLicenseChange = async (event: any) => {
+//   carLicenseValue  = event.target.value;
+
+//   // Find the position of the last consonant ('z') License format xyz-xxxx
+//   const lastConsonantIndex = carLicenseValue.split('').reverse().join('').search(/[ก-ฮ]/g);
   
-  // Calculate the index from the end
-  const lastIndexFromEnd = carLicenseValue.length - lastConsonantIndex - 1;
+//   // Calculate the index from the end
+//   const lastIndexFromEnd = carLicenseValue.length - lastConsonantIndex - 1;
 
-  // Insert '-' after the last consonant if found
-  if (lastConsonantIndex !== -1) {
-    carLicenseValue = carLicenseValue.slice(0, lastIndexFromEnd + 1) + '-' + carLicenseValue.slice(lastIndexFromEnd + 1);
-  }
+//   // Insert '-' after the last consonant if found
+//   if (lastConsonantIndex !== -1) {
+//     carLicenseValue = carLicenseValue.slice(0, lastIndexFromEnd + 1) + '-' + carLicenseValue.slice(lastIndexFromEnd + 1);
+//   }
   
-  // Use carLicenseValue for further processing or set it as needed
-  await handleCheckCarDetail();
-};
+//   // Use carLicenseValue for further processing or set it as needed
+//   await handleCheckCarDetail();
+// };
 
-// const handleCarLicense2Change = async (event: any) => {
-//   carLicense2Value = event.target.value
-//   await handleCheckCarDetail()
-// }
+const handleCarLicense2Change = async (event: any) => {
+  carLicense2Value = event.target.value
+  await handleCheckCarDetail()
+}
 
 const handleCarProvinceChange = async (event: any) => {
   await handleCheckCarDetail()
@@ -472,7 +471,7 @@ const handleDowloadFile = async (fileId: string) => {
 
 const handleCheckCarDetail = async () => {
   let carDetail: CarDetailsExtension = {
-    License: carLicenseValue,
+    License: `${carLicenseValue}-${carLicense2Value}`,
     BodyNo: carBodyNumberValue,
     EngineNo: carEngineNumberValue,
     ColorID: carColorText.value,
@@ -513,10 +512,11 @@ watch(
   ()=>{
     if(props.carDetailCache){
       carDetailCache.value = props.carDetailCache
-      carLicenseText.value = carDetailCache.value.License.replace(/-/g, '');
-      // carLicenseText.value = carDetailCache.value.License.split('-')[0]
-      // carLicense2Text.value = carDetailCache.value.License.split('-')[1]
-      carLicenseValue = carDetailCache.value.License
+      // carLicenseText.value = carDetailCache.value.License.replace(/-/g, '');
+      carLicenseText.value = carDetailCache.value.License.split('-')[0]
+      carLicense2Text.value = carDetailCache.value.License.split('-')[1]
+      carLicenseValue = carDetailCache.value.License.split('-')[0]
+      carLicense2Value = carDetailCache.value.License.split('-')[1]
 
       carProvinceText.value = carDetailCache.value.LicenseProvinceID
 

@@ -18,9 +18,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
     // Redirect to the login page and set a query parameter to redirect back after successful login
     // return navigateTo(`/login?redirectTo=${to.path}`)
   }
+  else if(token && typeof to.name === 'string' && publicRoutes.includes(to.name)) {
+    return navigateTo('/main')
+  }
 
   if (to.path === '/login') {
     // setting the redirect
     return navigateTo('/agent')
   }
+
 })

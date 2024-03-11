@@ -604,8 +604,8 @@ const updateAddress = async (e: string) => {
         PhoneNumber: getData.apiResponse.Data[index].PhoneNumber,
         TaxID: getData.apiResponse.Data[index].TaxID
       };
-      newDefaultAddress.value = `${newAddressUpdate.value.FirstName} ${newAddressUpdate.value.LastName} 
-      ${newAddressUpdate.value.PhoneNumber} ${newAddressUpdate.value.DistrictName} ${newAddressUpdate.value.SubDistrictName}
+      newDefaultAddress.value = `${newAddressUpdate.value.FirstName} ${newAddressUpdate.value.LastName} ${newAddressUpdate.value.PhoneNumber}
+      ${newAddressUpdate.value.No} ${newAddressUpdate.value.DistrictName} ${newAddressUpdate.value.SubDistrictName}
       ${newAddressUpdate.value.ProvinceName} ${newAddressUpdate.value.postalCode}`
 
       emit('changeDefaultAddress', newDefaultAddress.value)

@@ -119,6 +119,9 @@ const isSubmit = ref(false);
 const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
 
+//define store
+const storeCredit = useStoreCreditBalance()
+
 const storeSearchMatchCompulsory = useStoreSearchMatchCompulsory();
 const { MatchCompulsoryInfo } = storeToRefs(storeSearchMatchCompulsory);
 
@@ -160,6 +163,7 @@ const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
     // await loadDeliveryChanel();
     await loadDeliveryPaperType();
+    await loadPledgeCreditBalance()
   } else {
     router.push("/login");
   }
@@ -185,6 +189,19 @@ const loadDeliveryPaperType = async () => {
     }
   }
   isLoading.value = false;
+};
+
+const loadPledgeCreditBalance = async () => {
+  const response = await useRepository().pledge.getBalance();
+  const resultCheck = useUtility().responseCheck(response)
+  if (resultCheck.status === 'pass') {
+        if (Array.isArray(response.apiResponse.Data)) {
+          storeCredit.setCreditBalance(response.apiResponse.Data[0])
+        }
+  } else {
+    // data not found
+  }
+  
 };
 
 const onChangeShippingPaperType = async (deliveryType: string) => {

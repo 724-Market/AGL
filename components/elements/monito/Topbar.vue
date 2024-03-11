@@ -21,4 +21,5 @@
 </template>
 <script setup lang="ts">
   const AgentInfo = useUtility().getSession('AgentInfo') 
+  console.log("AgentInfo")
 </script>

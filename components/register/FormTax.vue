@@ -22,14 +22,7 @@
                 }" autocomplete="off" />
         </div>
         <div class="col-6">
-            <FormKit type="text" label="เลขประจำตัวผู้เสียภาษี" name="TaxID"
-                placeholder="เลขประจำตัวผู้เสียภาษี" validation="required|length:13|number"
-                :validation-messages="{
-                required: 'กรุณาใส่ข้อมูล',
-                length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 13 ตัว',
-                number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
-                }" autocomplete="off" v-model="profileData.TaxID"
-            />
+            <ElementsFormIdCard label="เลขบัตรประชาชน" name="TaxID" v-model="profileData.TaxID" />
         </div>
         <div class="col-md-6">
             <FormKit type="hidden"  name="Email"

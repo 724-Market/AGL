@@ -151,7 +151,7 @@
         </div>
       </div>
     </div>
-    <div class="accordion-item" v-if="orderDetail.DeliveryPolicyDetails">
+    <div class="accordion-item" v-if="orderDetail.DeliveryPolicyDetails || orderDetail.DeliveryMethod1">
       <h3 class="accordion-header">
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
           data-bs-target="#panel-summary-4" aria-expanded="false" aria-controls="panel-summary-4">
@@ -167,16 +167,17 @@
             </div>
             <div class="summary-item">
               <h4 class="topic">อีเมลรับกรมธรรม์</h4>
-              <p>{{ orderDetail.DeliveryPolicyDetails.AddressEmail }}</p>
+              <p v-if="orderDetail.DeliveryPolicyDetails"> {{ orderDetail.DeliveryPolicyDetails.AddressEmail }}</p>
+              <p v-else> {{ orderDetail.DeliveryMethod1.DeliveryEmail }} </p>
             </div>
-            <div class="summary-item">
+            <div class="summary-item" v-if="orderDetail.DeliveryPolicyDetails">
               <h4 class="topic">ชื่อผู้รับ</h4>
               <p>
                 {{ orderDetail.DeliveryPolicyDetails.AddressFirstName }}
                 {{ orderDetail.DeliveryPolicyDetails.AddressLastName }}
               </p>
             </div>
-            <div class="summary-item">
+            <div class="summary-item" v-if="orderDetail.DeliveryPolicyDetails">
               <h4 class="topic">ที่อยู่จัดส่ง</h4>
               <p v-if="orderDetail.DeliveryPolicyDetails">
                 {{ getFullAddressDelivery() }}
@@ -451,7 +452,7 @@ const getDeliveryText = (): string => {
       orderDetail.value.DeliveryMethod1.MethodType == "EXCLUDE" &&
       orderDetail.value.DeliveryMethod1.DeliveryType == "ELECTRONIC"
     ) {
-      text = "รับกรมธรรม์ตัวจริงทางอีเมล์";
+      text = "รับกรรมธรรมทางอิเล็กทรอนิกส์ไฟล์";
     } else if (
       orderDetail.value.DeliveryMethod1.MethodType == "ALL_AT_ONCE" &&
       orderDetail.value.DeliveryMethod1.DeliveryType == "DELIVERY"

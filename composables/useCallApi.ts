@@ -171,7 +171,7 @@ export default () => {
                 if (response.status == 200) {
                     result.status = response._data.status
                     result.message = response._data.message
-                    result.data = response._data
+                    result.data = response._data.data
                 }
             }
         })

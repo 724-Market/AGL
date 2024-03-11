@@ -3,7 +3,7 @@
     <div class="status-list">
       <div class="logo">724 Payment</div>
       <div class="status-item">
-        <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
+        <h5 class="topic">หมายเลขอ้างอิง</h5>
         <p>{{ $props.paymentInfo.orderid }}</p>
       </div>
       <div class="status-item">

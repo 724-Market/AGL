@@ -27,6 +27,10 @@ class PledgeModule {
   async paperOnhandBalanceGet(req: PledgePaperOnhandBalanceReq): Promise<IAPIResponse<PledgePaperOnhandBalanceRes[]>> {
     return await useCallApi().apiRepository<PledgePaperOnhandBalanceRes[]>(`${this.RESOURCE}/paperonhand/balance/get`, req)
   }
+
+  async getBalance() {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/credit/balance/get`, {})
+  }
 }
 
 export default PledgeModule;

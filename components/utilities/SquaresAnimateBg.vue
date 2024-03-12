@@ -27,7 +27,7 @@
 .squares-animate-bg div {
   animation: floatingSquares 25s linear infinite;
   background: hsla(0, 0%, 100%, .5);
-  border-radius: 15px;
+  border-radius: 10px;
   bottom: -150px;
   display: block;
   height: 20px;

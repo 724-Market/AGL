@@ -28,9 +28,9 @@
               </div>
 
               <FormKit type="submit" label="ยืนยันข้อมูล" name="forgotpassword-submit" :classes="{
-                input: 'btn-primary',
-                outer: 'form-actions',
-              }" :disabled="isLoading" :loading="isLoading" />
+    input: 'btn-primary',
+    outer: 'form-actions',
+  }" :disabled="isLoading" :loading="isLoading" />
             </div>
 
             <div class="card-footer">
@@ -126,7 +126,7 @@ const goNext = async () => {
 
 /////////////////////////////////////////
 // Define layout
-const layout = 'monito'
+const layout = 'minimal'
 const layoutClass = '-monito-minimal'
 const showPageSteps = false
 const showPageHeader = false

@@ -1280,7 +1280,6 @@ const handlerChangeTaxInvoice = (
   shippedPolicy: string,
   ShippingMethod: string
 ) => {
-  console.log("handlerChangeTaxInvoice")
   let validate = [false, false];
   RequestIncludeTax.value = isIncludeTax;
   TaxInvoiceAddressShipped.value = shippedPolicy;
@@ -1322,7 +1321,6 @@ const handlerChangeTaxInvoice = (
       if (insureDetail.value.IsTaxInvoiceAddressSameAsDefault == false) {
         // ไม่ใช่ default จาก ที่อยู่ผู้เอาประกัน
         if (insureDetail.value.TaxInvoiceAddress) {
-          console.log("insureDetail.value.TaxInvoiceAddress.PhoneNumber.length "+insureDetail.value.TaxInvoiceAddress.PhoneNumber.length)
           if (
             insureDetail.value.TaxInvoiceAddress.PhoneNumber.length > 0 &&
             insureDetail.value.TaxInvoiceAddress.FirstName.length > 0 &&

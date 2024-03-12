@@ -30,7 +30,7 @@
             @change-province="handlerChangeProvinceForRecieve" @change-district="handlerChangeDistrictForRecieve"
             @change-sub-district="handlerChangeSubDistrictForRecieve"
             @check-insurance-recieve="handleCheckInsuranceRecieve" @new-address-i-d="updateNewAddressID"
-            :customer-id="OrderInfo.Customer?.PersonProfile?.CustomerID"
+            :customer-id="OrderInfo.Customer?.PersonProfile?.CustomerID" :emailShare="emailShare"
             :address-default-i-d="OrderInfo.Customer?.DefaultAddress?.AddressID" :insure-full-address="insureFullAddress"
             :prefix="prefixRecieve" :delivery="delivery" :addr-province="addrProvinceForRecieve"
             :addr-district="addrDistrictForRecieve" :addr-sub-district="addrSubDistrictForRecieve"
@@ -221,6 +221,8 @@ const PaperCount = ref(0);
 const isError = ref(false);
 const messageError = ref("");
 var checkSave: globalThis.Ref<Boolean> = ref(false);
+
+const emailShare = ref("");
 
 const newAddressDeliveryID = ref("")
 const newAddressTaxID = ref("")
@@ -1100,8 +1102,11 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
   insureDetail.value = InsureDetail;
   personProfile.value = InsureDetail.PersonProfile;
   legalPersonProfile.value = InsureDetail.LegalPersonProfile;
+  // Share email value to epolicy case
+  emailShare.value = InsureDetail.PersonProfile.Email
+  
   //insureDetail.value.DefaultAddress = defaultAddress.value
-
+  //emailShare.value = insureDetail.value.LegalPersonProfile.CompanyEmail ? insureDetail.value.LegalPersonProfile.CompanyEmail : insureDetail.value.PersonProfile.Email
   // set checklist
   if (insureDetail.value) {
     if (

@@ -234,6 +234,7 @@ const props = defineProps({
   insuranceRecieveCache: {
     type: Object as () => InsuranceRecieveObject,
   },
+  emailShare: String,
 })
 
 const isLoading = ref(false);
@@ -728,6 +729,11 @@ watch(
       }
     }
 )
+watch(() => props.emailShare, (newValue) => {
+  if(emailText.value == ""){
+    emailText.value = newValue
+  }
+});
 watch(
     () => props.prefix,
     () => {

@@ -15,12 +15,13 @@ export const useAgentProfileStore = defineStore('agentProfile', {
   actions: {
     async get() {
 
-      const cached = useSessionStorage('cachedAgentProfile', null, {
-        serializer: StorageSerializers.object
-      })
+      // load_profile()
+      // load_plan()
+      // load_balance()
 
-      if (!cached.value) {
-      
+    },
+    async load_profile() {
+
         const res_profile = await useRepository().agent.getAgentProfile()
         const resultCheck_profile = useUtility().responseCheck(res_profile)
 
@@ -32,6 +33,9 @@ export const useAgentProfileStore = defineStore('agentProfile', {
           this.isAMAffiliate = res_profile.apiResponse.Data[0].IsAffiliate
         }
 
+    },
+    async load_plan() {
+
         const res_plan = await useRepository().agent.getPlanProduct()
         const resultCheck_plan = useUtility().responseCheck(res_plan)
 
@@ -40,10 +44,8 @@ export const useAgentProfileStore = defineStore('agentProfile', {
           this.AMPlanExpire = res_plan.apiResponse.Data.Main[0].ExpireDate
         }
 
-        cached.value = { ...this.$state }
-      }
-
-      return cached
+    },
+    async load_balance() {
     },
 
     $reset() {

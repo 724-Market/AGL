@@ -43,7 +43,6 @@ const route = useRoute()
 const router = useRouter();
 const affiliateProductPlanDetails = ref()
 const affiliatePaymentType = ref()
-const AgentInfo = useUtility().getSession('AgentInfo') 
 
 /////////////////////////////////////////
 // Modal Loading
@@ -76,8 +75,7 @@ const loadAffiliateProductPlan = async () => {
   const ProductPlanID = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
 
   const affiliateProductPlanlReq = {
-    ProductPlanID: ProductPlanID,
-    //AgentID: AgentInfo.AgentProfile.AgentID
+    ProductPlanID: ProductPlanID
   }
 
   const response = await useRepository().affiliate.getAffiliateProductPlan(affiliateProductPlanlReq)
@@ -99,8 +97,7 @@ const create_order = async () => {
   const ProductPlanID = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
 
   const affiliateProductPlanlReq = {
-    ProductPlanID: ProductPlanID,
-    //AgentID: AgentInfo.AgentProfile.AgentID
+    ProductPlanID: ProductPlanID
   }
 
   const response2 = await useRepository().affiliate.getAffiliateProductPlan(affiliateProductPlanlReq)

@@ -44,12 +44,9 @@
 
 <script setup>
 /////////////////////////////////////////
-// Import stores
-import { useAgentProfileStore } from '~/stores/user/agentProfile'
-
 // Use stores
-const agentProfileStore = useAgentProfileStore()
-const { AMNo, AMLevel, AMPlanExpire } = storeToRefs(agentProfileStore)
+const agentInfoStore = useAgentInfoStore()
+const { AMNo, AMLevel, AMPlanExpire } = storeToRefs(agentInfoStore)
 
 /////////////////////////////////////////
 // Import

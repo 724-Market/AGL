@@ -1,5 +1,5 @@
 <template>
-  <div class="card-shortcut" :class="{ 'is-danger': remaining <= 0, 'is-success': remaining > 0 }">
+  <div class="card-shortcut" :class="{ 'is-danger': AMAvailableBalance <= 0, 'is-success': AMAvailableBalance > 0 }">
     <div class="shortcut-wrapper">
       <div class="shortcut-figure">
         <figure class="figure">
@@ -8,7 +8,7 @@
       </div>
       <div class="shortcut-info">
         <h5 class="topic">เงินมัดจำที่ใช้ได้ <small>(บาท)</small></h5>
-        <span class="value">{{ useUtility().getCurrency(remaining, 2) }}</span>
+        <span class="value">{{ useUtility().getCurrency(AMAvailableBalance, 2) }}</span>
       </div>
       <div class="shortcut-action">
         <button type="button" class="btn-secondary btn-open-wallet" @click="handlerOpenWallet(true)">
@@ -53,7 +53,12 @@ const showWallet = ref(false);
 //define store
 const storeCredit = useStoreCreditBalance()
 
+/////////////////////////////////////////
+// Use stores
+const agentInfoStore = useAgentInfoStore()
+const { AMAvailableBalance } = storeToRefs(agentInfoStore)
 
+/////////////////////////////////////////
 const onLoad = onMounted(async () => {
   // Hidden to implement pledge 
   // await loadPledgeCreditBalance()
@@ -67,7 +72,7 @@ const handlerOpenWallet = (open: boolean) => {
 const handleCloseWallet = async (status: boolean, refresh: boolean) => {
   if (refresh) {
     isLoading.value = true;
-    await loadPledgeCreditBalance();
+    // await loadPledgeCreditBalance();
     isLoading.value = false;
   }
   showWallet.value = false;
@@ -93,7 +98,7 @@ const handleTopupConfirm = async (
     paymentConfirm.value = response.apiResponse.Data[0];
 
     const reqGateway: PaymentGatewayRequest = {
-      URL: "/payment", 
+      URL: "/payment",
       payment_type: "bill_payment",
       endpoint_code: "credit_payment",
       orderid: paymentConfirm.value.CreditOrderNo,

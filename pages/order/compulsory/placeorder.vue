@@ -955,7 +955,6 @@ const handlerChangeDistrictForRecieve = async (e: string) => {
   }
 };
 const handlerChangeDistrictForTax = async (e: string) => {
-  console.log('handlerChangeDistrictForTax', e)
   if (e) {
     isLoading.value = true;
     addrSubDistrictForTax.value = await loadSubDistrict(e);
@@ -1377,7 +1376,6 @@ const handlerChangeTaxInvoice = (
   } else {
     validate = [true, true];
   }
-
   if (validate.filter((x) => x).length == 2) {
     checklist.value[3].className = "current";
   } else {

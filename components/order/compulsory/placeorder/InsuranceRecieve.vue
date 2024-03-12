@@ -732,6 +732,8 @@ watch(
 watch(() => props.emailShare, (newValue) => {
   if(emailText.value == ""){
     emailText.value = newValue
+    emailValue = newValue
+    handleCheckInsuranceRecieve()
   }
 });
 watch(

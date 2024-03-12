@@ -1,7 +1,7 @@
 <template>
     <div class="col">
         <div class="footer">
-            <div class="available">Footer area</div>
+            <p>Made with ❤︎ by <b>724 Market</b></p>
         </div>
     </div>
 </template>

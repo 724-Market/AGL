@@ -74,6 +74,10 @@
 <script setup lang="ts">
 
 /////////////////////////////////////////
+// Import stores
+import { useAgentProfileStore } from '~/stores/user/agentProfile'
+
+/////////////////////////////////////////
 // Define router and route
 const router = useRouter()
 
@@ -186,41 +190,16 @@ const submitLogin = async (formData: any) => {
 
 }
 
-const getAgentProfile = async () => {
-
-  const response = await useRepository().agent.getAgentProfile()
-  const resultCheck = useUtility().responseCheck(response)
-
-  if (resultCheck.status === 'pass') {
-    const AgentInfo = useUtility().getSession('AgentInfo')
-    if (Array.isArray(response.apiResponse.Data)) {
-      AgentInfo.AgentProfile = response.apiResponse.Data[0]
-    }
-    useUtility().setSession('AgentInfo', AgentInfo)
-  }
-
-}
-
-const getPlanProduct = async () => {
-
-  const response = await useRepository().agent.getPlanProduct()
-  const resultCheck = useUtility().responseCheck(response)
-
-  if (resultCheck.status === 'pass') {
-    const AgentInfo = useUtility().getSession('AgentInfo')
-    AgentInfo.PlanProduct = response.apiResponse.Data
-    useUtility().setSession('AgentInfo', AgentInfo)
-  }
-
-}
-
 /////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
 
-  useUtility().setSession('AgentInfo', { AgentProfile: [], PlanProduct: [] })
-  getAgentProfile()
-  getPlanProduct()
+  // Use stores
+  const agentProfileStore = useAgentProfileStore()
+  await useAsyncData(agentProfileStore.load_profile)
+  await useAsyncData(agentProfileStore.load_plan)
+  //await useAsyncData(agentProfileStore.load_balance)
+
   router.push({ path: '/main' })
 
 }

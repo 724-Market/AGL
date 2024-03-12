@@ -51,35 +51,61 @@ const paymentInfo = ref<paymentInfoData>({})
 
 const loadPaymentDetail = async () => {
 
-  const reqGateway = {
-    URL: "/inquiry",
-    refno: route.params.id,
-  };
+  const getAffiliatePaymentReq = {
+    PaymentNo: route.params.id
+  }
 
-  const responseGateway = await useRepository().payment.paymentGateway(reqGateway);
+  const response = await useRepository().affiliate.getAffiliatePayment(getAffiliatePaymentReq)
+  const resultCheck = useUtility().responseCheck(response)
 
-  if(responseGateway.status == "0000" && responseGateway.data.endpoint_code == "affiliate_payment") {
-    if(responseGateway.data.payment_status == 'P') {
-      paymentInfo.value = {
-        orderid: responseGateway.data.refno2,
-        amount: responseGateway.data.amount,
-        payment_expired: responseGateway.data.payment_expired,
-        payment_qr: responseGateway.data.payment_qr,
-        refno1: responseGateway.data.refno1,
+  if (resultCheck.status == 'pass') {
+    if(response.apiResponse.Data?.Payment[0].IsPending) {
+
+      const reqGateway = {
+        URL: "/inquiry",
+        refno: route.params.id,
+      };
+
+      const responseGateway = await useRepository().payment.paymentGateway(reqGateway);
+      //console.log(responseGateway)
+
+      if(responseGateway.status == "0000" && responseGateway.data.endpoint_code == "affiliate_payment") {
+
+        if(responseGateway.data.payment_status == 'P') {
+
+          paymentInfo.value = {
+            orderid: responseGateway.data.refno2,
+            amount: responseGateway.data.amount,
+            payment_expired: responseGateway.data.payment_expired,
+            payment_qr: responseGateway.data.payment_qr,
+            refno1: responseGateway.data.refno1,
+          }
+
+          openLoadingDialog(false)
+
+        }
+        else {
+          router.push({ path: '/payment/affiliate/status-' + responseGateway.data.refno2 })
+        }
+
       }
+      else {
+        return navigateTo('/main')
+      }
+
     }
     else {
-      router.push({ path: '/payment/affiliate/status-' + responseGateway.data.refno2 })
+      router.push({ path: '/payment/affiliate/status-' + response.apiResponse.Data?.Payment[0].PaymentNo })
     }
   }
   else {
-    router.push({ path: '/main' })
+    return navigateTo('/main')
   }
 
 }
 
 onMounted(async () => {
-  //openLoadingDialog(true)
+  openLoadingDialog(true)
   await loadPaymentDetail()
   //openLoadingDialog(false)
 })

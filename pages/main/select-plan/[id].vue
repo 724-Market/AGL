@@ -42,6 +42,7 @@ import settingData from "~/shared/data/setting-data";
 const route = useRoute()
 const router = useRouter();
 const affiliateProductPlanDetails = ref()
+const affiliatePaymentType = ref()
 const AgentInfo = useUtility().getSession('AgentInfo') 
 
 /////////////////////////////////////////
@@ -76,7 +77,7 @@ const loadAffiliateProductPlan = async () => {
 
   const affiliateProductPlanlReq = {
     ProductPlanID: ProductPlanID,
-    AgentID: AgentInfo.AgentProfile.AgentID
+    //AgentID: AgentInfo.AgentProfile.AgentID
   }
 
   const response = await useRepository().affiliate.getAffiliateProductPlan(affiliateProductPlanlReq)
@@ -96,47 +97,77 @@ const create_order = async () => {
   openLoadingDialog(true)
   
   const ProductPlanID = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
-  
-  const createAffiliateOrderReq = {
+
+  const affiliateProductPlanlReq = {
     ProductPlanID: ProductPlanID,
-    PaymentType: "BILL_PAYMENT", 
-    IsReNew: false, 
-    IsUseRemain: false, 
-    IsConsent: true 
+    //AgentID: AgentInfo.AgentProfile.AgentID
   }
 
-  const response = await useRepository().affiliate.createAffiliateOrder(createAffiliateOrderReq)
-  const resultCheck = useUtility().responseCheck(response)
+  const response2 = await useRepository().affiliate.getAffiliateProductPlan(affiliateProductPlanlReq)
+  const resultCheck2 = useUtility().responseCheck(response2)
 
-  if (resultCheck.status == 'pass') {
-
-    //console.log(response)
-
-    const reqGateway = {
-      URL: "/payment",
-      payment_type: 'bill_payment',
-      endpoint_code: "affiliate_payment",
-      orderid: response.apiResponse.Data.OrderNo,
-      refno: response.apiResponse.Data.PaymentNo,
-      expire_type: settingData.paymentGateWayExpireType,
-      expire_value: settingData.paymentGateWayExpireValue,
-      amount: response.apiResponse.Data.GrandAmount,
-    };
-
-    const responseGateway = await useRepository().payment.gateway(reqGateway);
-
-    if(responseGateway.status == "0000") {
-      // console.log(responseGateway)
-      router.push({ path: '/payment/affiliate/qrcode-' + response.apiResponse.Data.PaymentNo })
-    } 
-    else {
-      alert(responseGateway.message)
+  if(resultCheck2.status == 'pass') {
+    
+    //affiliateProductPlanDetails.value = response.apiResponse.Data
+    if(response2.apiResponse.Data.Order.GrandAmount==0) {
+      affiliatePaymentType.value = 'FREE'
     }
+    else {
+      affiliatePaymentType.value = 'BILL_PAYMENT'
+    }
+    
+    const createAffiliateOrderReq = {
+      ProductPlanID: ProductPlanID,
+      PaymentType: affiliatePaymentType,
+      IsReNew: false, 
+      IsUseRemain: false, 
+      IsConsent: true 
+    }
+
+    const response = await useRepository().affiliate.createAffiliateOrder(createAffiliateOrderReq)
+    const resultCheck = useUtility().responseCheck(response)
+
+    if (resultCheck.status == 'pass') {
+
+      //console.log(response)
+      if(response.apiResponse.Data.PaymentType=='FREE') {
+        router.push({ path: '/payment/affiliate/status-' + response.apiResponse.Data.PaymentNo })
+      }
+      else {
+
+        const reqGateway = {
+          URL: "/payment",
+          payment_type: 'bill_payment',
+          endpoint_code: "affiliate_payment",
+          orderid: response.apiResponse.Data.OrderNo,
+          refno: response.apiResponse.Data.PaymentNo,
+          expire_type: settingData.paymentGateWayExpireType,
+          expire_value: settingData.paymentGateWayExpireValue,
+          amount: response.apiResponse.Data.GrandAmount,
+        };
+
+        const responseGateway = await useRepository().payment.gateway(reqGateway);
+
+        if(responseGateway.status == "0000") {
+          // console.log(responseGateway)
+          router.push({ path: '/payment/affiliate/qrcode-' + response.apiResponse.Data.PaymentNo })
+        } 
+        else {
+          alert(responseGateway.message)
+        }
+
+      }
+
+    }
+    else {
+      alert('ไม่สามารถทำรายการได้')
+      openLoadingDialog(false)
+    }
+
 
   }
   else {
-    alert('ไม่สามารถทำรายการได้')
-    openLoadingDialog(false)
+    router.push("/main")
   }
 
 }

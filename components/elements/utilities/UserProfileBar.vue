@@ -8,13 +8,16 @@
             <!-- <img src="/uploads/team-5.jpg" alt="" /> -->
           </figure>
           <div class="info">
-            <h3 class="name">{{ props.agentInfo.AgentProfile.UpdateUser }}</h3>
-            <span class="level"><i class="fa-duotone fa-sparkles"></i> {{ agentLevel }}</span>
+            <h3 class="name">{{ AMNo }}</h3>
+            <span class="level"><i class="fa-duotone fa-sparkles"></i> {{ AMLevel }}</span>
+            <span class="affiliate is-active" v-if="isAMAffiliate"><i
+                class="fa-duotone fa-badge-check fa-swap-opacity"></i> Affiliate</span>
+            <span class="affiliate" v-else><i class="fa-duotone fa-badge-check"></i> Affiliate</span>
             <ul class="profile-meta">
               <!-- <li>{{ props.agentInfo.PlanProduct.Main[0].ProductPlanName }}</li> -->
-              <li>AM012311334</li>
+              <li>{{ AMPlanName }}</li>
               <!-- <li>• หมดอายุ {{ useUtility().formatDate(props.agentInfo.PlanProduct.Main[0].ExpireDate, "D MMM BBBB") }}</li> -->
-              <li>• หมดอายุ 19 มีนาคม 2567</li>
+              <li>• หมดอายุ {{ useUtility().formatDate(AMPlanExpire, 'ShortDate') }}</li>
               <li class="link">( <a href="#" title="ต่ออายุ">ต่ออายุ</a> | <a href="#" title="อัปเกรด">อัปเกรด</a> )
               </li>
             </ul>
@@ -31,21 +34,17 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps(['agentInfo'])
+/////////////////////////////////////////
+// Import stores
+import { useAgentProfileStore } from '~/stores/user/agentProfile'
+import { useAgentPlanStore } from '~/stores/user/agentPlan'
 
-// Computed property to determine the class based on ModelAgent
-const agentLevel = computed(() => {
-  switch (props.agentInfo.AgentProfile.ModelAgent) {
-    case '1':
-      return 'Level I'
-    case '2':
-      return 'Level II'
-    case '3':
-      return 'Level III'
-    case '4':
-      return 'Level IV'
-    default:
-      return 'Level V'
-  }
-})
+// Use stores
+const agentProfileStore = useAgentProfileStore()
+await useAsyncData(agentProfileStore.fetch)
+const { AMType, AMId, AMNo, AMLevel, isAMAffiliate } = storeToRefs(agentProfileStore)
+
+const agentPlanStore = useAgentPlanStore()
+await useAsyncData(agentPlanStore.fetch)
+const { AMPlanName, AMPlanExpire } = storeToRefs(agentPlanStore)
 </script>

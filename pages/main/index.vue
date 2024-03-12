@@ -5,7 +5,7 @@
     <div class="row">
       <div class="col col-main">
 
-        <ElementsUtilitiesUserProfileBar :agent-info="AgentInfo" />
+        <ElementsUtilitiesUserProfileBar />
 
         <div id="checkpoints" class="card-checkpoint-stack">
 
@@ -87,7 +87,7 @@ const router = useRouter();
 // Define import
 const affiliateProductPlanList = ref()
 const affiliateProductPlanDetails = ref()
-const AgentInfo = useUtility().getSession('AgentInfo') 
+const AgentInfo = useUtility().getSession('AgentInfo')
 
 /////////////////////////////////////////
 // Modal Loading

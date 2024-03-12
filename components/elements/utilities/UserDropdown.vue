@@ -7,7 +7,7 @@
           <!-- img(src="/uploads/team-5.jpg", alt="") -->
         </figure>
         <div class="info">
-          <h3 class="name">{{ AMNo }}</h3>
+          <h5 class="name">{{ AMNo }}</h5>
           <span class="level"><i class="fa-duotone fa-sparkles"></i> {{ AMLevel }}</span>
         </div>
       </div>

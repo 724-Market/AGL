@@ -167,7 +167,7 @@ const selectPlan = async (id: string) => {
 /////////////////////////////////////////
 // Define layout
 const layout = 'monito'
-const layoutClass = ''
+const layoutClass = '-monito-headless'
 const showPageSteps = false
 const showPageHeader = false
 const showLogoHeader = false

@@ -955,7 +955,6 @@ const handlerChangeDistrictForRecieve = async (e: string) => {
   }
 };
 const handlerChangeDistrictForTax = async (e: string) => {
-  console.log('handlerChangeDistrictForTax', e)
   if (e) {
     isLoading.value = true;
     addrSubDistrictForTax.value = await loadSubDistrict(e);
@@ -1281,6 +1280,7 @@ const handlerChangeTaxInvoice = (
   shippedPolicy: string,
   ShippingMethod: string
 ) => {
+  console.log("handlerChangeTaxInvoice")
   let validate = [false, false];
   RequestIncludeTax.value = isIncludeTax;
   TaxInvoiceAddressShipped.value = shippedPolicy;
@@ -1322,6 +1322,7 @@ const handlerChangeTaxInvoice = (
       if (insureDetail.value.IsTaxInvoiceAddressSameAsDefault == false) {
         // ไม่ใช่ default จาก ที่อยู่ผู้เอาประกัน
         if (insureDetail.value.TaxInvoiceAddress) {
+          console.log("insureDetail.value.TaxInvoiceAddress.PhoneNumber.length "+insureDetail.value.TaxInvoiceAddress.PhoneNumber.length)
           if (
             insureDetail.value.TaxInvoiceAddress.PhoneNumber.length > 0 &&
             insureDetail.value.TaxInvoiceAddress.FirstName.length > 0 &&
@@ -1369,6 +1370,7 @@ const handlerChangeTaxInvoice = (
           } else {
             validate[1] = false;
           }
+          console.log("ShippingMethod "+ShippingMethod)
         }
       } else {
         validate[1] = true;
@@ -1377,12 +1379,13 @@ const handlerChangeTaxInvoice = (
   } else {
     validate = [true, true];
   }
-
+  console.log("validate "+validate)
   if (validate.filter((x) => x).length == 2) {
     checklist.value[3].className = "current";
   } else {
     checklist.value[3].className = "";
   }
+  console.log("checklist.value[3].className "+checklist.value[3].className)
 };
 const handlerCheckSave = (check: boolean) => {
   checkSave.value = check;

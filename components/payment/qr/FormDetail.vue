@@ -34,8 +34,10 @@
         <i class="fa-solid fa-download"></i>บันทึก QR
       </button>
 
-      <div class="qr-action">
-        <div class="notice-info">
+      <div class="qr-action" v-if="isCheckPaymentStatus">
+        <UtilitiesLoading :waiting-text="waitingText" v-if="isWaitingPaymentStatus" />
+
+        <div class="notice-info" v-else>
           <p>หลังจากสแกนชำระเงินแล้ว หากท่านต้องการตรวจสอบสถานะการชำระเงิน ท่านสามารถกดปุ่มด้านล่างเพื่อตรวจสอบสถานะได้
           </p>
           <button type="button" class="btn-info" @click="checkPayment">
@@ -57,6 +59,8 @@ import type {
 
 const props = defineProps(['paymentInfo'])
 const waitingText = ref('กำลังตรวจสอบข้อมูลกับธนาคาร')
+
+var isCheckPaymentStatus = ref(false)
 var isWaitingPaymentStatus = ref(false)
 
 const downloadImage = () => {
@@ -67,26 +71,31 @@ const downloadImage = () => {
 
 const checkPayment = async () => {
 
+    isWaitingPaymentStatus.value = true
+
     const router = useRouter()
-    const req: PaymentGetRequest = {
-      PaymentNo: props.paymentInfo.orderid,
+    const getAffiliatePaymentReq = {
+      PaymentNo: props.paymentInfo.orderid
     }
 
-    const response = await useRepository().payment.get(req)
-    if (
-      response.apiResponse.Status &&
-      response.apiResponse.Status == "200" &&
-      response.apiResponse.Data
-    ) {
-      console.log(response)
-      alert('Payment Success')
-      //router.push("/order/compulsory/thanks")
+    const response = await useRepository().affiliate.getAffiliatePayment(getAffiliatePaymentReq)
+    const resultCheck = useUtility().responseCheck(response)
+
+    if (resultCheck.status == 'pass') {
+      if(!response.apiResponse.Data?.Payment[0].IsPending) {
+        router.push({ path: '/payment/affiliate/status-' + response.apiResponse.Data?.Payment[0].PaymentNo })
+      }
     }
     else {
-      console.log(response)
-      alert('Payment Pending')
+      return navigateTo('/main')
     }
 
 }
+
+onMounted(async () => {
+  setTimeout(() => {
+    isCheckPaymentStatus.value = true
+  }, 10000)
+})
 
 </script>

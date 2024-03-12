@@ -158,7 +158,7 @@
                           @change="handlerChangePersonalProfile" />
                       </div>
                       <div class="col-6">
-                        <ElementsFormPhoneNumber autocomplete="off" v-model="personProfile.PhoneNumber"
+                        <ElementsFormPhoneNumber label="Tel" autocomplete="off" v-model="personProfile.PhoneNumber"
                           @change="handlerChangePersonalProfile"></ElementsFormPhoneNumber>
                        
                       </div>

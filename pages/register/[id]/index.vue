@@ -20,9 +20,9 @@
               <div class="form-area">
 
                 <FormKit type="togglebuttons" name="isSKMember" enforced :value="true" :options="[
-                  { label: 'เป็นสมาชิก', value: true },
-                  { label: 'ไม่ได้เป็นสมาชิก', value: false },
-                ]" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+    { label: 'เป็นสมาชิก', value: true },
+    { label: 'ไม่ได้เป็นสมาชิก', value: false },
+  ]" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
 
                 <div class="option" v-if="value && value.isSKMember === true">
 
@@ -39,15 +39,23 @@
               </div>
 
               <FormKit type="submit" label="ตรวจสอบสถานะสมาชิก" name="login-submit" :classes="{
-                input: 'btn-primary',
-                outer: 'form-actions',
-              }" :disabled="isLoading" :loading="isLoading" />
+    input: 'btn-primary',
+    outer: 'form-actions',
+  }" :disabled="isLoading" :loading="isLoading" />
+            </div>
+
+            <div class="card-footer">
+              <p>
+                เคยลงทะเบียนแล้ว?
+                <NuxtLink to="/login" title="กลับไปหน้าเข้าสู่ระบบ">กลับไปหน้าเข้าสู่ระบบ</NuxtLink>
+              </p>
             </div>
 
             <div class="card-footer" v-if="Referral">
               <p>ผู้แนะนำของท่าน<br>
               <div class="recommender">
-                <figure class="avatar"><!--<img src="https://css.agentlove.club/uploads/team-5.jpg" alt="">--></figure>
+                <figure class="avatar"><!--<img src="https://css.agentlove.club/uploads/team-5.jpg" alt="">-->
+                </figure>
                 <div class="info">
                   <h5 class="name">{{ agentReferralDetails.FirstName }} {{ agentReferralDetails.LastName }}</h5>
                   <span class="code">AM{{ agentReferralDetails.AgentID }}</span>

@@ -14,11 +14,8 @@
 
       <ElementsUtilitiesShortcutDropdown />
 
-      <ElementsUtilitiesUserDropdown :agent-info="AgentInfo"/>
+      <ElementsUtilitiesUserDropdown />
 
     </nav>
   </div>
 </template>
-<script setup lang="ts">
-  const AgentInfo = useUtility().getSession('AgentInfo') 
-</script>

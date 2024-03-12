@@ -10,10 +10,15 @@
               <figure class="status-icon">
                 <div class="icon check success"></div>
               </figure>
-              <h4 class="title">ชำระเงินเรียบร้อยแล้ว</h4>
+              <h4 class="title" v-if="paymentInfo.amount > 0">ชำระเงินเรียบร้อยแล้ว</h4>
+              <h4 class="title" v-else>ทำรายการเรียบร้อยแล้ว</h4>
               <div class="status-item text-info text-big">
                 <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
-                <p>{{ paymentInfo.orderid }}</p>
+                <p>{{ paymentInfo.order_no }}</p>
+              </div>
+              <div class="status-item text-info text-big">
+                <h5 class="topic">หมายเลขอ้างอิง</h5>
+                <p>{{ paymentInfo.payment_no }}</p>
               </div>
               <div class="status-item">
                 <h5 class="topic">จำนวนเงิน</h5>
@@ -45,31 +50,19 @@
               <h4 class="title">ทำรายการไม่สำเร็จ</h4>
               <div class="status-item text-info text-big">
                 <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
-                <p>{{ paymentInfo.orderid }}</p>
+                <p>{{ paymentInfo.order_no }}</p>
+              </div>
+              <div class="status-item text-info text-big">
+                <h5 class="topic">หมายเลขอ้างอิง</h5>
+                <p>{{ paymentInfo.payment_no }}</p>
               </div>
               <div class="status-item">
                 <h5 class="topic">จำนวนเงิน</h5>
                 <p>{{ useUtility().getCurrency(paymentInfo.amount) }} บาท</p>
               </div>
-              <div class="status-item">
-                <h5 class="topic">วันที่ทำรายการ</h5>
-                <p>{{ useUtility().formatDate(paymentInfo.payment_date, "D MMMM BBBB HH:mm:ss") }}</p>
-              </div>
               <div class="status-item text-danger">
                 <h5 class="topic">สถานะ</h5>
-                <p v-if="paymentInfo.payment_code == 'cancel'">ยกเลิกรายการ</p>
-                <p v-else-if="paymentInfo.payment_code == 'expired'">หมดอายุการชำระเงิน</p>
-                <p v-else>ดำเนินการไม่สำเร็จ</p>
-              </div>
-              <div class="status-info">
-                <!--
-                <div class="notice-danger">
-                    <i class="fa-solid fa-circle-xmark"></i> ธนาคารแจ้งว่าบัตรเครดิตถูกระงับการใช้งาน
-                </div>
-                -->
-                <div class="status-action">
-                  <NuxtLink class="btn btn-warning">ติดต่อเจ้าหน้าที่</NuxtLink>
-                </div>
+                <p>ยกเลิกรายการ</p>
               </div>
             </div>
           </div>
@@ -124,7 +117,8 @@ const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = fa
 
 interface paymentInfoData {
   payment_status?: string,
-  orderid?: string,
+  order_no?: string,
+  payment_no?: string,
   amount?: Number,
   payment_code?: string,
   payment_date?: string,
@@ -136,48 +130,57 @@ const loadPaymentDetail = async () => {
 
   if (typeof route.params.id === 'string') {
 
-    const reqGateway = {
-      URL: "/inquiry",
-      refno: route.params.id,
-    };
+    const getAffiliatePaymentReq = {
+      PaymentNo: route.params.id
+    }
 
-    console.log(route.params.id)
-    const responseGateway = await useRepository().payment.paymentGateway(reqGateway);
-    console.log(responseGateway.status)
+    const response = await useRepository().affiliate.getAffiliatePayment(getAffiliatePaymentReq)
+    const resultCheck = useUtility().responseCheck(response)
 
-    if(responseGateway.status == "0000" && responseGateway.data.endpoint_code == "affiliate_payment") {
+    if (resultCheck.status == 'pass') {
 
-      if(responseGateway.data.payment_status != 'P') {
-
+      //console.log(response)
+      if(response.apiResponse.Data?.Payment[0].IsSuccess) {  
         paymentInfo.value = {
-          payment_status: responseGateway.data.payment_status,
-          orderid: responseGateway.data.refno2,
-          amount: responseGateway.data.amount,
-          payment_code: responseGateway.data.payment_code,
-          payment_date: responseGateway.data.payment_date,
+          payment_status: 'S',
+          order_no: response.apiResponse.Data?.Payment[0].OrderNo,
+          payment_no: response.apiResponse.Data?.Payment[0].PaymentNo,
+          amount: response.apiResponse.Data?.Payment[0].GrandAmount,
+          payment_code: '',
+          payment_date: response.apiResponse.Data?.Payment[0].PaymentDate,
         }
+      }
+      else if(response.apiResponse.Data?.Payment[0].IsCancel) {  
+        paymentInfo.value = {
+          payment_status: 'C',
+          order_no: response.apiResponse.Data?.Payment[0].OrderNo,
+          payment_no: response.apiResponse.Data?.Payment[0].PaymentNo,
+          amount: response.apiResponse.Data?.Payment[0].GrandAmount,
+          payment_code: '',
+          payment_date: response.apiResponse.Data?.Payment[0].PaymentDate,
+        }
+      }
+      else if(response.apiResponse.Data?.Payment[0].IsPending) {  
+        router.push({ path: '/payment/affiliate/qrcode-' + response.apiResponse.Data?.Payment[0].PaymentNo })
+      }
 
-      }
-      else {
-        router.push({ path: '/main' })
-      }
+      openLoadingDialog(false)
 
     }
     else {
-      router.push({ path: '/main' })
+      return navigateTo('/main')
     }
 
   }
   else {
-    router.push({ path: '/main' })
+    return navigateTo('/main')
   }
 
 }
 
 onMounted(async () => {
-  //openLoadingDialog(true)
+  openLoadingDialog(true)
   await loadPaymentDetail()
-  //openLoadingDialog(false)
 })
 
 // Define layout

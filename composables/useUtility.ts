@@ -25,7 +25,7 @@ export default () => {
         Class: string;
         Type: string;
     }
-    const getClassFromStatusOrder = (statusCode: string | undefined): StatusInfo => {
+    const getStatusOrder = (statusCode: string | undefined): StatusInfo => {
         switch (statusCode) {
             case 'Success':
                 return { Class: "is-success", Type: "success" };

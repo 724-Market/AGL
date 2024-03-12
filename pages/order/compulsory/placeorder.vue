@@ -1106,7 +1106,6 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
   emailShare.value = InsureDetail.PersonProfile.Email
   
   //insureDetail.value.DefaultAddress = defaultAddress.value
-  //emailShare.value = insureDetail.value.LegalPersonProfile.CompanyEmail ? insureDetail.value.LegalPersonProfile.CompanyEmail : insureDetail.value.PersonProfile.Email
   // set checklist
   if (insureDetail.value) {
     if (

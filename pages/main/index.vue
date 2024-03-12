@@ -21,54 +21,6 @@
 
         <ElementsUtilitiesPackagesCards :planList="affiliateProductPlanList" @on-select-package="handleSelectPackage" />
 
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">แพ็คเก็จ</h3>
-          </div>
-          <div class="card-body">
-
-            <div v-for="(value, key) in affiliateProductPlanList" :key="key">
-              <div><b><u>Title : {{ value.Plan.Title }}</u></b></div>
-              <div>ID : {{ value.Plan.ID }}</div>
-              <div>Code : {{ value.Plan.Code }}</div>
-              <div>Name : {{ value.Plan.Name }}</div>
-              <div>Details : {{ value.Plan.Details }}</div>
-              <div>Price : {{ value.Plan.Price }}</div>
-              <div>PeriodDay : {{ value.Plan.PeriodDay }}</div>
-              <div>PeriodMinute : {{ value.Plan.PeriodMinute }}</div>
-              <div>Sequence : {{ value.Plan.Sequence }}</div>
-              <div>Tier : {{ value.Plan.Tier }}</div>
-              <div>MinModelAgentNo : {{ value.Plan.MinModelAgentNo }}</div>
-              <div>IsMain : {{ value.Plan.IsMain }}</div>
-              <div>IsPublic : {{ value.Plan.IsPublic }}</div>
-              <div>IsActive : {{ value.Plan.IsActive }}</div>
-              <div>IsRecommend : {{ value.Plan.IsRecommend }}</div>
-              <div>IsLicenseRequire : {{ value.Plan.IsLicenseRequire }}</div>
-              <div>IsOneTime : {{ value.Plan.IsOneTime }}</div>
-              <br>
-              <b>Feature</b>
-              <br>
-              <template v-for="(value2, key2) in value.Feature" :key="key2">
-                <li>{{ value2.Name }}</li>
-              </template>
-              <b>Benefit</b>
-              <br>
-
-              <template v-for="(value3, key3) in value.Benefit" :key="key3">
-                <li>{{ value3.Name }}</li>
-              </template>
-              <br>
-              <b>
-                <button type="button" class="btn-info" @click="selectPlan(value.Plan.ID)">เลือก</button>
-              </b>
-              <br>
-              ------------------------------
-              <br>
-            </div>
-
-          </div>
-        </div>
-
       </div>
     </div>
 
@@ -120,12 +72,12 @@ const handleSelectPackage = (payload: any) => {
   openLoadingDialog(true)
 
   const { planId, planCode } = payload
+  router.push({ path: '/main/select-plan/' + planId })
 
-  new Promise((r) => setTimeout(r, 3000))
+  // new Promise((r) => setTimeout(r, 3000))
+  // alert(`Selected: Plan ID - ${planId}, Plan Code - ${planCode}`)
+  // openLoadingDialog(false)
 
-  alert(`Selected: Plan ID - ${planId}, Plan Code - ${planCode}`)
-
-  openLoadingDialog(false)
 }
 
 /////////////////////////////////////////

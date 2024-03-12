@@ -39,7 +39,6 @@ const router = useRouter();
 // Define import
 const affiliateProductPlanList = ref()
 const affiliateProductPlanDetails = ref()
-const AgentInfo = useUtility().getSession('AgentInfo')
 
 /////////////////////////////////////////
 // Modal Loading

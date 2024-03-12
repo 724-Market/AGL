@@ -49,7 +49,6 @@ import { useAgentProfileStore } from '~/stores/user/agentProfile'
 
 // Use stores
 const agentProfileStore = useAgentProfileStore()
-await useAsyncData(agentProfileStore.get)
 const { AMNo, AMLevel, AMPlanExpire } = storeToRefs(agentProfileStore)
 
 /////////////////////////////////////////

@@ -41,7 +41,7 @@ export default () => {
     
     };
 
-    const getStatusOrder = (statusCode: string | undefined): string => {
+    const getClassFromStatusOrder = (statusCode: string | undefined): string => {
         if (statusCode === 'Success') {
             return 'is-success'
         } if (statusCode === 'CancelByUser') {

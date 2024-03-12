@@ -6,10 +6,9 @@
         <div class="card-body">
 
           <section class="timeline is-vertical">
-            <p>{{classValue.Class}}</p>
+
             <template v-if="orderTrack" v-for="(item, i) in orderTrack.slice($props.indexSequence, orderTrack.length)"
               :key="i">
-
               <!-- Reverse the Child array outside of v-for -->
               <template v-if="item.Child && item.Child.length > 0">
                 <template v-if="i !== 0 || (i === 0 && $props.isShowchild)">
@@ -96,9 +95,6 @@ const props = defineProps({
   IconText: String,
   IconPshow: Boolean
 })
-// Example usage:
-const statusCode = "Success";
-const classValue = useUtility().getClassFromStatusOrder(statusCode); // Returns "is-success"
 
 /////////////////////////////////////////
 // On component mount, set the value of orderTrack based on props

@@ -32,7 +32,7 @@
                             <div class="summary-item">
                                 <h4 class="topic">วันเดือนปีเกิด</h4>
                                 <p>
-                                    {{ getBirthDate(orderGet.AssuredDetails.BirthDate) }} ({{
+                                  {{ useUtility().formatDate(orderGet.AssuredDetails.BirthDate, "FullDate") }} ({{
                                         getAge(orderGet.AssuredDetails.BirthDate)
                                     }}
                                     ปี)
@@ -134,8 +134,8 @@
                             <div class="summary-item">
                                 <h4 class="topic">กรมธรรม์คุ้มครอง</h4>
                                 <p>
-                                    {{ getFormatDate(orderGet.InsureDetails.ActiveStartDate) }} -
-                                    {{ getFormatDate(orderGet.InsureDetails.ActiveEndDate) }} ({{
+                                  {{ useUtility().formatDate(orderGet.InsureDetails.ActiveStartDate, "ShortDate") }} -
+                                  {{ useUtility().formatDate(orderGet.InsureDetails.ActiveEndDate, "ShortDate") }} ({{
                                         getDayOfYear()
                                     }}
                                     วัน)

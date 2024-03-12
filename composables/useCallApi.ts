@@ -171,7 +171,7 @@ export default () => {
                 if (response.status == 200) {
                     result.status = response._data.status
                     result.message = response._data.message
-                    result.data = response._data
+                    result.data = response._data.data
                 }
             }
         })
@@ -235,8 +235,8 @@ export default () => {
             })
         }
         else {
-            const { data, pending, error, refresh } = await useFetch('/api/aglove?url=' + params.URL + "&token=" + params.Token, {
-                method: method,
+            const { data, pending, error, refresh } = await useFetch('/api/aglove?url=' + params.URL, {
+                method: 'GET',
                 onResponse({ request, response }) {
                     result = getResponse<T>(response, params)
                 }

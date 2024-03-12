@@ -9,12 +9,12 @@
                 <div class="status-item text-info text-big">
                     <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
                     <!-- <p>{{ $props.paymentGet.PaymentNo }}</p> -->
-                    <p>{{ props.paymentGet.PaymentNo }}</p>
+                    <p>{{ props.paymentGet?.PaymentNo }}</p>
                 </div>
                 <div class="status-item">
                     <h5 class="topic">วันที่ทำรายการสำเร็จ</h5>
                     <!-- <p>{{ useUtility().formatDate($props.paymentGet.PaymentDate,"D MMMM BBBB HH:mm:ss") }}</p> -->
-                     <p>{{ useUtility().formatDate(props.paymentGet.PaymentDate,"D MMMM BBBB HH:mm:ss") }}</p>
+                     <p>{{ useUtility().formatDate(props.paymentGet?.PaymentDate,"D MMMM BBBB HH:mm:ss") }}</p>
 
                 </div>
                 <div class="status-item text-warning">
@@ -32,7 +32,7 @@
                     </div>
                     <div class="status-action">
                         <a class="btn btn-outline-info" href="#" title="แชร์หน้านี้">แชร์หน้านี้</a>
-                        <NuxtLink class="btn btn-primary" to="/order/compulsory/status/AMC2402000043"
+                        <NuxtLink class="btn btn-primary" :to="'/order/compulsory/status/'+$props.paymentGet?.PaymentNo"
                             title="ตรวจสอบสถานะสั่งซื้อ">ตรวจสอบสถานะสั่งซื้อ</NuxtLink>
                     </div>
                 </div>

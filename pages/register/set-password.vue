@@ -26,9 +26,9 @@
               </div>
 
               <FormKit type="submit" label="ยืนยันใช้รหัสผ่านนี้" name="forgotpassword-submit" :classes="{
-                input: 'btn-primary',
-                outer: 'form-actions',
-              }" :disabled="isLoading" :loading="isLoading" />
+    input: 'btn-primary',
+    outer: 'form-actions',
+  }" :disabled="isLoading" :loading="isLoading" />
             </div>
 
           </div>
@@ -199,7 +199,7 @@ const regReferenceID = useState('reg-reference-id')
 
 /////////////////////////////////////////
 // Define layout
-const layout = 'monito'
+const layout = 'minimal'
 const layoutClass = '-monito-minimal'
 const showPageSteps = false
 const showPageHeader = false

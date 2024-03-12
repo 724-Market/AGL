@@ -14,7 +14,8 @@
     </a>
     <ul class="dropdown-menu dropdown-menu-end">
       <li class="announcement">ช่วงนี้ฝนตกบ่อย ดูแลสุขภาพด้วยนะครับ</li>
-      <li class="announcement is-warning">สมาชิกจะสิ้นสุด 19 มกราคม 2567 <a href="#">คลิกเพื่อต่ออายุสมาชิก</a></li>
+      <li class="announcement is-warning">สมาชิกจะสิ้นสุด {{ useUtility().formatDate(AMPlanExpire, 'FullDate') }} <a
+          href="#">คลิกเพื่อต่ออายุสมาชิก</a></li>
       <li><a class="dropdown-item" href="#"><span class="icon-user">ข้อมูลสมาชิก</span></a></li>
       <li><a class="dropdown-item" href="#"><span class="icon-gears">การตั้งค่า</span></a></li>
       <li><a class="dropdown-item" href="#"><span class="icon-gift">สิทธิพิเศษสำหรับคุณ</span></a></li>
@@ -48,8 +49,8 @@ import { useAgentProfileStore } from '~/stores/user/agentProfile'
 
 // Use stores
 const agentProfileStore = useAgentProfileStore()
-await useAsyncData(agentProfileStore.fetch)
-const { AMType, AMId, AMNo, AMLevel, isAMAffiliate } = storeToRefs(agentProfileStore)
+await useAsyncData(agentProfileStore.get)
+const { AMNo, AMLevel, AMPlanExpire } = storeToRefs(agentProfileStore)
 
 /////////////////////////////////////////
 // Import
@@ -75,6 +76,8 @@ const logout = (event) => {
     sessionStorage.removeItem('useStorePackageList')
     sessionStorage.removeItem('useStoreFeeLimit')
     sessionStorage.removeItem('AgentInfo')
+    sessionStorage.removeItem('cachedAgentProfile')
+    sessionStorage.removeItem('agentProfile')
 
     // Remove localStorage
     localStorage.removeItem('useStoreInformation')

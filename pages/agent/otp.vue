@@ -13,22 +13,23 @@
             <div class="card-header">
               <h1 class="title">ยืนยันด้วย OTP</h1>
               <h2 class="subtitle">ระบบได้ส่งรหัส OTP ไปที่หมายเลข<span class="badge-info ref-phone-otp"><b>{{
-                getRefOTP.phoneNumber
-              }}</b></span></h2>
+    getRefOTP.phoneNumber
+  }}</b></span></h2>
             </div>
 
             <div class="card-body">
 
               <div class="form-area">
 
-                <ElementsFormOtp label="OTP" name="otp" id="otp" :propsOTP="getRefOTP" @on-resend-OTP="handleResendOTP" />
+                <ElementsFormOtp label="OTP" name="otp" id="otp" :propsOTP="getRefOTP"
+                  @on-resend-OTP="handleResendOTP" />
 
               </div>
 
               <FormKit type="submit" label="ยืนยันรหัส OTP" name="otp-submit" :classes="{
-                input: 'btn-primary',
-                outer: 'form-actions',
-              }" :disabled="isLoading" :loading="isLoading" />
+    input: 'btn-primary',
+    outer: 'form-actions',
+  }" :disabled="isLoading" :loading="isLoading" />
             </div>
 
           </div>
@@ -194,7 +195,7 @@ const goNext = async () => {
 
 /////////////////////////////////////////
 // Define layout
-const layout = 'monito'
+const layout = 'minimal'
 const layoutClass = '-monito-minimal'
 const showPageSteps = false
 const showPageHeader = false

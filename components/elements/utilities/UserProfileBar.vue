@@ -14,9 +14,7 @@
                 class="fa-duotone fa-badge-check fa-swap-opacity"></i> Affiliate</span>
             <span class="affiliate" v-else><i class="fa-duotone fa-badge-check"></i> Affiliate</span>
             <ul class="profile-meta">
-              <!-- <li>{{ props.agentInfo.PlanProduct.Main[0].ProductPlanName }}</li> -->
               <li>{{ AMPlanName }}</li>
-              <!-- <li>• หมดอายุ {{ useUtility().formatDate(props.agentInfo.PlanProduct.Main[0].ExpireDate, "D MMM BBBB") }}</li> -->
               <li>• หมดอายุ {{ useUtility().formatDate(AMPlanExpire, 'ShortDate') }}</li>
               <li class="link">( <a href="#" title="ต่ออายุ">ต่ออายุ</a> | <a href="#" title="อัปเกรด">อัปเกรด</a> )
               </li>
@@ -37,14 +35,9 @@
 /////////////////////////////////////////
 // Import stores
 import { useAgentProfileStore } from '~/stores/user/agentProfile'
-import { useAgentPlanStore } from '~/stores/user/agentPlan'
 
 // Use stores
 const agentProfileStore = useAgentProfileStore()
-await useAsyncData(agentProfileStore.fetch)
-const { AMType, AMId, AMNo, AMLevel, isAMAffiliate } = storeToRefs(agentProfileStore)
-
-const agentPlanStore = useAgentPlanStore()
-await useAsyncData(agentPlanStore.fetch)
-const { AMPlanName, AMPlanExpire } = storeToRefs(agentPlanStore)
+await useAsyncData(agentProfileStore.get)
+const { AMNo, AMLevel, isAMAffiliate, AMPlanName, AMPlanExpire } = storeToRefs(agentProfileStore)
 </script>

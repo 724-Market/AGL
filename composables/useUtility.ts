@@ -20,6 +20,26 @@ import buddhistEra from 'dayjs/plugin/buddhistEra' // import locale
 export default () => {
 
     const config = useRuntimeConfig()
+    // Define the StatusInfo interface
+    interface StatusInfo {
+        Class: string;
+        Type: string;
+    }
+    const getStatusOrder = (statusCode: string | undefined): StatusInfo => {
+        switch (statusCode) {
+            case 'Success':
+                return { Class: "is-success", Type: "success" };
+            case 'Danger':
+                return { Class: "is-danger", Type: "danger" };
+            case 'Cancel':
+                return { Class: "is-cancel", Type: "cancel" };
+            case 'Warning':
+                return { Class: "is-warning", Type: "warn" };
+            default:
+                return { Class: "Who are you!", Type: "Who are you!" }; // Return undefined if statusCode doesn't match any case
+        }
+    
+    };
 
     const getClassFromStatusOrder = (statusCode: string | undefined): string => {
         if (statusCode === 'Success') {
@@ -446,6 +466,7 @@ const getTokenExpire = async(): Promise<string> => {
 
     return {
         getClassFromStatusOrder,
+        getStatusOrder,
         getIconFromStatusOrder,
         getCompanyImage,
         getCurrency,

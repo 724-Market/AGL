@@ -20,9 +20,9 @@
               <div class="form-area">
 
                 <FormKit type="togglebuttons" name="isAgentType" enforced :value="true" :options="[
-                  { label: 'สำหรับนายหน้า', value: true },
-                  { label: 'สำหรับผู้ช่วย', value: false },
-                ]" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
+    { label: 'สำหรับนายหน้า', value: true },
+    { label: 'สำหรับผู้ช่วย', value: false },
+  ]" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" />
 
                 <div class="option" v-if="value && value.isAgentType === true">
 
@@ -46,15 +46,16 @@
               </div>
 
               <FormKit type="submit" label="เข้าใช้งานระบบ" name="login-submit" :classes="{
-                input: 'btn-primary',
-                outer: 'form-actions',
-              }" :disabled="isLoading" :loading="isLoading" />
+    input: 'btn-primary',
+    outer: 'form-actions',
+  }" :disabled="isLoading" :loading="isLoading" />
             </div>
 
             <div class="card-footer">
               <p>
                 ยังไม่เคยลงทะเบียน?
-                <NuxtLink to="/register" title="ลงทะเบียนเพื่อเปิดใช้งานที่นี่">ลงทะเบียนเพื่อเปิดใช้งานที่นี่</NuxtLink>
+                <NuxtLink to="/register" title="ลงทะเบียนเพื่อเปิดใช้งานที่นี่">ลงทะเบียนเพื่อเปิดใช้งานที่นี่
+                </NuxtLink>
               </p>
             </div>
 
@@ -93,6 +94,14 @@ const loadingProps = ref({})
 const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = false) => {
   loadingProps.value = useUtility().createLoadingProps(isShowLoading, showLogo, showText)
 }
+
+/////////////////////////////////////////
+// Mounted
+// onMounted(() => {
+//   clearStores()
+// })
+
+/////////////////////////////////////////
 const setCookie = (name: string, value: string, days: number) => {
   let expires = "";
   if (days) {
@@ -126,9 +135,9 @@ const submitLogin = async (formData: any) => {
 
       if (data.value.Status == '200') {
         const auth = data.value.Data
-         // Setting a cookie
-         setCookie("access_token", auth?.access_token ?? "", 1);
-         setCookie("refresh_token", auth?.refresh_token ?? "", 1);
+        // Setting a cookie
+        setCookie("access_token", auth?.access_token ?? "", 1);
+        setCookie("refresh_token", auth?.refresh_token ?? "", 1);
 
         await goNext()
 
@@ -217,8 +226,33 @@ const goNext = async () => {
 }
 
 /////////////////////////////////////////
+// Function clear all stores
+// import { getActivePinia } from "pinia"
+
+// const clearStores = () => {
+
+//   // Reset Pinia store
+//   getActivePinia()._s.forEach(store => {
+//     store.$reset() // Reset the store's state
+//     store.$dispose() // Dispose of the store instance
+//     sessionStorage.removeItem(store.$id) // Remove sessionStorage of the store instance
+
+//     // Remove sessionStorage
+//     sessionStorage.removeItem('useStoreNoticePayment')
+//     sessionStorage.removeItem('useStorePayment')
+//     sessionStorage.removeItem('useStorePackageList')
+//     sessionStorage.removeItem('useStoreFeeLimit')
+//     sessionStorage.removeItem('AgentInfo')
+
+//     // Remove localStorage
+//     localStorage.removeItem('useStoreInformation')
+//   })
+
+// }
+
+/////////////////////////////////////////
 // Define layout
-const layout = 'monito'
+const layout = 'minimal'
 const layoutClass = '-monito-minimal'
 const showPageSteps = false
 const showPageHeader = false

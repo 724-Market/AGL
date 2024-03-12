@@ -4,7 +4,7 @@
 
     <div class="row">
       <div class="col-lg-6">
-        <OrderCompulsoryThanksSuccess v-if="paymentGetInfo && status == 'Success'" :payment-get="paymentGetInfo">
+        <OrderCompulsoryThanksSuccess v-if="paymentGetInfo && status == 'Success'" :payment-get="paymentGetInfo" :order-get="orderGetInfo">
         </OrderCompulsoryThanksSuccess>
 
         <OrderCompulsoryThanksCancel v-if="paymentGetInfo && status == 'Cancel'" :payment-get="paymentGetInfo">
@@ -54,6 +54,7 @@ const statusMessageType = ref();
 let values = reactive({});
 
 const paymentGetInfo: globalThis.Ref<PaymentGetResponse | undefined> = ref();
+const orderGetInfo = ref();
 var status = ref("");
 
 const storeAuth = useStoreUserAuth();
@@ -141,6 +142,7 @@ const onLoad = onMounted(async () => {
         response.apiResponse.Data
       ) {
         paymentGetInfo.value = response.apiResponse.Data.Payment[0];
+        orderGetInfo.value = response.apiResponse.Data.Order[0];
         status.value =
           paymentGetInfo.value.IsSuccess && !paymentGetInfo.value.IsDelete
             ? "Success"

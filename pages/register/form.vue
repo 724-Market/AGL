@@ -33,9 +33,9 @@
               </div>
 
               <FormKit type="submit" label="สมัครสมาชิก" name="register-submit" :classes="{
-                input: 'btn-primary',
-                outer: 'form-actions',
-              }" :disabled="isLoading" :loading="isLoading" />
+    input: 'btn-primary',
+    outer: 'form-actions',
+  }" :disabled="isLoading" :loading="isLoading" />
 
             </div>
 
@@ -368,7 +368,7 @@ const saveAddress = async (addressData: any) => {
 
 /////////////////////////////////////////
 // Define layout
-const layout = 'monito'
+const layout = 'minimal'
 const layoutClass = '-monito-minimal'
 const showPageSteps = false
 const showPageHeader = false

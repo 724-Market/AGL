@@ -145,7 +145,7 @@
                       </div>
                       <div class="col-sm-8 col-lg-4">
                         <ElementsFormPassport v-model="personProfile.PersonalID" @change="handlerChangePersonalProfile"
-                          maxlength="13" :validation-rules="{ special_characters }"
+                          :validation-rules="{ special_characters }"
                           validation="required|special_characters" :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
@@ -158,7 +158,7 @@
                           @change="handlerChangePersonalProfile" />
                       </div>
                       <div class="col-6">
-                        <ElementsFormPhoneNumber autocomplete="off" v-model="personProfile.PhoneNumber"
+                        <ElementsFormPhoneNumber label="Tel" autocomplete="off" v-model="personProfile.PhoneNumber"
                           @change="handlerChangePersonalProfile"></ElementsFormPhoneNumber>
                        
                       </div>

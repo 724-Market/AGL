@@ -72,6 +72,19 @@ class PaymentNoticeService {
           }
         });
     }
+
+    async RequestUpdateAffiliatePayment(payment_no: string) {
+        this.hubConnection.on('RequestUpdateAffiliateOrderPayment', async (message:string, data:string) => {
+          //console.log(message, data);
+          if(data) {
+           const res: NoticePaymentData = JSON.parse(data)
+           if(res.PaymentNo == payment_no) {
+                this.router.push('/payment/affiliate/status-'+payment_no)
+           }
+          }
+        });
+    }
+
 }
 
 export default PaymentNoticeService;

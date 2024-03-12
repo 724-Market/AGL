@@ -66,6 +66,7 @@ const route = useRoute()
 const router = useRouter();
 
 const onLoad = onMounted(async () => {
+  console.log("Thanks to track order")
   if (AuthenInfo.value) {
     isLoading.value = true;
     // Handle the possibility of route.params.id being an array

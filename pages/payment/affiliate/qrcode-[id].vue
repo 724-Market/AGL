@@ -27,6 +27,14 @@
 
 <script lang="ts" setup>
 
+import type { UserResponse } from "~/shared/entities/user-entity";
+import type {
+  NoticePaymentRequest
+} from "~/shared/entities/payment-entity";
+
+const storeAuth = useStoreUserAuth();
+const { AuthenInfo } = storeToRefs(storeAuth);
+
 /////////////////////////////////////////
 // Define router and route
 const router = useRouter()
@@ -81,6 +89,7 @@ const loadPaymentDetail = async () => {
             refno1: responseGateway.data.refno1,
           }
 
+          waitPayment(responseGateway.data.refno2)
           openLoadingDialog(false)
 
         }
@@ -104,10 +113,38 @@ const loadPaymentDetail = async () => {
 
 }
 
+const waitPayment = async (refno2: string) => {
+
+  const responseUser = await useRepository().user.GetUser() 
+
+  if (AuthenInfo.value) {
+    if (responseUser.apiResponse.Status && responseUser.apiResponse.Status == "200") {
+      if (responseUser.apiResponse.Data && responseUser.apiResponse.Data.length > 0) {
+        const user: UserResponse = responseUser.apiResponse.Data[0];
+        let deviceId = await useUtility().getDeviceId()
+        const paymentService = await useService().paymentNotice;
+        const paymentServiceReq: NoticePaymentRequest = {
+          ClientID: "AgentLoveWeb",
+          DeviceID: deviceId,
+          ReferenceID: refno2,
+          UserID: user.ID,
+          GroupType: "qr",
+          AccessToken: AuthenInfo.value.accessToken,
+        };
+        await paymentService.connect(paymentServiceReq)
+        await paymentService.RequestUpdateAffiliatePayment(refno2)
+      }
+    }
+  }
+
+}
+
 onMounted(async () => {
+  
   openLoadingDialog(true)
   await loadPaymentDetail()
   //openLoadingDialog(false)
+
 })
 
 // Define layout

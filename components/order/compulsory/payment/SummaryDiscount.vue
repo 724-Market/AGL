@@ -163,17 +163,25 @@ const setSummaryText = async () => {
     shippingCost.value = 0
   }
 
-  let shippingChanel: string = deliveryTypes[indexShipping] == 'postal' ? chanel : deliveryTypes[indexShipping]
+  let shippingChanel: string = deliveryTypes[indexShipping] == 'postal' ? chanel : deliveryTypes[indexShipping];
 
-  companyName.value = packages.value?.CompanyName ?? ''
-  // Extract the Text field from each item in props.calculate.DeliveryFee
-  const deliveryTextArray = props.calculate.DeliveryFee.map(item => item.Text);
+  companyName.value = packages.value?.CompanyName ?? '';
 
-  // Join the Text values with ' • ' as separator
-  const deliveryTextValue = deliveryTextArray.join(' • ');
+  // Check if props.calculate and props.calculate.DeliveryFee exist
+  if (props.calculate && props.calculate.DeliveryFee) {
+      // Extract the Text field from each item in props.calculate.DeliveryFee
+      const deliveryTextArray = props.calculate.DeliveryFee.map(item => item.Text);
 
-  // Update deliveryText.value with the constructed string
-  deliveryText.value = `${deliveryTextValue} • โดย ${shippingChanel}`;
+      // Join the Text values with ' • ' as separator
+      const deliveryTextValue = deliveryTextArray.join(' • ');
+
+      // Update deliveryText.value with the constructed string
+      deliveryText.value = `${deliveryTextValue} • โดย ${shippingChanel}`;
+  } else {
+      // Handle the case when props.calculate or props.calculate.DeliveryFee is undefined
+      // For example, set deliveryText.value to a default value
+      deliveryText.value = '';
+  }
   //Old version
   //deliveryText.value = `กรมธรรม์ ${tax} • โดย ${shippingChanel}`
 

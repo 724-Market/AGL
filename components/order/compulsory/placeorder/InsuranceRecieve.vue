@@ -98,6 +98,7 @@
 
                 <section v-if="isPostalShipping" class="shipping-address">
                   <h3>ที่อยู่สำหรับจัดส่ง</h3>
+                  <p>111</p>
                   <div class="form-hide-label">
                     <FormKit
                       type="radio"
@@ -151,8 +152,8 @@
 
                   </aside>
                   <aside v-if="isAddnew && props.addressDefaultID != null">
+                    <!--Waiting to test and remove CopyNewAddress component
                     <div class="row" v-show="false">
-                      <!--Waiting to test and remove CopyNewAddress component-->
                       <ElementsFormCopyNewAddress
                         element-key="delivery"
                         :prefix="prefix"
@@ -166,7 +167,7 @@
                         @change-sub-district="handlerChangeSubDistrict"
                         @change-full-address="handlerChangeFullAddress"
                       />
-                    </div>
+                    </div>-->
                     <FormKit type="button" v-show="props.addressDefaultID != null" 
                       label="แก้ไขที่อยู่" name="customer-delivery" :classes="{
                       input: 'btn-primary',

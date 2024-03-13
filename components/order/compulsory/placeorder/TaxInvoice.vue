@@ -30,6 +30,7 @@
                 <i class="fa-regular fa-circle-info"></i
                 >ไม่มีใบกำกับภาษีแนบท้ายในไฟล์กรมธรรม์ หากต้องการ ต้องกดออกใบกำกับภาษี
               </div>
+              <p>222</p>
               <div class="form-placeorder">
                 <!-- <div class="placeorder-action">
                   <a href="#" class="btn btn-preview-tax"
@@ -227,7 +228,7 @@
                           @keyup="handlerChangeTaxInvoice"
                         />
                       </div>
-                      <!--Waiting to test and remove CopyAddress component-->
+                      <!--Waiting to test and remove CopyAddress component
                       <ElementsFormCopyAddress
                         element-key="taxinvoice"
                         :addr-province="addrProvince"
@@ -239,7 +240,7 @@
                         @change-district="handlerChangeDistrict"
                         @change-sub-district="handlerChangeSubDistrict"
                         @change-full-address="handlerChangeFullAddressTaxInvoice"
-                      />
+                      />-->
                     </div>
 
                     <FormKit
@@ -319,7 +320,7 @@
                         {
                           label: 'เปลี่ยนที่อยู่ใหม่',
                           value: 'addnew',
-                          help: newTaxInvoiceDeliveryFullAddressTemp,
+                          help: newTaxInvoiceDeliveryFullAddress,
                           attrs: { addnewaddress: true },
                         },
                       ]"
@@ -358,7 +359,7 @@
                       addressDeliveryTaxType == 'addnew' &&
                       props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID != null"
                   >
-                    <!--Waiting to test and remove CopyNewAddress component-->
+                    <!--Waiting to test and remove CopyNewAddress component
                     <div class="row" v-show="false">
 
                       <ElementsFormCopyNewAddress
@@ -374,7 +375,7 @@
                         @change-sub-district="handlerChangeSubDistrict2"
                         @change-full-address="handlerChangeFullAddressTaxInvoiceDelivery"
                       />
-                    </div>
+                    </div>-->
 
                     <FormKit
                       type="button"
@@ -405,16 +406,8 @@
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID 
     ?? props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"
-    :address-data-array="
-      isNewLabel
-        ? newTaxAddressUpdate
-        : taxInvoiceAddr
-    "
-    :profile-data-array="
-      isNewLabel
-        ? newTaxAddressUpdate
-        : taxInvoiceProfile
-    "
+    :address-data-array="newTaxAddressUpdate"
+    :profile-data-array="newTaxAddressUpdate"
     :show="isEditTaxAddress"
     @close-address="closeModalAddress"
     @on-edit-address="updateAddress"
@@ -426,16 +419,8 @@
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID 
     ?? props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"
-    :address-data-array="
-      isNewLabel
-        ? newTaxDeliveryAddressUpdate
-        : taxDeliveryAddr
-    "
-    :profile-data-array="
-      isNewLabel
-        ? newTaxDeliveryAddressUpdate
-        : taxDeliveryProfile
-    "
+    :address-data-array="newTaxDeliveryAddressUpdate"
+    :profile-data-array="newTaxDeliveryAddressUpdate"
     :show="isEditTaxDelivery"
     @close-address="closeModalDelivery"
     @on-edit-address="updateAddress"
@@ -633,7 +618,16 @@ const onLoad = onMounted(async () => {
   insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value 
 
   if (props.cacheOrderRequest) {
-    setCacheData()
+    await setCacheData()
+    if(props.cacheOrderRequest?.Customer?.IsTaxInvoiceAddressSameAsDefault == false){
+      addressType.value = 'TAXINVOICE'
+      await updateAddress(props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID, props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID)
+    }
+    if(props.cacheOrderRequest?.Customer?.IsTaxInvoiceDeliveryAddressSameAsDefault == false){
+      addressType.value = 'TAXINVOICE_DELIVERY'
+      await updateAddress(props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID, props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID)
+    }
+    
   }
   if (props.prefix) {
     prefix.value = props.prefix
@@ -929,12 +923,12 @@ const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress:
     newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} : ` + addr
 
     insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
-    newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
+    newTaxInvoiceDeliveryFullAddress.value = newTaxInvoiceDeliveryFullAddressTemp.value
     handlerChangeTaxInvoice()
   }
 }
 const handlerChangeFullLabelAddressTaxInvoiceDelivery = () => {
-    //newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
+    newTaxInvoiceDeliveryFullAddress.value = newTaxInvoiceDeliveryFullAddressTemp.value
     handlerChangeTaxInvoice()
 }
 const handlerSubmitAddressTaxInvoice = () => {

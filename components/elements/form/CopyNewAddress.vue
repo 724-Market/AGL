@@ -34,6 +34,7 @@
       autocomplete="off"
     />
   </div>
+  <!--Waiting to test and remove CopyAddress component-->
   <ElementsFormCopyAddress
     :element-key="elementKey"
     :addr-province="addrProvince"

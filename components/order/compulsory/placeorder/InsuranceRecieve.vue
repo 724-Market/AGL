@@ -152,6 +152,7 @@
                   </aside>
                   <aside v-if="isAddnew && props.addressDefaultID != null">
                     <div class="row" v-show="false">
+                      <!--Waiting to test and remove CopyNewAddress component-->
                       <ElementsFormCopyNewAddress
                         element-key="delivery"
                         :prefix="prefix"

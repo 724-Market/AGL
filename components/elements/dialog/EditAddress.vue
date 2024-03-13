@@ -113,7 +113,7 @@ const submitEditAddress = async (formData: any) => {
       DistrictID: formData.DistrictID,
       SubDistrictID: formData.SubDistrictID
   }
-  if(props.addressID == props.addressDefaultID && props.addressType != 'CURRENT'){
+  if(((props.addressID == props.addressDefaultID) || (props.addressID == null)) && props.addressType != 'CURRENT'){
     const resCreate = await useRepository().customer.AddressCreate(reqSaveAddress);
     if (
       resCreate.apiResponse.Status &&

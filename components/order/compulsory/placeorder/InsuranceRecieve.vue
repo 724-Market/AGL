@@ -151,7 +151,7 @@
 
                   </aside>
                   <aside v-if="isAddnew && props.addressDefaultID != null">
-                    <!--Waiting to test and remove CopyNewAddress component
+                    <!--Waiting to test and remove CopyNewAddress component-->
                     <div class="row" v-show="false">
                       <ElementsFormCopyNewAddress
                         element-key="delivery"
@@ -166,7 +166,7 @@
                         @change-sub-district="handlerChangeSubDistrict"
                         @change-full-address="handlerChangeFullAddress"
                       />
-                    </div>-->
+                    </div>
                     <FormKit type="button" v-show="props.addressDefaultID != null" 
                       label="แก้ไขที่อยู่" name="customer-delivery" :classes="{
                       input: 'btn-primary',
@@ -331,10 +331,6 @@ const insureFullAddress: globalThis.Ref<String> = ref('')
 const insureFullNewAddress: globalThis.Ref<String> = ref('')
 
 const onLoad = onMounted(async () => {
-  
-    if(props.insuranceRecieveCache.PostalDelivary.IsDeliveryAddressSameAsDefault == false){
-      await updateAddress(props.customerId, props.insuranceRecieveCache.PostalDelivary.DeliveryAddress.AddressID)
-    }
     if(props.prefix){
         prefix.value = props.prefix
     }

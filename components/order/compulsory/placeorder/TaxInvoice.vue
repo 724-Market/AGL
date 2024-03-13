@@ -963,17 +963,23 @@ const setCacheData = async () => {
       if (props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault == false && props.cacheOrderRequest.Customer.TaxInvoiceAddress?.ProvinceID != '') {
           if(props.cacheOrderRequest.Customer.TaxInvoiceAddress)
           {
-            taxInvoiceAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceAddress as DefaultAddress
-            newTaxInvoiceFullAddress.value = taxInvoiceAddr.value
+            taxInvoiceAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceAddress as TaxInvoiceAddress
+            if(taxInvoiceAddr.value && taxInvoiceAddr.value.No)
+            {
+              newTaxInvoiceFullAddress.value = taxInvoiceAddr.value
+            }
           }
      }
      else{
-      taxInvoiceAddress.value = props.cacheOrderRequest.Customer.DefaultAddress as DefaultAddress
+      taxInvoiceAddress.value = props.cacheOrderRequest.Customer.DefaultAddress as TaxInvoiceAddress
      }
      insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
       if (props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault == false && props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress?.ProvinceID != '') {
         cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress
-        newTaxInvoiceDeliveryFullAddressTemp.value = taxDeliveryAddr.value
+        if(taxDeliveryAddr.value && taxDeliveryAddr.value.No)
+        {
+          newTaxInvoiceDeliveryFullAddressTemp.value = taxDeliveryAddr.value
+        }
         //const deliveryMethod1 = props.cacheOrderRequest.DeliveryMethod1
       }
       else{

@@ -98,7 +98,6 @@
 
                 <section v-if="isPostalShipping" class="shipping-address">
                   <h3>ที่อยู่สำหรับจัดส่ง</h3>
-                  <p>111</p>
                   <div class="form-hide-label">
                     <FormKit
                       type="radio"
@@ -195,8 +194,8 @@
     :customer-i-d="props.customerId" 
     :address-default-i-d="props.addressDefaultID"
     :address-i-d="props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID"
-    :address-data-array="isNewLabel ? newAddressUpdate : addressDataArray" 
-    :profile-data-array="isNewLabel ? newAddressUpdate : profileDataArray" 
+    :address-data-array="newAddressUpdate" 
+    :profile-data-array="newAddressUpdate" 
     :show="isEditDeliveryAddress" @close-address="closeModalAddress"
     @on-edit-address="updateAddress"
     ></ElementsDialogEditAddress> 

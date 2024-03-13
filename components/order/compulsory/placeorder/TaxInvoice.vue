@@ -30,7 +30,6 @@
                 <i class="fa-regular fa-circle-info"></i
                 >ไม่มีใบกำกับภาษีแนบท้ายในไฟล์กรมธรรม์ หากต้องการ ต้องกดออกใบกำกับภาษี
               </div>
-              <p>222</p>
               <div class="form-placeorder">
                 <!-- <div class="placeorder-action">
                   <a href="#" class="btn btn-preview-tax"

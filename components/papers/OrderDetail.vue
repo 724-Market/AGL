@@ -23,15 +23,27 @@
                     <h5 class="topic">สถานะ</h5>
                     <p :class="orderStatusClass">{{ orderStatusText }}</p>
                 </div>
-                <div class="status-item" v-if="orderAddress">
-                    <h5 class="topic">ที่อยู่</h5>
+                <div class="delivery-item" v-if="orderAddress">
+                    <h5 class="topic">ที่อยู่สำหรับจัดส่ง</h5>
                     <p>
-                        {{ orderAddress.FirstName ? ('ชื่อ ' + orderAddress.FirstName) : '' }}  
+                        {{ orderAddress.FirstName ? ('คุณ ' + orderAddress.FirstName) : '' }}
                         {{ orderAddress.LastName ?? '' }}
-                        {{ orderAddress.No ?? '' }}
-                        {{ orderAddress.SubDistrictName ?? ''}}
-                        {{ orderAddress.ProvinceName ? ('จังหวัด ' + orderAddress.ProvinceName) : '' }}
-                        {{ orderAddress.ZipCode  ?? '' }} </p>
+                    </p>
+                    <p>
+                        {{ orderAddress.No ? ('เลขที่ ' + orderAddress.No) : '' }}
+                        {{ orderAddress.Moo ? ('หมู่ ' + orderAddress.Moo) : '' }}
+                        {{ orderAddress.Place ? ('หมู่บ้าน/คอนโด ' + orderAddress.Place) : '' }}
+                        {{ orderAddress.Room ? ('ห้อง ' + orderAddress.Room) : '' }}
+                        {{ orderAddress.Building ? ('ตึก/อาคาร ' + orderAddress.Building) : '' }}
+                        {{ orderAddress.Floor ? ('ชั้น ' + orderAddress.Floor) : '' }}
+                        {{ orderAddress.Alley ? ('ซอย' + orderAddress.Alley) : '' }}
+                        {{ orderAddress.Branch ? ('ตรอก/แยก ' + orderAddress.Branch) : '' }}
+                        {{ orderAddress.Road ? ('ถนน' + orderAddress.Road) : '' }}
+                        {{ orderAddress.SubDistrictName ?? '' }}
+                        {{ orderAddress.DistrictName ?? '' }}
+                        {{ orderAddress.ProvinceName ? ('จังหวัด' + orderAddress.ProvinceName) : '' }}
+                        {{ orderAddress.ZipCode ?? '' }}
+                    </p>
                 </div>
             </div>
 

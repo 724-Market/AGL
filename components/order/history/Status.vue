@@ -90,7 +90,7 @@
                                 data-bs-title="A/B<br>A คือ งานที่ไม่สมบูรณ์ สามารถทำการคืนเงินได้<br>B คือ งานที่ไม่สำเร็จ"
                                 data-bs-html="true"><i class="fa-solid fa-circle-question"></i></span></h5>
                         <span class="value">{{ $props.statusGroup?.CancelComplete }}<small>/{{
-                            $props.statusGroup?.CancelPending }}</small></span>
+            $props.statusGroup?.CancelPending }}</small></span>
                     </div>
                     <div class="stat-action">
                         <figure class="figure">
@@ -102,7 +102,7 @@
         </div>
 
     </div>
-    <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
+
 </template>
 
 <script setup lang="ts">
@@ -127,10 +127,8 @@ const tooltipList = [...tooltipTriggerList].map(
 const statusGroup: globalThis.Ref<StatusGroupResponse | undefined> = ref()
 var statusSearch = ref('')
 var isActive = ref([false, true, false, false, false, false])
-const isLoading = ref(false);
 
 const onLoad = onMounted(async () => {
-    isLoading.value = true;
     if (props.statusGroup) {
         statusGroup.value = props.statusGroup
     }
@@ -138,7 +136,6 @@ const onLoad = onMounted(async () => {
         statusSearch.value = props.statusSearch
         if (statusSearch.value == 'clear') isActive.value = [false, false, false, false, false, false]
     }
-    isLoading.value = false;
 })
 
 const onChangeFilter = async (status: string, event: any) => {

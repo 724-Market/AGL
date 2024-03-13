@@ -811,8 +811,8 @@ const updateAddress = async (e: string, AddrID: string) => {
           TaxID: taxAddress.TaxID
         };
 
-        newTaxInvoiceFullAddressTemp.value = `${newTaxAddressUpdate.value.No} ${newTaxAddressUpdate.value.FirstName} ${newTaxAddressUpdate.value.LastName}
-        ${newTaxAddressUpdate.value.PhoneNumber} ${newTaxAddressUpdate.value.DistrictName} ${newTaxAddressUpdate.value.SubDistrictName}
+        newTaxInvoiceFullAddressTemp.value = `${newTaxAddressUpdate.value.FirstName} ${newTaxAddressUpdate.value.LastName}
+        ${newTaxAddressUpdate.value.PhoneNumber} ${newTaxAddressUpdate.value.No} ${newTaxAddressUpdate.value.DistrictName} ${newTaxAddressUpdate.value.SubDistrictName}
         ${newTaxAddressUpdate.value.ProvinceName} ${newTaxAddressUpdate.value.postalCode}`
         insureDetail.value.TaxInvoiceAddress =  newTaxAddressUpdate.value
         await handlerChangeTaxInvoice()
@@ -842,8 +842,8 @@ const updateAddress = async (e: string, AddrID: string) => {
           TaxID: taxDelivery.TaxID
         };
 
-        newTaxInvoiceDeliveryFullAddressTemp.value = `${newTaxAddressUpdate.value.No} ${newTaxDeliveryAddressUpdate.value.FirstName} ${newTaxDeliveryAddressUpdate.value.LastName}
-        ${newTaxDeliveryAddressUpdate.value.PhoneNumber} ${newTaxDeliveryAddressUpdate.value.DistrictName} ${newTaxDeliveryAddressUpdate.value.SubDistrictName}
+        newTaxInvoiceDeliveryFullAddressTemp.value = `${newTaxDeliveryAddressUpdate.value.FirstName} ${newTaxDeliveryAddressUpdate.value.LastName}
+        ${newTaxDeliveryAddressUpdate.value.PhoneNumber} ${newTaxAddressUpdate.value.No} ${newTaxDeliveryAddressUpdate.value.DistrictName} ${newTaxDeliveryAddressUpdate.value.SubDistrictName}
         ${newTaxDeliveryAddressUpdate.value.ProvinceName} ${newTaxDeliveryAddressUpdate.value.postalCode}`
         insureDetail.value.TaxInvoiceDeliveryAddress = newTaxDeliveryAddressUpdate.value
         await handlerChangeTaxInvoice()
@@ -907,7 +907,7 @@ const handlerChangeFullAddressTaxInvoice = (addr: string, ObjectAddress: Default
     const prefixName = prefix.value.filter(x => x.value == prefixId)[0]
     let prefixLabel = prefixName ? prefixName.label ?? '' : ''
     //newTaxInvoiceFullAddressTemp.value = `${prefixLabel} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
-    newTaxInvoiceFullAddressTemp.value = `${ObjectAddress.No} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} : ` + addr
+    newTaxInvoiceFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} : ` + addr
 
     insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
     newTaxInvoiceFullAddress.value = newTaxInvoiceFullAddressTemp.value
@@ -922,7 +922,7 @@ const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress:
   if (addr && ObjectAddress) {
     taxInvoiceDeliveryAddress.value = ObjectAddress as TaxInvoiceAddress
     //newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
-    newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.No} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} : ` + addr
+    newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} : ` + addr
 
     insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
     newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value

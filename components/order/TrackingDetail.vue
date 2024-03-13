@@ -80,7 +80,7 @@ const orderStatusClass = computed(() => {
             return 'text-warning'
         case 'OrderDelivery':
         case 'OrderPayment':
-            return 'text-warning'
+            return 'text-info'
         case 'OrderReceive':
             return 'text-info'
         case 'OrderComplete':
@@ -98,7 +98,7 @@ const orderStatusText = computed(() => {
         case 'OrderCreate':
             return 'รอดำเนินการ'
         case 'OrderPayment':
-            return 'ชำระเงิน'
+            return 'ชำระเงินสำเร็จ'
         case 'OrderDelivery':
             return 'จัดส่ง'
         case 'OrderReceive':

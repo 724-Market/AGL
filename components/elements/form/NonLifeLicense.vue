@@ -7,14 +7,14 @@
         }" autocomplete="off" show-mask="false" unmask-value="true" inputmode="numeric" />
     </div>
     <div class="col-12">
-      <FormKit type="datepicker" label="วันออกใบอนุญาต" name="NonLifeLicenseBegin" placeholder="วัน/เดือน/ปี พ.ศ."
-        format="DD/MM/YYYY" value-format="YYYY-MM-DD" validation="required"
-        :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="off" picker-only />
+      <FormKit type="mask" mask="## / ## / 25##" label="วันออกใบอนุญาต" name="NonLifeLicenseBegin"
+        placeholder="วัน/เดือน/ปี พ.ศ." validation="required" :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
+        autocomplete="off" show-mask="false" unmask-value="false" inputmode="numeric" />
     </div>
     <div class="col-12">
-      <FormKit type="datepicker" label="วันใบอนุญาตหมดอายุ" name="NonLifeLicenseExpire" placeholder="วัน/เดือน/ปี พ.ศ."
-        format="DD/MM/YYYY" value-format="YYYY-MM-DD" validation="required"
-        :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }" autocomplete="off" picker-only />
+      <FormKit type="mask" mask="## / ## / 25##" label="วันใบอนุญาตหมดอายุ" name="NonLifeLicenseExpire"
+        placeholder="วัน/เดือน/ปี พ.ศ." validation="required" :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
+        autocomplete="off" show-mask="false" unmask-value="false" inputmode="numeric" />
     </div>
     <div class="col-12">
       <FormKit type="file" label="รูปถ่ายหน้าบัตรใบอนุญาตฯ" name="NonLifeLicenseFile" accept=".jpg,.png"

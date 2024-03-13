@@ -166,7 +166,16 @@ const setSummaryText = async () => {
   let shippingChanel: string = deliveryTypes[indexShipping] == 'postal' ? chanel : deliveryTypes[indexShipping]
 
   companyName.value = packages.value?.CompanyName ?? ''
-  deliveryText.value = `กรมธรรม์ ${tax} • โดย ${shippingChanel}`
+  // Extract the Text field from each item in props.calculate.DeliveryFee
+  const deliveryTextArray = props.calculate.DeliveryFee.map(item => item.Text);
+
+  // Join the Text values with ' • ' as separator
+  const deliveryTextValue = deliveryTextArray.join(' • ');
+
+  // Update deliveryText.value with the constructed string
+  deliveryText.value = `${deliveryTextValue} • โดย ${shippingChanel}`;
+  //Old version
+  //deliveryText.value = `กรมธรรม์ ${tax} • โดย ${shippingChanel}`
 
   packagePrice.value = packages.value?.Price ?? 0
 

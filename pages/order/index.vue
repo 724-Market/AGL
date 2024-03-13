@@ -4,19 +4,21 @@
     <div class="row">
       <div class="col">
 
-        <OrderHistorySearch v-if="statusGroup" @search-history="handleSearch" @clear-search-history="handleClearSearch">
-        </OrderHistorySearch>
+        <OrderHistorySearch v-if="statusGroup" @search-history="handleSearch"
+          @clear-search-history="handleClearSearch" />
 
         <OrderHistoryStatus v-if="statusGroup" @change-status="handleChangeStatus" :status-group="statusGroup"
-          :status-search="statusSearch"></OrderHistoryStatus>
+          :status-search="statusSearch" />
 
         <OrderHistoryGridTable :filters="filterOptionTable" v-if="filterOptionTable.length > 0"
           @change-table="handlerChangeTable" @on-resume="resume" @on-pay="pay" @on-tracking="trackStatus"
-          @on-policy="policyDetail" @on-download="download" @on-help="contactStaff" @on-delete="deleteDraft">
-        </OrderHistoryGridTable>
+          @on-policy="policyDetail" @on-download="download" @on-help="contactStaff" @on-delete="deleteDraft" />
+
       </div>
     </div>
-    <OrderHistoryModalContactStaff @close-modal="handleCloasModal" :show="showModalStaff"></OrderHistoryModalContactStaff>
+
+    <OrderHistoryModalContactStaff @close-modal="handleCloasModal" :show="showModalStaff" />
+
     <ElementsModalLoading :loading="isLoading"></ElementsModalLoading>
   </NuxtLayout>
 </template>
@@ -106,7 +108,6 @@ const onLoad = onMounted(async () => {
   storeState.clearState();
   if (AuthenInfo.value) {
     await loadHistoryStatus();
-    // await triggerEvent()
   } else {
     router.push("/login");
   }
@@ -194,7 +195,8 @@ const handleCloasModal = async (refresh: Boolean) => {
 };
 
 const loadHistoryStatus = async (filter?: Filter[]) => {
-  // isLoading.value = true;
+  isLoading.value = true;
+
   var statusRes = await useRepository().order.statusGroup(filter);
   if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
     if (statusRes.apiResponse.Data) {
@@ -202,6 +204,7 @@ const loadHistoryStatus = async (filter?: Filter[]) => {
       // console.log("statusGroup.value", statusGroup.value);
     }
   }
+
   isLoading.value = false;
 };
 

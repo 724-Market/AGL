@@ -166,7 +166,7 @@
                         @change-full-address="handlerChangeFullAddress"
                       />
                     </div>
-                    <FormKit type="button" v-show="props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID != null" 
+                    <FormKit type="button" v-show="props.addressDefaultID != null" 
                       label="แก้ไขที่อยู่" name="customer-delivery" :classes="{
                       input: 'btn-primary',
                       }" @click="openDialogAddress" :disabled="isLoading" :loading="isLoading" 
@@ -189,7 +189,7 @@
   </div>
   
   <ElementsDialogEditAddress v-if="isEditDeliveryAddress"
-    :address-type="props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.Type"
+    :address-type="'DELIVERY'"
     :customer-i-d="props.customerId" 
     :address-default-i-d="props.addressDefaultID"
     :address-i-d="props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID"

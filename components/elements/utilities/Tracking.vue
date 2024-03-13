@@ -6,9 +6,9 @@
         <div class="card-body">
 
           <section class="timeline is-vertical">
+
             <template v-if="orderTrack" v-for="(item, i) in orderTrack.slice($props.indexSequence, orderTrack.length)"
               :key="i">
-
               <!-- Reverse the Child array outside of v-for -->
               <template v-if="item.Child && item.Child.length > 0">
                 <template v-if="i !== 0 || (i === 0 && $props.isShowchild)">

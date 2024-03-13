@@ -7,7 +7,7 @@
           <!-- img(src="/uploads/team-5.jpg", alt="") -->
         </figure>
         <div class="info">
-          <h3 class="name">{{ AMNo }}</h3>
+          <h5 class="name">{{ AMNo }}</h5>
           <span class="level"><i class="fa-duotone fa-sparkles"></i> {{ AMLevel }}</span>
         </div>
       </div>
@@ -44,13 +44,9 @@
 
 <script setup>
 /////////////////////////////////////////
-// Import stores
-import { useAgentProfileStore } from '~/stores/user/agentProfile'
-
 // Use stores
-const agentProfileStore = useAgentProfileStore()
-await useAsyncData(agentProfileStore.get)
-const { AMNo, AMLevel, AMPlanExpire } = storeToRefs(agentProfileStore)
+const agentInfoStore = useAgentInfoStore()
+const { AMNo, AMLevel, AMPlanExpire } = storeToRefs(agentInfoStore)
 
 /////////////////////////////////////////
 // Import

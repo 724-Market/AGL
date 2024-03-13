@@ -72,6 +72,9 @@
 </template>
 
 <script setup lang="ts">
+/////////////////////////////////////////
+// Import stores
+// import { useAgentInfoStore } from '~/stores/user/agentInfo'
 
 /////////////////////////////////////////
 // Define router and route
@@ -96,28 +99,21 @@ const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = fa
 }
 
 /////////////////////////////////////////
-// Mounted
-// onMounted(() => {
-//   clearStores()
-// })
-
-/////////////////////////////////////////
 const setCookie = (name: string, value: string, days: number) => {
-  let expires = "";
+  let expires = ""
   if (days) {
-    const date = new Date();
-    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    const date = new Date()
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
     expires = "; expires=" + date.toUTCString();
   }
   document.cookie = name + "=" + (value || "") + expires + "; path=/";
-};
+}
+
 /////////////////////////////////////////
 // Submit page
 const submitLogin = async (formData: any) => {
 
   openLoadingDialog(true)
-
-  // console.log(formData)
 
   // User auth store
   const store = useStoreUserAuth()
@@ -186,69 +182,20 @@ const submitLogin = async (formData: any) => {
 
 }
 
-const getAgentProfile = async () => {
-
-  const response = await useRepository().agent.getAgentProfile()
-  const resultCheck = useUtility().responseCheck(response)
-
-  if (resultCheck.status === 'pass') {
-    const AgentInfo = useUtility().getSession('AgentInfo')
-    if (Array.isArray(response.apiResponse.Data)) {
-      AgentInfo.AgentProfile = response.apiResponse.Data[0]
-    }
-    useUtility().setSession('AgentInfo', AgentInfo)
-  }
-
-}
-
-const getPlanProduct = async () => {
-
-  const response = await useRepository().agent.getPlanProduct()
-  const resultCheck = useUtility().responseCheck(response)
-
-  if (resultCheck.status === 'pass') {
-    const AgentInfo = useUtility().getSession('AgentInfo')
-    AgentInfo.PlanProduct = response.apiResponse.Data
-    useUtility().setSession('AgentInfo', AgentInfo)
-  }
-
-}
-
 /////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
 
-  useUtility().setSession('AgentInfo', { AgentProfile: [], PlanProduct: [] })
-  getAgentProfile()
-  getPlanProduct()
+  // Get `agentInfo` store
+  const agentInfoStore = useAgentInfoStore()
+  // await useAsyncData(agentInfoStore.getAll)
+  await useAsyncData(agentInfoStore.getProfile)
+  await useAsyncData(agentInfoStore.getPlan)
+  await useAsyncData(agentInfoStore.getPledgeBalance)
+
   router.push({ path: '/main' })
 
 }
-
-/////////////////////////////////////////
-// Function clear all stores
-// import { getActivePinia } from "pinia"
-
-// const clearStores = () => {
-
-//   // Reset Pinia store
-//   getActivePinia()._s.forEach(store => {
-//     store.$reset() // Reset the store's state
-//     store.$dispose() // Dispose of the store instance
-//     sessionStorage.removeItem(store.$id) // Remove sessionStorage of the store instance
-
-//     // Remove sessionStorage
-//     sessionStorage.removeItem('useStoreNoticePayment')
-//     sessionStorage.removeItem('useStorePayment')
-//     sessionStorage.removeItem('useStorePackageList')
-//     sessionStorage.removeItem('useStoreFeeLimit')
-//     sessionStorage.removeItem('AgentInfo')
-
-//     // Remove localStorage
-//     localStorage.removeItem('useStoreInformation')
-//   })
-
-// }
 
 /////////////////////////////////////////
 // Define layout

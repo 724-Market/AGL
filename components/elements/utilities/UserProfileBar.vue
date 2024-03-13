@@ -33,11 +33,7 @@
 
 <script setup lang="ts">
 /////////////////////////////////////////
-// Import stores
-import { useAgentProfileStore } from '~/stores/user/agentProfile'
-
 // Use stores
-const agentProfileStore = useAgentProfileStore()
-await useAsyncData(agentProfileStore.get)
-const { AMNo, AMLevel, isAMAffiliate, AMPlanName, AMPlanExpire } = storeToRefs(agentProfileStore)
+const agentInfoStore = useAgentInfoStore()
+const { AMNo, AMLevel, isAMAffiliate, AMPlanName, AMPlanExpire } = storeToRefs(agentInfoStore)
 </script>

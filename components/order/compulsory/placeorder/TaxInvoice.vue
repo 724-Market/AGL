@@ -227,6 +227,7 @@
                           @keyup="handlerChangeTaxInvoice"
                         />
                       </div>
+                      <!--Waiting to test and remove CopyAddress component-->
                       <ElementsFormCopyAddress
                         element-key="taxinvoice"
                         :addr-province="addrProvince"
@@ -357,6 +358,7 @@
                       addressDeliveryTaxType == 'addnew' &&
                       props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID != null"
                   >
+                    <!--Waiting to test and remove CopyNewAddress component-->
                     <div class="row" v-show="false">
 
                       <ElementsFormCopyNewAddress
@@ -815,7 +817,7 @@ const updateAddress = async (e: string, AddrID: string) => {
         ${newTaxAddressUpdate.value.PhoneNumber} ${newTaxAddressUpdate.value.No} ${newTaxAddressUpdate.value.DistrictName} ${newTaxAddressUpdate.value.SubDistrictName}
         ${newTaxAddressUpdate.value.ProvinceName} ${newTaxAddressUpdate.value.postalCode}`
         insureDetail.value.TaxInvoiceAddress =  newTaxAddressUpdate.value
-        await handlerChangeTaxInvoice()
+        await handlerChangeFullLabelAddressTaxInvoice()
         emit('newTaxID', AddrID)
 
       } else if (addressType.value == 'TAXINVOICE_DELIVERY'){
@@ -843,10 +845,12 @@ const updateAddress = async (e: string, AddrID: string) => {
         };
 
         newTaxInvoiceDeliveryFullAddressTemp.value = `${newTaxDeliveryAddressUpdate.value.FirstName} ${newTaxDeliveryAddressUpdate.value.LastName}
-        ${newTaxDeliveryAddressUpdate.value.PhoneNumber} ${newTaxAddressUpdate.value.No} ${newTaxDeliveryAddressUpdate.value.DistrictName} ${newTaxDeliveryAddressUpdate.value.SubDistrictName}
+
+        ${newTaxDeliveryAddressUpdate.value.PhoneNumber} ${newTaxDeliveryAddressUpdate.value.No} ${newTaxDeliveryAddressUpdate.value.DistrictName} ${newTaxDeliveryAddressUpdate.value.SubDistrictName}
+
         ${newTaxDeliveryAddressUpdate.value.ProvinceName} ${newTaxDeliveryAddressUpdate.value.postalCode}`
         insureDetail.value.TaxInvoiceDeliveryAddress = newTaxDeliveryAddressUpdate.value
-        await handlerChangeTaxInvoice()
+        await handlerChangeFullLabelAddressTaxInvoiceDelivery()
         emit('newTaxAddressID', AddrID)
       }
       isNewLabel.value = true
@@ -930,7 +934,7 @@ const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress:
   }
 }
 const handlerChangeFullLabelAddressTaxInvoiceDelivery = () => {
-    newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
+    //newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
     handlerChangeTaxInvoice()
 }
 const handlerSubmitAddressTaxInvoice = () => {
@@ -941,7 +945,7 @@ const handlerSubmitAddressTaxInvoice = () => {
 const handlerSubmitAddressTaxInvoiceDelivery = () => {
   //alert("Not able")
   insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
-  //newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
+  newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
   handlerChangeTaxInvoice()
 }
 const handlerChangeTaxInvoice = () => {
@@ -961,17 +965,23 @@ const setCacheData = async () => {
       if (props.cacheOrderRequest.Customer.IsTaxInvoiceAddressSameAsDefault == false && props.cacheOrderRequest.Customer.TaxInvoiceAddress?.ProvinceID != '') {
           if(props.cacheOrderRequest.Customer.TaxInvoiceAddress)
           {
-            taxInvoiceAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceAddress as DefaultAddress
-            newTaxInvoiceFullAddress.value = taxInvoiceAddr.value
+            taxInvoiceAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceAddress as TaxInvoiceAddress
+            if(taxInvoiceAddr.value && taxInvoiceAddr.value.No)
+            {
+              newTaxInvoiceFullAddress.value = taxInvoiceAddr.value
+            }
           }
      }
      else{
-      taxInvoiceAddress.value = props.cacheOrderRequest.Customer.DefaultAddress as DefaultAddress
+      taxInvoiceAddress.value = props.cacheOrderRequest.Customer.DefaultAddress as TaxInvoiceAddress
      }
      insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
       if (props.cacheOrderRequest.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault == false && props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress?.ProvinceID != '') {
         cacheDefaultAddress.value = props.cacheOrderRequest.Customer.TaxInvoiceDeliveryAddress as DefaultAddress
-        newTaxInvoiceDeliveryFullAddressTemp.value = taxDeliveryAddr.value
+        if(taxDeliveryAddr.value && taxDeliveryAddr.value.No)
+        {
+          newTaxInvoiceDeliveryFullAddressTemp.value = taxDeliveryAddr.value
+        }
         //const deliveryMethod1 = props.cacheOrderRequest.DeliveryMethod1
       }
       else{

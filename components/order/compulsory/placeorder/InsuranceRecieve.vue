@@ -331,6 +331,10 @@ const insureFullAddress: globalThis.Ref<String> = ref('')
 const insureFullNewAddress: globalThis.Ref<String> = ref('')
 
 const onLoad = onMounted(async () => {
+  
+    if(props.insuranceRecieveCache.PostalDelivary.IsDeliveryAddressSameAsDefault == false){
+      await updateAddress(props.customerId, props.insuranceRecieveCache.PostalDelivary.DeliveryAddress.AddressID)
+    }
     if(props.prefix){
         prefix.value = props.prefix
     }

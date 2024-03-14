@@ -151,8 +151,8 @@
 
                   </aside>
                   <aside v-if="isAddnew && props.addressDefaultID != null">
+                    <!--Waiting to test and remove CopyNewAddress component-->
                     <div class="row" v-show="false">
-                      <!--Waiting to test and remove CopyNewAddress component-->
                       <ElementsFormCopyNewAddress
                         element-key="delivery"
                         :prefix="prefix"
@@ -194,8 +194,8 @@
     :customer-i-d="props.customerId" 
     :address-default-i-d="props.addressDefaultID"
     :address-i-d="props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID"
-    :address-data-array="isNewLabel ? newAddressUpdate : addressDataArray" 
-    :profile-data-array="isNewLabel ? newAddressUpdate : profileDataArray" 
+    :address-data-array="newAddressUpdate" 
+    :profile-data-array="newAddressUpdate" 
     :show="isEditDeliveryAddress" @close-address="closeModalAddress"
     @on-edit-address="updateAddress"
     ></ElementsDialogEditAddress> 

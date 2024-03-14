@@ -176,8 +176,7 @@
                   <aside
                     class="new-request-tax-address inner-section"
                     v-if="
-                      addressIncludeTaxType == 'addnew' &&
-                      props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID != null"
+                      addressIncludeTaxType == 'addnew'"
 
                   >
                     <div class="row" v-show="false">
@@ -227,7 +226,7 @@
                           @keyup="handlerChangeTaxInvoice"
                         />
                       </div>
-                      <!--Waiting to test and remove CopyAddress component-->
+                      <!--Waiting to test and remove CopyAddress component
                       <ElementsFormCopyAddress
                         element-key="taxinvoice"
                         :addr-province="addrProvince"
@@ -239,10 +238,12 @@
                         @change-district="handlerChangeDistrict"
                         @change-sub-district="handlerChangeSubDistrict"
                         @change-full-address="handlerChangeFullAddressTaxInvoice"
-                      />
+                      />-->
                     </div>
 
-                    <FormKit
+                    
+                  </aside>
+                  <FormKit
                       type="button"
                       v-show="props.cacheOrderRequest?.OrderNo != null"
                       label="แก้ไขใบกำกับ"
@@ -254,7 +255,6 @@
                       :disabled="isLoading"
                       :loading="isLoading"
                     />
-                  </aside>
                 </section>
 
                 <div
@@ -305,7 +305,7 @@
                       />
                     </div>
                   </div>
-                  <div class="form-hide-label">
+                  <div class="form-hide-label" >
                     <FormKit
                       type="radio"
                       label="รายชื่อที่อยู่"
@@ -319,7 +319,7 @@
                         {
                           label: 'เปลี่ยนที่อยู่ใหม่',
                           value: 'addnew',
-                          help: newTaxInvoiceDeliveryFullAddressTemp,
+                          help: newTaxInvoiceDeliveryFullAddress,
                           attrs: { addnewaddress: true },
                         },
                       ]"
@@ -327,6 +327,22 @@
                       v-model="addressDeliveryTaxType"
                     />
                   </div>
+                  <!-- <div class="form-hide-label" v-else>
+                    <FormKit
+                      type="radio"
+                      label="รายชื่อที่อยู่"
+                      :options="[
+                        {
+                          label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
+                          help: insureFullAddress,
+                          //'724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160',
+                          value: 'insured',
+                        },
+                      ]"
+                      options-class="option-block-stack"
+                      v-model="addressDeliveryTaxType"
+                    />
+                  </div> -->
                   <aside
 
                     v-if="
@@ -355,10 +371,9 @@
 
                   <aside
                     v-if="
-                      addressDeliveryTaxType == 'addnew' &&
-                      props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID != null"
+                      addressDeliveryTaxType == 'addnew'"
                   >
-                    <!--Waiting to test and remove CopyNewAddress component-->
+                    <!--Waiting to test and remove CopyNewAddress component
                     <div class="row" v-show="false">
 
                       <ElementsFormCopyNewAddress
@@ -374,9 +389,11 @@
                         @change-sub-district="handlerChangeSubDistrict2"
                         @change-full-address="handlerChangeFullAddressTaxInvoiceDelivery"
                       />
-                    </div>
+                    </div>-->
 
-                    <FormKit
+                    
+                  </aside>
+                  <FormKit
                       type="button"
                       v-show="props.cacheOrderRequest?.OrderNo != null"
                       label="แก้ไขที่อยู่จัดส่งใบกำกับ"
@@ -388,7 +405,6 @@
                       :disabled="isLoading"
                       :loading="isLoading"
                     />
-                  </aside>
                 </section>
               </div>
             </div>
@@ -405,16 +421,8 @@
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID 
     ?? props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"
-    :address-data-array="
-      isNewLabel
-        ? newTaxAddressUpdate
-        : taxInvoiceAddr
-    "
-    :profile-data-array="
-      isNewLabel
-        ? newTaxAddressUpdate
-        : taxInvoiceProfile
-    "
+    :address-data-array="newTaxAddressUpdate"
+    :profile-data-array="newTaxAddressUpdate"
     :show="isEditTaxAddress"
     @close-address="closeModalAddress"
     @on-edit-address="updateAddress"
@@ -426,16 +434,8 @@
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID 
     ?? props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"
-    :address-data-array="
-      isNewLabel
-        ? newTaxDeliveryAddressUpdate
-        : taxDeliveryAddr
-    "
-    :profile-data-array="
-      isNewLabel
-        ? newTaxDeliveryAddressUpdate
-        : taxDeliveryProfile
-    "
+    :address-data-array="newTaxDeliveryAddressUpdate"
+    :profile-data-array="newTaxDeliveryAddressUpdate"
     :show="isEditTaxDelivery"
     @close-address="closeModalDelivery"
     @on-edit-address="updateAddress"
@@ -482,6 +482,7 @@ const newTaxInvoiceFullAddress: globalThis.Ref<String> = ref('')
 const newTaxInvoiceDeliveryFullAddress: globalThis.Ref<String> = ref('')
 const newTaxInvoiceFullAddressTemp: globalThis.Ref<String> = ref('')
 const newTaxInvoiceDeliveryFullAddressTemp: globalThis.Ref<String> = ref('')
+const isOptionTaxDelivery = ref(true)
 
 const shippedPolicy = ref('together') //together,separately
 const shippedPolicyOption: globalThis.Ref<RadioOption[]> = ref([
@@ -633,7 +634,16 @@ const onLoad = onMounted(async () => {
   insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value 
 
   if (props.cacheOrderRequest) {
-    setCacheData()
+    await setCacheData()
+    if(props.cacheOrderRequest?.Customer?.IsTaxInvoiceAddressSameAsDefault == false){
+      addressType.value = 'TAXINVOICE'
+      await updateAddress(props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID, props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID)
+    }
+    if(props.cacheOrderRequest?.Customer?.IsTaxInvoiceDeliveryAddressSameAsDefault == false){
+      addressType.value = 'TAXINVOICE_DELIVERY'
+      await updateAddress(props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID, props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID)
+    }
+    
   }
   if (props.prefix) {
     prefix.value = props.prefix
@@ -687,6 +697,7 @@ const onLoad = onMounted(async () => {
 });
 
 const openDialogAddress = (open: boolean) => {
+  addressIncludeTaxType == 'addnew'
   addressType.value = 'TAXINVOICE'
   mapAddressData();
   mapProfileData();
@@ -703,6 +714,7 @@ const closeModalAddress = async (refresh: boolean) => {
 }
 
 const openDialogDelivery = (open: boolean) => {
+  addressDeliveryTaxType == 'addnew'
   addressType.value = 'TAXINVOICE_DELIVERY'
   mapAddressData();
   mapProfileData();
@@ -773,6 +785,62 @@ const mapAddressData = async () => {
     DistrictLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.DistrictName || '',
     SubDistrictLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.SubDistrictName || ''
   };
+};
+
+//Mapdata to show at label waiting upgrade to const mapProfileData = async (newData: Object) version
+const clearAddress = async () => {
+  taxInvoiceProfile.value = {
+    FirstName: '',
+    LastName: '',
+    Name: '',
+    PhoneNumber: '',
+    TaxID: '',
+  };
+  taxInvoiceAddr.value = {
+    No: '',
+    Moo: '',
+    Place: '',
+    Building: '',
+    Floor: '',
+    Alley:'',
+    Road: '',
+    Type: '',
+    ProvinceID: '',
+    DistrictID: '',
+    SubDistrictID: '',
+    postalCode: '',
+    ProvinceLabel: '',
+    DistrictLabel: '',
+    SubDistrictLabel: ''
+  };
+};
+
+const clearDelivery = async () => {
+  taxInvoiceDeliveryAddress.value = {
+    FirstName: '',
+    LastName: '',
+    Name: '',
+    PhoneNumber: '',
+    TaxID: '',
+    AddressID: '',
+    No: '',
+    Moo: '',
+    Place: '',
+    Building: '',
+    Floor: '',
+    Alley:'',
+    Road: '',
+    Type: '',
+    ProvinceID: '',
+    DistrictID: '',
+    SubDistrictID: '',
+    postalCode: '',
+    ProvinceLabel: '',
+    DistrictLabel: '',
+    SubDistrictLabel: ''
+  };
+  insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
+  await handlerChangeTaxInvoice()
 };
 // Update profile after save
 const updateAddress = async (e: string, AddrID: string) => {
@@ -929,12 +997,12 @@ const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress:
     newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} : ` + addr
 
     insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
-    newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
+    newTaxInvoiceDeliveryFullAddress.value = newTaxInvoiceDeliveryFullAddressTemp.value
     handlerChangeTaxInvoice()
   }
 }
 const handlerChangeFullLabelAddressTaxInvoiceDelivery = () => {
-    //newTaxInvoiceDeliveryFullAddressTemp.value = newTaxInvoiceDeliveryFullAddressTemp.value
+    newTaxInvoiceDeliveryFullAddress.value = newTaxInvoiceDeliveryFullAddressTemp.value
     handlerChangeTaxInvoice()
 }
 const handlerSubmitAddressTaxInvoice = () => {

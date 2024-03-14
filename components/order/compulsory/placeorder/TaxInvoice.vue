@@ -176,8 +176,7 @@
                   <aside
                     class="new-request-tax-address inner-section"
                     v-if="
-                      addressIncludeTaxType == 'addnew' &&
-                      props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID != null"
+                      addressIncludeTaxType == 'addnew'"
 
                   >
                     <div class="row" v-show="false">
@@ -242,7 +241,9 @@
                       />-->
                     </div>
 
-                    <FormKit
+                    
+                  </aside>
+                  <FormKit
                       type="button"
                       v-show="props.cacheOrderRequest?.OrderNo != null"
                       label="แก้ไขใบกำกับ"
@@ -254,7 +255,6 @@
                       :disabled="isLoading"
                       :loading="isLoading"
                     />
-                  </aside>
                 </section>
 
                 <div
@@ -305,7 +305,7 @@
                       />
                     </div>
                   </div>
-                  <div class="form-hide-label">
+                  <div class="form-hide-label" >
                     <FormKit
                       type="radio"
                       label="รายชื่อที่อยู่"
@@ -327,6 +327,22 @@
                       v-model="addressDeliveryTaxType"
                     />
                   </div>
+                  <!-- <div class="form-hide-label" v-else>
+                    <FormKit
+                      type="radio"
+                      label="รายชื่อที่อยู่"
+                      :options="[
+                        {
+                          label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
+                          help: insureFullAddress,
+                          //'724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160',
+                          value: 'insured',
+                        },
+                      ]"
+                      options-class="option-block-stack"
+                      v-model="addressDeliveryTaxType"
+                    />
+                  </div> -->
                   <aside
 
                     v-if="
@@ -355,8 +371,7 @@
 
                   <aside
                     v-if="
-                      addressDeliveryTaxType == 'addnew' &&
-                      props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID != null"
+                      addressDeliveryTaxType == 'addnew'"
                   >
                     <!--Waiting to test and remove CopyNewAddress component
                     <div class="row" v-show="false">
@@ -376,7 +391,9 @@
                       />
                     </div>-->
 
-                    <FormKit
+                    
+                  </aside>
+                  <FormKit
                       type="button"
                       v-show="props.cacheOrderRequest?.OrderNo != null"
                       label="แก้ไขที่อยู่จัดส่งใบกำกับ"
@@ -388,7 +405,6 @@
                       :disabled="isLoading"
                       :loading="isLoading"
                     />
-                  </aside>
                 </section>
               </div>
             </div>
@@ -466,6 +482,7 @@ const newTaxInvoiceFullAddress: globalThis.Ref<String> = ref('')
 const newTaxInvoiceDeliveryFullAddress: globalThis.Ref<String> = ref('')
 const newTaxInvoiceFullAddressTemp: globalThis.Ref<String> = ref('')
 const newTaxInvoiceDeliveryFullAddressTemp: globalThis.Ref<String> = ref('')
+const isOptionTaxDelivery = ref(true)
 
 const shippedPolicy = ref('together') //together,separately
 const shippedPolicyOption: globalThis.Ref<RadioOption[]> = ref([
@@ -680,6 +697,7 @@ const onLoad = onMounted(async () => {
 });
 
 const openDialogAddress = (open: boolean) => {
+  addressIncludeTaxType == 'addnew'
   addressType.value = 'TAXINVOICE'
   mapAddressData();
   mapProfileData();
@@ -696,6 +714,7 @@ const closeModalAddress = async (refresh: boolean) => {
 }
 
 const openDialogDelivery = (open: boolean) => {
+  addressDeliveryTaxType == 'addnew'
   addressType.value = 'TAXINVOICE_DELIVERY'
   mapAddressData();
   mapProfileData();
@@ -766,6 +785,62 @@ const mapAddressData = async () => {
     DistrictLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.DistrictName || '',
     SubDistrictLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.SubDistrictName || ''
   };
+};
+
+//Mapdata to show at label waiting upgrade to const mapProfileData = async (newData: Object) version
+const clearAddress = async () => {
+  taxInvoiceProfile.value = {
+    FirstName: '',
+    LastName: '',
+    Name: '',
+    PhoneNumber: '',
+    TaxID: '',
+  };
+  taxInvoiceAddr.value = {
+    No: '',
+    Moo: '',
+    Place: '',
+    Building: '',
+    Floor: '',
+    Alley:'',
+    Road: '',
+    Type: '',
+    ProvinceID: '',
+    DistrictID: '',
+    SubDistrictID: '',
+    postalCode: '',
+    ProvinceLabel: '',
+    DistrictLabel: '',
+    SubDistrictLabel: ''
+  };
+};
+
+const clearDelivery = async () => {
+  taxInvoiceDeliveryAddress.value = {
+    FirstName: '',
+    LastName: '',
+    Name: '',
+    PhoneNumber: '',
+    TaxID: '',
+    AddressID: '',
+    No: '',
+    Moo: '',
+    Place: '',
+    Building: '',
+    Floor: '',
+    Alley:'',
+    Road: '',
+    Type: '',
+    ProvinceID: '',
+    DistrictID: '',
+    SubDistrictID: '',
+    postalCode: '',
+    ProvinceLabel: '',
+    DistrictLabel: '',
+    SubDistrictLabel: ''
+  };
+  insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
+  await handlerChangeTaxInvoice()
 };
 // Update profile after save
 const updateAddress = async (e: string, AddrID: string) => {

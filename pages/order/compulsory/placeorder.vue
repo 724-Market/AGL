@@ -700,7 +700,7 @@ const getDeliveryMethod = (): DeliveryMethod[] => {
 };
 
 const updateNewAddressID = async (newID: string) => {
-  isInsureRecieve.value = true
+  isInsureRecieve.value = false
   newAddressDeliveryID.value = newID
 
 }

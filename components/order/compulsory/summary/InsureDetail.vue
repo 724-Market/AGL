@@ -36,7 +36,7 @@
               <p>{{ orderDetail.AssuredDetails.Email }}</p>
             </div>
             <div class="summary-item">
-              <h4 class="topic">เบอร์โทรศัพท์</h4>
+              <h4 class="topic">เบอร์มือถือ</h4>
               <p>{{ orderDetail.AssuredDetails.AddressPhoneNumber }}</p>
             </div>
             <div class="summary-item">
@@ -220,7 +220,7 @@
               <p>{{ orderDetail.TaxInvoiceDetails.AddressEmail }}</p>
             </div>
             <div class="summary-item">
-              <h4 class="topic">เบอร์โทรศัพท์</h4>
+              <h4 class="topic">เบอร์มือถือ</h4>
               <p>{{ orderDetail.TaxInvoiceDetails.AddressPhoneNumber }}</p>
             </div>
             <div class="summary-item">

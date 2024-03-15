@@ -27,9 +27,10 @@ function isValidThaiPhoneNumber({ value }) {
     // Mobile numbers can start with 06, 08, 09 and followed by 8 digits.
     // Landline numbers start with 0 followed by 1 or 2 digits for the area code, and then 6 or 7 digits.
     const mobilePattern = /^0[689][0-9]{8}$/;
-    const landlinePattern = /^0[2-9][0-9]{7,8}$/;
+    //const landlinePattern = /^0[2-9][0-9]{7,8}$/;
 
-    validate = mobilePattern.test(cleaned) || landlinePattern.test(cleaned);
+    //validate = mobilePattern.test(cleaned) || landlinePattern.test(cleaned);
+    validate = mobilePattern.test(cleaned);
     resolve(validate);
   });
 }

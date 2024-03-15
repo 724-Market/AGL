@@ -84,7 +84,7 @@
                         <ElementsFormIdCard label="เลขบัตรประชาชน" name="idCard" v-model="personProfile.PersonalID" />
                       </div>
                       <div class="col-6">
-                        <ElementsFormPhoneNumber autocomplete="off" label="เบอร์โทรศัพท์"  name="PhoneNumber" v-model="personProfile.PhoneNumber"
+                        <ElementsFormPhoneNumber autocomplete="off" label="เบอร์มือถือ"  name="PhoneNumber" v-model="personProfile.PhoneNumber"
                           @change="handlerChangePersonalProfile"></ElementsFormPhoneNumber>
                       </div>
                       <div class="col-6">
@@ -797,7 +797,7 @@ watch(
     }
   }
 )
-
+/*
 // watching data to Radio Formkit
 watch(InsuredTypeText, async (newInsuredTypeText) => {
   if (newInsuredTypeText.length > 0) {
@@ -806,6 +806,19 @@ watch(InsuredTypeText, async (newInsuredTypeText) => {
     // clear data when change to customer type
     //clearData()
     handlerChangeCustomerType(newInsuredTypeText)
+  }
+
+});
+*/
+// watching data to Radio Formkit
+watch(
+  () => InsuredTypeText, () => {
+  if (InsuredTypeText.length > 0) {
+    insureDetail.value.IsBranch = false
+    insureDetail.value.IsPerson = InsuredTypeText == 'person'
+    // clear data when change to customer type
+    //clearData()
+    handlerChangeCustomerType(InsuredTypeText)
   }
 
 });

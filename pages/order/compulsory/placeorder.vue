@@ -385,8 +385,10 @@ const onLoad = onMounted(async () => {
         const customer = info.Order?.Customer
         if (customer) {
           const addr = await setFullAddress(customer);
-          insureFullAddress.value = `${customer.DefaultAddress?.FirstName} ${customer.DefaultAddress?.LastName} 
-                                     : ${addr}`;
+          insureFullAddress.value = `${customer.DefaultAddress?.FirstName} 
+          ${customer.DefaultAddress?.LastName} 
+          ${customer.DefaultAddress.TaxID ? 'เลขที่ผู้เสียภาษี '+customer.DefaultAddress.TaxID : ''} 
+          ${customer.DefaultAddress.PhoneNumber ? 'เบอร์มือถือ '+customer.DefaultAddress.PhoneNumber : ''} : ${addr}`;
         }
       }
     }
@@ -1044,7 +1046,11 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
   }
   if (addr) {
     insureFullAddress.value =
-      `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} :` +
+      `${ObjectAddress.PrefixName} 
+      ${ObjectAddress.FirstName} 
+      ${ObjectAddress.LastName}
+      ${ObjectAddress.TaxID ? 'เลขที่ผู้เสียภาษี '+ObjectAddress.TaxID : ''} 
+      ${ObjectAddress.PhoneNumber ? 'เบอร์มือถือ '+ObjectAddress.PhoneNumber : ''} :` +
       addr;
   }
 };

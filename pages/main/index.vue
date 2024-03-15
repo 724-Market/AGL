@@ -71,7 +71,7 @@ const handleSelectPackage = (payload: any) => {
   openLoadingDialog(true)
 
   const { planId, planCode } = payload
-  router.push({ path: '/main/select-plan/' + planId })
+  router.push({ path: '/main/package/' + planId })
 
   // new Promise((r) => setTimeout(r, 3000))
   // alert(`Selected: Plan ID - ${planId}, Plan Code - ${planCode}`)

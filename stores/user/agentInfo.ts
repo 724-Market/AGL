@@ -15,9 +15,9 @@ export const useAgentInfoStore = defineStore('agentInfo', {
 
     async getAll() {
       
-      await getProfile()
-      await getPlan()
-      await getPledgeBalance()
+      // await getProfile()
+      // await getPlan()
+      // await getPledgeBalance()
 
     },
     
@@ -48,7 +48,7 @@ export const useAgentInfoStore = defineStore('agentInfo', {
 
     // Get Pledge balance
     async getPledgeBalance() {
-      const res_pledge = await useRepository().pledge.creditBalance()
+      const res_pledge = await useRepository().pledge.getCreditBalance()
       const resultCheck_pledge = useUtility().responseCheck(res_pledge)
 
       if (resultCheck_pledge.status === 'pass') {

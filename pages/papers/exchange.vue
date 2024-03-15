@@ -192,7 +192,7 @@ const loadDeliveryPaperType = async () => {
 };
 
 const loadPledgeCreditBalance = async () => {
-  const response = await useRepository().pledge.getBalance();
+  const response = await useRepository().pledge.getCreditBalance();
   const resultCheck = useUtility().responseCheck(response)
   if (resultCheck.status === 'pass') {
         if (Array.isArray(response.apiResponse.Data)) {

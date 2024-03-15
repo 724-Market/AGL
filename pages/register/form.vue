@@ -99,7 +99,7 @@ definePageMeta({
       const registerStep = useState('register-step')
 
       if (registerStep.value != 'form') {
-        //return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
+        return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
       }
 
     }

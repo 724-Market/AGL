@@ -10,6 +10,9 @@
               ข้อมูลผู้เอาประกันภัย
             </button>
           </h2>
+          <p>12{{ props.arCustomerList }}21</p>
+          <p>21{{ props.customerId }}12</p>
+          <p>23{{ props.cacheOrderRequest }}32</p>
           <div id="collapse-insured-information" class="accordion-collapse collapse show"
             data-bs-parent="#accordion-insured-information">
             <div class="accordion-body">
@@ -346,6 +349,7 @@ const props = defineProps({
   addrSubDistrict: Array<SelectOption>,
   addrZipCode: String,
   customerId: String,
+  arCustomerList: Object,
   cacheOrderRequest: {
     type: Object as () => PlaceOrderRequest
   }

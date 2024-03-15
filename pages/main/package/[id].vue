@@ -12,9 +12,21 @@
             <div class="card">
               <div class="card-body">
 
-                <ElementsUtilitiesPackageDetail :planDetail="packageProductPlan" :planBenefit="packageProductBenefit"
-                  :planFeature="packageProductFeature" :planSummary="packagePlanSummary"
-                  @on-select-package="handleSelectPackage" />
+                <ElementsUtilitiesPackageDetail :packageDetail="packageProductData" />
+
+                <div v-if="packageProductData.PlanSummary">
+                  <br>
+                  <u>Plan Summary</u>
+                  <br><br>
+                  {{ packageProductData.PlanSummary }}
+                </div>
+
+                <div v-if="packageProductData.Order">
+                  <br>
+                  <u>Order</u>
+                  <br><br>
+                  {{ packageProductData.Order }}
+                </div>
 
               </div>
             </div>
@@ -27,16 +39,19 @@
 
             <aside class="card">
               <div class="card-header">
-                <h3 class="card-title">ช่องทางการชำระเงิน</h3>
+                <h3 class="card-title">การชำระเงิน</h3>
               </div>
               <div class="card-body">
 
-                <ElementsFormRadioPaymentMethods />
+                <FormKit v-if="paymentMethodsOption" type="radio" label="การชำระเงินด้วย QR Code" name="PaymentMethods" 
+                    :options="paymentMethodsOption" 
+                    validation="required"
+                    :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block" />
 
               </div>
             </aside>
 
-            <FormKit type="submit" label="ชำระเงิน" name="package-submit" id="package-submit"
+            <FormKit type="submit" label="ทำรายการ" name="package-submit" id="package-submit"
               :classes="{ input: 'btn-primary', outer: 'form-actions' }" :loading="isLoading" />
 
             <NuxtLink class="btn-back btn-gray" to="/main">ย้อนกลับ</NuxtLink>
@@ -59,6 +74,13 @@
 <script setup lang="ts">
 import settingData from "~/shared/data/setting-data"
 
+interface packageProductData {
+  ProductMainPlan?: []
+  ProductBenefit?: []
+  ProductFeature?: []
+  PlanSummary?: []
+}
+
 const route = useRoute()
 const router = useRouter()
 const affiliateProductPlanDetails = ref()
@@ -68,6 +90,9 @@ const packageProductPlan = ref({})
 const packageProductBenefit = ref([])
 const packageProductFeature = ref([])
 const packagePlanSummary = ref({})
+
+let packageProductData = ref<packageProductData>({})
+let paymentMethodsOption = ref([])
 
 /////////////////////////////////////////
 // Loading state after form submiting
@@ -131,15 +156,30 @@ const loadAffiliateProductPlan = async () => {
   if (resultCheck.status == 'pass') {
     affiliateProductPlanDetails.value = response.apiResponse.Data
 
-    packageProductPlan.value = response.apiResponse.Data.ProductPlan[0].Plan
-    packageProductBenefit.value = response.apiResponse.Data.ProductPlan[0].Benefit
-    packageProductFeature.value = response.apiResponse.Data.ProductPlan[0].Feature
-    packagePlanSummary.value = response.apiResponse.Data.PlanSummary
+    packageProductData = {
+      ProductMainPlan: response.apiResponse.Data.ProductPlan[0].Plan,
+      ProductBenefit: response.apiResponse.Data.ProductPlan[0].Benefit,
+      ProductFeature: response.apiResponse.Data.ProductPlan[0].Feature,
+      PlanSummary: response.apiResponse.Data.PlanSummary,
+      Order: response.apiResponse.Data.Order,
+    }
+    // console.log(packageProductData)
 
-    console.log(packageProductPlan.value)
-    console.log(packageProductBenefit.value)
-    console.log(packageProductFeature.value)
-    console.log(packagePlanSummary.value)
+    paymentMethodsOption = ref([
+      {
+        label: 'เต็มจำนวน',
+        value: 'full',
+        help: `ยอดชำระ `+useUtility().getCurrency(response.apiResponse.Data.Order.GrandAmount,2)+` บาท`, 
+        attrs: { disabled: false } 
+      },
+      {
+        label: 'ชำระหักคอมฯ',
+        value: 'remain',
+        help: `ยอดชำระ `+useUtility().getCurrency(response.apiResponse.Data.Order.GrandAmount,2)+` บาท`,
+        attrs: { disabled: true } 
+      }
+    ])
+
   }
   else {
     router.push("/main")
@@ -149,9 +189,10 @@ const loadAffiliateProductPlan = async () => {
 
 /////////////////////////////////////////
 // Submit page
-const submitPackage = async () => {
+const submitPackage = async (formData: any) => {
 
-  openLoadingDialog(true)
+  // openLoadingDialog(true)
+  // console.log(formData)
 
   const ProductPlanID = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? '';
 
@@ -176,7 +217,7 @@ const submitPackage = async () => {
       ProductPlanID: ProductPlanID,
       PaymentType: affiliatePaymentType,
       IsReNew: false,
-      IsUseRemain: false,
+      IsUseRemain: (formData.PaymentMethods=='full' ? false:true),
       IsConsent: true
     }
 
@@ -221,9 +262,8 @@ const submitPackage = async () => {
       resultCheck.modalText = 'คุณใช้งานแพ็กเกจนี้อยู่แล้ว'
       resultCheck.modalButton = 'รับทราบ'
       serverModal(resultCheck)
-      openLoadingDialog(false)
+      // openLoadingDialog(false)
     }
-
 
   }
   else {

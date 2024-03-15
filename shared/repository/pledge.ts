@@ -28,7 +28,7 @@ class PledgeModule {
     return await useCallApi().apiRepository<PledgePaperOnhandBalanceRes[]>(`${this.RESOURCE}/paperonhand/balance/get`, req)
   }
 
-  async getBalance() {
+  async getCreditBalance() {
     return await useCallApi().apiRepository(`${this.RESOURCE}/credit/balance/get`, {})
   }
 }

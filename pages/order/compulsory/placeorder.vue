@@ -34,7 +34,7 @@
             :address-default-i-d="OrderInfo.Customer?.DefaultAddress?.AddressID" :insure-full-address="insureFullAddress"
             :prefix="prefixRecieve" :delivery="delivery" :addr-province="addrProvinceForRecieve"
             :addr-district="addrDistrictForRecieve" :addr-sub-district="addrSubDistrictForRecieve"
-            :addr-zip-code="addrZipCodeForRecieve" :package-select="packageSelect"
+            :addr-zip-code="addrZipCodeForRecieve" :package-select="packageSelect" :is-insure-recieve="isInsureRecieve"
             :insurance-recieve-cache="insuranceRecieveCache"></OrderCompulsoryPlaceorderInsuranceRecieve>
 
           <!-- # # # # # # # # # # # # # # # # # # # # # ใบกำกับภาษี # # # # # # # # # # # # # # # # # # # # #-->
@@ -52,7 +52,7 @@
             :addr-sub-district="addrSubDistrictForTax" :addr-zip-code="addrZipCodeForTax"
             :addr-province2="addrProvinceForTax2" :addr-district2="addrDistrictForTax2"
             :addr-sub-district2="addrSubDistrictForTax2" :addr-zip-code2="addrZipCodeForTax2"
-            :is-include-tax="packageSelect.IsTaxInclude"
+            :is-include-tax="packageSelect.IsTaxInclude" :is-tax-delivery="isTaxDelivery" :is-tax-address="isTaxAddress"
             :address-default-i-d="OrderInfo.Customer?.DefaultAddress?.AddressID"
             :shipping-policy="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
             :cache-order-request="taxInvoiceCache" @change-tax-invoice="handlerChangeTaxInvoice">
@@ -273,6 +273,9 @@ const { OrderInfo } = storeToRefs(storeOrder);
 
 const storeSummary = useStoreOrderSummary();
 const { OrderSummaryInfo } = storeToRefs(storeSummary);
+const isTaxDelivery = ref(false)
+const isTaxAddress = ref(false)
+const isInsureRecieve = ref(false)
 
 const router = useRouter();
 const onLoad = onMounted(async () => {
@@ -346,6 +349,7 @@ const onLoad = onMounted(async () => {
           DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
         },
       };
+      isInsureRecieve.value = insuranceRecieve.PostalDelivary?.IsDeliveryAddressSameAsDefault
       insuranceRecieveCache.value = insuranceRecieve;
 
       // set cache Data Step4
@@ -371,6 +375,8 @@ const onLoad = onMounted(async () => {
         DeliveryMethod2: OrderInfo.value.DeliveryMethod2,
         IsTaxInvoice: OrderInfo.value.IsTaxInvoice,
       };
+      isTaxAddress.value = cacheTaxInvoice.Customer?.IsTaxInvoiceAddressSameAsDefault
+      isTaxDelivery.value = cacheTaxInvoice.Customer?.IsTaxInvoiceDeliveryAddressSameAsDefault
       taxInvoiceCache.value = cacheTaxInvoice;
 
       const info = sessionStorage.getItem("useStoreOrderSummary") ?
@@ -694,16 +700,19 @@ const getDeliveryMethod = (): DeliveryMethod[] => {
 };
 
 const updateNewAddressID = async (newID: string) => {
+  isInsureRecieve.value = false
   newAddressDeliveryID.value = newID
 
 }
 
 const updateNewTaxID = async (newID: string) => {
+  isTaxAddress.value = false
   newAddressTaxID.value = newID
 
 }
 
 const updateNewTaxAddressID = async (newID: string) => {
+  isTaxDelivery.value = false
   newTaxDeliveryID.value = newID
 
 }

@@ -542,7 +542,7 @@ const mapProfileData = async () => {
     Name: props.cacheOrderRequest?.Customer?.DefaultAddress?.Name ?? '',
     PhoneNumber: props.cacheOrderRequest?.Customer?.DefaultAddress?.PhoneNumber ?? '',
     TaxID: props.cacheOrderRequest?.Customer?.DefaultAddress?.TaxID ?? '',
-    AddressID: props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID ?? ''
+    AddressID: props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID ?? '',
   }
 }
 

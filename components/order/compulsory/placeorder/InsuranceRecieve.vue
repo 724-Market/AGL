@@ -424,8 +424,8 @@ const onLoad = onMounted(async () => {
 });
 
 const openDialogAddress = (open: boolean) => {
-  mapAddressData();
-  mapProfileData();
+  // mapAddressData();
+  // mapProfileData();
   isEditDeliveryAddress.value = false;
   isEditDeliveryAddress.value = open;
 }
@@ -438,6 +438,7 @@ const closeModalAddress = async (refresh: boolean) => {
   isEditDeliveryAddress.value = false;
 }
 
+/*
 const mapProfileData = async () => {
   profileDataArray.value = {
     FirstName: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.FirstName || '',
@@ -445,7 +446,7 @@ const mapProfileData = async () => {
     Name: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.Name || '',
     PhoneNumber: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.PhoneNumber || '',
     TaxID: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.TaxID || '',
-    AddressID: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID || ''
+    AddressID: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID || '',
   };
 };
 
@@ -467,6 +468,7 @@ const mapAddressData = async () => {
     SubDistrictLabel: props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.SubDistrictName || ''
   };
 };
+/*/
 
 // Update profile after save
 const updateAddress = async (e: string, AddrID: string) => {

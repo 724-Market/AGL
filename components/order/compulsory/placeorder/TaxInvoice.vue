@@ -864,7 +864,7 @@ const updateAddress = async (e: string, AddrID: string) => {
         ${newTaxAddressUpdate.value.PhoneNumber} ${newTaxAddressUpdate.value.No} ${newTaxAddressUpdate.value.DistrictName} ${newTaxAddressUpdate.value.SubDistrictName}
         ${newTaxAddressUpdate.value.ProvinceName} ${newTaxAddressUpdate.value.postalCode}`
         insureDetail.value.TaxInvoiceAddress =  newTaxAddressUpdate.value
-
+        
         addressIncludeTaxType.value = 'addnew'
         //requestIncludeTax.value = '1'
         await handlerChangeFullLabelAddressTaxInvoice()
@@ -1210,8 +1210,9 @@ watch(
           Type:""
         }
       }
-
-
+      if(addressDeliveryTaxType.value == 'addnew' && props.cacheOrderRequest?.OrderNo){
+        handlerChangeTaxInvoice()
+      }
     }
 
   }

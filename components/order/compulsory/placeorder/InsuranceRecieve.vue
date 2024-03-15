@@ -104,7 +104,7 @@
                       label="รายชื่อที่อยู่"
                       name="PostalAddressPolicy"
                       v-model="postalAddressPolicyText"
-                      :options="postalAddressPolicy"
+                      :options="getAddressOption(props.isInsureRecieve)"
                       options-class="option-block-stack"
                     >
                       <!-- <template #label="context">
@@ -167,11 +167,6 @@
                         @change-full-address="handlerChangeFullAddress"
                       />
                     </div>
-                    <FormKit type="button" v-show="props.addressDefaultID != null" 
-                      label="แก้ไขที่อยู่" name="customer-delivery" :classes="{
-                      input: 'btn-primary',
-                      }" @click="openDialogAddress" :disabled="isLoading" :loading="isLoading" 
-                    />
                     <!-- Move to report at radio
                     <ElementsFormLabelAddress v-if="props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID != null"
                       :label-address="isNewLabel 
@@ -180,6 +175,11 @@
                       />
                        -->
                   </aside>
+                    <FormKit type="button" v-show="props.addressDefaultID != null" 
+                      label="แก้ไขที่อยู่" name="customer-delivery" :classes="{
+                      input: 'btn-primary',
+                      }" @click="openDialogAddress" :disabled="isLoading" :loading="isLoading" 
+                    />
                 </section>
               </div>
             </div>
@@ -229,6 +229,7 @@ const props = defineProps({
   customerId: String,
   addressDefaultID: String,
   insureFullAddress:String,
+  isInsureRecieve: Boolean,
   packageSelect: {
     type: Object as () => IPackageResponse,
   },
@@ -511,15 +512,15 @@ const updateAddress = async (e: string, AddrID: string) => {
       ${newAddressUpdate.value.ProvinceName} ${newAddressUpdate.value.postalCode}`
 
       newAddressObject.value = newAddressUpdate.value
-
+      postalAddressPolicyText.value = 'addnew'
       await handleCheckInsuranceRecieve() 
       
       //await setPostalAddressPolicy(insureFullAddress.value.toString(), insureFullNewAddress.value.toString())
       
     }
     
-    await mapAddressData();
-    await mapProfileData();
+    // await mapAddressData();
+    // await mapProfileData();
   }
   
   emit('newAddressID', AddrID)
@@ -540,19 +541,46 @@ watch(postalAddressPolicyText, async (newAddressPolicy) => {
 
 const setPostalAddressPolicy = async (labelInsured: string, labelAddnew: string) => {
   postalAddressPolicy.value = [
-    {
-      label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
-      value: 'insured',
-      help: labelInsured
-    },
-    {
-      label: 'เปลี่ยนที่อยู่ใหม่',
-      value: 'addnew',
-      help: labelAddnew,
-      attrs: { addnewaddress: true }
-    }
-  ]
+      {
+        label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
+        value: 'insured',
+        help: labelInsured
+      },
+      {
+        label: 'เปลี่ยนที่อยู่ใหม่',
+        value: 'addnew',
+        help: labelAddnew,
+        attrs: { addnewaddress: true }
+      }
+    ]
 }
+
+const getAddressOption = (isAddress: boolean) => {
+  if (isAddress) {
+    return [
+      {
+        label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
+        help: insureFullAddress,
+        //'724 อาคารรุ่งโรจน์ ซอย พระราม9/11 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10160',
+        value: 'insured',
+      },
+    ];
+  } else {
+    return [
+      {
+        label: 'ชื่อ-ที่อยู่เดียวกันกับผู้เอาประกัน',
+        value: 'insured',
+        help: insureFullAddress
+      },
+      {
+        label: 'เปลี่ยนที่อยู่ใหม่',
+        value: 'addnew',
+        help: insureFullNewAddress,
+        attrs: { addnewaddress: true }
+      }
+    ]
+  }
+};
 
 const handleRadioShippingPolicyChange = async (event: String) => {
   switch (event) {

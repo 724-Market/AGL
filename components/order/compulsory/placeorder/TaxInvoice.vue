@@ -860,11 +860,17 @@ const updateAddress = async (e: string, AddrID: string) => {
           TaxID: taxAddress.TaxID
         };
 
-        newTaxInvoiceFullAddressTemp.value = `${newTaxAddressUpdate.value.FirstName} ${newTaxAddressUpdate.value.LastName}
-        ${newTaxAddressUpdate.value.PhoneNumber} ${newTaxAddressUpdate.value.No} ${newTaxAddressUpdate.value.DistrictName} ${newTaxAddressUpdate.value.SubDistrictName}
-        ${newTaxAddressUpdate.value.ProvinceName} ${newTaxAddressUpdate.value.postalCode}`
+        newTaxInvoiceFullAddressTemp.value = `${newTaxAddressUpdate.value.FirstName} 
+        ${newTaxAddressUpdate.value.LastName}
+        ${newTaxAddressUpdate.value.TaxID ? 'เลขที่ผู้เสียภาษี '+newTaxAddressUpdate.value.TaxID : ''} 
+        ${newTaxAddressUpdate.value.PhoneNumber ? 'เบอร์มือถือ '+newTaxAddressUpdate.value.PhoneNumber : ''} : 
+        ${newTaxAddressUpdate.value.No} 
+        ${newTaxAddressUpdate.value.DistrictName} 
+        ${newTaxAddressUpdate.value.SubDistrictName}
+        ${newTaxAddressUpdate.value.ProvinceName} 
+        ${newTaxAddressUpdate.value.postalCode}`
         insureDetail.value.TaxInvoiceAddress =  newTaxAddressUpdate.value
-
+        
         addressIncludeTaxType.value = 'addnew'
         //requestIncludeTax.value = '1'
         await handlerChangeFullLabelAddressTaxInvoice()
@@ -894,9 +900,15 @@ const updateAddress = async (e: string, AddrID: string) => {
           TaxID: taxDelivery.TaxID
         };
 
-        newTaxInvoiceDeliveryFullAddressTemp.value = `${newTaxDeliveryAddressUpdate.value.FirstName} ${newTaxDeliveryAddressUpdate.value.LastName}
-        ${newTaxDeliveryAddressUpdate.value.PhoneNumber} ${newTaxDeliveryAddressUpdate.value.No} ${newTaxDeliveryAddressUpdate.value.DistrictName} ${newTaxDeliveryAddressUpdate.value.SubDistrictName}
-        ${newTaxDeliveryAddressUpdate.value.ProvinceName} ${newTaxDeliveryAddressUpdate.value.postalCode}`
+        newTaxInvoiceDeliveryFullAddressTemp.value = `${newTaxDeliveryAddressUpdate.value.FirstName} 
+        ${newTaxDeliveryAddressUpdate.value.LastName}
+        ${newTaxDeliveryAddressUpdate.value.TaxID ? 'เลขที่ผู้เสียภาษี '+newTaxDeliveryAddressUpdate.value.TaxID : ''} 
+        ${newTaxDeliveryAddressUpdate.value.PhoneNumber ? 'เบอร์มือถือ '+newTaxDeliveryAddressUpdate.value.PhoneNumber : ''} : 
+        ${newTaxDeliveryAddressUpdate.value.No} 
+        ${newTaxDeliveryAddressUpdate.value.DistrictName} 
+        ${newTaxDeliveryAddressUpdate.value.SubDistrictName}
+        ${newTaxDeliveryAddressUpdate.value.ProvinceName} 
+        ${newTaxDeliveryAddressUpdate.value.postalCode}`
 
         insureDetail.value.TaxInvoiceDeliveryAddress = newTaxDeliveryAddressUpdate.value
         addressDeliveryTaxType.value = 'addnew'
@@ -961,7 +973,10 @@ const handlerChangeFullAddressTaxInvoice = (addr: string, ObjectAddress: Default
     const prefixName = prefix.value.filter(x => x.value == prefixId)[0]
     let prefixLabel = prefixName ? prefixName.label ?? '' : ''
     //newTaxInvoiceFullAddressTemp.value = `${prefixLabel} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
-    newTaxInvoiceFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} : ` + addr
+    newTaxInvoiceFullAddressTemp.value = `${ObjectAddress.FirstName} 
+    ${ObjectAddress.LastName} 
+    ${ObjectAddress.TaxID ? 'เลขที่ผู้เสียภาษี '+ObjectAddress.TaxID : ''} 
+    ${ObjectAddress.PhoneNumber ? 'เบอร์มือถือ '+ObjectAddress.PhoneNumber : ''} : ` + addr
 
     insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value
     newTaxInvoiceFullAddress.value = newTaxInvoiceFullAddressTemp.value
@@ -976,7 +991,9 @@ const handlerChangeFullAddressTaxInvoiceDelivery = (addr: string, ObjectAddress:
   if (addr && ObjectAddress) {
     taxInvoiceDeliveryAddress.value = ObjectAddress as TaxInvoiceAddress
     //newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} ` + addr
-    newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName} : ` + addr
+    newTaxInvoiceDeliveryFullAddressTemp.value = `${ObjectAddress.FirstName} ${ObjectAddress.LastName}
+    ${ObjectAddress.TaxID ? 'เลขที่ผู้เสียภาษี '+ObjectAddress.TaxID : ''} 
+    ${ObjectAddress.PhoneNumber ? 'เบอร์มือถือ '+ObjectAddress.PhoneNumber : ''} : ` + addr
 
     insureDetail.value.TaxInvoiceDeliveryAddress = taxInvoiceDeliveryAddress.value
     newTaxInvoiceDeliveryFullAddress.value = newTaxInvoiceDeliveryFullAddressTemp.value
@@ -1210,8 +1227,9 @@ watch(
           Type:""
         }
       }
-
-
+      if(addressDeliveryTaxType.value == 'addnew' && props.cacheOrderRequest?.OrderNo){
+        handlerChangeTaxInvoice()
+      }
     }
 
   }

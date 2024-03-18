@@ -28,7 +28,7 @@
           <div class="data">{{ registerData.NameTitle }} {{ registerData.FirstName }} {{ registerData.LastName }}</div>
         </div>
         <div class="item">
-          <div class="label">เบอร์โทรศัพท์</div>
+          <div class="label">เบอร์มือถือ</div>
           <div class="data">{{ registerData.Phone }}</div>
         </div>
 

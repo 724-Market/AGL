@@ -7,7 +7,6 @@
 
       <div class="row">
         <div class="col col-main">
-
           <!-- # # # # # # # # # # # # # # # # # # # # # รายละเอียดรถ # # # # # # # # # # # # # # # # # # # # #-->
           <OrderCompulsoryPlaceorderCarDetail @check-car-detail="handleCheckCarDetail" :car-color="carColor"
             :car-province="carProvince" :info="infomation" :car-detail-cache="carDetailCache">
@@ -19,7 +18,7 @@
             @change-province="handlerChangeProvinceForInsured" @change-district="handlerChangeDistrictForInsured"
             @change-sub-district="handlerChangeSubDistrictForInsured" @change-customer-type="handlerChangeCustomerType"
             @change-full-address="handlerChangeFullAddress" @change-insure-detail="handlerChangeInsureDetail"
-            @change-default-address="handlerDefaultAddress"
+            @change-default-address="handlerDefaultAddress" :ar-customer-list="arCustomerList"
             :customer-id="OrderInfo.Customer?.PersonProfile?.CustomerID" :prefix="prefix" :nationality="nationality"
             :addr-province="addrProvinceForInsured" :addr-district="addrDistrictForInsured"
             :addr-sub-district="addrSubDistrictForInsured" :addr-zip-code="addrZipCodeForInsured"
@@ -30,7 +29,8 @@
             @change-province="handlerChangeProvinceForRecieve" @change-district="handlerChangeDistrictForRecieve"
             @change-sub-district="handlerChangeSubDistrictForRecieve"
             @check-insurance-recieve="handleCheckInsuranceRecieve" @new-address-i-d="updateNewAddressID"
-            :customer-id="OrderInfo.Customer?.PersonProfile?.CustomerID" :emailShare="emailShare"
+            :customer-id="OrderInfo.Customer?.IsPerson ? OrderInfo.Customer?.PersonProfile?.CustomerID : OrderInfo.Customer?.LegalPersonProfile?.CustomerID" 
+            :emailShare="emailShare"
             :address-default-i-d="OrderInfo.Customer?.DefaultAddress?.AddressID" :insure-full-address="insureFullAddress"
             :prefix="prefixRecieve" :delivery="delivery" :addr-province="addrProvinceForRecieve"
             :addr-district="addrDistrictForRecieve" :addr-sub-district="addrSubDistrictForRecieve"
@@ -220,6 +220,7 @@ const TaxInvoiceAddressShipping = ref("");
 const PaperCount = ref(0);
 const isError = ref(false);
 const messageError = ref("");
+const arCustomerList = ref([])
 var checkSave: globalThis.Ref<Boolean> = ref(false);
 
 const emailShare = ref("");
@@ -385,10 +386,13 @@ const onLoad = onMounted(async () => {
         const customer = info.Order?.Customer
         if (customer) {
           const addr = await setFullAddress(customer);
-          insureFullAddress.value = `${customer.DefaultAddress?.FirstName} ${customer.DefaultAddress?.LastName} 
-                                     : ${addr}`;
+          insureFullAddress.value = `${customer.DefaultAddress?.FirstName} 
+          ${customer.DefaultAddress?.LastName} 
+          ${customer.DefaultAddress.TaxID ? 'เลขที่ผู้เสียภาษี '+customer.DefaultAddress.TaxID : ''} 
+          ${customer.DefaultAddress.PhoneNumber ? 'เบอร์มือถือ '+customer.DefaultAddress.PhoneNumber : ''} : ${addr}`;
         }
       }
+      //await arCustomerAddressList(OrderInfo.value.PersonProfile.CustomerID)
     }
 
     // if (OrderInfo.value) {
@@ -698,6 +702,24 @@ const getDeliveryMethod = (): DeliveryMethod[] => {
   }
   return data;
 };
+
+// Customer address list - response array
+const arCustomerAddressList = async (e: string, AddrID: string) => {
+  // get order after save or create
+  const req = {
+    CustomerID: e ?? "",
+  };
+
+  const getData = await useRepository().customer.AddressList(req);
+  if (getData.apiResponse.Status 
+  && getData.apiResponse.Status == "200" 
+  && getData.apiResponse.Data) {
+    alert("555")
+    arCustomerList.value = getData.apiResponse.Data
+  }
+    
+
+}
 
 const updateNewAddressID = async (newID: string) => {
   isInsureRecieve.value = false
@@ -1044,7 +1066,11 @@ const handlerChangeFullAddress = (addr: string, ObjectAddress: DefaultAddress) =
   }
   if (addr) {
     insureFullAddress.value =
-      `${ObjectAddress.PrefixName} ${ObjectAddress.FirstName} ${ObjectAddress.LastName} :` +
+      `${ObjectAddress.PrefixName} 
+      ${ObjectAddress.FirstName} 
+      ${ObjectAddress.LastName}
+      ${ObjectAddress.TaxID ? 'เลขที่ผู้เสียภาษี '+ObjectAddress.TaxID : ''} 
+      ${ObjectAddress.PhoneNumber ? 'เบอร์มือถือ '+ObjectAddress.PhoneNumber : ''} :` +
       addr;
   }
 };
@@ -1112,7 +1138,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
   personProfile.value = InsureDetail.PersonProfile;
   legalPersonProfile.value = InsureDetail.LegalPersonProfile;
   // Share email value to epolicy case
-  emailShare.value = InsureDetail.PersonProfile.Email
+  //emailShare.value = InsureDetail.PersonProfile.Email
   
   //insureDetail.value.DefaultAddress = defaultAddress.value
   // set checklist

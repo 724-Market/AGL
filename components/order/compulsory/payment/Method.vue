@@ -94,6 +94,7 @@ const radiioPaymentObject: globalThis.Ref<RadiioPaymentObject | undefined> = ref
 
 const packagePrice: globalThis.Ref<number> = ref(0);
 const shipopingCost: globalThis.Ref<number> = ref(0);
+const shippingTaxCost: globalThis.Ref<number> = ref(0);
 const feeCost: globalThis.Ref<number> = ref(0);
 const totalPrice: globalThis.Ref<number> = ref(0);
 const disPrice: globalThis.Ref<number> = ref(0);
@@ -293,7 +294,12 @@ const getCalculate = async () => {
     if (calculate.value.DeliveryFee) {
       const DeliveryFee = calculate.value.DeliveryFee;
       if (DeliveryFee.length > 0) {
-        shipopingCost.value = DeliveryFee[0].Price;
+        if(DeliveryFee[0]) {
+          shipopingCost.value = DeliveryFee[0].Price
+        }
+        if(DeliveryFee[1]) {
+          shippingTaxCost.value = DeliveryFee[1].Price
+        }
       }
     }
 
@@ -322,13 +328,14 @@ const getSummary = async () => {
   // console.log('packagePrice.value', packagePrice.value)
   // console.log('shipopingCost.value', shipopingCost.value)
   // console.log('feeCost.value', feeCost.value)
-  let totalPrice = packagePrice.value + shipopingCost.value;
+  let totalPrice = packagePrice.value + shipopingCost.value + shippingTaxCost.value;
   let disCount =
     discountMethodText.value == "partialdiscount" ? someDiscount.value : disPrice.value;
   let sum = totalPrice - disCount;
   let summaryDiscountObject: SummaryDiscountObject = {
     PackagePrice: packagePrice.value,
     ShipopingCost: shipopingCost.value,
+    shippingTaxCost: shippingTaxCost.value,
     FeeCost: feeCost.value,
     TotalPrice: parseFloat(totalPrice.toFixed(2)),
     DisPrice: disCount,

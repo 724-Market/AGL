@@ -398,7 +398,7 @@
   <ElementsDialogEditAddress
     v-if="isEditTaxAddress"
     :address-type="'TAXINVOICE'"
-    :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID"
+    :customer-i-d="stCustomerID"
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID 
     ?? props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"
@@ -411,7 +411,7 @@
   <ElementsDialogEditAddress
     v-if="isEditTaxDelivery"
     :address-type="'TAXINVOICE_DELIVERY'"
-    :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID"
+    :customer-i-d="stCustomerID"
     :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID 
     ?? props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"
@@ -481,6 +481,7 @@ const requestIncludeTax: globalThis.Ref<string[]> = ref([])
 const addressIncludeTaxType = ref('insured')
 const addressDeliveryTaxType = ref('insured')
 const addressType = ref('')
+const stCustomerID = ref('')
 
 const isLoading = ref(false);
 const isEditTaxAddress = ref(false)
@@ -622,14 +623,14 @@ const onLoad = onMounted(async () => {
     taxDeliveryOption.value = await getDeliveryOption(props.isTaxDelivery); // Update the value using .value
 
     await setCacheData()
-    const customerid = props.cacheOrderRequest?.Customer?.IsPerson ? props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID : props.cacheOrderRequest?.Customer?.LegalPersonProfile?.CustomerID
+    stCustomerID.value = props.cacheOrderRequest?.Customer?.IsPerson ? props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID : props.cacheOrderRequest?.Customer?.LegalPersonProfile?.CustomerID
     if(props.cacheOrderRequest?.Customer?.IsTaxInvoiceAddressSameAsDefault == false){
       addressType.value = 'TAXINVOICE'
-      await updateAddress(customerid, props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID)
+      await updateAddress(stCustomerID, props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID)
     }
     if(props.cacheOrderRequest?.Customer?.IsTaxInvoiceDeliveryAddressSameAsDefault == false){
       addressType.value = 'TAXINVOICE_DELIVERY'
-      await updateAddress(customerid, props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID)
+      await updateAddress(stCustomerID, props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID)
     }
     
   }

@@ -15,11 +15,26 @@
             <div class="accordion-body">
               <div class="form-placeorder">
                 <section class="insured-type">
-                  <FormKit type="radio" label="ประเภทผู้เอาประกันภัย" name="InsuredType" :options="{
+                  <FormKit type="radio" label="ประเภทผู้เอาประกันภัย" name="InsuredType" :options="[
+                        {
+                          label: 'บุคคลธรรมดา',
+                          value: 'person',
+                          attrs: { disabled: props.cacheOrderRequest ? !props.cacheOrderRequest.Customer.IsPerson : false } 
+                        },
+                        {
+                          label: 'นิติ',
+                          value: 'company',
+                          attrs: { disabled: props.cacheOrderRequest ? !props.cacheOrderRequest.Customer.IsBranch : false } 
+                        },
+                      ]" v-model="InsuredTypeText" validation="required"
+                    :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block"
+                    />
+                    <!-- Old version: Delete after confirm new version is OK
+                    <FormKit type="radio" label="ประเภทผู้เอาประกันภัย" name="InsuredType" :options="{
                     person: 'บุคคลธรรมดา',
                     company: 'นิติบุคคล',
                   }" v-model="InsuredTypeText" validation="required"
-                    :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block" />
+                    :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block" /> -->
                 </section>
 
                 <aside class="insured-classifier" v-if="InsuredTypeText == 'person'">

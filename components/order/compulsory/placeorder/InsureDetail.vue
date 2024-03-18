@@ -10,9 +10,6 @@
               ข้อมูลผู้เอาประกันภัย
             </button>
           </h2>
-          <p>12{{ props.arCustomerList }}21</p>
-          <p>21{{ props.customerId }}12</p>
-          <p>23{{ props.cacheOrderRequest }}32</p>
           <div id="collapse-insured-information" class="accordion-collapse collapse show"
             data-bs-parent="#accordion-insured-information">
             <div class="accordion-body">
@@ -340,7 +337,7 @@ import type { DefaultAddress, CustomerOrderRequest, LegalPersonProfile, PersonPr
 import type { SelectOption } from "~/shared/entities/select-option";
 import type { CustomerIDReq, CustomerAddressListRes } from "~/shared/entities/customer-entity";
 
-const emit = defineEmits(['changeCustomerType', 'changeProvince', 'changeDistrict', 'changeSubDistrict', 'changeFullAddress', 'changeInsureDetail', 'changeDefaultAddress'])
+const emit = defineEmits(['changeCustomerType', 'changeProvince', 'changeDistrict', 'changeSubDistrict', 'changeFullAddress', 'changeInsureDetail', 'changeDefaultAddress', 'updateEmail'])
 const props = defineProps({
   prefix: Array<SelectOption>,
   nationality: Array<SelectOption>,
@@ -679,6 +676,7 @@ const handlerChangePersonalProfile = () => {
   if (InsuredClassifierText.value == 'thai') {
     insureDetail.value.PersonProfile.NationalityID = '62ED0829703B4E589A2A63C740B88155'
   }
+  emit('updateEmail', personProfile.value.Email)
 
   handlerChangeInsureDetail()
 }
@@ -690,6 +688,8 @@ const handlerChangeLegalPersonProfile = () => {
   }
 
   insureDetail.value.LegalPersonProfile = legalPersonProfile.value
+  
+  emit('updateEmail', legalPersonProfile.value.ContactEmail)
 
   handlerChangeInsureDetail()
 }

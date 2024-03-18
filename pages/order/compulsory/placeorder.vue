@@ -18,7 +18,7 @@
             @change-province="handlerChangeProvinceForInsured" @change-district="handlerChangeDistrictForInsured"
             @change-sub-district="handlerChangeSubDistrictForInsured" @change-customer-type="handlerChangeCustomerType"
             @change-full-address="handlerChangeFullAddress" @change-insure-detail="handlerChangeInsureDetail"
-            @change-default-address="handlerDefaultAddress" :ar-customer-list="arCustomerList"
+            @change-default-address="handlerDefaultAddress" @update-email="handlerAddEmail" 
             :customer-id="OrderInfo.Customer?.PersonProfile?.CustomerID" :prefix="prefix" :nationality="nationality"
             :addr-province="addrProvinceForInsured" :addr-district="addrDistrictForInsured"
             :addr-sub-district="addrSubDistrictForInsured" :addr-zip-code="addrZipCodeForInsured"
@@ -220,7 +220,6 @@ const TaxInvoiceAddressShipping = ref("");
 const PaperCount = ref(0);
 const isError = ref(false);
 const messageError = ref("");
-const arCustomerList = ref([])
 var checkSave: globalThis.Ref<Boolean> = ref(false);
 
 const emailShare = ref("");
@@ -392,7 +391,6 @@ const onLoad = onMounted(async () => {
           ${customer.DefaultAddress.PhoneNumber ? 'เบอร์มือถือ '+customer.DefaultAddress.PhoneNumber : ''} : ${addr}`;
         }
       }
-      //await arCustomerAddressList(OrderInfo.value.PersonProfile.CustomerID)
     }
 
     // if (OrderInfo.value) {
@@ -702,24 +700,6 @@ const getDeliveryMethod = (): DeliveryMethod[] => {
   }
   return data;
 };
-
-// Customer address list - response array
-const arCustomerAddressList = async (e: string, AddrID: string) => {
-  // get order after save or create
-  const req = {
-    CustomerID: e ?? "",
-  };
-
-  const getData = await useRepository().customer.AddressList(req);
-  if (getData.apiResponse.Status 
-  && getData.apiResponse.Status == "200" 
-  && getData.apiResponse.Data) {
-    alert("555")
-    arCustomerList.value = getData.apiResponse.Data
-  }
-    
-
-}
 
 const updateNewAddressID = async (newID: string) => {
   isInsureRecieve.value = false
@@ -1130,6 +1110,10 @@ const handleCheckInsuranceRecieve = async (RecieveObject: InsuranceRecieveObject
   }
   insuranceRecieve.value = RecieveObject;
 };
+const handlerAddEmail = (email: string) => {
+  // Share email value to epolicy case
+  emailShare.value = email
+}
 const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
   // console.log("InsureDetail", InsureDetail);
   checklist.value[1].className = "";
@@ -1137,8 +1121,6 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
   insureDetail.value = InsureDetail;
   personProfile.value = InsureDetail.PersonProfile;
   legalPersonProfile.value = InsureDetail.LegalPersonProfile;
-  // Share email value to epolicy case
-  //emailShare.value = InsureDetail.PersonProfile.Email
   
   //insureDetail.value.DefaultAddress = defaultAddress.value
   // set checklist

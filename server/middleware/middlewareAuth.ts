@@ -15,17 +15,17 @@ export default defineEventHandler(async (event) => {
     if (url.pathname.includes('/api/')) {
         //console.log('middleware url: ' + url.pathname)
         //console.log('middleware event ' + event.method)
-        let req = {URL:""}
+        let req = { URL: "" }
         if (event.method == 'POST') {
             req = await readBody(event)
         }
-        else{
+        else {
             const query = await getQuery(event)
             req = {
-                URL:query.url?.toString() ?? ""
+                URL: query.url?.toString() ?? ""
             }
         }
-        if ( !req.URL.includes("Session/token/get")) {
+        if (!req.URL.includes("Session/token/get")) {
             //console.log('middleware url: ' + req.URL)
             const config = useRuntimeConfig()
             // Function to decode and check token expiration
@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
             const refresh_token = getCookie(event, 'refresh_token');
             // Redirect to login if no access or refresh token
             if (!accessToken || !refresh_token) {
-                //sendRedirect(event, '/login');
+                sendRedirect(event, '/agent/login');
                 return;
             }
             else {
@@ -78,12 +78,16 @@ export default defineEventHandler(async (event) => {
                             }
 
                         }
+                        else {
+                            sendRedirect(event, '/agent/login');
+                            return;
+                        }
 
 
 
                     } catch (error) {
                         // Error handling, e.g., redirect to login if refresh token is invalid
-                        //sendRedirect(event, '/login');
+                        sendRedirect(event, '/agent/login');
                         return
                     }
                 }

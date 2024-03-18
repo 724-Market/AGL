@@ -478,7 +478,7 @@
                                                     <p>p.inhumba@gmail.com</p>
                                                 </div>
                                                 <div class="summary-item">
-                                                    <h4 class="topic">เบอร์โทรศัพท์</h4>
+                                                    <h4 class="topic">เบอร์มือถือ</h4>
                                                     <p>0890435478</p>
                                                 </div>
                                                 <div class="summary-item">
@@ -616,7 +616,7 @@
                                                     <p>p.inhumba@gmail.com</p>
                                                 </div>
                                                 <div class="summary-item">
-                                                    <h4 class="topic">เบอร์โทรศัพท์</h4>
+                                                    <h4 class="topic">เบอร์มือถือ</h4>
                                                     <p>0890435478</p>
                                                 </div>
                                                 <div class="summary-item">

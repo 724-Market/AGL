@@ -74,14 +74,9 @@ export const useStoreUserAuth = defineStore('useStoreUserAuth', {
         },
 
         clearAuth() {
-            this.$state = {
-                accessToken: "",
-                expiresIn: 0,
-                issuedDate: "",
-                refresh_token: "",
-                tokenType: "",
-                userName: "",
-            }
+            this.$reset()
+            this.$dispose()
+            sessionStorage.removeItem('useStoreUserAuth')
         }
     },
     persist: {

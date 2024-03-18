@@ -21,9 +21,9 @@
 
                 <div :class="statusMessageType" v-if="statusMessage">{{ statusMessage }}</div>
 
-                <ElementsFormAgentCode label="รหัสสมาชิก" id="username" name="username" />
+                <ElementsFormAgentCode label="รหัสสมาชิก" id="agentCode" name="agentCode" />
 
-                <ElementsFormIdCard label="เลขบัตรประชาชน" id="idcard" name="idcard" />
+                <ElementsFormIdCard label="เลขบัตรประชาชน" id="agentIDCard" name="agentIDCard" />
 
               </div>
 
@@ -48,6 +48,9 @@
     </FormKit>
 
     <ElementsDialogLoading :propsLoading="loadingProps" />
+
+    <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
+      :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
 
   </NuxtLayout>
 </template>
@@ -75,53 +78,87 @@ const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = fa
 }
 
 /////////////////////////////////////////
+// Modal Dialog
+const isShowModal = ref(false)
+const modalType = ref('')
+const modalTitle = ref('')
+const modalText = ref('')
+const modalButton = ref('')
+const modalRedirectPath = ref('')
+
+// Function to handle close modal events
+const handleCloseModal = async () => {
+  if (modalRedirectPath.value) {
+    router.push({ path: modalRedirectPath.value })
+  }
+  else {
+    isShowModal.value = false
+  }
+}
+
+// Function show message modal events
+const serverModal = async (serverCheck: any) => {
+  isShowModal.value = true
+  modalType.value = serverCheck.modalType
+  modalTitle.value = serverCheck.modalTitle
+  modalText.value = serverCheck.modalText
+  modalButton.value = serverCheck.modalButton
+}
+
+/////////////////////////////////////////
 // Submit page
 const submitForgotpassword = async (formData: any) => {
+  
   openLoadingDialog(true)
-
   // console.log(formData)
 
-  // User auth store
-  const store = useStoreUserAuth()
-
-  const formRequest = {
-    username: formData.username,
-    password: formData.password
+  const agentCodeValue = formData.agentCode ? formData.agentCode : null;
+  const checkAgentReferralReq = {
+    IDCard: formData.agentIDCard,
+    AgentCode: (agentCodeValue as string).toUpperCase()
   }
 
-  const { data } = await useAsyncData('userAuth', () => store.authLogin(formRequest))
+  const response = await useRepository().agent.checkAgent(checkAgentReferralReq)
+  const resultCheck = useUtility().responseCheck(response)
+  console.log(response)
 
-  if (data && data.value) {
-
-    if (data.value.Status !== '200') {
-
+  if (resultCheck.status === 'pass') {
+    if (response.respOptions === 'LOG-IN') {
+      // regAgentAgentCode.value = response.apiResponse.Data.AgentCode
+      // regAgentFirstName.value = response.apiResponse.Data.FirstName
+      // regAgentLastName.value = response.apiResponse.Data.LastName
+      // regAgentIDcard.value = formData.agentIDCard
+      // registerStep.value = 'form'
+      // registerType.value = 'agent'
       await goNext()
-
-    } else {
-
+    }
+    else {
+      resultCheck.modalType = 'warning'
+      resultCheck.modalTitle = 'ท่านยังไม่ได้เป็นสมาชิก'
+      resultCheck.modalText = 'กรุณาตรวจสอบและทำรายการใหม่อีกครั้ง'
+      serverModal(resultCheck)
       openLoadingDialog(false)
-      statusMessageType.value = 'notice-warning'
-      statusMessage.value = data.value.ErrorMessage
-
-      if (data.value.ErrorCode == '90000999') {
-
-        statusMessage.value = 'Username หรือ Password ไม่ถูกต้อง'
-
-        return statusMessage.value
-
-      }
     }
   }
+  else if (resultCheck.status === 'error') {
+    resultCheck.modalType = 'warning'
+    resultCheck.modalTitle = 'ข้อมูลสมาชิกของท่านไม่ถูกต้อง'
+    resultCheck.modalText = 'กรุณาตรวจสอบและทำรายการใหม่อีกครั้ง'
+    serverModal(resultCheck)
+    openLoadingDialog(false)
+  }
+  else if (resultCheck.status === 'server-error') {
+    serverModal(resultCheck)
+    openLoadingDialog(false)
+  }
+
 }
 
 /////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
-  // Define and check 'isOTP' status
-  const isOTP = useState('otp')
-  isOTP.value = true
-
-  router.push({ path: 'otp' })
+  alert('GO!!')
+  //router.push({ path: 'otp' })
 }
 
 /////////////////////////////////////////

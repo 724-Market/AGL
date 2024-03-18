@@ -10,6 +10,9 @@
               ข้อมูลผู้เอาประกันภัย
             </button>
           </h2>
+          <p>12{{ props.arCustomerList }}21</p>
+          <p>21{{ props.customerId }}12</p>
+          <p>23{{ props.cacheOrderRequest }}32</p>
           <div id="collapse-insured-information" class="accordion-collapse collapse show"
             data-bs-parent="#accordion-insured-information">
             <div class="accordion-body">
@@ -84,7 +87,7 @@
                         <ElementsFormIdCard label="เลขบัตรประชาชน" name="idCard" v-model="personProfile.PersonalID" />
                       </div>
                       <div class="col-6">
-                        <ElementsFormPhoneNumber autocomplete="off" label="เบอร์โทรศัพท์"  name="PhoneNumber" v-model="personProfile.PhoneNumber"
+                        <ElementsFormPhoneNumber autocomplete="off" label="เบอร์มือถือ"  name="PhoneNumber" v-model="personProfile.PhoneNumber"
                           @change="handlerChangePersonalProfile"></ElementsFormPhoneNumber>
                       </div>
                       <div class="col-6">
@@ -346,6 +349,7 @@ const props = defineProps({
   addrSubDistrict: Array<SelectOption>,
   addrZipCode: String,
   customerId: String,
+  arCustomerList: Object,
   cacheOrderRequest: {
     type: Object as () => PlaceOrderRequest
   }
@@ -542,7 +546,7 @@ const mapProfileData = async () => {
     Name: props.cacheOrderRequest?.Customer?.DefaultAddress?.Name ?? '',
     PhoneNumber: props.cacheOrderRequest?.Customer?.DefaultAddress?.PhoneNumber ?? '',
     TaxID: props.cacheOrderRequest?.Customer?.DefaultAddress?.TaxID ?? '',
-    AddressID: props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID ?? ''
+    AddressID: props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID ?? '',
   }
 }
 
@@ -797,7 +801,7 @@ watch(
     }
   }
 )
-
+/*
 // watching data to Radio Formkit
 watch(InsuredTypeText, async (newInsuredTypeText) => {
   if (newInsuredTypeText.length > 0) {
@@ -806,6 +810,19 @@ watch(InsuredTypeText, async (newInsuredTypeText) => {
     // clear data when change to customer type
     //clearData()
     handlerChangeCustomerType(newInsuredTypeText)
+  }
+
+});
+*/
+// watching data to Radio Formkit
+watch(
+  () => InsuredTypeText, () => {
+  if (InsuredTypeText.length > 0) {
+    insureDetail.value.IsBranch = false
+    insureDetail.value.IsPerson = InsuredTypeText == 'person'
+    // clear data when change to customer type
+    //clearData()
+    handlerChangeCustomerType(InsuredTypeText)
   }
 
 });

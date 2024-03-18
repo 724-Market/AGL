@@ -13,13 +13,16 @@
                 }" autocomplete="off" />
         </div>
         <div class="col-md-6">
-            <FormKit type="text" label="หมายเลขโทรศัพท์" name="PhoneNumber" v-model="profileData.PhoneNumber"
+            <!-- <FormKit type="text" label="หมายเลขโทรศัพท์" name="PhoneNumber" v-model="profileData.PhoneNumber"
                 maxlength="10" placeholder="ตัวอย่าง 0987654321"
                 validation="required|+length:10|number" :validation-messages="{
                     required: 'กรุณาใส่หมายเลขโทรศัพท์',
                     length: 'หมายเลขโทรศัพท์มีจำนวน 10 หลัก',
                     number: 'กรุณาใส่เฉพาะตัวเลขเท่านั้น',
-                }" autocomplete="off" />
+                }" autocomplete="off" /> -->
+                
+                <ElementsFormPhoneNumber autocomplete="off" label="เบอร์มือถือ"  name="PhoneNumber" v-model="profileData.PhoneNumber"
+                          ></ElementsFormPhoneNumber>
         </div>
         <div class="col-6">
             <ElementsFormIdCard label="เลขบัตรประชาชน" name="TaxID" v-model="profileData.TaxID" />

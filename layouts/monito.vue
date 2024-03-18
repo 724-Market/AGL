@@ -145,8 +145,8 @@ const onConfirm = async () => {
 }
 const onCloseConfirm = async () => {
   isConfirm.value = false
-  await clearStore()
-  setTimeout((window.location.href = "/agent/login"), 500)
+  //await clearStore()
+  //setTimeout((window.location.href = "/agent/login"), 500)
 }
 const clearStore = async () => {
   placeorder.clearOrder()

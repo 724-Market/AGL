@@ -816,18 +816,18 @@ watch(InsuredTypeText, async (newInsuredTypeText) => {
 */
 // watching data to Radio Formkit
 watch(
-  () => InsuredTypeText, () => {
-  if (InsuredTypeText.length > 0) {
+  InsuredTypeText, (newInsuredTypeText:String) => {
+  if (newInsuredTypeText.length > 0) {
     insureDetail.value.IsBranch = false
-    insureDetail.value.IsPerson = InsuredTypeText == 'person'
+    insureDetail.value.IsPerson = newInsuredTypeText == 'person'
     // clear data when change to customer type
     //clearData()
-    handlerChangeCustomerType(InsuredTypeText)
+    handlerChangeCustomerType(newInsuredTypeText)
   }
 
 });
 //CompanyClassifierText
-watch(CompanyClassifierText, async (newCompanyClassifierText) => {
+watch(CompanyClassifierText, (newCompanyClassifierText:String) => {
   //headoffice: 'สำนักงานใหญ่',
   //branch: 'สาขา',
 

@@ -297,7 +297,7 @@ const onLoad = onMounted(async () => {
       await loadProvince();
       await loadCarColor();
       await loadPrefix(true);
-      await loadPrefixRecieve();
+      //await loadPrefixRecieve();
       await loadNationality();
       await loadDelivery();
       isLoading.value = false;
@@ -921,7 +921,7 @@ const loadCarColor = async () => {
 };
 
 // handler function for emit
-const handlerChangeCustomerType = async (e: string) => {
+const handlerChangeCustomerType = async (e: String) => {
   if (e) {
     isLoading.value = true;
     await loadPrefix(e == "person");

@@ -99,7 +99,7 @@ const handleChangeStatus = async (status: string) => {
         filterGridTable.value = [...filterGridTable.value, value];
     });
 
-    console.log("handleChangeStatus filterGridTable", filterOption.value);
+    // console.log("handleChangeStatus filterGridTable", filterOption.value);
 };
 
 const handleSearch = async (searchValue: HistorySearch) => {
@@ -158,7 +158,7 @@ const loadHistoryStatus = async (filter?: Filter[]) => {
     if (statusRes.apiResponse.Status && statusRes.apiResponse.Status == "200") {
         if (statusRes.apiResponse.Data) {
             statusGroup.value = statusRes.apiResponse.Data;
-            console.log("statusGroup.value", statusGroup.value);
+            // console.log("statusGroup.value", statusGroup.value);
         }
     }
     isLoading.value = false;
@@ -167,7 +167,7 @@ const loadHistoryStatus = async (filter?: Filter[]) => {
 const handlerChangeTable = async (datatable: any) => {
     table.value = datatable;
 
-    console.log("datatable", table.value);
+    // console.log("datatable", table.value);
 }
 
 const trackStatus = async (OrderNo: string) => {

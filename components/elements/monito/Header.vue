@@ -4,7 +4,7 @@
 
             <header class="head-logo" v-if="showLogoHeader">
                 <div class="logo">
-                    <NuxtLink to="/" title="724 Market">724 Market</NuxtLink>
+                    <NuxtLink to="/main" title="724 Market">724 Market</NuxtLink>
                 </div>
             </header>
 
@@ -26,7 +26,7 @@
                         :aria-current="step == item.step ? 'page' : undefined">
                         <!-- <NuxtLink :to="item.url" v-if="item.step <= step">{{ item.name }}</NuxtLink> -->
                         <NuxtLink :to="item.url" v-if="item.step <= step" @click="clickStep(item.step, item.url)">{{
-                            item.name }}</NuxtLink>
+                item.name }}</NuxtLink>
                         <em v-else>{{ item.name }}</em>
                     </li>
                 </ol>

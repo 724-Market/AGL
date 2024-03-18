@@ -50,7 +50,7 @@ const { AMNo, AMLevel, AMPlanExpire } = storeToRefs(agentInfoStore)
 
 /////////////////////////////////////////
 // Import
-import { getActivePinia } from "pinia"
+import { getActivePinia } from 'pinia'
 
 // Define router
 const router = useRouter()

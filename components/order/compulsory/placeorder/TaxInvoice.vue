@@ -622,13 +622,14 @@ const onLoad = onMounted(async () => {
     taxDeliveryOption.value = await getDeliveryOption(props.isTaxDelivery); // Update the value using .value
 
     await setCacheData()
+    const customerid = props.cacheOrderRequest?.Customer?.IsPerson ? props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID : props.cacheOrderRequest?.Customer?.LegalPersonProfile?.CustomerID
     if(props.cacheOrderRequest?.Customer?.IsTaxInvoiceAddressSameAsDefault == false){
       addressType.value = 'TAXINVOICE'
-      await updateAddress(props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID, props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID)
+      await updateAddress(customerid, props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID)
     }
     if(props.cacheOrderRequest?.Customer?.IsTaxInvoiceDeliveryAddressSameAsDefault == false){
       addressType.value = 'TAXINVOICE_DELIVERY'
-      await updateAddress(props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID, props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID)
+      await updateAddress(customerid, props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID)
     }
     
   }

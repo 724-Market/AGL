@@ -1,5 +1,5 @@
 <template>
-  <main class="main-content" id="panel">
+  <main class="main-content">
 
     <!--  Header -->
     <header class="site-header">
@@ -36,17 +36,20 @@ const props = defineProps({
   showLogoHeader: Boolean
 })
 
+/////////////////////////////////////////
 // Function get token
 const getToken = async () => {
   const token = await useUtility().getToken()
   setTimeout(getToken, 1000 * 60)
 }
 
+/////////////////////////////////////////
 // Mounted
 onMounted(() => {
   setTimeout(getToken, 1000 * 60)
 })
 
+/////////////////////////////////////////
 // Define head
 useHead({
   bodyAttrs: {

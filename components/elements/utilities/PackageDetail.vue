@@ -15,7 +15,8 @@
           <th scope="col">
             <div class="package-header">
               <h4 class="package-title">{{ packageDetail.ProductMainPlan.Title }}</h4>
-              <p v-if="packageDetail.ProductMainPlan.IsRecommend" class="package-badge"><span class="badge-warning">คุ้มมากกก</span></p>
+              <p v-if="packageDetail.ProductMainPlan.IsRecommend" class="package-badge"><span
+                  class="badge-warning">คุ้มมากกก</span></p>
             </div>
           </th>
         </tr>
@@ -36,7 +37,7 @@
         <tr v-for="item in packageDetail.ProductFeature">
           <th scope="row" class="group-item">{{ item.Name }}</th>
           <td class="check-list">
-            <span v-if="item.IsActive==1" class="active"><i class="icon"></i><b>มี</b></span>
+            <span v-if="item.IsActive == 1" class="active"><i class="icon"></i><b>มี</b></span>
             <span v-else class="inactive"><i class="icon"></i><b>ไม่มี</b></span>
           </td>
         </tr>
@@ -47,7 +48,7 @@
         <tr v-for="item in packageDetail.ProductBenefit">
           <th scope="row" class="group-item">{{ item.Name }}</th>
           <td class="check-list">
-            <span v-if="item.IsActive==1" class="active"><i class="icon"></i><b>มี</b></span>
+            <span v-if="item.IsActive == 1" class="active"><i class="icon"></i><b>มี</b></span>
             <span v-else class="inactive"><i class="icon"></i><b>ไม่มี</b></span>
           </td>
         </tr>
@@ -59,14 +60,8 @@
 </template>
 
 <script setup lang="ts">
-
 /////////////////////////////////////////
 // Define props for the component
 const props = defineProps(['packageDetail'])
-// ProductMainPlan
-// ProductBenefit
-// ProductFeature
-// PlanSummary
-// Order
 
 </script>

@@ -222,13 +222,15 @@
                           @change="handlerChangeLegalPersonProfile" />
                       </div>
                       <div class="col-6">
-                        <FormKit type="text" label="หมายเลขโทรศัพท์" name="CompanyPhoneNumber" placeholder="098765XXXX"
+                        <ElementsFormPhoneNumber autocomplete="off" label="เบอร์มือถือ"  name="CompanyPhoneNumber" v-model="legalPersonProfile.ContactPhoneNumber"
+                        @change="handlerChangeLegalPersonProfile" ></ElementsFormPhoneNumber>
+                        <!-- <FormKit type="text" label="หมายเลขโทรศัพท์" name="CompanyPhoneNumber" placeholder="098765XXXX"
                           validation="required|+length:10|number" :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 10 ตัว',
                             number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
                           }" autocomplete="false" v-model="legalPersonProfile.ContactPhoneNumber"
-                          @change="handlerChangeLegalPersonProfile" />
+                          @change="handlerChangeLegalPersonProfile" /> -->
                       </div>
                       <div class="col-6">
                         <FormKit type="email" label="อีเมล" name="CompanyEmail" placeholder="xxxxxx@email.com"
@@ -287,14 +289,16 @@
                           @change="handlerChangeLegalPersonProfile" />
                       </div>
                       <div class="col-6">
-                        <FormKit type="text" label="หมายเลขโทรศัพท์" name="BranchPhoneNumber" placeholder="098765XXXX"
+                        <ElementsFormPhoneNumber autocomplete="off" label="เบอร์มือถือ"  name="BranchPhoneNumber" v-model="legalPersonProfile.ContactPhoneNumber"
+                        @change="handlerChangeLegalPersonProfile" ></ElementsFormPhoneNumber>
+                        <!-- <FormKit type="text" label="หมายเลขโทรศัพท์" name="BranchPhoneNumber" placeholder="098765XXXX"
                           maxlength="10"
                           validation="required|+length:10|number" :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 10 ตัว',
                             number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
                           }" autocomplete="false" v-model="legalPersonProfile.ContactPhoneNumber"
-                          @change="handlerChangeLegalPersonProfile" />
+                          @change="handlerChangeLegalPersonProfile" /> -->
                       </div>
                       <div class="col-6">
                         <FormKit type="email" label="อีเมล" name="BranchEmail" placeholder="xxxxxx@email.com"

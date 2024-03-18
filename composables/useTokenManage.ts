@@ -1,4 +1,4 @@
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 export default () => {
     
 
@@ -21,12 +21,12 @@ export default () => {
                 const expDate = new Date(decode.exp * 1000)
                 result =expDate.getTime() - (new Date()).getTime() 
             }
-            console.log(decode,result)
+            // console.log(decode,result)
             return result
-          } catch (error) {
+        } catch (error) {
             console.error('Error decoding token:', error);
             return 0;
-          }
+        }
 
         
     }

@@ -73,33 +73,8 @@
 </template>
 
 <script setup lang="ts">
-// import { ModalType } from '~/shared/entities/enum-entity'
-// import { useStoreUserAuth } from '~/stores/user/storeUserAuth'
-// import { useStorePlaceorder } from '~/stores/order/storePlaceorder'
-// import { useStoreInformation } from '~/stores/order/storeInformation'
-// import { useStoreOrderSummary } from '~/stores/order/storeOrderSummary'
-// import { useStorePaymentGet } from '~/stores/order/storePaymentGet'
-// import { useStorePayment } from '~/stores/order/storePayments'
-// import { useStorePaymentGateway } from '~/stores/order/storePaymentGateway'
-// import { useStorePackage } from '~/stores/order/storePackage'
-// import { useStorePackageList } from '~/stores/order/storePackageList'
-// import { useStoreStateOrder } from '~/stores/order/storeStateOrder'
 import { getActivePinia } from 'pinia'
 
-// const textConfirm = ref(
-//   'เหลือเวลาการใช้งานระบบอีก 2 นาที ต้องการจะใช้งานระบบต่อหรือไม่?'
-// )
-
-// const placeorder = useStorePlaceorder()
-// const information = useStoreInformation()
-// const packages = useStorePackage()
-// const packageList = useStorePackageList()
-// const orderSummary = useStoreOrderSummary()
-// const payment = useStorePayment()
-// const paymentGateway = useStorePaymentGateway()
-// const paymentGat = useStorePaymentGet()
-
-// const state = useStoreStateOrder()
 const store = useStoreUserAuth()
 
 /////////////////////////////////////////

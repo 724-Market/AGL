@@ -1,7 +1,7 @@
 <template>
     <div class="shortcut-dropdown">
-        <a class="monito-dropdown dropdown-toggle no-caret" href="#" role="button" title="ทางลัด" data-bs-toggle="dropdown"
-            data-bs-auto-close="outside" aria-expanded="false">
+        <a class="monito-dropdown dropdown-toggle no-caret" href="#" role="button" title="ทางลัด"
+            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
             <div class="shortcut">
                 <span class="shortcut-text"><span>ทางลัด</span></span>
             </div>
@@ -19,13 +19,14 @@
                     </div>
                     <div class="shortcut-info">
                         <h5 class="topic">มูลค่ากระดาษที่ใช้ได้ <small>(บาท)</small></h5>
-                        <span class="value">34,500.89</span>
+                        <span class="value">0.00</span>
                     </div>
                     <div class="shortcut-action">
                         <button type="button" class="btn-white btn-open-papers"><i
                                 class="fa-solid fa-layer-group"></i>คลังกระดาษ</button>
-                        <a class="btn-secondary" href="paper-order-1.html"><i
-                                class="fa-solid fa-file-circle-plus"></i>แลกกระดาษ</a>
+                        <NuxtLink class="btn-secondary" to="/papers/exchange"><i
+                                class="fa-solid fa-file-circle-plus"></i>แลกกระดาษ
+                        </NuxtLink>
                     </div>
                 </div>
             </div>

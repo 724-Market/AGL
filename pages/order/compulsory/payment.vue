@@ -38,9 +38,9 @@
                           :package-select="packageSelect" />
 
                         <OrderCartInsure v-if="insureDetail && insuranceRecieve" :delivery-type="insuranceRecieve
-                          ? deleveryTypes[insuranceRecieve.ShippingPolicy]
-                          : ''
-                          " :is-person="insureDetail.IsPerson" v-model:person-profile.sync="personProfile"
+    ? deleveryTypes[insuranceRecieve.ShippingPolicy]
+    : ''
+    " :is-person="insureDetail.IsPerson" v-model:person-profile.sync="personProfile"
                           v-model:legal-person-profile="legalPersonProfile"></OrderCartInsure>
                       </div>
                     </div>
@@ -233,7 +233,7 @@ const onLoad = onMounted(async () => {
           IsDeliveryAddressSameAsDefault:
             OrderInfo.value.Customer?.IsDeliveryAddressSameAsDefault ?? true,
           ShippingMethod: OrderInfo.value.DeliveryMethod1?.DeliveryChannelType ?? "",
-          ShippingFee: "50 บาท", //TODO: MockUp
+          ShippingFee: "50 บาท",
           DeliveryAddress: OrderInfo.value.Customer?.DeliveryAddress,
         },
       };
@@ -261,8 +261,8 @@ const submitOrder = async (formData: any) => {
     PaymentType: paymentMethod[indexType],
     DiscountType: discountMethod[indexDiscount],
     DiscountValue: summaryDiscountObject.value?.DisPrice ?? 0,
-    CouponCode: "", //TODO: Is new Sprint
-    NumCredit: 0, //TODO: Is new Sprint
+    CouponCode: "",
+    NumCredit: 0,
     IsUseCredit: summaryDiscountObject.value?.PaymentMethod == "pledge" ? true : false,
   };
 
@@ -309,7 +309,7 @@ const getCalculate = async () => {
 
   if (CreditBalanceInfo.value && CreditBalanceInfo.value.UserID != "") {
     creditBalance.value = CreditBalanceInfo.value;
-    console.log(creditBalance.value);
+    // console.log(creditBalance.value);
   } else {
     const resCRedit = await useRepository().pledge.creditBalance();
     console.log(resCRedit);
@@ -330,7 +330,7 @@ const getCalculate = async () => {
 
 const handleSetSummary = async (summaryDiscount: SummaryDiscountObject) => {
   checklist.value[1].className = "";
-  console.log(summaryDiscount);
+  // console.log(summaryDiscount);
   summaryDiscountObject.value = summaryDiscount;
   if (
     summaryDiscountObject.value.PaymentMethod != "" &&
@@ -370,7 +370,7 @@ watch(
 
 // Define layout
 const layout = 'monito'
-const layoutClass = 'page-monito'
+const layoutClass = ''
 const showPageSteps = true
 const showPageHeader = true
 const showLogoHeader = false
@@ -388,14 +388,4 @@ useHead({
     class: 'page-order category-compulsory single-payment',
   },
 })
-
 </script>
-<style setup>
-.form-order .inner-section {
-  padding: 1rem !important
-}
-
-.form-order .discount-range .suffix {
-  width: 4.7ch !important;
-}
-</style>

@@ -2,7 +2,7 @@
   <Teleport to="body">
     <dialog id="confirm-dialog">
       <div :class="['dialog-card', 'is-' + confirmTypeClass]">
-        <div class="card-header">
+        <div class="card-header" style="display: none">
           <button type="button" class="btn btn-close btn-close-modal" @click="hideModal">ปิด</button>
         </div>
         <div class="card-body">
@@ -75,11 +75,11 @@ const hideModal = () => emit('onCloseConfirm')
 // on Mounted
 onMounted(() => {
   // Selecting the close and cancel buttons
-  const closeDialogConfirm = document.querySelector('.btn-close-modal')
+  // const closeDialogConfirm = document.querySelector('.btn-close-modal')
   const cancelDialogConfirm = document.querySelector('.btn-cancel-modal')
 
   // Adding click event listeners to the close and cancel buttons
-  closeDialogConfirm.addEventListener('click', hiddenDialogConfirm)
+  // closeDialogConfirm.addEventListener('click', hiddenDialogConfirm)
   cancelDialogConfirm.addEventListener('click', hiddenDialogConfirm)
 
   // Showing the dialog confirm if isShowConfirm prop is true

@@ -5,15 +5,3 @@
     }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
         options-class="option-block-inline" />
 </template>
-
-<style scoped>
-.formkit-inner:has(.formkit-input[value="together" i])::before {
-    font: var(--fa-font-solid);
-    content: "\e58b";
-}
-
-.formkit-inner:has(.formkit-input[value="separately" i])::before {
-    font: var(--fa-font-solid);
-    content: "\f4de";
-}
-</style>

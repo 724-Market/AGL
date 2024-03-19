@@ -70,6 +70,7 @@ export interface RadiioPaymentObject {
 export interface SummaryDiscountObject {
     PackagePrice: number
     ShipopingCost: number
+    shippingTaxCost: number
     FeeCost: number
     TotalPrice: number
     DisPrice: number

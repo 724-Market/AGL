@@ -51,16 +51,13 @@
 definePageMeta({
   middleware: [
     function (to, from) {
-      // Define and check 'isSetPassword' status
-      const isSetPassword = useState('set-password')
 
-      // Abort navigation if 'isSetPassword' is false
-      if (!isSetPassword.value) {
+      const forgotpassStep = useState('forgotpass-step')
+
+      if (forgotpassStep.value != 'set-password') {
         return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
       }
 
-      // Set 'isSetPassword' to false after check
-      isSetPassword.value = false
     }
   ]
 })
@@ -92,10 +89,25 @@ const modalType = ref('')
 const modalTitle = ref('')
 const modalText = ref('')
 const modalButton = ref('')
+const modalRedirectPath = ref('')
 
 // Function to handle close modal events
 const handleCloseModal = async () => {
-  await goNext()
+  if (modalRedirectPath.value) {
+    router.push({ path: modalRedirectPath.value })
+  }
+  else {
+    isShowModal.value = false
+  }
+}
+
+// Function show message modal events
+const serverModal = async (serverCheck: any) => {
+  isShowModal.value = true
+  modalType.value = serverCheck.modalType
+  modalTitle.value = serverCheck.modalTitle
+  modalText.value = serverCheck.modalText
+  modalButton.value = serverCheck.modalButton
 }
 
 /////////////////////////////////////////
@@ -105,25 +117,49 @@ const emit = defineEmits(['onCloseModal'])
 /////////////////////////////////////////
 // Submit page
 const submitSetPassword = async (formData: any) => {
-  openLoadingDialog(true)
 
+  openLoadingDialog(true)
   // console.log(formData)
 
-  const formRequest = {
-    password: formData.password,
-    passwordConfirm: formData.password_confirm
+  const setupRecoveryPasswordAgentReq = {
+    Password: formData.password,
+    CodeReference: forgotpassCodeReference.value,
+    Token2: forgotpassToken.value,
+    ReferenceID: forgotpassReferenceID.value
   }
 
-  await new Promise((r) => setTimeout(r, 2000))
+  const response = await useRepository().agent.setupRecoveryPasswordAgent(setupRecoveryPasswordAgentReq)
+  const resultCheck = useUtility().responseCheck(response)
+  //console.log(response)
 
-  openLoadingDialog(false)
+  if (resultCheck.status === 'pass') {
 
-  // Open modal dialog
-  isShowModal.value = true
-  modalType.value = 'success'
-  modalTitle.value = 'กำหนดรหัสผ่านใหม่สำเร็จ'
-  modalText.value = 'เราจะพาท่านไปหน้าเข้าสู่ระบบ'
-  modalButton.value = 'รับทราบ'
+    forgotpassStep.value = ''
+    forgotpassAgentMobile.value = ''
+    forgotpassCodeReference.value = ''
+    forgotpassToken.value = ''
+    forgotpassReferenceID.value = ''
+
+    modalRedirectPath.value = '/agent'
+    resultCheck.modalType = 'success'
+    resultCheck.modalTitle = 'เปลี่ยนรหัสผ่านเรียบร้อยแล้ว'
+    resultCheck.modalText = 'เราจะพาท่านไปหน้าเข้าสู่ระบบ'
+    serverModal(resultCheck)
+    openLoadingDialog(false)
+
+  }
+  else if (resultCheck.status === 'error') {
+
+    resultCheck.modalType = 'warning'
+    serverModal(resultCheck)
+    openLoadingDialog(false)
+
+  }
+  else if (resultCheck.status === 'server-error') {
+    serverModal(resultCheck)
+    openLoadingDialog(false)
+  }
+
 }
 
 /////////////////////////////////////////
@@ -131,6 +167,13 @@ const submitSetPassword = async (formData: any) => {
 const goNext = async () => {
   router.push({ path: '/agent' })
 }
+
+const forgotpassStep = useState('forgotpass-step')
+const forgotpassAgentMobile = useState('forgotpass-agent-mobile')
+const forgotpassCodeReference = useState('forgotpass-code-reference')
+const forgotpassOtpExpire = useState('forgotpass-otp-expire')
+const forgotpassToken = useState('forgotpass-token')
+const forgotpassReferenceID = useState('forgotpass-reference-id')
 
 /////////////////////////////////////////
 // Define layout

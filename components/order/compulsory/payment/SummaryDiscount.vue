@@ -23,6 +23,10 @@
                       <th scope="row">ค่าจัดส่ง<span>{{ deliveryText }}</span></th>
                       <td class="text-end price">{{ useUtility().getCurrency(shippingCost,2) }}</td>
                     </tr>
+                    <tr class="shipping" v-if="shippingTaxCost > 0">
+                      <th scope="row">ค่าจัดส่ง<span>{{ deliveryTaxText }}</span></th>
+                      <td class="text-end price">{{ useUtility().getCurrency(shippingTaxCost,2) }}</td>
+                    </tr>
                     <!-- <tr class="fee">
                       <th scope="row">ค่าธรรมเนียม<span>{{paymentMethodText}}</span></th>
                       <td class="text-end price">{{ useUtility().getCurrency(feeCost,2) }}</td>
@@ -90,6 +94,7 @@ const delivery: globalThis.Ref<SelectOption[]> = ref([]);
 
 const packagePrice: globalThis.Ref<number> = ref(0)
 const shippingCost: globalThis.Ref<number> = ref(0)
+const shippingTaxCost: globalThis.Ref<number> = ref(0)
 const feeCost: globalThis.Ref<number> = ref(0)
 const totalPrice: globalThis.Ref<number> = ref(0)
 const disPrice: globalThis.Ref<number> = ref(0)
@@ -98,6 +103,7 @@ var paymentMethodText: globalThis.Ref<String> = ref("")
 
 var companyName: globalThis.Ref<String> = ref("")
 var deliveryText: globalThis.Ref<String> = ref("")
+var deliveryTaxText: globalThis.Ref<String> = ref("")
 const paymentMethod: StringArray = {
   qr: 'สแกน QR',
   card: 'บัตรเครดิต/บัตรเดบิต',
@@ -146,44 +152,57 @@ const onLoad = onMounted(async () => {
 // }
 
 const setSummaryText = async () => {
-  let tax: string = packages.value?.IsTaxInclude ? '+ ใบกำกับภาษี' : ''
+  let tax: string = order.value?.IsTaxInvoice && order.value?.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault ? 'ใบกำกับภาษี' : ''
   let indexShipping: string = order.value?.DeliveryMethod1?.DeliveryType ?? ''
+  let indexShippingTax: string = order.value?.DeliveryMethod2?.DeliveryType ?? ''
   let chanel = ''
+  let chanelTax = ''
 
   if(calculate.value) {
     if(calculate.value.DeliveryFee) {
       const DeliveryFee = calculate.value.DeliveryFee
       if(DeliveryFee.length > 0) {
-        shippingCost.value = DeliveryFee[0].Price
-        chanel = DeliveryFee[0].DeliveryChannelType
+        if(DeliveryFee[0]) {
+          shippingCost.value = DeliveryFee[0].Price
+          chanel = DeliveryFee[0].DeliveryChannelType
+        }
+        if(DeliveryFee[1] && tax == '') {
+          shippingTaxCost.value = DeliveryFee[1].Price
+          chanelTax = DeliveryFee[1].DeliveryChannelType
+        }
       }
     }
   }
   else {
     shippingCost.value = 0
+    shippingTaxCost.value = 0
   }
 
   let shippingChanel: string = deliveryTypes[indexShipping] == 'postal' ? chanel : deliveryTypes[indexShipping];
+  deliveryText.value = `กรมธรรม์ • ${tax} โดย ${shippingChanel}`
+
+  let shippingTaxChanel: string = deliveryTypes[indexShippingTax] == 'postal' ? chanelTax : deliveryTypes[indexShippingTax];
+  deliveryTaxText.value = `ใบกำกับภาษี • โดย ${shippingTaxChanel}`
 
   companyName.value = packages.value?.CompanyName ?? '';
 
-  // Check if props.calculate and props.calculate.DeliveryFee exist
-  if (props.calculate && props.calculate.DeliveryFee) {
-      // Extract the Text field from each item in props.calculate.DeliveryFee
-      const deliveryTextArray = props.calculate.DeliveryFee.map(item => item.Text);
+  // // Check if props.calculate and props.calculate.DeliveryFee exist
+  // if (props.calculate && props.calculate.DeliveryFee) {
+  //     // Extract the Text field from each item in props.calculate.DeliveryFee
+  //     const deliveryTextArray = props.calculate.DeliveryFee.map(item => item.Text);
 
-      // Join the Text values with ' • ' as separator
-      const deliveryTextValue = deliveryTextArray.join(' • ');
+  //     // Join the Text values with ' • ' as separator
+  //     const deliveryTextValue = deliveryTextArray.join(' • ');
 
-      // Update deliveryText.value with the constructed string
-      deliveryText.value = `${deliveryTextValue} • โดย ${shippingChanel}`;
-  } else {
-      // Handle the case when props.calculate or props.calculate.DeliveryFee is undefined
-      // For example, set deliveryText.value to a default value
-      deliveryText.value = '';
-  }
+  //     // Update deliveryText.value with the constructed string
+  //     deliveryText.value = `${deliveryTextValue} • โดย ${shippingChanel}`;
+  // } else {
+  //     // Handle the case when props.calculate or props.calculate.DeliveryFee is undefined
+  //     // For example, set deliveryText.value to a default value
+  //     deliveryText.value = '';
+  // }
   //Old version
-  //deliveryText.value = `กรมธรรม์ ${tax} • โดย ${shippingChanel}`
+  // deliveryText.value = `กรมธรรม์ • ${tax} โดย ${shippingChanel}`
 
   packagePrice.value = packages.value?.Price ?? 0
 

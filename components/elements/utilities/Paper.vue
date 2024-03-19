@@ -11,7 +11,7 @@
                 <span class="value">{{ useUtility().getCurrency(AMCreditAvailable, 2) }}</span>
             </div>
             <div class="shortcut-action">
-                <button type="button" class="btn-white btn-open-papers"><i
+                <button type="button" class="btn-white btn-open-papers" v-if="!isHidden"><i
                         class="fa-solid fa-layer-group"></i>คลังกระดาษ</button>
                 <NuxtLink class="btn-secondary" to="/papers/exchange"><i
                         class="fa-solid fa-file-circle-plus"></i>แลกกระดาษ
@@ -22,6 +22,8 @@
 </template>
 
 <script setup lang="ts">
+
+const isHidden = ref(true)
 
 /////////////////////////////////////////
 // Use stores

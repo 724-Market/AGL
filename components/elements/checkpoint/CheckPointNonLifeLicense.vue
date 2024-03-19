@@ -9,7 +9,9 @@
       </div>
       <div class="checkpoint-info">
         <h5 class="topic">เพิ่มใบอนุญาตวินาศภัย</h5>
-        <button class="btn-secondary" type="button" @click="openDialogNonLifeLicense">คลิกเพื่อเพิ่ม</button>
+        <button v-if="!isHidden" class="btn-secondary" type="button"
+          @click="openDialogNonLifeLicense">คลิกเพื่อเพิ่ม</button>
+        <span class="badge">เร็วๆ นี้</span>
       </div>
     </div>
   </div>
@@ -20,6 +22,8 @@
 </template>
 
 <script setup lang="ts">
+const isHidden = ref(true)
+
 /////////////////////////////////////////
 // Define emit function to emit events on all dialog
 const emit = defineEmits(['onCloseNonLifeLicense', 'onSaveNonLifeLicense'])

@@ -16,11 +16,12 @@
             <ul class="profile-meta">
               <li>{{ AMPlanName }}</li>
               <li>• หมดอายุ {{ useUtility().formatDate(AMPlanExpire, 'ShortDate') }}</li>
-              <li class="link">( <a href="#" title="ต่ออายุ">ต่ออายุ</a> | <a href="#" title="อัปเกรด">อัปเกรด</a> )
+              <li v-if="!isHidden" class="link">( <a href="#" title="ต่ออายุ">ต่ออายุ</a> | <a href="#"
+                  title="อัปเกรด">อัปเกรด</a> )
               </li>
             </ul>
           </div>
-          <aside class="profile-bar-notice notice-warning">
+          <aside class="profile-bar-notice notice-warning" v-if="!isHidden">
             <div class="notice-text">กรุณาส่งหลักฐาน เพื่อยืนยันใบอนุญาตนายหน้าประกันวินาศภัย</div>
             <div class="notice-action"><a href="#" class="btn-warning" title="ดำเนินการต่อ">ดำเนินการต่อ</a></div>
           </aside>
@@ -32,6 +33,8 @@
 </template>
 
 <script setup lang="ts">
+const isHidden = ref(true)
+
 /////////////////////////////////////////
 // Use stores
 const agentInfoStore = useAgentInfoStore()

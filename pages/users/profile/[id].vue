@@ -10,7 +10,7 @@
           <div class="has-sticky">
 
             <UsersProfileDetail :key="renderKey" :user-details="userDetails" @on-delete-group="updateProfile"
-              v-if="userDetails" />
+              v-if="userDetails" :password-text="textPassword" />
 
           </div>
         </div>
@@ -37,8 +37,11 @@
 
     <ElementsDialogLoading :propsLoading="loadingProps" />
 
+    <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
+      :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
+
     <ElementsDialogShowpassword v-if="isPasswordChanged" :modal-show="isPasswordChanged" :modal-type="ModalType.Warning"
-      :modal-title="textUserID" :modal-text="textPassword" @on-close-modal="onCloseConfirm"></ElementsDialogShowpassword>
+      :modal-title="textUserName" :modal-text="textPassword" @on-close-modal="onCloseConfirm"></ElementsDialogShowpassword>
 
   </NuxtLayout>
 </template>
@@ -52,6 +55,7 @@ import type {
   UserCommissionListReq,
 } from "~/shared/entities/user-entity"
 
+const router = useRouter()
 const userDetails: globalThis.Ref<UserDataRes | undefined> = ref()
 const userCommissionList: Ref<UserCommissionListRes[]> = ref([])
 
@@ -62,13 +66,14 @@ const messageError = ref("")
 
 var isPasswordChanged = ref(false)
 var textPassword = ref()
-var textUserID = ref()
+var textUserName = ref()
 
 const route = useRoute()
 const userId = ref<null | string>(null)
 
 const renderKey = ref(0)
-const getStorePassword = useStorePassword()
+const getStoreUsername = useState('setUsername')
+const getStorePassword = useState('setPassword')
 
 /////////////////////////////////////////
 // Button Loading
@@ -77,37 +82,66 @@ const isLoading = ref(false)
 /////////////////////////////////////////
 // Modal Loading
 const loadingProps = ref({})
+
+/////////////////////////////////////////
+// Modal Dialog
+const isShowModal = ref(false)
+const modalType = ref('')
+const modalTitle = ref('')
+const modalText = ref('')
+const modalButton = ref('')
+const modalRedirectPath = ref('')
+
+/////////////////////////////////////////
+
+// Function to handle close modal events
+const handleCloseModal = async () => {
+  if (modalRedirectPath.value) {
+    router.push({ path: modalRedirectPath.value })
+  }
+  else {
+    isShowModal.value = false
+  }
+}
+
+// Function show message modal events
+const serverModal = async (serverCheck: any) => {
+  isShowModal.value = true
+  modalType.value = serverCheck.modalType
+  modalTitle.value = serverCheck.modalTitle
+  modalText.value = serverCheck.modalText
+  modalButton.value = serverCheck.modalButton
+}
+
 const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = false) => {
   loadingProps.value = useUtility().createLoadingProps(isShowLoading, showLogo, showText)
 }
-
-/////////////////////////////////////////
 
 onMounted(async () => {
   openLoadingDialog(true)
 
   if (typeof route.params.id === 'string') {
+
     userId.value = route.params.id
 
-    await showPassword(getStorePassword.value)
-
+    await showPassword(getStoreUsername.value,getStorePassword.value)
     await loadUserDetails(userId.value)
-
     await loadUserCommission(userId.value)
+
   }
 
   openLoadingDialog(false)
 })
 
 // Open modal in case change password
-const showPassword = async (getPassword: string) => {
+const showPassword = async (getUsername: string, getPassword: string) => {
   if (!getPassword) {
     return false
   }
   openLoadingDialog(false)
-  getStorePassword.value = '' // Clear getStorePassword
+  getStorePassword.value = ''
   isPasswordChanged.value = true // Open modal
-  textUserID.value = userId.value
+  textUserName.value = getUsername
   textPassword.value = getPassword
 }
 
@@ -138,6 +172,7 @@ const loadUserCommission = async (userid: string) => {
     isError.value = true
     messageError.value = responseCom.apiResponse.ErrorMessage ?? ""
   }
+  
 }
 
 const loadUserDetails = async (userid: string) => {
@@ -156,8 +191,9 @@ const loadUserDetails = async (userid: string) => {
   ) {
     userDetails.value = response.apiResponse.Data[0]
   } else {
-    isError.value = true
-    messageError.value = response.apiResponse.ErrorMessage ?? ""
+    router.push("/users")
+    //isError.value = true
+    //messageError.value = response.apiResponse.ErrorMessage ?? ""
   }
 }
 
@@ -167,29 +203,47 @@ const onCloseConfirm = async () => {
 
 // Submit form event
 const submitEditUser = async (formData: any) => {
+
   openLoadingDialog(true)
 
   const response = await useRepository().user.saveProfile(formData)
+  const resultCheck = useUtility().responseCheck(response)
 
-  if (response.apiResponse.Status && response.apiResponse.Status == "200" && userId.value !== null) {
-    await showPassword(formData.Password)
+  if (resultCheck.status === 'pass') {
+    if(userId.value !== null) { 
 
-    await loadUserDetails(userId.value)
-
-    await updateProfile()
-
-    await loadUserCommission(userId.value)
-
-    openLoadingDialog(false)
-
-  } else {
-
-    openLoadingDialog(false)
-    isError.value = true
-    //TODO ทำ modal infomation แทน alert
-    alert(response.apiResponse.ErrorMessage)
-    messageError.value = response.apiResponse.ErrorMessage ?? ""
+      await loadUserDetails(userId.value)
+      await updateProfile()
+      await loadUserCommission(userId.value)
+      
+      if (formData.NewPassword) {
+        await showPassword(formData.UserName, formData.NewPassword)
+        openLoadingDialog(false)
+      }
+      else {
+        resultCheck.modalType = 'success'
+        resultCheck.modalTitle = 'บันทึกข้อมูลเรียบร้อยแล้ว'
+        serverModal(resultCheck)
+        openLoadingDialog(false)
+      }
+      
+    }
+    else {
+      resultCheck.modalType = 'warning'
+      resultCheck.modalTitle = 'เกิดความผิดพลาด'
+      resultCheck.modalText = 'กรุณาตรวจสอบและทำรายการใหม่อีกครั้ง'
+      serverModal(resultCheck)
+      openLoadingDialog(false)
+    }
   }
+  else {
+    resultCheck.modalType = 'warning'
+    resultCheck.modalTitle = 'เกิดความผิดพลาด'
+    resultCheck.modalText = 'กรุณาตรวจสอบและทำรายการใหม่อีกครั้ง'
+    serverModal(resultCheck)
+    openLoadingDialog(false)
+  }
+
 }
 
 

@@ -9,6 +9,7 @@ export const useAgentInfoStore = defineStore('agentInfo', {
     AMPlanName: '',
     AMPlanExpire: '',
     AMAvailableBalance: '',
+    AMCreditAvailable: '', 
   }),
 
   actions: {
@@ -53,6 +54,16 @@ export const useAgentInfoStore = defineStore('agentInfo', {
 
       if (resultCheck_pledge.status === 'pass') {
         this.AMAvailableBalance = res_pledge.apiResponse.Data[0].AvailableBalance
+      }
+    },
+
+    // Get Pledge balance
+    async getPaperCreditBalance() {
+      const res_paper = await useRepository().paper.getPaperCreditBalance()
+      const resultCheck_paper = useUtility().responseCheck(res_paper)
+
+      if (resultCheck_paper.status === 'pass') {
+        this.AMCreditAvailable = res_paper.apiResponse.Data[0].CreditAvailable
       }
     },
 

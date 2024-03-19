@@ -94,6 +94,11 @@ class PaperModule {
   async confirmReceiveOrder(req: OrderListReq): Promise<IAPIResponse<OrderListRes[]>> {
     return await useCallApi().apiRepository<OrderListRes[]>(`${this.RESOURCE}/order/receive/confirm`, req)
   }
+
+  async getPaperCreditBalance() {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/overall/balance/get`, {})
+  }
+
 }
 
 export default PaperModule;

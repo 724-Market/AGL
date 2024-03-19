@@ -25,8 +25,8 @@
           </div>
 
           <OrderCompulsoryPackagesList :is-loading="isLoading" :checklist="checklist" :is-error="isError"
-            :message-error="messageError" :package-list="packageList" :pages="paging" @change-checklist="handlerCheckList"
-            @change-select="handlerSelect" @change-page="handlerChangePage" />
+            :message-error="messageError" :package-list="packageList" :pages="paging"
+            @change-checklist="handlerCheckList" @change-select="handlerSelect" @change-page="handlerChangePage" />
         </div>
 
         <div class="col col-sidebar">
@@ -52,9 +52,9 @@
             </aside>
 
             <FormKit type="submit" label="ไปกรอกข้อมูลสั่งซื้อ" name="order-submit" id="order-submit" :classes="{
-              input: 'btn-primary',
-              outer: 'form-actions',
-            }" :disabled="!isSelect" :loading="isLoading" />
+    input: 'btn-primary',
+    outer: 'form-actions',
+  }" :disabled="!isSelect" :loading="isLoading" />
 
             <NuxtLink @click="backStep()" class="btn-back btn-gray">ย้อนกลับ</NuxtLink>
 
@@ -316,9 +316,9 @@ const showPageHeader = true
 const showLogoHeader = false
 
 // Define page meta
-const pageTitle = 'เลือกแพ็คเกจ'
+const pageTitle = 'เลือกแพ็กเกจ'
 const pageCategory = 'แจ้งงาน พ.ร.บ.'
-const pageDescription = 'Compulsory เลือกแพ็คเกจ'
+const pageDescription = 'Compulsory เลือกแพ็กเกจ'
 
 // Define meta seo
 useHead({

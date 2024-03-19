@@ -49,7 +49,7 @@ const router = useRouter();
 const step = ref(0)
 const menus = ref([
     { step: 1, url: '/order/compulsory/information', name: 'กรอกข้อมูล' },
-    { step: 2, url: '/order/compulsory/packages', name: 'เลือกแพ็คเกจ' },
+    { step: 2, url: '/order/compulsory/packages', name: 'เลือกแพ็กเกจ' },
     { step: 3, url: '/order/compulsory/placeorder', name: 'ข้อมูลสั่งซื้อ' },
     { step: 4, url: '/order/compulsory/payment', name: 'วิธีชำระเงิน' },
     { step: 5, url: '/order/compulsory/summary', name: 'สรุปรายการ' }

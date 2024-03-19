@@ -125,7 +125,7 @@ const handleResendOTP = async () => {
 // Function request OTP
 const requestOTP = async () => {
 
-  console.log('request OTP')
+  //console.log('request OTP')
   await resetOTPField()
 
   openLoadingDialog(true)

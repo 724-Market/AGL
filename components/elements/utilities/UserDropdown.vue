@@ -13,27 +13,31 @@
       </div>
     </a>
     <ul class="dropdown-menu dropdown-menu-end">
-      <li class="announcement">ช่วงนี้ฝนตกบ่อย ดูแลสุขภาพด้วยนะครับ</li>
-      <li class="announcement is-warning">สมาชิกจะสิ้นสุด {{ useUtility().formatDate(AMPlanExpire, 'FullDate') }} <a
-          href="#">คลิกเพื่อต่ออายุสมาชิก</a></li>
-      <li><a class="dropdown-item" href="#"><span class="icon-user">ข้อมูลสมาชิก</span></a></li>
-      <li><a class="dropdown-item" href="#"><span class="icon-gears">การตั้งค่า</span></a></li>
-      <li><a class="dropdown-item" href="#"><span class="icon-gift">สิทธิพิเศษสำหรับคุณ</span></a></li>
+      <li class="announcement">724 Agent Love ยินดีต้อนรับ</li>
+      <li class="announcement is-info">สมาชิกจะสิ้นสุดวันที่ {{ useUtility().formatDate(AMPlanExpire, 'FullDate') }}
+        <a href="#" v-if="!isHidden">คลิกเพื่อต่ออายุสมาชิก</a>
+      </li>
+      <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-user">ข้อมูลสมาชิก</span></a></li>
+      <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-gears">การตั้งค่า</span></a></li>
+      <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-gift">สิทธิพิเศษสำหรับคุณ</span></a></li>
+      <li v-if="!isHidden">
+        <hr class="dropdown-divider">
+      </li>
+      <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-calendar-star">กิจกรรม</span></a></li>
+      <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-badge-percent">โปรโมชั่น</span></a></li>
       <li>
         <hr class="dropdown-divider">
       </li>
-      <li><a class="dropdown-item" href="#"><span class="icon-calendar-star">กิจกรรม</span></a></li>
-      <li><a class="dropdown-item" href="#"><span class="icon-badge-percent">โปรโมชั่น</span></a></li>
-      <li>
+      <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-life-ring">แนะนำการใช้งาน</span></a></li>
+      <li><a class="dropdown-item" href="https://lin.ee/q6sqr2b" target="_blank"><span
+            class="icon-help">ติดต่อเจ้าหน้าที่</span></a></li>
+      <li v-if="!isHidden">
         <hr class="dropdown-divider">
       </li>
-      <li><a class="dropdown-item" href="#"><span class="icon-life-ring">แนะนำการใช้งาน</span></a></li>
-      <li><a class="dropdown-item" href="#"><span class="icon-help">ติดต่อเจ้าหน้าที่</span></a></li>
-      <li>
-        <hr class="dropdown-divider">
+      <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-book-law">ข้อกำหนดและเงื่อนไข</span></a>
       </li>
-      <li><a class="dropdown-item" href="#"><span class="icon-book-law">ข้อกำหนดและเงื่อนไข</span></a></li>
-      <li><a class="dropdown-item" href="#"><span class="icon-user-lock">นโยบายคุ้มครองข้อมูลส่วนบุคคล</span></a></li>
+      <li v-if="!isHidden"><a class="dropdown-item" href="#"><span
+            class="icon-user-lock">นโยบายคุ้มครองข้อมูลส่วนบุคคล</span></a></li>
       <li>
         <hr class="dropdown-divider">
       </li>
@@ -43,6 +47,8 @@
 </template>
 
 <script setup>
+const isHidden = ref(true)
+
 /////////////////////////////////////////
 // Use stores
 const agentInfoStore = useAgentInfoStore()

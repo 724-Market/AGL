@@ -11,7 +11,7 @@
             <ElementsUtilitiesPledge />
             <ElementsUtilitiesPaper />
 
-            <div class="card-shortcut is-warning is-mini">
+            <div class="card-shortcut is-warning is-mini" v-if="!isHidden">
                 <a href="#">
                     <div class="shortcut-wrapper">
                         <div class="shortcut-figure">
@@ -26,7 +26,7 @@
                 </a>
             </div>
 
-            <div class="card-shortcut is-info is-mini">
+            <div class="card-shortcut is-info is-mini" v-if="!isHidden">
                 <a href="#">
                     <div class="shortcut-wrapper">
                         <div class="shortcut-figure">
@@ -43,3 +43,7 @@
         </div>
     </div>
 </template>
+
+<script setup>
+const isHidden = ref(true)
+</script>

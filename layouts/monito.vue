@@ -124,7 +124,7 @@ const handleAcceptConfirm = async () => {
 const getToken = async () => {
   const token = await useUtility().getToken()
   const expireTime = useTokenManage().getExpireSecondTime(token)
-
+console.log('expireTime',expireTime)
   if (expireTime > 0) {
     const reduceTime = expireTime - (2 * 60 * 1000) // คำนวณ expire Date ของ token ก่อน 2 นาที
 
@@ -133,6 +133,9 @@ const getToken = async () => {
     } else {
       showModalConfirm()
     }
+  }
+  else{
+    showModalConfirm()
   }
 }
 

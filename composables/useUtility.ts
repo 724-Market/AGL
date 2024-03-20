@@ -81,24 +81,7 @@ const getTokenExpire = async(): Promise<string> => {
         const store = useStoreUserAuth()
         const { AuthenInfo } = storeToRefs(store)
 
-        const checkToken = store.checkTokenExpire()
-        if (checkToken) {
-            if (AuthenInfo.value) {
-                token = AuthenInfo.value.accessToken
-            }
-        }
-        else {
-            // refresh token in store
-            const refresToken = AuthenInfo.value ? AuthenInfo.value.refresh_token : ""
-            if (refresToken && refresToken != "") {
-
-                const data = await store.refreshToken(refresToken)
-                if (data) {
-                    token = data.accessToken
-                }
-
-            }
-        }
+        token = AuthenInfo.value.accessToken
         return token
     }
 

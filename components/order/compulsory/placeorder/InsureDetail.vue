@@ -24,7 +24,7 @@
                         {
                           label: 'นิติ',
                           value: 'company',
-                          attrs: { disabled: props.cacheOrderRequest ? !props.cacheOrderRequest.Customer.IsBranch : false } 
+                          attrs: { disabled: props.cacheOrderRequest ? props.cacheOrderRequest.Customer.IsPerson : false } 
                         },
                       ]" v-model="InsuredTypeText" validation="required"
                     :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block"

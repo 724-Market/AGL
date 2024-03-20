@@ -230,6 +230,7 @@ const onChangeShippingPaperType = async (deliveryType: string) => {
     ShippingMethod.value = "";
     ShippingFee.value = "";
   } else {
+    console.log('onChangeShippingPaperType deliveryType', deliveryType)
     type.value = "DELIVERY";
   }
   await clearStore();

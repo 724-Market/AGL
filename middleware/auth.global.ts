@@ -6,7 +6,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const publicRoutes = [
     'index', 'login', 'forgot-password', 'otp',
     'agent', 'agent-login', 'agent-forgot-password', 'agent-otp', 'agent-set-password',
-    'register', 'register-id', 'register-form', 'register-otp', 'register-set-password'
+    'register', 'register-id', 'register-form', 'register-otp', 'register-set-password',
+    'session-expired'
   ]
 
   // Check token existence and validate access to private routes

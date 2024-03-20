@@ -2,7 +2,7 @@
   <Teleport to="body">
     <dialog id="confirm-dialog">
       <div :class="['dialog-card', 'is-' + confirmTypeClass]">
-        <div class="card-header" style="display: none">
+        <div class="card-header" v-if="!isHidden">
           <button type="button" class="btn btn-close btn-close-modal" @click="hideModal">ปิด</button>
         </div>
         <div class="card-body">
@@ -29,6 +29,9 @@
 </template>
 
 <script setup>
+// Hidden close button
+const isHidden = ref(true)
+
 // Define emit function to emit events on confirm
 const emit = defineEmits(['onCloseConfirm', 'onAcceptConfirm'])
 

@@ -391,9 +391,9 @@ const getTokenExpire = async(): Promise<string> => {
     }
 
     // API Response
-    const responseCheck = (res: any) => {
+    const responseCheck = (res: unknown) => {
 
-        const resp = ref<any>({});
+        const resp = ref<unknown>({});
 
         if (res.serverStatus == 200) {
             if (res.apiStatus == 200) {
@@ -402,7 +402,11 @@ const getTokenExpire = async(): Promise<string> => {
             }
             else {
 
-                if (res.apiResponse.ErrorCode === '1102813') {
+                if (res.apiResponse.ErrorCode === '90000991') {
+                    navigateTo('/session-expired')
+                }
+                
+                else if (res.apiResponse.ErrorCode === '1102813') {
                     // Please wait and try again after x Minutes y Seconds.
                     // Cannot Send OTP. Please try again.
                     resp.value.modalTitle = 'ไม่สามารถส่ง OTP ได้'

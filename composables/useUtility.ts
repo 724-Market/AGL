@@ -1,7 +1,7 @@
 // Import type
 import type { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity"
 import type { OrderDetails, OrderResponse } from "~/shared/entities/order-entity"
-import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity"
+import type { CustomerOrderRequest, PlaceOrderRequest } from "~/shared/entities/placeorder-entity"
 import type { IInformation } from "~/shared/entities/information-entity"
 
 import { isString } from "@vueuse/core"
@@ -279,7 +279,7 @@ const getTokenExpire = async(): Promise<string> => {
                 OrderNo: orderNo,
                 Package: order.Package,
                 CarDetailsExtension: order.CarDetailsExtension,
-                Customer: order.Customer,
+                Customer: order.Customer as CustomerOrderRequest,
                 DeliveryMethod1: order.DeliveryMethod1,
                 DeliveryMethod2: order.DeliveryMethod2,
                 IsTaxInvoice: order.IsTaxInvoice,

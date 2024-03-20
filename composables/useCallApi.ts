@@ -6,7 +6,7 @@ export default () => {
         const wrapper: WrapperResponse<T> = {
             Status: "",
         }
-        const result: IAPIResponse<T> =
+        const result:  IAPIResponse<T> =
         {
             apiStatus: "",
             respErrorCode: "",
@@ -233,6 +233,10 @@ export default () => {
 
         if (params.Token2) {
             params.Token = params.Token2
+        }
+        if(params.oldAccessToken)
+        {
+            params.Token = params.oldAccessToken
         }
         params.URL = url
         if (!method || (method != "get" && method != "GET")) {

@@ -24,8 +24,11 @@ export default () => {
                 try {
                     jsonData = JSON.parse(jsonData)
                 }
-                catch (e) { console.log('JSON.parse fail', jsonData) }
-                jsonData = undefined
+                catch (e) { 
+                    console.log('JSON.parse fail', jsonData)
+                    jsonData = undefined
+                }
+                
 
             }
             if (jsonData) {

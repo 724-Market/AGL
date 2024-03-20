@@ -208,18 +208,20 @@
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="false" v-model="legalPersonProfile.Name"
+                          }" autocomplete="off" v-model="legalPersonProfile.Name"
                           @change="handlerChangeLegalPersonProfile" />
                       </div>
                       <div class="col-md-12 col-lg-4">
-                        <FormKit type="text" label="เลขประจำตัวผู้เสียภาษี" name="CompanyTaxId"
+                        <ElementsFormIdCard label="เลขประจำตัวผู้เสียภาษี" name="CompanyTaxId" v-model="legalPersonProfile.TaxID" 
+                        @change="handlerChangeLegalPersonProfile" />
+                        <!-- <FormKit type="text" label="เลขประจำตัวผู้เสียภาษี" name="CompanyTaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี" validation="required|length:13|number" maxlength="13"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 13 ตัว',
                             number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
                           }" autocomplete="false" v-model="legalPersonProfile.TaxID"
-                          @change="handlerChangeLegalPersonProfile" />
+                          @change="handlerChangeLegalPersonProfile" /> -->
                       </div>
                       <div class="col-6">
                         <ElementsFormPhoneNumber autocomplete="off" label="เบอร์มือถือ"  name="CompanyPhoneNumber" v-model="legalPersonProfile.ContactPhoneNumber"
@@ -234,7 +236,7 @@
                       </div>
                       <div class="col-6">
                         <FormKit type="email" label="อีเมล" name="CompanyEmail" placeholder="xxxxxx@email.com"
-                          autocomplete="false" v-model="legalPersonProfile.ContactEmail"
+                          autocomplete="off" v-model="legalPersonProfile.ContactEmail"
                           @change="handlerChangeLegalPersonProfile" />
                       </div>
                     </div>
@@ -256,11 +258,13 @@
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="false" v-model="legalPersonProfile.Name"
+                          }" autocomplete="off" v-model="legalPersonProfile.Name"
                           @change="handlerChangeLegalPersonProfile" />
                       </div>
                       <div class="col-md-12 col-lg-4">
-                        <FormKit type="text" label="เลขประจำตัวผู้เสียภาษี" name="BranchTaxId"
+                        <ElementsFormIdCard label="เลขประจำตัวผู้เสียภาษี" name="BranchTaxId" v-model="legalPersonProfile.TaxID" 
+                        @change="handlerChangeLegalPersonProfile" />
+                        <!-- <FormKit type="text" label="เลขประจำตัวผู้เสียภาษี" name="BranchTaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี" validation="required|length:13|number"
                           maxlength="13"
                           :validation-messages="{
@@ -268,7 +272,7 @@
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 13 ตัว',
                             number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
                           }" autocomplete="false" v-model="legalPersonProfile.TaxID"
-                          @change="handlerChangeLegalPersonProfile" />
+                          @change="handlerChangeLegalPersonProfile" /> -->
                       </div>
                       <div class="col-6">
                         <FormKit type="text" label="รหัสสาขา" name="BranchCode" placeholder="รหัสสาขา"
@@ -276,7 +280,7 @@
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 5 ตัว',
                             number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
-                          }" autocomplete="false" v-model="legalPersonProfile.BranchID"
+                          }" autocomplete="off" v-model="legalPersonProfile.BranchID"
                           @change="handlerChangeLegalPersonProfile" />
                       </div>
                       <div class="col-6">
@@ -285,7 +289,7 @@
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="false" v-model="legalPersonProfile.BranchName"
+                          }" autocomplete="off" v-model="legalPersonProfile.BranchName"
                           @change="handlerChangeLegalPersonProfile" />
                       </div>
                       <div class="col-6">
@@ -302,7 +306,7 @@
                       </div>
                       <div class="col-6">
                         <FormKit type="email" label="อีเมล" name="BranchEmail" placeholder="xxxxxx@email.com"
-                          autocomplete="false" v-model="legalPersonProfile.ContactEmail"
+                          autocomplete="off" v-model="legalPersonProfile.ContactEmail"
                           @change="handlerChangeLegalPersonProfile" />
                       </div>
                     </div>

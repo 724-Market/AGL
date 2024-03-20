@@ -406,7 +406,7 @@
     :profile-data-array="newTaxAddressUpdate"
     :show="isEditTaxAddress"
     @close-address="closeModalAddress"
-    @on-edit-address="updateAddress"
+    @on-edit-address="getAddressList"
   ></ElementsDialogEditAddress>
   <ElementsDialogEditAddress
     v-if="isEditTaxDelivery"
@@ -419,7 +419,7 @@
     :profile-data-array="newTaxDeliveryAddressUpdate"
     :show="isEditTaxDelivery"
     @close-address="closeModalDelivery"
-    @on-edit-address="updateAddress"
+    @on-edit-address="getAddressList"
   ></ElementsDialogEditAddress>
 </template>
 <script setup lang="ts">
@@ -482,6 +482,7 @@ const addressIncludeTaxType = ref('insured')
 const addressDeliveryTaxType = ref('insured')
 const addressType = ref('')
 const stCustomerID = ref('')
+const arAddressList = ref([])
 
 const isLoading = ref(false);
 const isEditTaxAddress = ref(false)
@@ -624,13 +625,14 @@ const onLoad = onMounted(async () => {
 
     await setCacheData()
     stCustomerID.value = props.cacheOrderRequest?.Customer?.IsPerson ? props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID : props.cacheOrderRequest?.Customer?.LegalPersonProfile?.CustomerID
+    await getAddressList(stCustomerID)
     if(props.cacheOrderRequest?.Customer?.IsTaxInvoiceAddressSameAsDefault == false){
       addressType.value = 'TAXINVOICE'
-      await updateAddress(stCustomerID, props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID)
+      await updateAddress(props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID)
     }
     if(props.cacheOrderRequest?.Customer?.IsTaxInvoiceDeliveryAddressSameAsDefault == false){
       addressType.value = 'TAXINVOICE_DELIVERY'
-      await updateAddress(stCustomerID, props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID)
+      await updateAddress(props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID)
     }
     
   }
@@ -823,23 +825,57 @@ const mapAddressData = async () => {
     SubDistrictLabel: props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.SubDistrictName || ''
   };
 };
-// Update profile after save
-const updateAddress = async (e: string, AddrID: string) => {
-  // get order after save or create
+
+const getAddressList = async (e: string, AddrID: string) => {
+
   const req = {
     CustomerID: e ?? "",
   };
 
+  const response = await useRepository().customer.AddressList(req);
+    if (
+      response.apiResponse.Status == "200" &&
+      response.apiResponse.Data 
+    ) {
+      arAddressList.value = response.apiResponse.Data
+      if(AddrID){
+        await updateAddress(AddrID)
+      }
+    }
 
-  const getData = await useRepository().customer.AddressList(req);
-  if (getData.apiResponse.Status && getData.apiResponse.Status == "200" && getData.apiResponse.Data) {
-    const index = getData.apiResponse.Data.findIndex((item: any) => item.ID === AddrID);
+};
+
+// Update profile after save
+const updateAddress = async (AddrID: string) => {
+  // get order after save or create
+  // const req = {
+  //   CustomerID: e ?? "",
+  // };
+
+
+  //const getData = await useRepository().customer.AddressList(req);
+  //if (getData.apiResponse.Status && getData.apiResponse.Status == "200" && getData.apiResponse.Data) {
+    //const index = getData.apiResponse.Data.findIndex((item: any) => item.ID === AddrID);
+  if (arAddressList) {
+    // Finding index based on ID
+  const index = arAddressList.value.findIndex((item) => item.ID === AddrID);
+
+  // Checking if index is found
+  // if (index !== -1) {
+  //   Item with specified ID found
+  //   const foundItem = arAddressList.value[index];
+  //   console.log("Found item:", foundItem);
+  // } else {
+  //   Item with specified ID not found
+  //   console.log("Item not found");
+  // }
 
     // Check if the index is valid
     if (index !== -1) {
       if(addressType.value == 'TAXINVOICE'){
         // Extract address data and assign to addressDataArray
-        const taxAddress = getData.apiResponse.Data[index];
+        //const taxAddress = getData.apiResponse.Data[index];
+        const taxAddress = arAddressList.value[index];
         newTaxAddressUpdate.value = {
           No: taxAddress.No,
           Moo: taxAddress.Moo,
@@ -879,7 +915,8 @@ const updateAddress = async (e: string, AddrID: string) => {
         emit('newTaxID', AddrID)
 
       } else if (addressType.value == 'TAXINVOICE_DELIVERY'){
-        const taxDelivery = getData.apiResponse.Data[index];
+        //const taxDelivery = getData.apiResponse.Data[index];
+        const taxDelivery = arAddressList.value[index];
         newTaxDeliveryAddressUpdate.value = {
           No: taxDelivery.No,
           Moo: taxDelivery.Moo,

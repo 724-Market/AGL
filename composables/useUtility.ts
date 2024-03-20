@@ -81,24 +81,7 @@ const getTokenExpire = async(): Promise<string> => {
         const store = useStoreUserAuth()
         const { AuthenInfo } = storeToRefs(store)
 
-        const checkToken = store.checkTokenExpire()
-        if (checkToken) {
-            if (AuthenInfo.value) {
-                token = AuthenInfo.value.accessToken
-            }
-        }
-        else {
-            // refresh token in store
-            const refresToken = AuthenInfo.value ? AuthenInfo.value.refresh_token : ""
-            if (refresToken && refresToken != "") {
-
-                const data = await store.refreshToken(refresToken)
-                if (data) {
-                    token = data.accessToken
-                }
-
-            }
-        }
+        token = AuthenInfo.value.accessToken
         return token
     }
 
@@ -463,16 +446,16 @@ const getTokenExpire = async(): Promise<string> => {
         const storedValue = sessionStorage.getItem(key);
         return storedValue ? JSON.parse(storedValue) : null;
     }
-    /////////////////////////////////////////
-const setCookie = (name: string, value: string, days: number) => {
-    let expires = ""
-    if (days) {
-      const date = new Date()
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
-      expires = "; expires=" + date.toUTCString();
+
+    const setCookie = (name: string, value: string, days: number) => {
+        let expires = ""
+        if (days) {
+            const date = new Date()
+            date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
     }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
 
     return {
         getClassFromStatusOrder,

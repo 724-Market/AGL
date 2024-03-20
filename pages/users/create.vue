@@ -8,7 +8,6 @@
       <div class="row">
         <div class="col col-main">
           <div class="has-sticky">
-
             <UsersProfileDetail v-if="usersLimitRes" />
           </div>
         </div>
@@ -53,18 +52,15 @@ const isError = ref(false)
 const messageError = ref("")
 const isLoading = ref(false)
 const router = useRouter()
-const setPassword = useStorePassword()
+
+const setUsername = useState('setUsername')
+const setPassword = useState('setPassword')
 
 // on Mounted
 onMounted(async () => {
   if (AuthenInfo.value) {
     isLoading.value = true
     await loadUsersLimit()
-
-    if (usersLimitRes.value && usersLimitRes.value.CurrentCount >= usersLimitRes.value.MaxCount) {
-      console.log("User is max!!!")
-      router.push("/users")
-    }
     isLoading.value = false
   } else {
     router.push("/login")
@@ -82,6 +78,9 @@ const loadUsersLimit = async () => {
     response.apiResponse.Data.length > 0
   ) {
     usersLimitRes.value = response.apiResponse.Data[0] as UserLimitRes
+    if (usersLimitRes.value && usersLimitRes.value.CurrentCount >= usersLimitRes.value.MaxCount) {
+      router.push("/users")
+    }
   } else {
     isError.value = true
     messageError.value = response.apiResponse.ErrorMessage ?? ""
@@ -97,6 +96,7 @@ const submitCreateUser = async (formData: any) => {
     resCreate.apiResponse.Data
   ) {
     const UserID = resCreate.apiResponse.Data.UserID;
+    setUsername.value = resCreate.apiResponse.Data.UserName;
     setPassword.value = formData.Password;
     router.push("/users/profile/" + UserID)
   } else {
@@ -104,7 +104,6 @@ const submitCreateUser = async (formData: any) => {
     alert(resCreate.apiResponse.ErrorMessage);
     messageError.value = resCreate.apiResponse.ErrorMessage ?? ""
   }
-
 };
 
 // Define layout

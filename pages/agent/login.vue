@@ -192,6 +192,7 @@ const goNext = async () => {
   await useAsyncData(agentInfoStore.getProfile)
   await useAsyncData(agentInfoStore.getPlan)
   await useAsyncData(agentInfoStore.getPledgeBalance)
+  await useAsyncData(agentInfoStore.getPaperCreditBalance)
 
   router.push({ path: '/main' })
 

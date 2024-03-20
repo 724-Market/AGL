@@ -105,6 +105,12 @@ const serverModal = async (serverCheck: any) => {
   modalButton.value = serverCheck.modalButton
 }
 
+const forgotpassStep = useState('forgotpass-step')
+const forgotpassAgentMobile = useState('forgotpass-agent-mobile')
+const forgotpassCodeReference = useState('forgotpass-code-reference')
+const forgotpassOtpExpire = useState('forgotpass-otp-expire')
+const forgotpassToken = useState('forgotpass-token')
+
 /////////////////////////////////////////
 // Submit page
 const submitForgotpassword = async (formData: any) => {
@@ -120,17 +126,37 @@ const submitForgotpassword = async (formData: any) => {
 
   const response = await useRepository().agent.checkAgent(checkAgentReferralReq)
   const resultCheck = useUtility().responseCheck(response)
-  console.log(response)
+  // console.log(resultCheck.status)
+  // console.log(response)
 
   if (resultCheck.status === 'pass') {
     if (response.respOptions === 'LOG-IN') {
-      // regAgentAgentCode.value = response.apiResponse.Data.AgentCode
-      // regAgentFirstName.value = response.apiResponse.Data.FirstName
-      // regAgentLastName.value = response.apiResponse.Data.LastName
-      // regAgentIDcard.value = formData.agentIDCard
-      // registerStep.value = 'form'
-      // registerType.value = 'agent'
-      await goNext()
+
+      const recoveryPasswordAgentReq = {
+        IDCard: formData.agentIDCard,
+        AgentCode: (agentCodeValue as string).toUpperCase(), 
+        TemporaryPhone: '0868986464'
+      }
+
+      const response2 = await useRepository().agent.requestRecoveryPasswordAgent(recoveryPasswordAgentReq)
+      const resultCheck2 = useUtility().responseCheck(response2)
+      console.log(resultCheck2.status)
+      console.log(response2)
+
+      if (resultCheck2.status === 'pass') {
+        forgotpassAgentMobile.value = '0868986464'
+        forgotpassCodeReference.value = response2.apiResponse.Data.CodeReference
+        forgotpassOtpExpire.value = response2.apiResponse.Data.ExpireInSeconds
+        forgotpassToken.value = response2.apiResponse.Data.Token
+        forgotpassStep.value = 'otp'
+        await goNext()
+      }
+      else {
+        resultCheck.modalType = 'warning'
+        serverModal(resultCheck)
+        openLoadingDialog(false)
+      }
+
     }
     else {
       resultCheck.modalType = 'warning'
@@ -157,8 +183,7 @@ const submitForgotpassword = async (formData: any) => {
 /////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
-  alert('GO!!')
-  //router.push({ path: 'otp' })
+  router.push({ path: 'otp' })
 }
 
 /////////////////////////////////////////

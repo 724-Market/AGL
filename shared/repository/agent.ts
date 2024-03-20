@@ -49,12 +49,20 @@ class AgentModule {
     return await useCallApi().apiRepository(`${this.RESOURCE}/register/otp/verify`, req)
   }
 
+  async setupFirstPasswordAgent(req: any) {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/password/first/setup`, req)
+  }
+
   async requestRecoveryPasswordAgent(req: any) {
     return await useCallApi().apiRepository(`${this.RESOURCE}/password/recovery/otp/request`, req)
   }
 
-  async setupFirstPasswordAgent(req: any) {
-    return await useCallApi().apiRepository(`${this.RESOURCE}/password/first/setup`, req)
+  async verifyOtpRecoveryPasswordAgent(req: any) {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/password/recovery/otp/verify`, req)
+  }
+
+  async setupRecoveryPasswordAgent(req: any) {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/password/recovery/setup`, req)
   }
 
   async getAgentProfile() {

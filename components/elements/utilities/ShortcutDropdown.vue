@@ -1,7 +1,7 @@
 <template>
     <div class="shortcut-dropdown">
-        <a class="monito-dropdown dropdown-toggle no-caret" href="#" role="button" title="ทางลัด" data-bs-toggle="dropdown"
-            data-bs-auto-close="outside" aria-expanded="false">
+        <a class="monito-dropdown dropdown-toggle no-caret" href="#" role="button" title="ทางลัด"
+            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
             <div class="shortcut">
                 <span class="shortcut-text"><span>ทางลัด</span></span>
             </div>
@@ -9,28 +9,9 @@
         <div class="shortcut-panel dropdown-menu dropdown-menu-dark dropdown-menu-end">
 
             <ElementsUtilitiesPledge />
+            <ElementsUtilitiesPaper />
 
-            <div class="card-shortcut is-success">
-                <div class="shortcut-wrapper is-stack">
-                    <div class="shortcut-figure">
-                        <figure class="figure">
-                            <i class="fa-duotone fa-scroll fa-swap-opacity"></i>
-                        </figure>
-                    </div>
-                    <div class="shortcut-info">
-                        <h5 class="topic">มูลค่ากระดาษที่ใช้ได้ <small>(บาท)</small></h5>
-                        <span class="value">34,500.89</span>
-                    </div>
-                    <div class="shortcut-action">
-                        <button type="button" class="btn-white btn-open-papers"><i
-                                class="fa-solid fa-layer-group"></i>คลังกระดาษ</button>
-                        <a class="btn-secondary" href="paper-order-1.html"><i
-                                class="fa-solid fa-file-circle-plus"></i>แลกกระดาษ</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-shortcut is-warning is-mini">
+            <div class="card-shortcut is-warning is-mini" v-if="!isHidden">
                 <a href="#">
                     <div class="shortcut-wrapper">
                         <div class="shortcut-figure">
@@ -45,7 +26,7 @@
                 </a>
             </div>
 
-            <div class="card-shortcut is-info is-mini">
+            <div class="card-shortcut is-info is-mini" v-if="!isHidden">
                 <a href="#">
                     <div class="shortcut-wrapper">
                         <div class="shortcut-figure">
@@ -62,3 +43,7 @@
         </div>
     </div>
 </template>
+
+<script setup>
+const isHidden = ref(true)
+</script>

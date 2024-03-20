@@ -56,25 +56,30 @@ import { getNode } from '@formkit/core'
 definePageMeta({
   middleware: [
     function (to, from) {
-      // Define and check 'isOTP' status
-      const isOTP = useState('otp')
 
-      // Abort navigation if 'isOTP' is false
-      if (!isOTP.value) {
-        return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
+      const forgotpassStep = useState('forgotpass-step')
+
+      if (forgotpassStep.value != 'otp') {
+        //return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
       }
 
-      // Set 'isOTP' to false after check
-      isOTP.value = false
     }
   ]
 })
+
+const forgotpassStep = useState('forgotpass-step')
+const forgotpassAgentMobile = useState('forgotpass-agent-mobile')
+const forgotpassCodeReference = useState('forgotpass-code-reference')
+const forgotpassOtpExpire = useState('forgotpass-otp-expire')
+const forgotpassToken = useState('forgotpass-token')
+const forgotpassReferenceID = useState('forgotpass-reference-id')
 
 /////////////////////////////////////////
 // Define variables
 const getRefOTP = ref({
   phoneNumber: '',
   refCode: '',
+  countTimer: forgotpassOtpExpire.value
 })
 
 /////////////////////////////////////////
@@ -99,10 +104,25 @@ const modalType = ref('danger')
 const modalTitle = ref('')
 const modalText = ref('')
 const modalButton = ref('')
+const modalRedirectPath = ref('')
 
 // Function to handle close modal events
 const handleCloseModal = async () => {
-  await requestOTP()
+  if (modalRedirectPath.value) {
+    router.push({ path: modalRedirectPath.value })
+  }
+  else {
+    isShowModal.value = false
+  }
+}
+
+// Function show message modal events
+const serverModal = async (serverCheck: any) => {
+  isShowModal.value = true
+  modalType.value = serverCheck.modalType
+  modalTitle.value = serverCheck.modalTitle
+  modalText.value = serverCheck.modalText
+  modalButton.value = serverCheck.modalButton
 }
 
 /////////////////////////////////////////
@@ -120,13 +140,17 @@ const handleResendOTP = async () => {
 /////////////////////////////////////////
 // Function request OTP
 const requestOTP = async () => {
-  console.log('request OTP')
-
+  
+  //console.log('request OTP')
+  alert('request OTP')
   // Reset OTP field
+  /*
   await resetOTPField()
 
   getRefOTP.value.phoneNumber = '089-XXX-X999'
   getRefOTP.value.refCode = 'ABCD'
+  */
+
 }
 
 /////////////////////////////////////////
@@ -141,55 +165,53 @@ const resetOTPField = async () => {
 onMounted(async () => {
 
   // Get reference value from OTP
-  getRefOTP.value.phoneNumber = '089-XXX-X778'
-  getRefOTP.value.refCode = 'ED2J'
+  getRefOTP.value.phoneNumber = useUtility().maskMobileNumber(forgotpassAgentMobile.value)
+  getRefOTP.value.refCode = forgotpassCodeReference.value
 
 })
 
 /////////////////////////////////////////
 // Submit page
 const submitOTP = async (formData: any) => {
+
   openLoadingDialog(true)
 
-  const formRequest = {
-    otp: formData.otp,
-    refcode: getRefOTP.value.refCode
+  const verifyOtpRecoveryPasswordAgentReq = {
+    CodeVerify: formData.otp,
+    CodeReference: forgotpassCodeReference.value,
+    Token2: forgotpassToken.value
   }
 
-  await new Promise((r) => setTimeout(r, 2000))
+  const response = await useRepository().agent.verifyOtpRecoveryPasswordAgent(verifyOtpRecoveryPasswordAgentReq)
+  const resultCheck = useUtility().responseCheck(response)
+  //console.log(response)
 
-  console.log(formRequest)
+  if (resultCheck.status === 'pass') {
+    forgotpassReferenceID.value = response.apiResponse.Data.ReferenceID
+    forgotpassStep.value = 'set-password'
+    await goNext()
+  }
+  else if (resultCheck.status === 'error') {
 
-  // Reset OTP field
-  await resetOTPField()
-
-  if (formData) {
-
-    if (formRequest.otp === '000000') {
-
-      await goNext()
-
-    } else {
-
-      openLoadingDialog(false)
-
-      // Open modal dialog
-      isShowModal.value = true
-      modalType.value = 'danger'
-      modalTitle.value = 'รหัส OTP ไม่ถูกต้อง'
-      modalText.value = 'กรุณาทำการยืนยัน OTP ใหม่อีกครั้ง'
-      modalButton.value = 'รับทราบ'
+    if (response.apiResponse.ErrorCode === '1103807' || response.apiResponse.ErrorCode === '1107808') {
+      resultCheck.modalTitle = 'รหัส OTP ไม่ถูกต้อง'
+      resultCheck.modalText = 'กรุณาทำการยืนยัน OTP ใหม่อีกครั้ง'
     }
+    resultCheck.modalType = 'warning'
+    serverModal(resultCheck)
+    openLoadingDialog(false)
+
   }
+  else if (resultCheck.status === 'server-error') {
+    serverModal(resultCheck)
+    openLoadingDialog(false)
+  }
+
 }
 
 /////////////////////////////////////////
 // Function `goNext` push route go to next step
 const goNext = async () => {
-  // Define and check 'isSetPassword' status
-  const isSetPassword = useState('set-password')
-  isSetPassword.value = true
-
   router.push({ path: 'set-password' })
 }
 

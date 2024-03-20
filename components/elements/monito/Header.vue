@@ -4,7 +4,7 @@
 
             <header class="head-logo" v-if="showLogoHeader">
                 <div class="logo">
-                    <NuxtLink to="/" title="724 Market">724 Market</NuxtLink>
+                    <NuxtLink to="/main" title="724 Market">724 Market</NuxtLink>
                 </div>
             </header>
 
@@ -26,7 +26,7 @@
                         :aria-current="step == item.step ? 'page' : undefined">
                         <!-- <NuxtLink :to="item.url" v-if="item.step <= step">{{ item.name }}</NuxtLink> -->
                         <NuxtLink :to="item.url" v-if="item.step <= step" @click="clickStep(item.step, item.url)">{{
-                            item.name }}</NuxtLink>
+                item.name }}</NuxtLink>
                         <em v-else>{{ item.name }}</em>
                     </li>
                 </ol>
@@ -49,7 +49,7 @@ const router = useRouter();
 const step = ref(0)
 const menus = ref([
     { step: 1, url: '/order/compulsory/information', name: 'กรอกข้อมูล' },
-    { step: 2, url: '/order/compulsory/packages', name: 'เลือกแพ็คเกจ' },
+    { step: 2, url: '/order/compulsory/packages', name: 'เลือกแพ็กเกจ' },
     { step: 3, url: '/order/compulsory/placeorder', name: 'ข้อมูลสั่งซื้อ' },
     { step: 4, url: '/order/compulsory/payment', name: 'วิธีชำระเงิน' },
     { step: 5, url: '/order/compulsory/summary', name: 'สรุปรายการ' }

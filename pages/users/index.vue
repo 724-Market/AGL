@@ -6,23 +6,17 @@
       <div class="col">
 
         <div id="transaction-stats" class="card-stat-stack">
-          <OrderHistoryCardsUsers v-if="usersLimitRes" :user-limit="usersLimitRes"></OrderHistoryCardsUsers>
+          <OrderHistoryCardsUsers v-if="usersLimitRes" :user-limit="usersLimitRes" />
         </div>
 
         <UsersGridTable :key="renderKey" :filters="filterOptionTable" v-if="filterOptionTable.length >= 0"
-          @change-table="handlerChangeTable" @on-delete="deleteUsers" @on-profile="loadProfileUser"></UsersGridTable>
+          @change-table="handlerChangeTable" @on-delete="deleteUsers" @on-profile="loadProfileUser" />
 
       </div>
     </div>
-    
-    <ElementsModalDelUser
-      v-if="isDelUser" 
-      :modal-show="isDelUser"
-      :modal-title="'ยืนยันการลบผู้ช่วย'" 
-      :modal-type="ModalType.Danger"
-      @on-close-Modal="handleCloseModal"
-      @on-confirm-modal="handleConfirmModal"
-    />
+
+    <ElementsModalDelUser v-if="isDelUser" :modal-show="isDelUser" :modal-title="'ยืนยันการลบผู้ช่วย'"
+      :modal-type="ModalType.Danger" @on-close-Modal="handleCloseModal" @on-confirm-modal="handleConfirmModal" />
 
   </NuxtLayout>
 </template>
@@ -66,8 +60,8 @@ const handleCloseModal = async () => {
 }
 
 const deleteUsers = async (UserID: string) => {
-    isDelUser.value = true
-    delUserID.value = UserID
+  isDelUser.value = true
+  delUserID.value = UserID
 }
 
 const updateComponent = () => {
@@ -80,21 +74,20 @@ const updateComponent = () => {
 const handleConfirmModal = async () => {
   isLoading.value = true
   let req: delUserReq = {
-      SubUserID: delUserID.value,
+    SubUserID: delUserID.value,
   }
   var response = await useRepository().user.deleteUser(req)
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-      console.log("Reload");
-      await updateComponent();
-      await loadUsersLimit();
-    } else {
-      alert(response.apiResponse.ErrorMessage)
-    }
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") { 
+    await updateComponent();
+    await loadUsersLimit();
+  } else {
+    alert(response.apiResponse.ErrorMessage)
+  }
   isLoading.value = false
 }
 
 const loadProfileUser = async (UserID: string) => {
-  console.log("loadProfileUser3 " + UserID)
+  //console.log("loadProfileUser3 " + UserID)
 }
 
 const loadUsersLimit = async () => {

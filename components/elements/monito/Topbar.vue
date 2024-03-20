@@ -10,7 +10,7 @@
         </div>
       </div>
 
-      <ElementsUtilitiesNotificationDropdown />
+      <ElementsUtilitiesNotificationDropdown v-if="!isHidden" />
 
       <ElementsUtilitiesShortcutDropdown />
 
@@ -19,3 +19,7 @@
     </nav>
   </div>
 </template>
+
+<script setup>
+const isHidden = ref(true)
+</script>

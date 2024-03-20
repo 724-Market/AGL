@@ -9,6 +9,7 @@ export const useAgentInfoStore = defineStore('agentInfo', {
     AMPlanName: '',
     AMPlanExpire: '',
     AMAvailableBalance: '',
+    AMCreditAvailable: '', 
   }),
 
   actions: {
@@ -56,28 +57,40 @@ export const useAgentInfoStore = defineStore('agentInfo', {
       }
     },
 
+    // Get Pledge balance
+    async getPaperCreditBalance() {
+      const res_paper = await useRepository().paper.getPaperCreditBalance()
+      const resultCheck_paper = useUtility().responseCheck(res_paper)
+
+      if (resultCheck_paper.status === 'pass') {
+        this.AMCreditAvailable = res_paper.apiResponse.Data[0].CreditAvailable
+      }
+    },
+
     // Reset store
     $reset() {
-      this.AMType = ''
-      this.AMId = ''
-      this.AMNo = ''
-      this.AMLevel = ''
-      this.isAMAffiliate = ''
-      this.AMPlanName = ''
-      this.AMPlanExpire = ''
-      this.AMAvailableBalance = ''
+      // this.AMType = ''
+      // this.AMId = ''
+      // this.AMNo = ''
+      // this.AMLevel = ''
+      // this.isAMAffiliate = ''
+      // this.AMPlanName = ''
+      // this.AMPlanExpire = ''
+      // this.AMAvailableBalance = ''
+      sessionStorage.removeItem('agentInfo')
     },
 
     // Dispose store
     $dispose() {
-      this.AMType = null
-      this.AMId = null
-      this.AMNo = null
-      this.AMLevel = null
-      this.isAMAffiliate = null
-      this.AMPlanName = null
-      this.AMPlanExpire = null
-      this.AMAvailableBalance = null
+      // this.AMType = null
+      // this.AMId = null
+      // this.AMNo = null
+      // this.AMLevel = null
+      // this.isAMAffiliate = null
+      // this.AMPlanName = null
+      // this.AMPlanExpire = null
+      // this.AMAvailableBalance = null
+      sessionStorage.removeItem('agentInfo')
     }
   },
 

@@ -43,10 +43,11 @@
               </div>
               <div class="card-body">
 
-                <FormKit v-if="paymentMethodsOption" type="radio" label="การชำระเงินด้วย QR Code" name="PaymentMethods" 
-                    :options="paymentMethodsOption" 
-                    validation="required"
+                <div class="form-hide-label">
+                  <FormKit v-if="paymentMethodsOption" type="radio" label="เลือกวิธีการชำระเงิน" name="PaymentMethods"
+                    :options="paymentMethodsOption" validation="required"
                     :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block" />
+                </div>
 
               </div>
             </aside>
@@ -167,16 +168,16 @@ const loadAffiliateProductPlan = async () => {
 
     paymentMethodsOption = ref([
       {
-        label: 'เต็มจำนวน',
+        label: 'เต็มจำนวนด้วย QR',
         value: 'full',
-        help: `ยอดชำระ `+useUtility().getCurrency(response.apiResponse.Data.Order.GrandAmount,2)+` บาท`, 
-        attrs: { disabled: false } 
+        help: `ยอดชำระ ` + useUtility().getCurrency(response.apiResponse.Data.Order.GrandAmount, 2) + ` บาท`,
+        attrs: { disabled: false }
       },
       {
         label: 'ชำระหักคอมฯ',
         value: 'remain',
-        help: `ยอดชำระ `+useUtility().getCurrency(response.apiResponse.Data.Order.GrandAmount,2)+` บาท`,
-        attrs: { disabled: true } 
+        help: `ยอดชำระ ` + useUtility().getCurrency(response.apiResponse.Data.Order.GrandAmount, 2) + ` บาท`,
+        attrs: { disabled: true }
       }
     ])
 
@@ -217,7 +218,7 @@ const submitPackage = async (formData: any) => {
       ProductPlanID: ProductPlanID,
       PaymentType: affiliatePaymentType,
       IsReNew: false,
-      IsUseRemain: (formData.PaymentMethods=='full' ? false:true),
+      IsUseRemain: (formData.PaymentMethods == 'full' ? false : true),
       IsConsent: true
     }
 

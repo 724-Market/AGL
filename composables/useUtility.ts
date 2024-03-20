@@ -393,22 +393,21 @@ const getTokenExpire = async(): Promise<string> => {
     // API Response
     const responseCheck = (res: unknown) => {
 
-        const resp = ref<unknown>({});
+        const resp = ref<unknown>({})
 
         if (res.serverStatus == 200) {
             if (res.apiStatus == 200) {
-                resp.value.status = 'pass';
+                resp.value.status = 'pass'
                 resp.value.isShowModal = false
             }
             else {
 
                 if (res.apiResponse.ErrorCode === '90000991') {
-                    navigateTo('/session-expired')
+                    const sessionExpired = useState('sessionExpired')
+                    sessionExpired.value = true
+                    return navigateTo('/session-expired')
                 }
-                
                 else if (res.apiResponse.ErrorCode === '1102813') {
-                    // Please wait and try again after x Minutes y Seconds.
-                    // Cannot Send OTP. Please try again.
                     resp.value.modalTitle = 'ไม่สามารถส่ง OTP ได้'
                     resp.value.modalText = 'กรุณาทำการใหม่อีกครั้ง'
                 }
@@ -421,14 +420,14 @@ const getTokenExpire = async(): Promise<string> => {
                     resp.value.modalText = 'Error : ' + res.apiResponse.ErrorCode
                 }
 
-                resp.value.status = 'error';
+                resp.value.status = 'error'
                 resp.value.isShowModal = true
                 resp.value.modalType = 'warning'
                 resp.value.modalButton = 'ตกลง'
             }
         }
         else {
-            resp.value.status = 'server-error';
+            resp.value.status = 'server-error'
             resp.value.isShowModal = true
             resp.value.modalType = 'danger'
             resp.value.modalTitle = 'เกิดความผิดพลาด กรุณาลองใหม่อีกครั้ง'

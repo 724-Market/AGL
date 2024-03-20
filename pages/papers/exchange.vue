@@ -1,66 +1,30 @@
 <template>
-  <NuxtLayout
-    :name="layout"
-    :layout-class="`${layoutClass}`"
-    :page-title="pageTitle"
-    :page-category="pageCategory"
-    :show-page-steps="showPageSteps"
-    :show-page-header="showPageHeader"
-  >
-    <FormKit
-      type="form"
-      :actions="false"
-      id="form-order"
-      form-class="form-order form-theme"
-      :incomplete-message="false"
-    >
+  <NuxtLayout :name="layout" :layout-class="`${layoutClass}`" :page-title="pageTitle" :page-category="pageCategory"
+    :show-page-steps="showPageSteps" :show-page-header="showPageHeader">
+    <FormKit type="form" :actions="false" id="form-order" form-class="form-order form-theme"
+      :incomplete-message="false">
       <div class="row">
         <div class="col col-main">
-          <PapersExchangeHowToGetPaper
-            @shipping-type-change="onChangeShippingPaperType"
-            @change-delivery-channel="onChangeDeliveryChannel"
-            @check-address="handleCheckAddress"
-            :delivery-chanel="deliveryChanels"
-            :shipping-paper-type="deliveryPaperTypes"
-            :payment-fee-limit="paymentFeeLimit"
-            :is-submit="isSubmit"
-          ></PapersExchangeHowToGetPaper>
+          <PapersExchangeHowToGetPaper @shipping-type-change="onChangeShippingPaperType"
+            @change-delivery-channel="onChangeDeliveryChannel" @check-address="handleCheckAddress"
+            :delivery-chanel="deliveryChanels" :shipping-paper-type="deliveryPaperTypes"
+            :payment-fee-limit="paymentFeeLimit" :is-submit="isSubmit"></PapersExchangeHowToGetPaper>
 
-          <ElementsFormPaperBranchStock
-            v-if="type != ''"
-            @area-change="onChangePaperArea"
-            @ware-house-change="onChangeWareHouse"
-            @product-sub-change="onChangeProductSubcategory"
-            @product-company-change="onChangeProductCompany"
-            :area="paperAreas"
-            :ware-house="warehouses"
-            :product-sub-category="productsubcategorys"
-            :product-company="productCompanys"
-            :shipping-type="type"
-          >
+          <ElementsFormPaperBranchStock v-if="type != ''" @area-change="onChangePaperArea"
+            @ware-house-change="onChangeWareHouse" @product-sub-change="onChangeProductSubcategory"
+            @product-company-change="onChangeProductCompany" :area="paperAreas" :ware-house="warehouses"
+            :product-sub-category="productsubcategorys" :product-company="productCompanys" :shipping-type="type">
           </ElementsFormPaperBranchStock>
 
-          <PapersExchangeListPapers
-            v-if="productSearchMatch"
-            :product-company="textProductCompany"
-            :product-match-list="productSearchMatch"
-            @on-select-match="onSelectMatch"
-          ></PapersExchangeListPapers>
+          <PapersExchangeListPapers v-if="productSearchMatch" :product-company="textProductCompany"
+            :product-match-list="productSearchMatch" @on-select-match="onSelectMatch"></PapersExchangeListPapers>
         </div>
 
         <div class="col col-sidebar">
-          <PapersExchangeSlideBar
-            :check-list="checklist"
-            :match-all-list="productSearchMatchAll"
-            :exchange-data="exchangeData"
-            :shipping-fee="ShippingFee"
-            :shipping-method="ShippingMethod"
-            :payment-fee-limit="paymentFeeLimit"
-            :delivery-type="type"
-            :addr-agent="addrAgent"
-            @on-loading="onLoading"
-            @on-handle-error="handleError"
-          ></PapersExchangeSlideBar>
+          <PapersExchangeSlideBar :check-list="checklist" :match-all-list="productSearchMatchAll"
+            :exchange-data="exchangeData" :shipping-fee="ShippingFee" :shipping-method="ShippingMethod"
+            :payment-fee-limit="paymentFeeLimit" :delivery-type="type" :addr-agent="addrAgent" @on-loading="onLoading"
+            @on-handle-error="handleError"></PapersExchangeSlideBar>
         </div>
       </div>
     </FormKit>
@@ -195,13 +159,13 @@ const loadPledgeCreditBalance = async () => {
   const response = await useRepository().pledge.getCreditBalance();
   const resultCheck = useUtility().responseCheck(response)
   if (resultCheck.status === 'pass') {
-        if (Array.isArray(response.apiResponse.Data)) {
-          storeCredit.setCreditBalance(response.apiResponse.Data[0])
-        }
+    if (Array.isArray(response.apiResponse.Data)) {
+      storeCredit.setCreditBalance(response.apiResponse.Data[0])
+    }
   } else {
     // data not found
   }
-  
+
 };
 
 const onChangeShippingPaperType = async (deliveryType: string) => {
@@ -241,7 +205,7 @@ const onChangeDeliveryChannel = async (
   ShippingMethodText: string,
   ShippingFeeText: string
 ) => {
-  console.log(ShippingMethodText, ShippingFeeText);
+  // console.log(ShippingMethodText, ShippingFeeText);
   ShippingMethod.value = ShippingMethodText;
   ShippingFee.value = ShippingFeeText;
 };
@@ -325,13 +289,13 @@ const onChangeProductSubcategory = async (
     ProductSubCategory: productSubCategory,
   };
   if (productSubCategory == "Compulsory" || productSubCategory == "พ.ร.บ.") {
-    console.log("MatchCompulsoryInfo.value", MatchCompulsoryInfo.value);
+    // console.log("MatchCompulsoryInfo.value", MatchCompulsoryInfo.value);
     if (
       MatchCompulsoryInfo.value &&
       MatchCompulsoryInfo.value.Data &&
       MatchCompulsoryInfo.value.Data.length > 0
     ) {
-      console.log("MatchCompulsoryInfo.value.Data", MatchCompulsoryInfo.value.Data);
+      // console.log("MatchCompulsoryInfo.value.Data", MatchCompulsoryInfo.value.Data);
       const MatchCompulsoryAll = MatchCompulsoryInfo.value.Data.map((item, index) => {
         let data = item;
         data.Amount = 1;
@@ -339,7 +303,6 @@ const onChangeProductSubcategory = async (
       });
       productSearchMatchAll.value = MatchCompulsoryInfo.value.Data;
     } else {
-      console.log("elseeeeee")
       productSearchMatchAll.value = (
         await storeSearchMatchCompulsory.getSearchMatch(reqSearchMatch)
       ).Data;
@@ -389,7 +352,7 @@ const onChangeProductCompany = async (productCompany: string) => {
   //   });
   // }
   productSearchMatch.value = productSearchMatchAll.value
-  console.log("productSearchMatch.value", productSearchMatch.value);
+  // console.log("productSearchMatch.value", productSearchMatch.value);
 
   isLoading.value = false;
 };
@@ -417,7 +380,7 @@ const clearStore = async () => {
 };
 
 const handleCheckAddress = async (AddressReq: DeliveryAddressReq) => {
-  console.log("AddressReq", AddressReq);
+  // console.log("AddressReq", AddressReq);
   addrAgent.value = AddressReq;
   if (AddressReq && ShippingMethod.value) {
     if (

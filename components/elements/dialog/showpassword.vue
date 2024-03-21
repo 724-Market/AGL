@@ -1,75 +1,92 @@
-
 <template>
-  <dialog id="modal-dialog" v-if="props.modalShow">
-    <div class="dialog-card">
-      <!-- Add class 'is-info', 'is-success', 'is-warning', 'is-danger' for color styling -->
-      <div class="card-header">
-        <button class="btn btn-close btn-close-modal">ปิด</button>
+  <Teleport to="body">
+    <dialog id="password-dialog" v-if="isShowPassword">
+      <div class="dialog-card is-success">
+        <div class="card-header" v-if="!isHidden">
+          <button type="button" class="btn btn-close btn-close-modal" @click="hideModal">ปิด</button>
+        </div>
+        <div class="card-body">
+          <figure class="dialog-icon">
+            <div class="icon check"></div>
+          </figure>
+          <h5>บันทึกข้อมูลผู้ช่วยสำเร็จ</h5>
+          <div class="notice-warning">ข้อมูลผู้ช่วยจะแสดงเพียง<u>แค่ครั้งเดียว</u><br />กรุณาคัดลอกข้อมูลก่อนปิด
+          </div>
+          <div class="callout">ชื่อผู้ใช้งาน: {{ textUsername }}<br />รหัสผ่าน: {{ textPassword }}<div
+              class="badge-success copied" v-if="copied">คัดลอกข้อมูลแล้ว</div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-primary" type="button" @click="copy(clipboard)">คัดลอกข้อมูลผู้ช่วย</button>
+          <button class="btn-white btn-cancel-modal" type="button" @click="hideModal">ปิด</button>
+        </div>
       </div>
-      <div class="card-body">
-        <figure class="dialog-icon">
-          <div :class="`${useMapData().getStyleIconColor($props.modalType)}`"></div>
-        </figure>
-        <h5>บันทึกข้อมูลเรียบร้อยแล้ว</h5>
-        <h5>Username: {{ $props.modalTitle }}</h5>
-        <p v-if="$props.modalType" :class="`${useMapData().getStyleColor($props.modalType)}`">Password: {{
-          $props.modalText }}</p>
-      </div>
-      <div class="card-footer">
-        <button class="btn-gray btn-cancel-modal" type="button">คัดลอกรหัสผ่าน</button>
-        <button v-if="$props.modalType" :class="`${useMapData().getStyleButtonColor($props.modalType)}`" type="button"
-          @click="onConfirmModal()">ปิด</button>
-      </div>
-    </div>
-  </dialog>
+    </dialog>
+  </Teleport>
 </template>
-<script lang="ts" setup>
-import { ModalType } from "~/shared/entities/enum-entity";
-const emits = defineEmits(['onConfirmModal', 'onCloseModal'])
+
+<script setup>
+// Hidden close button
+const isHidden = ref(true)
+
+/////////////////////////////////////////
+// Clipboard
+const clipboard = ref('')
+const { text, copy, copied, isSupported } = useClipboard({ clipboard })
+
+/////////////////////////////////////////
+const emit = defineEmits(['onClosePassword'])
+
+/////////////////////////////////////////
 const props = defineProps({
-  modalType: Object as () => ModalType,
-  modalTitle: String,
-  modalText: String,
-  modalShow: Boolean,
-});
+  isShowPassword: Boolean,
+  textUsername: String,
+  textPassword: String,
+})
+
+/////////////////////////////////////////
 onMounted(() => {
-  const closeDialogModal = document.querySelector(".btn-close-modal");
-  const cancelDialogModal = document.querySelector(".btn-cancel-modal");
-  //console.log(props.modalShow);
+  const closeDialogPassword = document.querySelector(".btn-close-modal")
+  const cancelDialogPassword = document.querySelector(".btn-cancel-modal")
 
-  if (closeDialogModal) closeDialogModal.addEventListener("click", hiddenDialogModal);
-  if (cancelDialogModal) cancelDialogModal.addEventListener("click", hiddenDialogModal);
+  if (closeDialogPassword) closeDialogPassword.addEventListener("click", hiddenDialogPassword)
+  if (cancelDialogPassword) cancelDialogPassword.addEventListener("click", hiddenDialogPassword)
 
-  if (props.modalShow) {
-    showDialogModal();
+  if (props.isShowPassword) {
+    showDialogPassword()
   }
-});
+})
 
-const onConfirmModal = () => {
-  emits('onConfirmModal')
-  hiddenDialogModal()
+/////////////////////////////////////////
+// Function to emit the 'onClosePassword' event
+const hideModal = () => emit('onClosePassword')
+
+/////////////////////////////////////////
+function showDialogPassword() {
+  const dialogPassword = document.getElementById("password-dialog")
+  if (dialogPassword) dialogPassword.showModal()
 }
 
-function showDialogModal() {
-  const dialogModal = document.getElementById("modal-dialog");
-  if (dialogModal) dialogModal.showModal();
+/////////////////////////////////////////
+function hiddenDialogPassword() {
+  const dialogPassword = document.getElementById("password-dialog")
+  if (dialogPassword) dialogPassword.close()
 }
 
-function hiddenDialogModal() {
-  const dialogModal = document.getElementById("modal-dialog");
-  if (dialogModal) dialogModal.close();
-  emits('onCloseModal')
-
-}
+/////////////////////////////////////////
 watch(
-  () => props.modalShow,
+  () => props.isShowPassword,
   () => {
-    console.log('modal change values', props.modalShow)
-    if (props.modalShow) {
-      showDialogModal();
+    if (props.isShowPassword) {
+      showDialogPassword()
     } else {
-      hiddenDialogModal();
+      hiddenDialogPassword()
     }
   }
-);
+)
+
+/////////////////////////////////////////
+watchEffect(() => {
+  clipboard.value = `🙂  ชื่อผู้ใช้งาน: ${props.textUsername}   🔑  รหัสผ่าน: ${props.textPassword}`
+})
 </script>

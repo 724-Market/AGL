@@ -23,9 +23,9 @@
             <UsersLogStatus :user-details="userDetails" v-if="userDetails" />
 
             <FormKit type="submit" label="บันทึก" name="user-submit" id="user-submit" :classes="{
-              input: 'btn-primary',
-              outer: 'form-actions',
-            }" :disabled="isLoading" :loading="isLoading" />
+    input: 'btn-primary',
+    outer: 'form-actions',
+  }" :disabled="isLoading" :loading="isLoading" />
 
             <NuxtLink class="btn-back btn-gray" to="/users">ย้อนกลับ</NuxtLink>
 
@@ -40,12 +40,12 @@
     <ElementsDialogModal :isShowModal="isShowModal" :modal-type="modalType" :modal-title="modalTitle"
       :modal-text="modalText" :modal-button="modalButton" @on-close-modal="handleCloseModal" />
 
-    <ElementsDialogShowpassword v-if="isPasswordChanged" :modal-show="isPasswordChanged" :modal-type="ModalType.Warning"
-      :modal-title="textUserName" :modal-text="textPassword" @on-close-modal="onCloseConfirm"></ElementsDialogShowpassword>
+    <ElementsDialogShowPassword v-if="isPasswordChanged" :isShowPassword="isPasswordChanged"
+      :textUsername="textUsername" :textPassword="textPassword" @on-close-password="handleClosePassword" />
 
   </NuxtLayout>
 </template>
-  
+
 <script lang="ts" setup>
 import { ModalType } from "~/shared/entities/enum-entity"
 import type {
@@ -59,14 +59,10 @@ const router = useRouter()
 const userDetails: globalThis.Ref<UserDataRes | undefined> = ref()
 const userCommissionList: Ref<UserCommissionListRes[]> = ref([])
 
-const emit = defineEmits(["checkProfileDetail", "createUserConfirm", "editUserConfirm", "reProfile"])
+const emit = defineEmits(['checkProfileDetail', 'createUserConfirm', 'editUserConfirm', 'reProfile', 'onClosePassword'])
 
 const isError = ref(false)
-const messageError = ref("")
-
-var isPasswordChanged = ref(false)
-var textPassword = ref()
-var textUserName = ref()
+const messageError = ref('')
 
 const route = useRoute()
 const userId = ref<null | string>(null)
@@ -93,7 +89,6 @@ const modalButton = ref('')
 const modalRedirectPath = ref('')
 
 /////////////////////////////////////////
-
 // Function to handle close modal events
 const handleCloseModal = async () => {
   if (modalRedirectPath.value) {
@@ -113,10 +108,25 @@ const serverModal = async (serverCheck: any) => {
   modalButton.value = serverCheck.modalButton
 }
 
+/////////////////////////////////////////
 const openLoadingDialog = (isShowLoading = true, showLogo = false, showText = false) => {
   loadingProps.value = useUtility().createLoadingProps(isShowLoading, showLogo, showText)
 }
 
+/////////////////////////////////////////
+// Modal Password
+const isPasswordChanged = ref(false)
+const textUsername = ref('')
+const textPassword = ref('')
+
+/////////////////////////////////////////
+// Function to handle close password events
+const handleClosePassword = async () => {
+  isPasswordChanged.value = false
+}
+
+/////////////////////////////////////////
+// Mounted
 onMounted(async () => {
   openLoadingDialog(true)
 
@@ -124,7 +134,7 @@ onMounted(async () => {
 
     userId.value = route.params.id
 
-    await showPassword(getStoreUsername.value,getStorePassword.value)
+    await showPassword(getStoreUsername.value, getStorePassword.value)
     await loadUserDetails(userId.value)
     await loadUserCommission(userId.value)
 
@@ -133,23 +143,27 @@ onMounted(async () => {
   openLoadingDialog(false)
 })
 
+/////////////////////////////////////////
 // Open modal in case change password
 const showPassword = async (getUsername: string, getPassword: string) => {
   if (!getPassword) {
     return false
   }
   openLoadingDialog(false)
+
   getStorePassword.value = ''
   isPasswordChanged.value = true // Open modal
-  textUserName.value = getUsername
+  textUsername.value = getUsername
   textPassword.value = getPassword
 }
 
+/////////////////////////////////////////
 // Update profile after save
 const updateProfile = async () => {
   renderKey.value = renderKey.value + 1
 }
 
+/////////////////////////////////////////
 const loadUserCommission = async (userid: string) => {
   const useCommisionReq: UserCommissionListReq = {
     SubUserID: userid,
@@ -172,9 +186,10 @@ const loadUserCommission = async (userid: string) => {
     isError.value = true
     messageError.value = responseCom.apiResponse.ErrorMessage ?? ""
   }
-  
+
 }
 
+/////////////////////////////////////////
 const loadUserDetails = async (userid: string) => {
 
   const userDetailReq: UserDataReq = {
@@ -192,15 +207,10 @@ const loadUserDetails = async (userid: string) => {
     userDetails.value = response.apiResponse.Data[0]
   } else {
     router.push("/users")
-    //isError.value = true
-    //messageError.value = response.apiResponse.ErrorMessage ?? ""
   }
 }
 
-const onCloseConfirm = async () => {
-  isPasswordChanged.value = false
-}
-
+/////////////////////////////////////////
 // Submit form event
 const submitEditUser = async (formData: any) => {
 
@@ -210,12 +220,12 @@ const submitEditUser = async (formData: any) => {
   const resultCheck = useUtility().responseCheck(response)
 
   if (resultCheck.status === 'pass') {
-    if(userId.value !== null) { 
+    if (userId.value !== null) {
 
       await loadUserDetails(userId.value)
       await updateProfile()
       await loadUserCommission(userId.value)
-      
+
       if (formData.NewPassword) {
         await showPassword(formData.UserName, formData.NewPassword)
         openLoadingDialog(false)
@@ -226,7 +236,7 @@ const submitEditUser = async (formData: any) => {
         serverModal(resultCheck)
         openLoadingDialog(false)
       }
-      
+
     }
     else {
       resultCheck.modalType = 'warning'
@@ -246,7 +256,7 @@ const submitEditUser = async (formData: any) => {
 
 }
 
-
+/////////////////////////////////////////
 // Define layout
 const layout = "monito"
 const layoutClass = "layout-monito"

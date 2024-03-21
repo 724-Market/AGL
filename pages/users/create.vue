@@ -18,9 +18,9 @@
             <UsersLogStatus />
 
             <FormKit type="submit" label="บันทึก" name="user-submit" id="user-submit" :classes="{
-              input: 'btn-primary',
-              outer: 'form-actions',
-            }" :disabled="isLoading" :loading="isLoading" />
+    input: 'btn-primary',
+    outer: 'form-actions',
+  }" :disabled="isLoading" :loading="isLoading" />
 
             <NuxtLink class="btn-back btn-gray" to="/users">ย้อนกลับ</NuxtLink>
 
@@ -89,6 +89,8 @@ const loadUsersLimit = async () => {
 
 // Submit form event
 const submitCreateUser = async (formData: any) => {
+  isLoading.value = true
+
   const resCreate = await useRepository().user.create(formData)
   if (
     resCreate.apiResponse.Status &&
@@ -103,6 +105,7 @@ const submitCreateUser = async (formData: any) => {
     isError.value = true
     alert(resCreate.apiResponse.ErrorMessage);
     messageError.value = resCreate.apiResponse.ErrorMessage ?? ""
+    isLoading.value = false
   }
 };
 

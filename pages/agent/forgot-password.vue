@@ -110,6 +110,8 @@ const forgotpassAgentMobile = useState('forgotpass-agent-mobile')
 const forgotpassCodeReference = useState('forgotpass-code-reference')
 const forgotpassOtpExpire = useState('forgotpass-otp-expire')
 const forgotpassToken = useState('forgotpass-token')
+const forgotpassAgentCode = useState('forgotpass-agentcode')
+const forgotpassIDCard = useState('forgotpass-idcard')
 
 /////////////////////////////////////////
 // Submit page
@@ -134,20 +136,21 @@ const submitForgotpassword = async (formData: any) => {
 
       const recoveryPasswordAgentReq = {
         IDCard: formData.agentIDCard,
-        AgentCode: (agentCodeValue as string).toUpperCase(), 
-        TemporaryPhone: '0868986464'
+        AgentCode: (agentCodeValue as string).toUpperCase()
       }
 
       const response2 = await useRepository().agent.requestRecoveryPasswordAgent(recoveryPasswordAgentReq)
       const resultCheck2 = useUtility().responseCheck(response2)
-      console.log(resultCheck2.status)
-      console.log(response2)
+      // console.log(resultCheck2.status)
+      // console.log(response2)
 
       if (resultCheck2.status === 'pass') {
-        forgotpassAgentMobile.value = '0868986464'
+        forgotpassAgentMobile.value = response2.apiResponse.Data.SendTo
         forgotpassCodeReference.value = response2.apiResponse.Data.CodeReference
         forgotpassOtpExpire.value = response2.apiResponse.Data.ExpireInSeconds
         forgotpassToken.value = response2.apiResponse.Data.Token
+        forgotpassAgentCode.value = (agentCodeValue as string).toUpperCase()
+        forgotpassIDCard.value = formData.agentIDCard
         forgotpassStep.value = 'otp'
         await goNext()
       }

@@ -77,8 +77,7 @@ const handleConfirmModal = async () => {
     SubUserID: delUserID.value,
   }
   var response = await useRepository().user.deleteUser(req)
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    console.log("Reload");
+  if (response.apiResponse.Status && response.apiResponse.Status == "200") { 
     await updateComponent();
     await loadUsersLimit();
   } else {
@@ -88,7 +87,7 @@ const handleConfirmModal = async () => {
 }
 
 const loadProfileUser = async (UserID: string) => {
-  // console.log("loadProfileUser3 " + UserID)
+  //console.log("loadProfileUser3 " + UserID)
 }
 
 const loadUsersLimit = async () => {

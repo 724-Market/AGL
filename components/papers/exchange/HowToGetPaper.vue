@@ -211,9 +211,9 @@ const handleAcdordian = async () => {
   }
 }
 
-watch(shippingPaperText, async (newshippingPaperType) => {
-  await loadDeliveryChanel();
-  await loadAgentAddress();
+watch(shippingPaperText, (newshippingPaperType) => {
+  loadDeliveryChanel();
+  loadAgentAddress();
   agentAddressText.value = ''
   isAcdordian.value = false
   isShowComponentAddress.value = false
@@ -238,9 +238,9 @@ const onShippingMethodChange = async (event: any) => {
   await handleCheckInsuranceRecieve()
 }
 
-watch(agentAddressText, async (newAgentAddressText) => {
+watch(agentAddressText, (newAgentAddressText) => {
   if (newAgentAddressText == 'addnew') {
-    await loadProvince();
+    loadProvince();
     newAddressObjectCache.value = undefined
     newAddressObject.value = undefined
     isShowComponentAddress.value = true
@@ -285,7 +285,7 @@ watch(agentAddressText, async (newAgentAddressText) => {
     isShowComponentAddress.value = false
   }
   isEditMode.value = false
-  await handleCheckInsuranceRecieve()
+  handleCheckInsuranceRecieve()
   // console.log('newAddressObjectCache.value', newAddressObjectCache.value)
 })
 
@@ -637,7 +637,7 @@ const loadZipCode = async (subDistId: string): Promise<string> => {
 
 watch(
   () => props.shippingPaperType,
-  async () => {
+  () => {
     if (props.shippingPaperType) {
       shippingPaperTypeOption.value = [
         {
@@ -655,7 +655,7 @@ watch(
 
 watch(
   () => props.paymentFeeLimit,
-  async () => {
+  () => {
     if (props.paymentFeeLimit) {
       paymentFeeLimitMin.value = props.paymentFeeLimit[0].Min
     }
@@ -664,7 +664,7 @@ watch(
 
 watch(
   () => props.isSubmit,
-  async () => {
+  () => {
     isSubmit.value = props.isSubmit
   }
 )

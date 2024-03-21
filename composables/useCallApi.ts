@@ -2,11 +2,11 @@ import type { IAPIResponse, IAPIPaymentGatewayResponse, IDataTableResponse } fro
 import type { WrapperResponse } from "~/shared/entities/wrapper-response"
 
 export default () => {
-    const getResponse = async <T> (response: any, params: any): Promise<IAPIResponse<T>> => {
+    const getResponse = async <T>(response: any, params: any): Promise<IAPIResponse<T>> => {
         const wrapper: WrapperResponse<T> = {
             Status: "",
         }
-        const result: IAPIResponse<T> =
+        const result:  IAPIResponse<T> =
         {
             apiStatus: "",
             respErrorCode: "",
@@ -19,34 +19,45 @@ export default () => {
         if (response.status == 200) {
 
             let jsonData = response._data
+
             if (typeof jsonData === "string") {
-                jsonData = JSON.parse(jsonData)
-            }
-
-            if (jsonData.Status == 200) {
-
-                result.serverStatus = response.status
-                result.apiStatus = jsonData.Status
-                result.statusMessage = jsonData.Message
-                result.statusMessageType = 'notice-success'
-                result.respErrorCode = jsonData.ErrorCode
-                result.respData = jsonData.Data
-                result.respOptions = jsonData.Options
-                result.apiResponse = jsonData
+                try {
+                    jsonData = JSON.parse(jsonData)
+                }
+                catch (e) { 
+                    console.log('JSON.parse fail', jsonData)
+                    jsonData = undefined
+                }
+                
 
             }
-            else {
+            if (jsonData) {
+                if (jsonData.Status == 200) {
 
-                result.serverStatus = response.status
-                result.apiStatus = jsonData.Status
-                result.statusMessage = jsonData.ErrorMessage
-                result.statusMessageType = 'notice-warning'
-                result.respErrorCode = jsonData.ErrorCode
-                result.respData = jsonData.Data
-                result.respOptions = jsonData.Options
-                result.apiResponse = jsonData
+                    result.serverStatus = response.status
+                    result.apiStatus = jsonData.Status
+                    result.statusMessage = jsonData.Message
+                    result.statusMessageType = 'notice-success'
+                    result.respErrorCode = jsonData.ErrorCode
+                    result.respData = jsonData.Data
+                    result.respOptions = jsonData.Options
+                    result.apiResponse = jsonData
 
+                }
+                else {
+
+                    result.serverStatus = response.status
+                    result.apiStatus = jsonData.Status
+                    result.statusMessage = jsonData.ErrorMessage
+                    result.statusMessageType = 'notice-warning'
+                    result.respErrorCode = jsonData.ErrorCode
+                    result.respData = jsonData.Data
+                    result.respOptions = jsonData.Options
+                    result.apiResponse = jsonData
+
+                }
             }
+
 
         }
         else {
@@ -104,7 +115,7 @@ export default () => {
             apiResponse: wrapper
         }
 
-        
+
 
         const { data, pending, error, refresh } = await useFetch('/api/aglove', {
             method: "POST",
@@ -140,7 +151,7 @@ export default () => {
         return result
     }
 
-    const postPaymentGateway = async(params: any) => {
+    const postPaymentGateway = async (params: any) => {
         const result =
         {
             message: '',
@@ -223,6 +234,10 @@ export default () => {
         if (params.Token2) {
             params.Token = params.Token2
         }
+        if(params.oldAccessToken)
+        {
+            params.Token = params.oldAccessToken
+        }
         params.URL = url
         if (!method || (method != "get" && method != "GET")) {
 
@@ -250,7 +265,7 @@ export default () => {
         get,
         post,
         postGateway,
-        postPaymentGateway, 
+        postPaymentGateway,
         postDataTable,
         apiRepository
     }

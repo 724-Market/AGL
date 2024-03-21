@@ -12,7 +12,7 @@
       autocomplete="false"
     />
   </div> -->
-  <!-- <div class="col-sm-3 col-lg-3">
+  <div class="col-sm-3 col-lg-3">
     <FormKit
       type="select"
       label="คำนำหน้าผู้รับ"
@@ -25,7 +25,7 @@
       validation-visibility="live"
       :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
     />
-  </div> -->
+  </div>
   <div class="col-sm-4 col-lg-4">
     <FormKit
       type="text"

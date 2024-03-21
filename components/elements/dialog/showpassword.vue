@@ -7,27 +7,16 @@
         <button class="btn btn-close btn-close-modal">ปิด</button>
       </div>
       <div class="card-body">
-        <figure class="dialog-icon" v-if="$props.modalType">
+        <figure class="dialog-icon">
           <div :class="`${useMapData().getStyleIconColor($props.modalType)}`"></div>
         </figure>
-        <figure v-else class="dialog-icon">
-          <i class="fa-regular fa-thumbs-up"></i>
-        </figure>
-        <h5>User/Password จะแสดงแค่ครั้งเดียว ทำการคัดลอกก่อนปิด</h5>
-        <h5>User: {{ $props.modalTitle }}</h5>
+        <h5>บันทึกข้อมูลเรียบร้อยแล้ว</h5>
+        <h5>Username: {{ $props.modalTitle }}</h5>
         <p v-if="$props.modalType" :class="`${useMapData().getStyleColor($props.modalType)}`">Password: {{
           $props.modalText }}</p>
       </div>
-      <!-- <div class="card-footer">
-               <button class="btn-primary">ตกลง</button>
-               <button class="btn-gray btn-cancel-modal">ยกเลิก</button>
-           </div> -->
-      <!-- <div class="card-footer">
-               <button class="btn-danger">ยืนยันการลบ</button>
-               <button class="btn-gray btn-cancel-modal">ยกเลิก</button>
-           </div>-->
       <div class="card-footer">
-        <button class="btn-gray btn-cancel-modal" type="button">คัดลอก</button>
+        <button class="btn-gray btn-cancel-modal" type="button">คัดลอกรหัสผ่าน</button>
         <button v-if="$props.modalType" :class="`${useMapData().getStyleButtonColor($props.modalType)}`" type="button"
           @click="onConfirmModal()">ปิด</button>
       </div>
@@ -46,7 +35,7 @@ const props = defineProps({
 onMounted(() => {
   const closeDialogModal = document.querySelector(".btn-close-modal");
   const cancelDialogModal = document.querySelector(".btn-cancel-modal");
-  console.log(props.modalShow);
+  //console.log(props.modalShow);
 
   if (closeDialogModal) closeDialogModal.addEventListener("click", hiddenDialogModal);
   if (cancelDialogModal) cancelDialogModal.addEventListener("click", hiddenDialogModal);

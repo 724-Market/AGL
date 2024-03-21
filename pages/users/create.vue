@@ -52,7 +52,9 @@ const isError = ref(false)
 const messageError = ref("")
 const isLoading = ref(false)
 const router = useRouter()
-const setPassword = useStorePassword()
+
+const setUsername = useState('setUsername')
+const setPassword = useState('setPassword')
 
 // on Mounted
 onMounted(async () => {
@@ -94,6 +96,7 @@ const submitCreateUser = async (formData: any) => {
     resCreate.apiResponse.Data
   ) {
     const UserID = resCreate.apiResponse.Data.UserID;
+    setUsername.value = resCreate.apiResponse.Data.UserName;
     setPassword.value = formData.Password;
     router.push("/users/profile/" + UserID)
   } else {

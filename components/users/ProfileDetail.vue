@@ -19,14 +19,17 @@
                     <div class="user-detail">
                       <h4 class="title">ชื่อผู้ใช้งาน</h4>
                       <p>{{ props.userDetails.UserName }}</p>
+                      <p v-if="props.passwordText">รหัสผ่าน : {{ props.passwordText }}</p>
+                      <p v-if="props.passwordText">(แสดงผลครั้งเดียวกรุณาคัดลอก)</p>
                       <FormKit name="SubUserID" type="hidden" :value="props.userDetails.UserID" />
+                      <FormKit name="UserName" type="hidden" :value="props.userDetails.UserName" />
                     </div>
                   </div>
                 </div>
 
                 <div class="row" v-if="!props.userDetails?.UserID">
                   <div class="col-md-6">
-                    <FormKit type="text" label="กำหนดรหัสผ่าน" name="Password" placeholder="กรุณาใส่รหัสผ่าน" :validation="[['required'],
+                    <FormKit type="password" label="กำหนดรหัสผ่าน" name="Password" placeholder="กรุณาใส่รหัสผ่าน" :validation="[['required'],
                     ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
                     ],
                     ['length', 8, 128],
@@ -35,7 +38,7 @@
                       autocomplete="off" />
                   </div>
                   <div class="col-md-6">
-                    <FormKit type="text" label="ทวนรหัสผ่านอีกครั้ง" name="Password_confirm"
+                    <FormKit type="password" label="ทวนรหัสผ่านอีกครั้ง" name="Password_confirm"
                       placeholder="กรุณาทวนรหัสผ่าน" :validation="[['required'],
                       ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
                       ],
@@ -48,7 +51,7 @@
                 </div>
                 <div class="row" v-else>
                   <div class="col-md-6">
-                    <FormKit type="text" label="กำหนดรหัสผ่านใหม่" name="Password" placeholder="กรุณาใส่รหัสผ่าน"
+                    <FormKit type="password" label="กำหนดรหัสผ่านใหม่" name="NewPassword" placeholder="กรุณาใส่รหัสผ่าน"
                       :validation="[
                         ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
                         ],
@@ -58,7 +61,7 @@
                       autocomplete="off" />
                   </div>
                   <div class="col-md-6">
-                    <FormKit type="text" label="ทวนรหัสผ่านใหม่อีกครั้ง" name="Password_confirm"
+                    <FormKit type="password" label="ทวนรหัสผ่านใหม่อีกครั้ง" name="NewPassword_confirm"
                       placeholder="กรุณาทวนรหัสผ่าน" :validation="[
                         ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
                         ],
@@ -91,24 +94,42 @@
         <div class="row">
           <div class="col-md-6">
             <FormKit type="text" label="ชื่อ" name="FirstName" :value="props.userDetails?.FirstName"
-              placeholder="ระบุชื่อ" validation="required" :validation-messages="{
-                required: 'กรุณาใส่ชื่อ'
+              placeholder="ระบุชื่อ" :validation-rules="{isValidThaiValue}" 
+              validation="isValidThaiValue|required" 
+              :validation-messages="{
+                required: 'กรุณาใส่ชื่อ', 
+                isValidThaiValue:'กรุณาใส่ชื่อเป็นภาษาไทย'
               }" autocomplete="off" />
           </div>
           <div class="col-md-6">
             <FormKit type="text" label="นามสกุล" name="LastName" :value="props.userDetails?.LastName"
-              placeholder="ระบุนามสกุล" validation="required" :validation-messages="{
-                required: 'กรุณาใส่นามสกุล'
+              placeholder="ระบุนามสกุล" :validation-rules="{isValidThaiValue}" 
+              validation="isValidThaiValue|required" 
+              :validation-messages="{
+                required: 'กรุณาใส่นามสกุล', 
+                isValidThaiValue:'กรุณาใส่นามสกุลเป็นภาษาไทย'
               }" autocomplete="off" />
           </div>
           <div class="col-md-6">
-            <FormKit type="text" label="หมายเลขโทรศัพท์" name="PhoneNumber" :value="props.userDetails?.Phone"
-              maxlength="10" placeholder="ตัวอย่าง 0987654321" validation="required|+length:10|number"
+            <FormKit
+              type="mask"
+              mask="###-###-####" 
+              label="เบอร์มือถือ" 
+              name="PhoneNumber" 
+              :value="props.userDetails?.Phone"
+              placeholder="เบอร์มือถือ 10 หลัก"
+              :validation-rules="{isValidThaiPhoneNumber}"
+              validation="isValidThaiPhoneNumber|required|matches:/^[0-9]{10}$/"
               :validation-messages="{
-                required: 'กรุณาใส่หมายเลขโทรศัพท์',
-                length: 'หมายเลขโทรศัพท์มีจำนวน 10 หลัก',
-                number: 'กรุณาใส่เฉพาะตัวเลขเท่านั้น',
-              }" autocomplete="off" />
+                required: 'กรุณาใส่เบอร์มือถือ',
+                matches: 'เบอร์มือถือมีจำนวน 10 หลัก',
+                isValidThaiPhoneNumber:'กรุณากรอกเบอร์มือถือให้ถูกต้อง'
+              }"
+              show-mask="false"
+              unmask-value="true"
+              inputmode="numeric"
+              autocomplete="off"
+            />
           </div>
           <div class="col-md-6">
             <FormKit type="email" label="อีเมล" name="Email" :value="props.userDetails?.Email"
@@ -205,10 +226,10 @@ const props = defineProps({
   userDetails: {
     type: Object as () => UserDataRes | null
   },
-  loadData: Boolean,
-  getUserPassword: String,
-  userID: String,
+  passwordText: String
 })
+
+
 
 onMounted(async () => {
   loadGroupList()
@@ -261,6 +282,34 @@ const loadGroupList = async () => {
     isError.value = true
     messageError.value = response.apiResponse.ErrorMessage ?? ""
   }
+}
+
+function isValidThaiPhoneNumber({ value }) {
+  return new Promise((resolve) => {
+    let validate = true;
+    // Remove any formatting characters
+    const cleaned = value.replace(/[\s\-()]/g, "");
+
+    // Check if the phone number follows the pattern
+    // Mobile numbers can start with 06, 08, 09 and followed by 8 digits.
+    // Landline numbers start with 0 followed by 1 or 2 digits for the area code, and then 6 or 7 digits.
+    const mobilePattern = /^0[689][0-9]{8}$/;
+    //const landlinePattern = /^0[2-9][0-9]{7,8}$/;
+
+    //validate = mobilePattern.test(cleaned) || landlinePattern.test(cleaned);
+    validate = mobilePattern.test(cleaned);
+    resolve(validate);
+  });
+}
+
+function isValidThaiValue({ value }) {
+  return new Promise((resolve) => {
+    let validate = true;
+    const cleaned = value.replace(/[\s\-()]/g, "");
+    const thaiPattern = /^[ก-๙]+$/; // Match Thai characters
+    validate = thaiPattern.test(cleaned);
+    resolve(validate);
+  });
 }
 
 </script>

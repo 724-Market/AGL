@@ -9,7 +9,8 @@
               data-bs-target="#collapse-user-secret" aria-expanded="true"
               aria-controls="collapse-user-secret">ชื่อผู้ใช้งานและรหัสผ่าน</button>
           </h2>
-          <div id="collapse-user-secret" class="accordion-collapse collapse show" data-bs-parent="#accordion-user-secret">
+          <div id="collapse-user-secret" class="accordion-collapse collapse show"
+            data-bs-parent="#accordion-user-secret">
             <div class="accordion-body">
 
               <div class="form-placeorder">
@@ -19,8 +20,6 @@
                     <div class="user-detail">
                       <h4 class="title">ชื่อผู้ใช้งาน</h4>
                       <p>{{ props.userDetails.UserName }}</p>
-                      <p v-if="props.passwordText">รหัสผ่าน : {{ props.passwordText }}</p>
-                      <p v-if="props.passwordText">(แสดงผลครั้งเดียวกรุณาคัดลอก)</p>
                       <FormKit name="SubUserID" type="hidden" :value="props.userDetails.UserID" />
                       <FormKit name="UserName" type="hidden" :value="props.userDetails.UserName" />
                     </div>
@@ -29,22 +28,23 @@
 
                 <div class="row" v-if="!props.userDetails?.UserID">
                   <div class="col-md-6">
-                    <FormKit type="password" label="กำหนดรหัสผ่าน" name="Password" placeholder="กรุณาใส่รหัสผ่าน" :validation="[['required'],
-                    ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
-                    ],
-                    ['length', 8, 128],
-                    ]"
+                    <FormKit type="password" label="กำหนดรหัสผ่าน" name="Password" placeholder="กรุณาใส่รหัสผ่าน"
+                      :validation="[['required'],
+                ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
+                ],
+                ['length', 8, 128],
+                ]"
                       :validation-messages="{ required: 'กรุณาใส่รหัสผ่าน', matches: 'รูปแบบของรหัสผ่านไม่ถูกต้อง', length: 'รหัสผ่านควรมีอย่างน้อย 8 ตัวอักษร' }"
                       autocomplete="off" />
                   </div>
                   <div class="col-md-6">
                     <FormKit type="password" label="ทวนรหัสผ่านอีกครั้ง" name="Password_confirm"
                       placeholder="กรุณาทวนรหัสผ่าน" :validation="[['required'],
-                      ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
-                      ],
-                      ['length', 8, 128],
-                      ['confirm'],
-                      ]"
+                ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
+                ],
+                ['length', 8, 128],
+                ['confirm'],
+                ]"
                       :validation-messages="{ required: 'กรุณาใส่รหัสผ่าน', matches: 'รูปแบบของรหัสผ่านไม่ถูกต้อง', length: 'รหัสผ่านควรมีอย่างน้อย 8 ตัวอักษร', confirm: 'รหัสผ่านไม่ตรงกัน' }"
                       autocomplete="off" />
                   </div>
@@ -53,21 +53,21 @@
                   <div class="col-md-6">
                     <FormKit type="password" label="กำหนดรหัสผ่านใหม่" name="NewPassword" placeholder="กรุณาใส่รหัสผ่าน"
                       :validation="[
-                        ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
-                        ],
-                        ['length', 8, 128],
-                      ]"
+                  ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
+                  ],
+                  ['length', 8, 128],
+                ]"
                       :validation-messages="{ matches: 'รูปแบบของรหัสผ่านไม่ถูกต้อง', length: 'รหัสผ่านควรมีอย่างน้อย 8 ตัวอักษร' }"
                       autocomplete="off" />
                   </div>
                   <div class="col-md-6">
                     <FormKit type="password" label="ทวนรหัสผ่านใหม่อีกครั้ง" name="NewPassword_confirm"
                       placeholder="กรุณาทวนรหัสผ่าน" :validation="[
-                        ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
-                        ],
-                        ['length', 8, 128],
-                        ['confirm'],
-                      ]"
+                  ['matches', /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*()<>{}=:,./|`'_+-]).*$/
+                  ],
+                  ['length', 8, 128],
+                  ['confirm'],
+                ]"
                       :validation-messages="{ matches: 'รูปแบบของรหัสผ่านไม่ถูกต้อง', length: 'รหัสผ่านควรมีอย่างน้อย 8 ตัวอักษร', confirm: 'รหัสผ่านไม่ตรงกัน' }"
                       autocomplete="off" />
                   </div>
@@ -94,68 +94,55 @@
         <div class="row">
           <div class="col-md-6">
             <FormKit type="text" label="ชื่อ" name="FirstName" :value="props.userDetails?.FirstName"
-              placeholder="ระบุชื่อ" :validation-rules="{isValidThaiValue}" 
-              validation="isValidThaiValue|required" 
+              placeholder="ระบุชื่อ" :validation-rules="{ isValidThaiValue }" validation="isValidThaiValue|required"
               :validation-messages="{
-                required: 'กรุณาใส่ชื่อ', 
-                isValidThaiValue:'กรุณาใส่ชื่อเป็นภาษาไทย'
-              }" autocomplete="off" />
+                  required: 'กรุณาใส่ชื่อ',
+                  isValidThaiValue: 'กรุณาใส่ชื่อเป็นภาษาไทย'
+                }" autocomplete="off" />
           </div>
           <div class="col-md-6">
             <FormKit type="text" label="นามสกุล" name="LastName" :value="props.userDetails?.LastName"
-              placeholder="ระบุนามสกุล" :validation-rules="{isValidThaiValue}" 
-              validation="isValidThaiValue|required" 
+              placeholder="ระบุนามสกุล" :validation-rules="{ isValidThaiValue }" validation="isValidThaiValue|required"
               :validation-messages="{
-                required: 'กรุณาใส่นามสกุล', 
-                isValidThaiValue:'กรุณาใส่นามสกุลเป็นภาษาไทย'
-              }" autocomplete="off" />
+                  required: 'กรุณาใส่นามสกุล',
+                  isValidThaiValue: 'กรุณาใส่นามสกุลเป็นภาษาไทย'
+                }" autocomplete="off" />
           </div>
           <div class="col-md-6">
-            <FormKit
-              type="mask"
-              mask="###-###-####" 
-              label="เบอร์มือถือ" 
-              name="PhoneNumber" 
-              :value="props.userDetails?.Phone"
-              placeholder="เบอร์มือถือ 10 หลัก"
-              :validation-rules="{isValidThaiPhoneNumber}"
-              validation="isValidThaiPhoneNumber|required|matches:/^[0-9]{10}$/"
-              :validation-messages="{
-                required: 'กรุณาใส่เบอร์มือถือ',
-                matches: 'เบอร์มือถือมีจำนวน 10 หลัก',
-                isValidThaiPhoneNumber:'กรุณากรอกเบอร์มือถือให้ถูกต้อง'
-              }"
-              show-mask="false"
-              unmask-value="true"
-              inputmode="numeric"
-              autocomplete="off"
-            />
+            <FormKit type="mask" mask="###-###-####" label="เบอร์มือถือ" name="PhoneNumber"
+              :value="props.userDetails?.Phone" placeholder="เบอร์มือถือ 10 หลัก"
+              :validation-rules="{ isValidThaiPhoneNumber }"
+              validation="isValidThaiPhoneNumber|required|matches:/^[0-9]{10}$/" :validation-messages="{
+                  required: 'กรุณาใส่เบอร์มือถือ',
+                  matches: 'เบอร์มือถือมีจำนวน 10 หลัก',
+                  isValidThaiPhoneNumber: 'กรุณากรอกเบอร์มือถือให้ถูกต้อง'
+                }" show-mask="false" unmask-value="true" inputmode="numeric" autocomplete="off" />
           </div>
           <div class="col-md-6">
             <FormKit type="email" label="อีเมล" name="Email" :value="props.userDetails?.Email"
               placeholder="ตัวอย่าง abc@email.com" validation="email" :validation-messages="{
-                email: 'รูปแบบอีเมลไม่ถูกต้อง'
-              }" autocomplete="off" />
+                  email: 'รูปแบบอีเมลไม่ถูกต้อง'
+                }" autocomplete="off" />
           </div>
           <div class="col-md-6">
             <FormKit type="number" label="กำหนดวงเงินต่อวัน (บาท)" name="CreditLimit" placeholder="ระบุวงเงินต่อวัน"
               :value="props.userDetails?.CreditLimitAmount" min="0" max="1000000"
               validation="required|min:0|max:1000000|number" :validation-messages="{
-                required: 'กรุณากำหนดวงเงิน',
-                min: 'วงเงินต่ำสุด 0 บาท',
-                max: 'วงเงินสูงสุดไม่เกิน 1,000,000 บาท',
-                number: 'กรุณาใส่เป็นตัวเลขเท่านั้น',
-              }" autocomplete="off" />
+                  required: 'กรุณากำหนดวงเงิน',
+                  min: 'วงเงินต่ำสุด 0 บาท',
+                  max: 'วงเงินสูงสุดไม่เกิน 1,000,000 บาท',
+                  number: 'กรุณาใส่เป็นตัวเลขเท่านั้น',
+                }" autocomplete="off" />
           </div>
           <div class="col-md-6">
             <FormKit type="number" label="ผลตอบแทน (%)" name="Commission" placeholder="ระบุผลตอบแทน"
               :value="props.userDetails?.Commission" min="0" max="99" validation="required|min:0|max:99|number"
               :validation-messages="{
-                required: 'กรุณาระบุผลตอบแทน',
-                min: 'ผลตอบแทนต่ำสุด 0%',
-                max: 'ผลตอบแทนสูงสุดไม่เกิน 99%',
-                number: 'กรุณาใส่เป็นตัวเลขเท่านั้น',
-              }" autocomplete="off" />
+                  required: 'กรุณาระบุผลตอบแทน',
+                  min: 'ผลตอบแทนต่ำสุด 0%',
+                  max: 'ผลตอบแทนสูงสุดไม่เกิน 99%',
+                  number: 'กรุณาใส่เป็นตัวเลขเท่านั้น',
+                }" autocomplete="off" />
           </div>
 
           <FormKit type="hidden" name="BranchName" value="" />
@@ -183,8 +170,8 @@
                   <i @click="deleteBranch(item.ID)"></i>
                 </span>
               </template>
-            </div>
-          </div> -->
+</div>
+</div> -->
 
         </div>
 

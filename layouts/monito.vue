@@ -61,10 +61,6 @@
       </div>
     </footer>
 
-    <!-- <ElementsDialogConfirm v-if="isConfirm" :modal-show="isConfirm" :modal-type="ModalType.Warning"
-      :modal-title="'ยืนยันการต่อเวลาใช้งานระบบ'" :modal-text="textConfirm" @on-confirm-modal="onConfirm"
-      @on-close-modal="onCloseConfirm" /> -->
-
     <ElementsDialogConfirms :isShowConfirm="isShowConfirm" :confirm-type="confirmType" :confirm-title="confirmTitle"
       :confirm-text="confirmText" :confirm-button="confirmButton" :confirm-cancel-button="confirmCancelButton"
       @on-accept-confirm="handleAcceptConfirm" @on-close-confirm="handleCloseConfirm" />
@@ -73,8 +69,12 @@
 </template>
 
 <script setup lang="ts">
+/////////////////////////////////////////
+// Import pinia
 import { getActivePinia } from 'pinia'
 
+/////////////////////////////////////////
+// Store token
 const store = useStoreUserAuth()
 
 /////////////////////////////////////////

@@ -22,59 +22,59 @@
           </ul>
         </div>
 
-        <div class="card-body card-table" >
-                <div class="tab-content papers-stock-tabs">
-                    <div class="tab-pane fade show active" id="compulsory-tab-pane" role="tabpanel"
-                        aria-labelledby="compulsory-tab" tabindex="0">
-                        <div class="papers-stock-table">
-                            <table class="table no-striped">
-                                <thead>
-                                    <tr>
-                                        <th>รายการกระดาษ</th>
-                                        <th class="text-end">จำนวนที่มี (แผ่น)</th>
-                                    </tr>
-                                </thead>
-                                <tbody v-if="pledgePaperOnhandBalanceGet && pledgePaperOnhandBalanceGet.length > 0">
-                                    <tr class="product" v-for="(item, i) in pledgePaperOnhandBalanceGet" v-bind:key="i">
-                                        <td>
-                                            <div class="item">
-                                                <figure class="brand">
-                                                    <img :src="`https://724.co.th/image/logo_insurance_company/logo_${item.Company}.png`"
-                                                        alt="">
-                                                </figure>
-                                                <div class="info">
-                                                    <h6> {{ item.Brand }} </h6>
-                                                    <p>ราคามัดจำ<span class="big"> {{ item.Model }} </span></p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-end quantity"> {{ item.Quantity }} </td>
-                                    </tr>
-                                </tbody>
-                                <tbody v-else>
-                                    <tr>
-                                        <td colspan="2"><span class="empty-cart">คุณยังไม่มีกระดาษในคลัง</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+        <div class="card-body card-table">
+          <div class="tab-content papers-stock-tabs">
+            <div class="tab-pane fade show active" id="compulsory-tab-pane" role="tabpanel"
+              aria-labelledby="compulsory-tab" tabindex="0">
+              <div class="papers-stock-table">
+                <table class="table no-striped">
+                  <thead>
+                    <tr>
+                      <th>รายการกระดาษ</th>
+                      <th class="text-end">จำนวนที่มี (แผ่น)</th>
+                    </tr>
+                  </thead>
+                  <tbody v-if="pledgePaperOnhandBalanceGet && pledgePaperOnhandBalanceGet.length > 0">
+                    <tr class="product" v-for="(item, i) in pledgePaperOnhandBalanceGet" v-bind:key="i">
+                      <td>
+                        <div class="item">
+                          <figure class="brand">
+                            <img :src="`https://724.co.th/image/logo_insurance_company/logo_${item.Company}.png`"
+                              alt="">
+                          </figure>
+                          <div class="info">
+                            <h6> {{ item.Brand }} </h6>
+                            <p>ราคามัดจำ<span class="big"> {{ item.Model }} </span></p>
+                          </div>
                         </div>
-                    </div>
-                    <div class="tab-pane fade" id="voluntary-tab-pane" role="tabpanel" aria-labelledby="voluntary-tab"
-                        tabindex="0">
-                        <div class="papers-stock-table">
-                            <table class="table no-striped">
-                                <thead>
-                                    <tr>
-                                        <th>รายการกระดาษ</th>
-                                        <th class="text-end">จำนวนที่มี (แผ่น)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                      </td>
+                      <td class="text-end quantity"> {{ item.Quantity }} </td>
+                    </tr>
+                  </tbody>
+                  <tbody v-else>
+                    <tr>
+                      <td colspan="2"><span class="empty-cart">คุณยังไม่มีกระดาษในคลัง</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="voluntary-tab-pane" role="tabpanel" aria-labelledby="voluntary-tab"
+              tabindex="0">
+              <div class="papers-stock-table">
+                <table class="table no-striped">
+                  <thead>
+                    <tr>
+                      <th>รายการกระดาษ</th>
+                      <th class="text-end">จำนวนที่มี (แผ่น)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
 
         </div>
 
@@ -88,7 +88,7 @@
     </dialog>
   </Teleport>
 </template>
-  
+
 <script setup lang="ts">
 import type {
   PledgePaperOnhandBalanceReq,
@@ -116,7 +116,6 @@ const hideNext = () => emit('onConfirmAndGo')
 
 // on Mounted
 onMounted(() => {
-  console.log("Modal")
   // Selecting the close and cancel buttons
   const closeDialogPaper = document.querySelector('.btn-close-modal')
   const cancelDialogPaper = document.querySelector('.btn-cancel-modal')

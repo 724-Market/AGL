@@ -60,7 +60,7 @@ definePageMeta({
       const forgotpassStep = useState('forgotpass-step')
 
       if (forgotpassStep.value != 'otp') {
-        //return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
+        return abortNavigation('ไม่มีสิทธิ์เข้าใช้งาน')
       }
 
     }
@@ -73,6 +73,8 @@ const forgotpassCodeReference = useState('forgotpass-code-reference')
 const forgotpassOtpExpire = useState('forgotpass-otp-expire')
 const forgotpassToken = useState('forgotpass-token')
 const forgotpassReferenceID = useState('forgotpass-reference-id')
+const forgotpassAgentCode = useState('forgotpass-agentcode')
+const forgotpassIDCard = useState('forgotpass-idcard')
 
 /////////////////////////////////////////
 // Define variables
@@ -133,7 +135,6 @@ const emit = defineEmits(['onCloseModal', 'onResendOTP'])
 // Function to handle close modal events
 const handleResendOTP = async () => {
   isShowModal.value = false
-
   await requestOTP()
 }
 
@@ -141,15 +142,32 @@ const handleResendOTP = async () => {
 // Function request OTP
 const requestOTP = async () => {
   
-  //console.log('request OTP')
-  alert('request OTP')
-  // Reset OTP field
-  /*
   await resetOTPField()
+  openLoadingDialog(true)
 
-  getRefOTP.value.phoneNumber = '089-XXX-X999'
-  getRefOTP.value.refCode = 'ABCD'
-  */
+  const recoveryPasswordAgentReq = {
+    IDCard: forgotpassIDCard.value,
+    AgentCode: forgotpassAgentCode.value
+  }
+
+  const response = await useRepository().agent.requestRecoveryPasswordAgent(recoveryPasswordAgentReq)
+  const resultCheck = useUtility().responseCheck(response)
+
+  if (resultCheck.status === 'pass') {
+    getRefOTP.value.refCode = response.apiResponse.Data.CodeReference
+    getRefOTP.value.countTimer = response.apiResponse.Data.ExpireInSeconds
+    forgotpassCodeReference.value = response.apiResponse.Data.CodeReference
+    forgotpassToken.value = response.apiResponse.Data.Token
+    openLoadingDialog(false)
+  }
+  else if (resultCheck.status === 'error') {
+    serverModal(resultCheck)
+    openLoadingDialog(false)
+  }
+  else if (resultCheck.status === 'server-error') {
+    serverModal(resultCheck)
+    openLoadingDialog(false)
+  }
 
 }
 
@@ -165,7 +183,7 @@ const resetOTPField = async () => {
 onMounted(async () => {
 
   // Get reference value from OTP
-  getRefOTP.value.phoneNumber = useUtility().maskMobileNumber(forgotpassAgentMobile.value)
+  getRefOTP.value.phoneNumber = useUtility().maskMobileNumber2(forgotpassAgentMobile.value)
   getRefOTP.value.refCode = forgotpassCodeReference.value
 
 })

@@ -1,7 +1,7 @@
 // Import type
 import type { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity"
 import type { OrderDetails, OrderResponse } from "~/shared/entities/order-entity"
-import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity"
+import type { CustomerOrderRequest, PlaceOrderRequest } from "~/shared/entities/placeorder-entity"
 import type { IInformation } from "~/shared/entities/information-entity"
 
 import { isString } from "@vueuse/core"
@@ -81,24 +81,7 @@ const getTokenExpire = async(): Promise<string> => {
         const store = useStoreUserAuth()
         const { AuthenInfo } = storeToRefs(store)
 
-        const checkToken = store.checkTokenExpire()
-        if (checkToken) {
-            if (AuthenInfo.value) {
-                token = AuthenInfo.value.accessToken
-            }
-        }
-        else {
-            // refresh token in store
-            const refresToken = AuthenInfo.value ? AuthenInfo.value.refresh_token : ""
-            if (refresToken && refresToken != "") {
-
-                const data = await store.refreshToken(refresToken)
-                if (data) {
-                    token = data.accessToken
-                }
-
-            }
-        }
+        token = AuthenInfo.value.accessToken
         return token
     }
 
@@ -296,7 +279,7 @@ const getTokenExpire = async(): Promise<string> => {
                 OrderNo: orderNo,
                 Package: order.Package,
                 CarDetailsExtension: order.CarDetailsExtension,
-                Customer: order.Customer,
+                Customer: order.Customer as CustomerOrderRequest,
                 DeliveryMethod1: order.DeliveryMethod1,
                 DeliveryMethod2: order.DeliveryMethod2,
                 IsTaxInvoice: order.IsTaxInvoice,

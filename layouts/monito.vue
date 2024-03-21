@@ -103,13 +103,24 @@ const handleCloseConfirm = async () => {
 const handleAcceptConfirm = async () => {
   const { AuthenInfo } = storeToRefs(store)
   const refresToken = AuthenInfo.value ? AuthenInfo.value.refresh_token : ""
-
+  const oldAccessToken = AuthenInfo.value ? AuthenInfo.value.oldAccessToken ?? "" : ""
+  console.log('refresToken',refresToken)
   if (refresToken && refresToken != "") {
-    const data = await store.refreshToken(refresToken)
+    const data = await store.refreshToken(refresToken,oldAccessToken)
 
     if (data) {
-      useUtility().setCookie("access_token", data?.accessToken ?? "", 1)
-      useUtility().setCookie("refresh_token", data?.refresh_token ?? "", 1)
+      // recheck renewal token success ? 
+      const expireTime = useTokenManage().getExpireSecondTime(data?.accessToken)
+      if(expireTime>0)
+      {
+        useUtility().setCookie("old_access_token", oldAccessToken ?? "", 1)
+        useUtility().setCookie("access_token", data?.accessToken ?? "", 1)
+        useUtility().setCookie("refresh_token", data?.refresh_token ?? "", 1)
+      }
+      else{
+       await handleCloseConfirm()
+      }
+      
     }
   }
 
@@ -124,7 +135,7 @@ const handleAcceptConfirm = async () => {
 const getToken = async () => {
   const token = await useUtility().getToken()
   const expireTime = useTokenManage().getExpireSecondTime(token)
-
+console.log('expireTime',expireTime)
   if (expireTime > 0) {
     const reduceTime = expireTime - (2 * 60 * 1000) // คำนวณ expire Date ของ token ก่อน 2 นาที
 
@@ -133,6 +144,9 @@ const getToken = async () => {
     } else {
       showModalConfirm()
     }
+  }
+  else{
+    showModalConfirm()
   }
 }
 

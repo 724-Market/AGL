@@ -1,5 +1,6 @@
 <template>
-  <FormKit type="form" :actions="false" id="form-search" form-class="form-search form-theme" :incomplete-message="false">
+  <FormKit type="form" :actions="false" id="form-search" form-class="form-search form-theme"
+    :incomplete-message="false">
     <div class="card">
       <div class="card-body">
         <div class="search-box">
@@ -121,7 +122,7 @@ const submitSearch = async () => {
   messageError.value = "";
   await sleep(100)
   const validate = validateSubmit()
-  console.log(validate, isError.value)
+  // console.log(validate, isError.value)
   if (validate) {
     let historySearch: HistorySearch = {
       SearchCategory: searchOption.value.find((x) => x.value == searchCategory.value),

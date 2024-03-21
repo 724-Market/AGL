@@ -15,8 +15,8 @@
       ],
       ['length', 8, 128],
       ]" :validation-messages="{
-  required: 'กรุณาใส่รหัสผ่าน', matches: 'รูปแบบของรหัสผ่านไม่ถูกต้อง', length: 'รหัสผ่านควรมีอย่างน้อย 8 ตัวอักษร'
-}" autocomplete="off" />
+        required: 'กรุณาใส่รหัสผ่าน', matches: 'รูปแบบของรหัสผ่านไม่ถูกต้อง', length: 'รหัสผ่านควรมีอย่างน้อย 8 ตัวอักษร'
+      }" autocomplete="off" />
 
       <ElementsFormPasswordWithConfirm />
 
@@ -26,9 +26,9 @@
 
       <FormKit type="submit" label="ยืนยันใช้รหัสผ่านนี้" name="changepassword-submit" id="changepassword-submit"
         :classes="{
-          input: 'btn-primary',
-          outer: 'form-actions'
-        }" :disabled="isLoading" :loading="isLoading" />
+        input: 'btn-primary',
+        outer: 'form-actions'
+      }" :disabled="isLoading" :loading="isLoading" />
 
     </FormKit>
 
@@ -72,9 +72,6 @@ const submitChangepassword = async (formData) => {
 
       // Response from API
       onResponse({ request, response }) {
-        console.log('%csubmitChangepassword%cline:76%crequest', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:#1f3c88;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', request)
-        console.log('%csubmitChangepassword%cline:76%cresponse', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:#1f3c88;padding:3px;border-radius:2px', 'color:#fff;background:rgb(1, 77, 103);padding:3px;border-radius:2px', response)
-        console.log('%csubmitChangepassword%cline:80%cresponse.status', 'color:#fff;background:#ee6f57;padding:3px;border-radius:2px', 'color:#fff;background:#1f3c88;padding:3px;border-radius:2px', 'color:#fff;background:rgb(3, 101, 100);padding:3px;border-radius:2px', response.status)
 
         // Server error 500
         if (response.status === 500) {

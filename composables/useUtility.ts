@@ -101,17 +101,39 @@ const getTokenExpire = async(): Promise<string> => {
         return formattedCurrency
     }
 
-    const maskMobileNumber = (mobileNumber: string): string => {
+    const maskMobileNumber = (mobileNumber: string): string => { // exam 0861234567
 
         if (typeof mobileNumber === 'string' && /^\d{10}$/.test(mobileNumber)) {
             // Extract the parts of the mobile number
             const prefix = mobileNumber.slice(0, 3);
-            const middlePart = mobileNumber.slice(2, 5);
+            const middlePart = mobileNumber.slice(3, 5);
             const lastPart = mobileNumber.slice(8);
 
             // Format the mobile number
             const formattedNumber = `${prefix}-XXX-XX${lastPart}`;
             return formattedNumber;
+        } else {
+            console.error('Invalid mobile number format');
+            return mobileNumber;
+        }
+
+    }
+
+    const maskMobileNumber2 = (mobileNumber: string): string => { // exam : +66861234567
+
+        if (typeof mobileNumber === 'string') {
+
+            mobileNumber = mobileNumber.replace('+66', '0');
+
+            // Extract the parts of the mobile number
+            const prefix = mobileNumber.slice(0, 3);
+            const middlePart = mobileNumber.slice(3, 5);
+            const lastPart = mobileNumber.slice(8);
+
+            // Format the mobile number
+            const formattedNumber = `${prefix}-XXX-XX${lastPart}`;
+            return formattedNumber;
+
         } else {
             console.error('Invalid mobile number format');
             return mobileNumber;
@@ -473,6 +495,7 @@ const getTokenExpire = async(): Promise<string> => {
         formatDate,
         formatText,
         maskMobileNumber,
+        maskMobileNumber2,
         downloadImage,
         getDeviceId,
         setStoretoStep,

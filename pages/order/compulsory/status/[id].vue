@@ -61,12 +61,13 @@ let isShowChild: boolean;
 
 const storeAuth = useStoreUserAuth();
 const { AuthenInfo } = storeToRefs(storeAuth);
-//const router = useRouter();
+
 const route = useRoute()
 const router = useRouter();
 
+/////////////////////////////////////////
 const onLoad = onMounted(async () => {
-  console.log("Thanks to track order")
+
   if (AuthenInfo.value) {
     isLoading.value = true;
     // Handle the possibility of route.params.id being an array
@@ -78,45 +79,57 @@ const onLoad = onMounted(async () => {
   } else {
     router.push("/login")
   }
-});
+})
+
+/////////////////////////////////////////
 const loadTrackOrderInsure = async (orderNo: string) => {
   const treq: TrackOrderReq = {
     ReferenceID: orderNo,
-  };
-  const resTrackOrder = await useRepository().track.getOrderInsure(treq);
+  }
+
+  const resTrackOrder = await useRepository().track.getOrderInsure(treq)
   if (
     resTrackOrder.apiResponse.Status &&
     resTrackOrder.apiResponse.Status == "200" &&
     resTrackOrder.apiResponse.Data
   ) {
     orderTrack.value = resTrackOrder.apiResponse.Data;
-    //Rever child//
 
     currentIndex = resTrackOrder.apiResponse.Data.findIndex(
       item => item && item.IsCurrent === true
-    );
-    currentStatus.value = orderTrack.value[currentIndex]?.Parent?.Type ?? '';
+    )
+
+    currentStatus.value = orderTrack.value[currentIndex]?.Parent?.Type ?? ''
+
     if (currentIndex !== -1) {
-      const currentItem = resTrackOrder.apiResponse.Data[currentIndex];
+      const currentItem = resTrackOrder.apiResponse.Data[currentIndex]
+
       if (currentItem && currentItem.Parent) {
-        const currentIndex2 = currentItem.Child?.findIndex(
-          item => item && (item.StatusCode === 'Success' || item.StatusCode === 'CancelByUser'));
-        if (currentIndex2 !== -1) {
-          sequenceIndex = currentIndex;
-          isShowChild = true;
+        const currentChildIndex = currentItem.Child?.findIndex(
+          item => item && (item.StatusCode === 'Success' || item.StatusCode === 'CancelByUser')
+        )
+
+        if (currentChildIndex !== -1) {
+          sequenceIndex = currentIndex
+          isShowChild = true
         } else if (currentIndex !== 0) {
-          sequenceIndex = currentIndex - 1;
-          isShowChild = false;
+          sequenceIndex = currentIndex - 1
+          isShowChild = false
         } else {
-          sequenceIndex = currentIndex;
-          isShowChild = false;
+          sequenceIndex = currentIndex
+          isShowChild = false
         }
+
       }
+
     } else {
-      console.log("No item with IsCurrent: true found");
+      console.log("No item with IsCurrent: true found")
     }
+
   }
-};
+}
+
+/////////////////////////////////////////
 const loadOrderDetail = async (orderNo: string) => {
   const req: OrderDetailRequest = {
     OrderNo: orderNo,

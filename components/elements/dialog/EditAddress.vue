@@ -20,11 +20,13 @@
               <FormKit type="radio" label="ใบกำกับภาษี" name="InsuredType" :options="[
                     {
                       label: 'บุคคลธรรมดา',
-                      value: 'P'
+                      value: 'P',
+                      attrs: { disabled: IsDisablePersonType } 
                     },
                     {
                       label: 'นิติ',
-                      value: 'I'
+                      value: 'I',
+                      attrs: { disabled: IsDisableCompanyType } 
                     },
                   ]" v-model="profileDataArray.ReceiverType" validation="required"
                 :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block"
@@ -143,15 +145,23 @@ const props = defineProps({
   }
 });
 const _show = ref(false);
+const IsDisablePersonType = ref(false);
+const IsDisableCompanyType = ref(false);
 
 
 onMounted(async () => {
   if(props.profileDataArray.ReceiverType == 'I'){
+    IsDisablePersonType.value = true
+    IsDisableCompanyType.value = false
     if(props.profileDataArray.BranchCode || props.profileDataArray.BranchName){
       CompanyClassifierText.value = 'branch'
     } else {
       CompanyClassifierText.value = 'headoffice'
     }
+  }
+  if(props.profileDataArray.ReceiverType == 'P'){
+    IsDisablePersonType.value = false
+    IsDisableCompanyType.value = true
   }
   if (props.show) {
     openModal();

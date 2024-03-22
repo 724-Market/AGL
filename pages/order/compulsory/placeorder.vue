@@ -292,6 +292,22 @@ const data1 = [
         label: 'นาย'
     }
 ];
+/*
+const data1 = [
+    {
+        value: '3B8D18E2FD2449098CAC6F39FE371D9A',
+        label: 'นาง'
+    },
+    {
+        value: 'B27FF405993B493490465932E27C089B',
+        label: 'นางสาว'
+    },
+    {
+        value: 'F3975B7444CE453A810DA8F92260CAB9',
+        label: 'นาย'
+    }
+];
+*/
 
 const data2 = [
     {

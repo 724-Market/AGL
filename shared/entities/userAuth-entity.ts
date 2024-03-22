@@ -18,6 +18,7 @@ export interface IUserAuthResponse {
 export interface IUserAuth{
     userName:string,
     accessToken: string,
+    oldAccessToken:string
     expiresIn: number,
     tokenType: string,
     refresh_token: string,

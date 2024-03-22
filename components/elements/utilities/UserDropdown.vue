@@ -14,11 +14,13 @@
     </a>
     <ul class="dropdown-menu dropdown-menu-end">
       <li class="announcement">724 Agent Love ยินดีต้อนรับ</li>
-      <li class="announcement is-info">สมาชิกจะสิ้นสุดวันที่ {{ useUtility().formatDate(AMPlanExpire, 'FullDate') }}
+      <li class="announcement is-info" v-if="AMPlanExpire">สมาชิกจะสิ้นสุดวันที่ {{
+            useUtility().formatDate(AMPlanExpire, 'FullDate') }}
         <a href="#" v-if="!isHidden">คลิกเพื่อต่ออายุสมาชิก</a>
       </li>
       <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-user">ข้อมูลสมาชิก</span></a></li>
       <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-gears">การตั้งค่า</span></a></li>
+      <li><NuxtLink to="/agent/change-password" class="dropdown-item"><span class="icon-user-lock">เปลี่ยนรหัสผ่าน</span></NuxtLink></li>
       <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-gift">สิทธิพิเศษสำหรับคุณ</span></a></li>
       <li v-if="!isHidden">
         <hr class="dropdown-divider">

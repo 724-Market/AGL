@@ -7,7 +7,7 @@
           <i class="fa-solid fa-layer-group"></i>คลังกระดาษ
         </button> -->
         <button type="button" class="btn-gray btn-open-papers" @click="handlerOpenPaperStock()"><i
-                        class="fa-solid fa-layer-group"></i>คลังกระดาษ</button>
+            class="fa-solid fa-layer-group"></i>คลังกระดาษ</button>
       </div>
 
       <div class="card-body card-table">
@@ -25,11 +25,8 @@
     <ElementsDialogModal :is-show-modal="isError" :modal-text="messageError" :modal-title="'แจ้งเตือน'"
       :modal-type="'danger'" @on-close-modal="handlerError"></ElementsDialogModal>
   </section>
-  <ElementsDialogPaperstock
-      :isShowPaper="showPaper" 
-      @on-confirm-and-go="handleGotoExchange"    
-      @on-close-confirm="handleCloseConfirm"
-  ></ElementsDialogPaperstock>
+  <ElementsDialogPaperstock :isShowPaper="showPaper" @on-confirm-and-go="handleGotoExchange"
+    @on-close-confirm="handleCloseConfirm"></ElementsDialogPaperstock>
 </template>
 
 <script lang="ts" setup>
@@ -82,10 +79,10 @@ const onContinue = async () => {
       // Check if response.Data exists and is an array with at least one element
       if (response.Data && Array.isArray(response.Data) && response.Data.length > 0) {
         const orderNo = response.Data[0].OrderNo;
-        console.log("OrderNo: " + response.Data[0].OrderNo);
+        // console.log("OrderNo: " + response.Data[0].OrderNo);
         router.push({ path: "/papers/thanks", query: { orderNo } });
       } else {
-        console.log("No OrderNo available in the response");
+        // console.log("No OrderNo available in the response");
       }
     }
     else {
@@ -110,19 +107,18 @@ const handlerError = () => {
   }
 }
 const handlerCheckSave = (check: boolean) => {
-  console.log(check)
   checkSave.value = check;
   //checkSave.value = true;
 };
 
 const handlerOpenPaperStock = () => {
-    showPaper.value = true;
+  showPaper.value = true;
 };
 const handleCloseConfirm = async () => {
-    showPaper.value = false;
+  showPaper.value = false;
 };
 const handleGotoExchange = async () => {
-    showPaper.value = false;
+  showPaper.value = false;
 };
 </script>
 <style scoped>
@@ -138,4 +134,3 @@ const handleGotoExchange = async () => {
   cursor: not-allowed;
 }
 </style>
-

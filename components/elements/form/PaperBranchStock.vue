@@ -93,7 +93,7 @@ const onLoad = onMounted(async () => {
     if (props.wareHouse) {
         if (shippingType.value == 'DELIVERY') {
             BranchLabel.value = props.wareHouse[0].Name
-            await onWareHouseChange(props.wareHouse[0].ID, props.wareHouse[0].AreaID)
+            //await onWareHouseChange(props.wareHouse[0].ID, props.wareHouse[0].AreaID)
         }
         else {
             wareHouseOption.value = props.wareHouse.map((x) => {
@@ -162,8 +162,8 @@ const onAreaChange = async (event: any) => {
     emit('areaChange', event.target.value)
 };
 
-watch(BranchText, async (newBranch) => {
-    await onWareHouseChange(newBranch, '')
+watch(BranchText, (newBranch) => {
+    onWareHouseChange(newBranch, '')
 });
 
 const onWareHouseChange = async (event: string, area: string) => {
@@ -176,7 +176,7 @@ const onWareHouseChange = async (event: string, area: string) => {
     emit('wareHouseChange', event, area)
 };
 
-watch(PaperTypeText, async (newProductSub) => {
+watch(PaperTypeText, (newProductSub) => {
     CompanyText.value = ''
     let productSub = productSubOption.value.find((w) => w.value == newProductSub);
     emit('productSubChange', productSub?.value, productSub?.option)
@@ -188,7 +188,7 @@ const onProductCompanyChange = async (event: any) => {
 
 watch(
     () => props.area,
-    async () => {
+    () => {
         if (props.area) {
             areaOption.value = props.area.map((x) => {
                 const options: SelectOption = {
@@ -208,7 +208,7 @@ watch(
 
 watch(
     () => props.shippingType,
-    async () => {
+    () => {
         if (props.shippingType) {
             shippingType.value = props.shippingType
         }
@@ -217,11 +217,11 @@ watch(
 
 watch(
     () => props.wareHouse,
-    async () => {
+    () => {
         if (props.wareHouse) {
             if (shippingType.value == 'DELIVERY') {
                 BranchLabel.value = props.wareHouse[0].Name
-                await onWareHouseChange(props.wareHouse[0].ID, props.wareHouse[0].AreaID)
+                onWareHouseChange(props.wareHouse[0].ID, props.wareHouse[0].AreaID)
             }
             else {
                 wareHouseOption.value = props.wareHouse.map((x) => {
@@ -243,7 +243,7 @@ watch(
 
 watch(
     () => props.productSubCategory,
-    async () => {
+    () => {
         if (props.productSubCategory) {
             productSubOption.value = props.productSubCategory.map((x) => {
                 const options: SelectOption = {
@@ -264,7 +264,7 @@ watch(
 
 watch(
     () => props.productCompany,
-    async () => {
+    () => {
         if (props.productCompany) {
             productCompanyOption.value = props.productCompany.map((x) => {
                 const options: SelectOption = {

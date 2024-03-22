@@ -15,9 +15,7 @@
       <div class="col col-sidebar">
         <section class="site-sidebar is-sticky">
 
-          <PapersOrderDetail :order-get="orderGet"
-          :order-address="getOrderAddress" 
-          v-if="orderGet" />
+          <PapersOrderDetail :order-get="orderGet" :order-address="getOrderAddress" v-if="orderGet" />
 
           <PapersSuborder :order-get="orderGet" :ordersub-feedelivery="ordersubFeeDel" :order-sub="orderSubAll"
             v-if="orderSubAll" @on-confirm-received="handleConfirmReceived"
@@ -232,7 +230,6 @@ const loadTrackOrderPaper = async (orderNo: string) => {
     resTrackOrder.apiResponse.Data
   ) {
     orderTrack.value = resTrackOrder.apiResponse.Data
-    //Rever child//
 
     currentIndex = resTrackOrder.apiResponse.Data.findIndex(
       item => item && item.IsCurrent === true

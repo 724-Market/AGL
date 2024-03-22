@@ -114,7 +114,9 @@
                         />
                       </div>
                       <div class="col-6">
-                        <FormKit
+                        <ElementsFormPhoneNumber autocomplete="off" label="เบอร์มือถือ"  name="NewPhoneNumber" v-model="taxInvoiceAddress.PhoneNumber"
+                          ></ElementsFormPhoneNumber>
+                        <!-- <FormKit
                           type="text"
                           label="หมายเลขโทรศัพท์"
                           name="NewPhoneNumber"
@@ -125,7 +127,7 @@
                           autocomplete="off"
                           @keyup="handlerChangeTaxInvoice"
                           v-model="taxInvoiceAddress.PhoneNumber"
-                        />
+                        /> -->
                       </div>
 
                       <div class="col-6">
@@ -404,6 +406,8 @@
     :address-default-i-d="props.addressDefaultID"
     :address-data-array="newTaxAddressUpdate"
     :profile-data-array="newTaxAddressUpdate"
+    :prefix-p-option="prefixPOption"
+    :prefix-i-option="prefixIOption"
     :show="isEditTaxAddress"
     @close-address="closeModalAddress"
     @on-edit-address="getAddressList"
@@ -430,6 +434,7 @@ const emit = defineEmits(['changeProvince', 'changeDistrict', 'changeSubDistrict
 
 const props = defineProps({
   prefix: Array<SelectOption>,
+  prefixData: Object,
   delivery: Array<SelectOption>,
   addrProvince: Array<SelectOption>,
   addrDistrict: Array<SelectOption>,
@@ -465,6 +470,8 @@ const newTaxInvoiceFullAddress: globalThis.Ref<String> = ref('')
 const newTaxInvoiceDeliveryFullAddress: globalThis.Ref<String> = ref('')
 const newTaxInvoiceFullAddressTemp: globalThis.Ref<String> = ref('')
 const newTaxInvoiceDeliveryFullAddressTemp: globalThis.Ref<String> = ref('')
+const prefixPOption = props.prefixData.prefixData.isPerson || [];
+const prefixIOption = props.prefixData.prefixData.isNotPerson || [];
 
 const shippedPolicy = ref('together') //together,separately
 const shippedPolicyOption: globalThis.Ref<RadioOption[]> = ref([
@@ -523,6 +530,12 @@ interface LabelAddressData {
   Name?: string
   PhoneNumber?: string
   TaxID?: string
+  ReceiverType?: string
+  BranchCode?: string
+  BranchName?: string
+  PrefixID?: string
+  PrefixName?: string
+  Email?: string
   No?: string
   Moo?: string
   Place?: string
@@ -616,7 +629,6 @@ const taxAddressOption = ref([])
 const taxDeliveryOption = ref([])
 const onLoad = onMounted(async () => {
   //console.log(props.cacheOrderRequest)
-
   insureDetail.value.TaxInvoiceAddress = taxInvoiceAddress.value 
 
   if (props.cacheOrderRequest) {
@@ -888,17 +900,24 @@ const updateAddress = async (AddrID: string) => {
           DistrictID: taxAddress.DistrictID,
           SubDistrictID: taxAddress.SubDistrictID,
           postalCode: taxAddress.ZipCode,
+          ReceiverType: taxAddress.ReceiverType,
+          BranchCode: taxAddress.BranchID,
+          BranchName: taxAddress.BranchName,
+          PrefixID: taxAddress.PrefixID,
+          PrefixName: taxAddress.PrefixName,
           ProvinceName: taxAddress.ProvinceName,
           DistrictName: taxAddress.DistrictName,
           SubDistrictName: taxAddress.SubDistrictName,
           FirstName: taxAddress.FirstName,
           LastName: taxAddress.LastName,
           Name: taxAddress.Name,
+          Email: taxAddress.Email,
           PhoneNumber: taxAddress.PhoneNumber,
           TaxID: taxAddress.TaxID
         };
 
-        newTaxInvoiceFullAddressTemp.value = `${newTaxAddressUpdate.value.FirstName} 
+        newTaxInvoiceFullAddressTemp.value = `${newTaxAddressUpdate.value.PrefixName}
+        ${newTaxAddressUpdate.value.FirstName} 
         ${newTaxAddressUpdate.value.LastName}
         ${newTaxAddressUpdate.value.TaxID ? 'เลขที่ผู้เสียภาษี '+newTaxAddressUpdate.value.TaxID : ''} 
         ${newTaxAddressUpdate.value.PhoneNumber ? 'เบอร์มือถือ '+newTaxAddressUpdate.value.PhoneNumber : ''} : 
@@ -1004,6 +1023,7 @@ const handlerChangeSubDistrict2 = (e: string) => {
     emit('changeSubDistrict2', e)
   }
 }
+
 
 const handlerChangeFullAddressTaxInvoice = (addr: string, ObjectAddress: DefaultAddress) => {
   if (addr && ObjectAddress) {

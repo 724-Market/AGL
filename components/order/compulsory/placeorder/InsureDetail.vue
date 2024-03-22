@@ -733,6 +733,7 @@ const handlerChangeInsureDetail = async () => {
     else if (data.LegalPersonProfile) {
       data.DefaultAddress.TaxID = data.LegalPersonProfile.TaxID
       data.LegalPersonProfile.ContactFirstName = data.LegalPersonProfile.Name
+      data.LegalPersonProfile.FirstName = data.LegalPersonProfile.Name
       data.LegalPersonProfile.ContactLastName = "-"
       data.DefaultAddress.FirstName = data.LegalPersonProfile.ContactFirstName
       data.DefaultAddress.LastName = data.LegalPersonProfile.ContactLastName

@@ -47,7 +47,7 @@
             @change-sub-district="handlerChangeSubDistrictForTax" @change-province2="handlerChangeProvinceForTax2"
             @change-district2="handlerChangeDistrictForTax2" @change-sub-district2="handlerChangeSubDistrictForTax2"
             @new-tax-i-d="updateNewTaxID" @new-tax-address-i-d="updateNewTaxAddressID"
-            :insure-full-address="insureFullAddress" :prefix="prefix" :delivery="delivery"
+            :insure-full-address="insureFullAddress" :prefix="prefix" :prefixData="{prefixData}" :delivery="delivery"
             :addr-province="addrProvinceForTax" :addr-district="addrDistrictForTax"
             :addr-sub-district="addrSubDistrictForTax" :addr-zip-code="addrZipCodeForTax"
             :addr-province2="addrProvinceForTax2" :addr-district2="addrDistrictForTax2"
@@ -276,6 +276,39 @@ const { OrderSummaryInfo } = storeToRefs(storeSummary);
 const isTaxDelivery = ref(false)
 const isTaxAddress = ref(false)
 const isInsureRecieve = ref(false)
+
+// Assuming you have IsPerson flag to differentiate between the two sets of data
+const data1 = [
+    {
+        value: '3B8D18E2FD2449098CAC6F39FE371D9A',
+        label: 'นาง'
+    },
+    {
+        value: 'B27FF405993B493490465932E27C089B',
+        label: 'นางสาว'
+    },
+    {
+        value: 'F3975B7444CE453A810DA8F92260CAB9',
+        label: 'นาย'
+    }
+];
+
+const data2 = [
+    {
+        value: '52FF86FFBBAB4C7C80D56EC3893D0D99',
+        label: 'บริษัท'
+    },
+    {
+        value: 'C2AD4D2509D64EF9A98C14B0F2EAC21D',
+        label: 'ห้างหุ้นส่วนจำกัด'
+    }
+];
+
+// New parameter to keep both sets of data
+const prefixData = {
+    isPerson: data1,
+    isNotPerson: data2
+};
 
 const router = useRouter();
 const onLoad = onMounted(async () => {
@@ -1199,7 +1232,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
       if (insureDetail.value.IsBranch) {
         if (
           insureDetail.value.LegalPersonProfile.PrefixID.length > 0 &&
-          insureDetail.value.LegalPersonProfile.Name.length > 0 &&
+          //insureDetail.value.LegalPersonProfile.Name.length > 0 &&
           insureDetail.value.LegalPersonProfile.ContactPhoneNumber.length > 0 &&
           insureDetail.value.LegalPersonProfile.TaxID.length > 0 &&
           insureDetail.value.LegalPersonProfile.BranchID.length > 0 &&

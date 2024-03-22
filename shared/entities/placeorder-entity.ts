@@ -65,6 +65,7 @@ export interface LegalPersonProfile {
   Name: string
   BranchName: string
   TaxID: string
+  FirstName: string
   BranchID: string
   ContactFirstName: string
   ContactLastName: string

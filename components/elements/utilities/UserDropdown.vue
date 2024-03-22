@@ -14,7 +14,8 @@
     </a>
     <ul class="dropdown-menu dropdown-menu-end">
       <li class="announcement">724 Agent Love ยินดีต้อนรับ</li>
-      <li class="announcement is-info">สมาชิกจะสิ้นสุดวันที่ {{ useUtility().formatDate(AMPlanExpire, 'FullDate') }}
+      <li class="announcement is-info" v-if="AMPlanExpire">สมาชิกจะสิ้นสุดวันที่ {{
+            useUtility().formatDate(AMPlanExpire, 'FullDate') }}
         <a href="#" v-if="!isHidden">คลิกเพื่อต่ออายุสมาชิก</a>
       </li>
       <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-user">ข้อมูลสมาชิก</span></a></li>

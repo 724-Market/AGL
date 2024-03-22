@@ -19,6 +19,7 @@
       </li>
       <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-user">ข้อมูลสมาชิก</span></a></li>
       <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-gears">การตั้งค่า</span></a></li>
+      <li><NuxtLink to="/agent/change-password" class="dropdown-item"><span class="icon-user-lock">เปลี่ยนรหัสผ่าน</span></NuxtLink></li>
       <li v-if="!isHidden"><a class="dropdown-item" href="#"><span class="icon-gift">สิทธิพิเศษสำหรับคุณ</span></a></li>
       <li v-if="!isHidden">
         <hr class="dropdown-divider">

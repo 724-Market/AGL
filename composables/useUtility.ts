@@ -412,17 +412,37 @@ const getTokenExpire = async(): Promise<string> => {
                     sessionExpired.value = true
                     return navigateTo('/session-expired')
                 }
-                else if (res.apiResponse.ErrorCode === '1102813') {
-                    resp.value.modalTitle = 'ไม่สามารถส่ง OTP ได้'
-                    resp.value.modalText = 'กรุณาทำการใหม่อีกครั้ง'
-                }
-                else if (res.apiResponse.ErrorCode === '1103807') {
-                    resp.value.modalTitle = 'รหัส OTP ไม่ถูกต้อง'
-                    resp.value.modalText = 'กรุณาทำการยืนยัน OTP ใหม่อีกครั้ง'
-                }
                 else {
-                    resp.value.modalTitle = res.apiResponse.ErrorMessage
-                    resp.value.modalText = 'Error : ' + res.apiResponse.ErrorCode
+
+                    const errorCodeMappings = [
+                        { 
+                            ErrorCode: '1102813', 
+                            modalTitle: 'ไม่สามารถส่ง OTP ได้', 
+                            modalText: 'กรุณาทำการใหม่อีกครั้ง'
+                        },
+                        {   
+                            ErrorCode: '1103807', 
+                            modalTitle: 'รหัส OTP ไม่ถูกต้อง', 
+                            modalText: 'กรุณาทำการยืนยัน OTP ใหม่อีกครั้ง'
+                        },
+                        {   
+                            ErrorCode: '1105505', 
+                            modalTitle: 'รหัสผ่านเดิมไม่ถูกต้อง', 
+                            modalText: 'กรุณาทำการใหม่อีกครั้ง' 
+                        }
+                    ];
+
+                    const errorCode = res.apiResponse.ErrorCode;
+                    const matchedError = errorCodeMappings.find(mapping => mapping.ErrorCode === errorCode);
+                    
+                    if (matchedError) {
+                        resp.value.modalTitle   = matchedError.modalTitle
+                        resp.value.modalText    = matchedError.modalText
+                    } else {
+                        resp.value.modalTitle   = res.apiResponse.ErrorMessage
+                        resp.value.modalText    = 'Error : ' + res.apiResponse.ErrorCode
+                    }
+
                 }
 
                 resp.value.status = 'error'

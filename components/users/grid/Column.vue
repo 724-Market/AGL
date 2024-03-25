@@ -20,9 +20,9 @@
     {{ useUtility().getCurrency(parseInt(props.row.CreditLimitAmount, 10), 0) }}
   </div>
 
-  <div v-if="props.field && props.field == 'isactive' && props.row">
-    <div class="status" v-if="props.row.IsActive == true">
-      <form class="formkit-form">
+  <template v-if="props.field && props.field == 'isactive' && props.row">
+    <template v-if="props.row.IsActive == true">
+      <div class="formkit-form">
         <div class="formkit-outer" data-type="toggle">
           <div class="formkit-wrapper">
             <label class="formkit-inner">
@@ -33,10 +33,10 @@
             </label>
           </div>
         </div>
-      </form>
-    </div>
-    <div class="status" v-if="props.row.IsActive == false">
-      <form class="formkit-form">
+      </div>
+    </template>
+    <template v-if="props.row.IsActive == false">
+      <div class="formkit-form">
         <div class="formkit-outer" data-type="toggle">
           <div class="formkit-wrapper">
             <label class="formkit-inner">
@@ -47,9 +47,9 @@
             </label>
           </div>
         </div>
-      </form>
-    </div>
-  </div>
+      </div>
+    </template>
+  </template>
 </template>
 
 <script lang="ts" setup>

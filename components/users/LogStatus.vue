@@ -3,8 +3,10 @@
         <div class="card-body">
             <div class="status-list">
                 <figure class="status-icon">
-                    <div class="icon user success" v-if="props.userDetails && props.userDetails.IsActive === true"></div>
-                    <div class="icon user warning" v-else-if="props.userDetails && props.userDetails.IsActive === false">
+                    <div class="icon user success" v-if="props.userDetails && props.userDetails.IsActive === true">
+                    </div>
+                    <div class="icon user warning"
+                        v-else-if="props.userDetails && props.userDetails.IsActive === false">
                     </div>
                     <div class="icon user" v-else></div>
                 </figure>
@@ -74,7 +76,7 @@ const isUserActive = computed(() => {
     if (props.userDetails) {
         return props.userDetails.IsActive ? 'true' : 'false'
     }
-    return 'false' // Default value if userDetails is null or undefined
+    return 'true' // Default value if userDetails is null or undefined
 })
 
 // onChange user active toggle

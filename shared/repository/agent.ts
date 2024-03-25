@@ -65,6 +65,10 @@ class AgentModule {
     return await useCallApi().apiRepository(`${this.RESOURCE}/password/recovery/setup`, req)
   }
 
+  async changePasswordAgent(req: any) {
+    return await useCallApi().apiRepository(`${this.RESOURCE}/password/change`, req)
+  }
+
   async getAgentProfile() {
     return await useCallApi().apiRepository(`${this.RESOURCE}/profile/get`, {})
   }

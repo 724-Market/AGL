@@ -5,6 +5,7 @@ export const useStoreUserAuth = defineStore('useStoreUserAuth', {
     state: (): IUserAuth => {
         return {
             accessToken: "",
+            oldAccessToken:"",
             expiresIn: 0,
             issuedDate: "",
             refresh_token: "",
@@ -25,6 +26,7 @@ export const useStoreUserAuth = defineStore('useStoreUserAuth', {
 
                 const userAuth: IUserAuth = {
                     accessToken: result.Data.access_token,
+                    oldAccessToken:result.Data.access_token,
                     issuedDate: result.Data['.issued'],
                     refresh_token: result.Data.refresh_token,
                     tokenType: result.Data.token_type,
@@ -36,13 +38,15 @@ export const useStoreUserAuth = defineStore('useStoreUserAuth', {
 
             return result
         },
-        async refreshToken(refreshTokenId: string): Promise<IUserAuth> {
+        async refreshToken(refreshTokenId: string,oldAccessToken: string): Promise<IUserAuth> {
 
-            const response = await useRepository().session.refreshToken(refreshTokenId)
+            const response = await useRepository().session.refreshToken(refreshTokenId,oldAccessToken)
             
             const result = response.apiResponse
 
             if (result.Data) {
+                this.$state.refresh_token = result.Data.refresh_token
+                this.$state.oldAccessToken = oldAccessToken
                 this.$state.accessToken = result.Data.access_token
                 this.$state.issuedDate = result.Data['.issued']
             }

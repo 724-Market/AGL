@@ -1,7 +1,7 @@
 // Import type
 import type { IPackageRequest, IPackageResponse, Paging } from "~/shared/entities/packageList-entity"
 import type { OrderDetails, OrderResponse } from "~/shared/entities/order-entity"
-import type { PlaceOrderRequest } from "~/shared/entities/placeorder-entity"
+import type { CustomerOrderRequest, PlaceOrderRequest } from "~/shared/entities/placeorder-entity"
 import type { IInformation } from "~/shared/entities/information-entity"
 
 import { isString } from "@vueuse/core"
@@ -20,44 +20,40 @@ import buddhistEra from 'dayjs/plugin/buddhistEra' // import locale
 export default () => {
 
     const config = useRuntimeConfig()
+
     // Define the StatusInfo interface
     interface StatusInfo {
-        Class: string;
-        Type: string;
+        Class: string
+        Type: string
     }
-    const getStatusOrder = (statusCode: string | undefined): StatusInfo => {
+
+    const getClassStatusParent = (indexStatus, indexCurrent) => {
+        if (indexStatus === indexCurrent) {
+            return 'is-warning'
+        } else if (indexStatus < indexCurrent) {
+            return 'is-next'
+        } else if (indexStatus > indexCurrent) {
+            return 'is-success'
+        } else {
+            return ''
+        }
+    }
+    
+
+    const getClassStatusOrder = (statusCode: string | undefined): StatusInfo => {
         switch (statusCode) {
             case 'Success':
-                return { Class: "is-success", Type: "success" };
+                return { Class: "is-success", Type: "success" }
             case 'Danger':
-                return { Class: "is-danger", Type: "danger" };
+                return { Class: "is-danger", Type: "danger" }
             case 'Cancel':
-                return { Class: "is-cancel", Type: "cancel" };
+                return { Class: "is-cancel", Type: "cancel" }
             case 'Warning':
-                return { Class: "is-warning", Type: "warn" };
+                return { Class: "is-warning", Type: "warn" }
             default:
-                return { Class: "Who are you!", Type: "Who are you!" }; // Return undefined if statusCode doesn't match any case
-        }
-    
-    };
-    const getCompanyType = (label: string | undefined): labelType => {
-        switch (label) {
-            case 'บริษัท':
-                return 'บมจ.';
-            case 'ห้างหุ้นส่วนจำกัด':
-                return 'หจก.';
-            default:
-                return label; // Return undefined if statusCode doesn't match any case
-        }
-    };
 
-    const getClassFromStatusOrder = (statusCode: string | undefined): string => {
-        if (statusCode === 'Success') {
-            return 'is-success'
-        } if (statusCode === 'CancelByUser') {
-            return 'is-cancel'
-        } else {
-            return 'is-child'
+                return { Class: "", Type: "" } // Return undefined if statusCode doesn't match any case
+
         }
     }
 
@@ -70,21 +66,21 @@ export default () => {
             return 'icon'
         }
     }
-const getTokenExpire = async(): Promise<string> => {
-    let refreshToken = "";
-    const store = useStoreUserAuth()
-    const checkToken = store.checkTokenExpire()
-    const { AuthenInfo } = storeToRefs(store)
-    if(checkToken==false)
-    {
-        if(AuthenInfo.value)
+    const getTokenExpire = async(): Promise<string> => {
+        let refreshToken = "";
+        const store = useStoreUserAuth()
+        const checkToken = store.checkTokenExpire()
+        const { AuthenInfo } = storeToRefs(store)
+        if(checkToken==false)
         {
-            refreshToken = AuthenInfo.value.refresh_token
+            if(AuthenInfo.value)
+            {
+                refreshToken = AuthenInfo.value.refresh_token
+            }
         }
-    }
 
-    return refreshToken
-}
+        return refreshToken
+    }
     const getToken = async (): Promise<string> => {
         let token = ""
         // check token expire
@@ -111,17 +107,39 @@ const getTokenExpire = async(): Promise<string> => {
         return formattedCurrency
     }
 
-    const maskMobileNumber = (mobileNumber: string): string => {
+    const maskMobileNumber = (mobileNumber: string): string => { // exam 0861234567
 
         if (typeof mobileNumber === 'string' && /^\d{10}$/.test(mobileNumber)) {
             // Extract the parts of the mobile number
             const prefix = mobileNumber.slice(0, 3);
-            const middlePart = mobileNumber.slice(2, 5);
+            const middlePart = mobileNumber.slice(3, 5);
             const lastPart = mobileNumber.slice(8);
 
             // Format the mobile number
             const formattedNumber = `${prefix}-XXX-XX${lastPart}`;
             return formattedNumber;
+        } else {
+            console.error('Invalid mobile number format');
+            return mobileNumber;
+        }
+
+    }
+
+    const maskMobileNumber2 = (mobileNumber: string): string => { // exam : +66861234567
+
+        if (typeof mobileNumber === 'string') {
+
+            mobileNumber = mobileNumber.replace('+66', '0');
+
+            // Extract the parts of the mobile number
+            const prefix = mobileNumber.slice(0, 3);
+            const middlePart = mobileNumber.slice(3, 5);
+            const lastPart = mobileNumber.slice(8);
+
+            // Format the mobile number
+            const formattedNumber = `${prefix}-XXX-XX${lastPart}`;
+            return formattedNumber;
+
         } else {
             console.error('Invalid mobile number format');
             return mobileNumber;
@@ -289,7 +307,7 @@ const getTokenExpire = async(): Promise<string> => {
                 OrderNo: orderNo,
                 Package: order.Package,
                 CarDetailsExtension: order.CarDetailsExtension,
-                Customer: order.Customer,
+                Customer: order.Customer as CustomerOrderRequest,
                 DeliveryMethod1: order.DeliveryMethod1,
                 DeliveryMethod2: order.DeliveryMethod2,
                 IsTaxInvoice: order.IsTaxInvoice,
@@ -384,40 +402,63 @@ const getTokenExpire = async(): Promise<string> => {
     }
 
     // API Response
-    const responseCheck = (res: any) => {
+    const responseCheck = (res: unknown) => {
 
-        const resp = ref<any>({});
+        const resp = ref<unknown>({})
 
         if (res.serverStatus == 200) {
             if (res.apiStatus == 200) {
-                resp.value.status = 'pass';
+                resp.value.status = 'pass'
                 resp.value.isShowModal = false
             }
             else {
 
-                if (res.apiResponse.ErrorCode === '1102813') {
-                    // Please wait and try again after x Minutes y Seconds.
-                    // Cannot Send OTP. Please try again.
-                    resp.value.modalTitle = 'ไม่สามารถส่ง OTP ได้'
-                    resp.value.modalText = 'กรุณาทำการใหม่อีกครั้ง'
-                }
-                else if (res.apiResponse.ErrorCode === '1103807') {
-                    resp.value.modalTitle = 'รหัส OTP ไม่ถูกต้อง'
-                    resp.value.modalText = 'กรุณาทำการยืนยัน OTP ใหม่อีกครั้ง'
+                if (res.apiResponse.ErrorCode === '90000991') {
+                    const sessionExpired = useState('sessionExpired')
+                    sessionExpired.value = true
+                    return navigateTo('/session-expired')
                 }
                 else {
-                    resp.value.modalTitle = res.apiResponse.ErrorMessage
-                    resp.value.modalText = 'Error : ' + res.apiResponse.ErrorCode
+
+                    const errorCodeMappings = [
+                        { 
+                            ErrorCode: '1102813', 
+                            modalTitle: 'ไม่สามารถส่ง OTP ได้', 
+                            modalText: 'กรุณาทำการใหม่อีกครั้ง'
+                        },
+                        {   
+                            ErrorCode: '1103807', 
+                            modalTitle: 'รหัส OTP ไม่ถูกต้อง', 
+                            modalText: 'กรุณาทำการยืนยัน OTP ใหม่อีกครั้ง'
+                        },
+                        {   
+                            ErrorCode: '1105505', 
+                            modalTitle: 'รหัสผ่านเดิมไม่ถูกต้อง', 
+                            modalText: 'กรุณาทำการใหม่อีกครั้ง' 
+                        }
+                    ];
+
+                    const errorCode = res.apiResponse.ErrorCode;
+                    const matchedError = errorCodeMappings.find(mapping => mapping.ErrorCode === errorCode);
+                    
+                    if (matchedError) {
+                        resp.value.modalTitle   = matchedError.modalTitle
+                        resp.value.modalText    = matchedError.modalText
+                    } else {
+                        resp.value.modalTitle   = res.apiResponse.ErrorMessage
+                        resp.value.modalText    = 'Error : ' + res.apiResponse.ErrorCode
+                    }
+
                 }
 
-                resp.value.status = 'error';
+                resp.value.status = 'error'
                 resp.value.isShowModal = true
                 resp.value.modalType = 'warning'
                 resp.value.modalButton = 'ตกลง'
             }
         }
         else {
-            resp.value.status = 'server-error';
+            resp.value.status = 'server-error'
             resp.value.isShowModal = true
             resp.value.modalType = 'danger'
             resp.value.modalTitle = 'เกิดความผิดพลาด กรุณาลองใหม่อีกครั้ง'
@@ -468,9 +509,10 @@ const getTokenExpire = async(): Promise<string> => {
     }
 
     return {
-        getClassFromStatusOrder,
-        getStatusOrder,
-        getCompanyType,
+
+        getClassStatusParent,
+        getClassStatusOrder,
+
         getIconFromStatusOrder,
         getCompanyImage,
         getCurrency,
@@ -481,6 +523,7 @@ const getTokenExpire = async(): Promise<string> => {
         formatDate,
         formatText,
         maskMobileNumber,
+        maskMobileNumber2,
         downloadImage,
         getDeviceId,
         setStoretoStep,

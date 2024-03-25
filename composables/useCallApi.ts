@@ -6,7 +6,7 @@ export default () => {
         const wrapper: WrapperResponse<T> = {
             Status: "",
         }
-        const result: IAPIResponse<T> =
+        const result:  IAPIResponse<T> =
         {
             apiStatus: "",
             respErrorCode: "",
@@ -21,7 +21,17 @@ export default () => {
             let jsonData = response._data
 
             if (typeof jsonData === "string") {
-                jsonData = JSON.parse(jsonData)
+
+                try {
+                    jsonData = JSON.parse(jsonData)
+                }
+                catch (e) { 
+                    console.log('JSON.parse fail', jsonData)
+                    jsonData = undefined
+                }
+                
+
+
             }
 
             if (jsonData.Status == 200) {
@@ -224,6 +234,10 @@ export default () => {
 
         if (params.Token2) {
             params.Token = params.Token2
+        }
+        if(params.oldAccessToken)
+        {
+            params.Token = params.oldAccessToken
         }
         params.URL = url
         if (!method || (method != "get" && method != "GET")) {

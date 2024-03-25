@@ -64,6 +64,17 @@ export default () => {
             return 'icon'
         }
     }
+
+    const getCompanyType = (label: string | undefined): labelType => {
+        switch (label) {
+            case 'บริษัท':
+                return 'บมจ.';
+            case 'ห้างหุ้นส่วนจำกัด':
+                return 'หจก.';
+            default:
+                return label; // Return undefined if statusCode doesn't match any case
+        }
+    };
     const getTokenExpire = async(): Promise<string> => {
         let refreshToken = "";
         const store = useStoreUserAuth()
@@ -511,6 +522,7 @@ export default () => {
         getClassStatusOrder,
         getIconFromStatusOrder,
         getCompanyImage,
+        getCompanyType,
         getCurrency,
         getTokenExpire,
         getToken,

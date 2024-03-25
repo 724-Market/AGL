@@ -32,7 +32,7 @@ const isHidden = ref(true)
 /////////////////////////////////////////
 // Clipboard
 const clipboard = ref('')
-const { text, copy, copied, isSupported } = useClipboard({ source: clipboard, copiedDuration: 3000 })
+const { text, copy, copied, isSupported } = useClipboard({ source: clipboard, copiedDuring: 2000 })
 
 /////////////////////////////////////////
 const emit = defineEmits(['onClosePassword'])

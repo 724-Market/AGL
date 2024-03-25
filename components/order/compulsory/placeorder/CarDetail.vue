@@ -369,8 +369,9 @@ const handleFileChange = async (event: any) => {
   if(base64FileString && base64FileString!="")
   {
     let uploadFileReq: UploadFileRequest = {
-    Base64: base64FileString,
-    FileNameWithExtension: file.name.toString()
+      UploadType: 'CarLicense',
+      Base64: base64FileString,
+      FileNameWithExtension: file.name.toString()
   }
   const response = await useRepository().file.upload(uploadFileReq)
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {

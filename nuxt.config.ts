@@ -21,7 +21,7 @@ export default defineNuxtConfig({
 			},
 			charset: 'utf-8',
 			viewport: 'width=device-width, initial-scale=1',
-			titleTemplate: '%s 💚Agent Love Club',
+			titleTemplate: '%s 💚 Agent Love Club',
 			meta: [
 				{ name: 'author', content: '724 Market' },
 				{ name: 'description', content: 'Welcome to Agent Love Club website' },

@@ -1,46 +1,46 @@
 <template>
-  <div class="row">
-
-    <div class="col-md-12">
-      <FormKit type="text" label="No" name="No" v-model="addressData.No" placeholder="No" validation="required"
+  <div class="row" >
+    <p>ที่อยู่</p>
+    <div class="col-md-6">
+      <FormKit type="text" label="เลขที่" name="No" v-model="addressData.No" placeholder="เลขที่" validation="required"
         :validation-messages="{ required: 'กรุณาระบุ No.' }" autocomplete="off" />
     </div>
 
-    <div class="col-md-12">
-      <FormKit type="text" label="Moo" name="Moo" v-model="addressData.Moo" placeholder="Moo" autocomplete="off" />
+    <div class="col-md-6">
+      <FormKit type="text" label="หมู่" name="Moo" v-model="addressData.Moo" placeholder="หมู่" autocomplete="off" />
     </div>
 
-    <div class="col-md-12">
-      <FormKit type="text" label="Place" name="Place" v-model="addressData.Place" placeholder="Place" autocomplete="off" />
+    <div class="col-md-6">
+      <FormKit type="text" label="ที่ตั้ง" name="Place" v-model="addressData.Place" placeholder="ที่ตั้ง" autocomplete="off" />
     </div>
 
-    <div class="col-md-12">
-      <FormKit type="text" label="Building" name="Building" v-model="addressData.Building" placeholder="Building" autocomplete="off" />
+    <div class="col-md-6">
+      <FormKit type="text" label="ตึก/อาคาร" name="Building" v-model="addressData.Building" placeholder="ตึก/อาคาร" autocomplete="off" />
     </div>
 
-    <div class="col-md-12">
-      <FormKit type="text" label="Floor" name="Floor" v-model="addressData.Floor" placeholder="Floor" autocomplete="off" />
+    <div class="col-md-6">
+      <FormKit type="text" label="ชั้น" name="Floor" v-model="addressData.Floor" placeholder="ชั้น" autocomplete="off" />
     </div>
 
-    <div class="col-md-12">
-      <FormKit type="text" label="Alley" name="Alley" v-model="addressData.Alley" placeholder="Alley" autocomplete="off" />
+    <div class="col-md-6">
+      <FormKit type="text" label="ซอย" name="Alley" v-model="addressData.Alley" placeholder="ซอย" autocomplete="off" />
     </div>
 
-    <div class="col-md-12">
-      <FormKit type="text" label="Road" name="Road" v-model="addressData.Road" placeholder="Road" autocomplete="off" />
+    <div class="col-md-6">
+      <FormKit type="text" label="ถนน" name="Road" v-model="addressData.Road" placeholder="ถนน" autocomplete="off" />
     </div>
 
-    <div class="col-md-12">
+    <div class="col-md-6">
       <FormKit type="autocomplete" name="ProvinceID" label="จังหวัด" placeholder="เลือกจังหวัด" validation="required"
         :validation-messages="{ required: 'กรุณาเลือกจังหวัด' }" :options="province" clear-search-on-open open-on-focus
         v-model="selectedProvince" @click="handleProvinceClick" />
     </div>
-    <div class="col-md-12">
+    <div class="col-md-6">
       <FormKit type="autocomplete" name="DistrictID" label="อำเภอ" placeholder="เลือกอำเภอ" validation="required"
         :validation-messages="{ required: 'กรุณาเลือกอำเภอ' }" :options="filteredDistricts" clear-search-on-open
         open-on-focus v-model="selectedDistrict" @click="handleDistrictClick" />
     </div>
-    <div class="col-md-12">
+    <div class="col-md-6">
       <FormKit type="autocomplete" name="SubDistrictID" label="ตำบล" placeholder="เลือกตำบล" validation="required"
         :validation-messages="{ required: 'กรุณาเลือกตำบล' }" :options="filteredSubDistricts" clear-search-on-open
         open-on-focus v-model="selectedSubDistrict" />

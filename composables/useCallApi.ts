@@ -21,6 +21,7 @@ export default () => {
             let jsonData = response._data
 
             if (typeof jsonData === "string") {
+
                 try {
                     jsonData = JSON.parse(jsonData)
                 }
@@ -30,32 +31,32 @@ export default () => {
                 }
                 
 
+
             }
-            if (jsonData) {
-                if (jsonData.Status == 200) {
 
-                    result.serverStatus = response.status
-                    result.apiStatus = jsonData.Status
-                    result.statusMessage = jsonData.Message
-                    result.statusMessageType = 'notice-success'
-                    result.respErrorCode = jsonData.ErrorCode
-                    result.respData = jsonData.Data
-                    result.respOptions = jsonData.Options
-                    result.apiResponse = jsonData
+            if (jsonData.Status == 200) {
 
-                }
-                else {
+                result.serverStatus = response.status
+                result.apiStatus = jsonData.Status
+                result.statusMessage = jsonData.Message
+                result.statusMessageType = 'notice-success'
+                result.respErrorCode = jsonData.ErrorCode
+                result.respData = jsonData.Data
+                result.respOptions = jsonData.Options
+                result.apiResponse = jsonData
 
-                    result.serverStatus = response.status
-                    result.apiStatus = jsonData.Status
-                    result.statusMessage = jsonData.ErrorMessage
-                    result.statusMessageType = 'notice-warning'
-                    result.respErrorCode = jsonData.ErrorCode
-                    result.respData = jsonData.Data
-                    result.respOptions = jsonData.Options
-                    result.apiResponse = jsonData
+            }
+            else {
 
-                }
+                result.serverStatus = response.status
+                result.apiStatus = jsonData.Status
+                result.statusMessage = jsonData.ErrorMessage
+                result.statusMessageType = 'notice-warning'
+                result.respErrorCode = jsonData.ErrorCode
+                result.respData = jsonData.Data
+                result.respOptions = jsonData.Options
+                result.apiResponse = jsonData
+
             }
 
 

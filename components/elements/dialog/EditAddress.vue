@@ -46,7 +46,7 @@
               <RegisterFormTaxEN v-if="InsuredClassifierText == 'foreigner'" 
               :profileData="profileDataArray" :prefixData="prefixPOption" />
             </aside>
-            <aside class="company-classifier" v-else>
+            <aside class="company-classifier" v-else-if="profileDataArray.ReceiverType == 'I'">
               <section>
                 <FormKit type="radio" label="ลักษณะ" name="CompanyClassifier" :options="{
                   headoffice: 'สำนักงานใหญ่',

@@ -298,7 +298,8 @@ const getCalculate = async () => {
           shipopingCost.value = DeliveryFee[0].Price
         }
         if(DeliveryFee[1]) {
-          shippingTaxCost.value = DeliveryFee[1].Price
+          let isSameAsDefault: boolean = props.order.IsTaxInvoice && props.order.Customer.IsTaxInvoiceDeliveryAddressSameAsDefault
+          shippingTaxCost.value = isSameAsDefault ? 0 : DeliveryFee[1].Price
         }
       }
     }

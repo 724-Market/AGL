@@ -9,7 +9,7 @@
                 <div class="status-item text-info text-big">
                     <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
                     <!-- <p>{{ $props.paymentGet.PaymentNo }}</p> -->
-                    <p>{{ props.orderGet?.OrderNo }}</p>
+                    <p>{{ props.orderGet?.Order[0].OrderNo }}</p>
                 </div>
                 <div class="status-item text-info text-big">
                     <h5 class="topic">หมายเลขอ้างอิง</h5>
@@ -26,10 +26,10 @@
                     <h5 class="topic">สถานะ</h5>
                     <p>กำลังดำเนินการ</p>
                 </div>
-                <div class="status-item">
+                <!-- <div class="status-item">
                     <h5 class="topic">จะได้รับกรมธรรม์</h5>
                     <p>ภายใน 5 นาที</p>
-                </div>
+                </div> -->
                 <div class="status-info">
                     <div class="callout">
                         <i class="fa-regular fa-face-smile-hearts fa-beat"></i> 724 ประกันออนไลน์
@@ -37,7 +37,7 @@
                     </div>
                     <div class="status-action">
                         <a class="btn btn-outline-info" href="#" title="แชร์หน้านี้">แชร์หน้านี้</a>
-                        <NuxtLink class="btn btn-primary" :to="'/order/compulsory/status/'+$props.orderGet?.OrderNo"
+                        <NuxtLink class="btn btn-primary" :to="'/order/compulsory/status/'+$props.orderGet?.Order[0].OrderNo"
                             title="ตรวจสอบสถานะสั่งซื้อ">ตรวจสอบสถานะสั่งซื้อ</NuxtLink>
                     </div>
                 </div>

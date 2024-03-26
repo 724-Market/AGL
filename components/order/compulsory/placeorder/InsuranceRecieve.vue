@@ -193,7 +193,7 @@
     :address-type="'DELIVERY'"
     :customer-i-d="props.customerId" 
     :address-default-i-d="props.addressDefaultID"
-    :address-i-d="props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID"
+    :address-i-d="props.newAddressDelivery ?? props.insuranceRecieveCache?.PostalDelivary?.DeliveryAddress?.AddressID"
     :address-data-array="newAddressUpdate" 
     :profile-data-array="newAddressUpdate" 
     :show="isEditDeliveryAddress" @close-address="closeModalAddress"
@@ -227,6 +227,7 @@ const props = defineProps({
   addrSubDistrict: Array<SelectOption>,
   addrZipCode:String,
   customerId: String,
+  newAddressDelivery: String,
   addressDefaultID: String,
   insureFullAddress:String,
   isInsureRecieve: Boolean,

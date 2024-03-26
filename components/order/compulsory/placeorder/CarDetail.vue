@@ -33,7 +33,6 @@
                       v-model="carLicenseText"
                       @change="handleCarLicenseChange"
                       :validation="[['required'], ['length', 0, 7]]"
-                      validation-visibility="live"
                       :validation-messages="{
                         required: 'กรุณาใส่ข้อมูล',
                         length: 'ทะเบียนรถควรมีไม่เกิน 7 ตัว',
@@ -55,7 +54,6 @@
                         ['required'], 
                         ['length', 2, 3]
                       ]"
-                      validation-visibility="live"
                       :validation-messages="{
                         required: 'กรุณาใส่ข้อมูล',
                         length: 'ตัวอักษรควรมีอย่างน้อย 2 ตัว และไม่เกิน 3 ตัว',
@@ -77,7 +75,6 @@
                         ['length', 0, 4],
                         ['matches', /^[0-9]+$/]
                       ]"
-                      validation-visibility="live"
                       :validation-messages="{
                         required: 'กรุณาใส่ข้อมูล',
                         matches: 'เลขทะเบียนรถควรเป็นตัวเลขเท่านั้น',

@@ -11,8 +11,8 @@
         <div class="card-body">
           <div class="row">
             <p>{{ props.addressType }}</p>
-            <!-- <p>{{ props.addressID }}</p>
-            <p>{{ props.addressDefaultID }}</p> -->
+            <!-- <p>addressID{{ props.addressID }}</p>
+            <p>addressDefaultID{{ props.addressDefaultID }}</p> -->
             <RegisterFormProfile v-if="props.addressType=='CURRENT'" :profileData="profileDataArray" />
             <RegisterFormDelivery v-if="props.addressType=='DELIVERY'" :profileData="profileDataArray" />
 
@@ -20,13 +20,11 @@
               <FormKit type="radio" label="ใบกำกับภาษี" name="InsuredType" :options="[
                     {
                       label: 'บุคคลธรรมดา',
-                      value: 'P',
-                      attrs: { disabled: IsDisablePersonType } 
+                      value: 'P'
                     },
                     {
                       label: 'นิติ',
-                      value: 'I',
-                      attrs: { disabled: IsDisableCompanyType } 
+                      value: 'I'
                     },
                   ]" v-model="profileDataArray.ReceiverType" validation="required"
                 :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block"
@@ -46,7 +44,7 @@
               <RegisterFormTaxEN v-if="InsuredClassifierText == 'foreigner'" 
               :profileData="profileDataArray" :prefixData="prefixPOption" />
             </aside>
-            <aside class="company-classifier" v-else>
+            <aside class="company-classifier" v-else-if="props.addressType=='TAXINVOICE' && profileDataArray.ReceiverType == 'I'">
               <section>
                 <FormKit type="radio" label="ลักษณะ" name="CompanyClassifier" :options="{
                   headoffice: 'สำนักงานใหญ่',
@@ -130,6 +128,7 @@ const props = defineProps({
   customerID: String,
   addressID: String,
   addressDefaultID: String,
+  nationality: Array<SelectOption>,
   addrProvince: Array<SelectOption>,
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
@@ -153,10 +152,10 @@ onMounted(async () => {
   if(props.profileDataArray.ReceiverType == 'I'){
     IsDisablePersonType.value = true
     IsDisableCompanyType.value = false
-    if(props.profileDataArray.BranchCode || props.profileDataArray.BranchName){
-      CompanyClassifierText.value = 'branch'
-    } else {
+    if(props.profileDataArray.BranchName == 'สำนักงานใหญ่'){
       CompanyClassifierText.value = 'headoffice'
+    } else {
+      CompanyClassifierText.value = 'branch'
     }
   }
   if(props.profileDataArray.ReceiverType == 'P'){
@@ -200,7 +199,7 @@ const submitEditAddress = async (formData: any) => {
     console.log(`${key}: ${reqSaveAddress[key]}`);
   }
   */
-  if(((props.addressID == props.addressDefaultID) || (props.addressID == null)) && props.addressType != 'CURRENT'){
+  if(((props.addressID == props.addressDefaultID) || (props.addressID == '')) && props.addressType != 'CURRENT'){
     const resCreate = await useRepository().customer.AddressCreate(reqSaveAddress);
     if (
       resCreate.apiResponse.Status &&

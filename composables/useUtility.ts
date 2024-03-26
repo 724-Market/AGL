@@ -29,7 +29,7 @@ export default () => {
 
     const getClassStatusParent = (indexStatus, indexCurrent) => {
         if (indexStatus === indexCurrent) {
-            return 'is-warning'
+            return 'is-success'
         } else if (indexStatus < indexCurrent) {
             return 'is-next'
         } else if (indexStatus > indexCurrent) {

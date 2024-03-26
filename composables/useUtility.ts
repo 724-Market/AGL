@@ -51,7 +51,9 @@ export default () => {
             case 'Warning':
                 return { Class: "is-warning", Type: "warn" }
             default:
+
                 return { Class: "", Type: "" } // Return undefined if statusCode doesn't match any case
+
         }
     }
 
@@ -518,8 +520,10 @@ export default () => {
     }
 
     return {
+
         getClassStatusParent,
         getClassStatusOrder,
+
         getIconFromStatusOrder,
         getCompanyImage,
         getCompanyType,

@@ -82,6 +82,7 @@
                 <OrderCartInsure v-if="insureDetail && insuranceRecieve"
                   :delivery-type="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
                   :is-person="insureDetail.IsPerson" v-model:person-profile.sync="personProfile"
+                  :company-type="prefixData.isNotPerson"
                   v-model:legal-person-profile="legalPersonProfile"></OrderCartInsure>
               </div>
 
@@ -277,21 +278,15 @@ const isTaxDelivery = ref(false)
 const isTaxAddress = ref(false)
 const isInsureRecieve = ref(false)
 
+// Define the type for elements of data1
+interface DataItem {
+    value: string;
+    label: string;
+}
+
 // Assuming you have IsPerson flag to differentiate between the two sets of data
-const data1 = [
-    {
-        value: '3B8D18E2FD2449098CAC6F39FE371D9A',
-        label: 'นาง'
-    },
-    {
-        value: 'B27FF405993B493490465932E27C089B',
-        label: 'นางสาว'
-    },
-    {
-        value: 'F3975B7444CE453A810DA8F92260CAB9',
-        label: 'นาย'
-    }
-];
+const data1 = ref<DataItem[]>([]);;
+const data2 = ref<DataItem[]>([]);;
 /*
 const data1 = [
     {
@@ -307,7 +302,6 @@ const data1 = [
         label: 'นาย'
     }
 ];
-*/
 
 const data2 = [
     {
@@ -319,6 +313,7 @@ const data2 = [
         label: 'ห้างหุ้นส่วนจำกัด'
     }
 ];
+*/
 
 // New parameter to keep both sets of data
 const prefixData = {
@@ -345,7 +340,9 @@ const onLoad = onMounted(async () => {
       await loadProvince();
       await loadCarColor();
       await loadPrefix(true);
-      //await loadPrefixRecieve();
+      //implement prefix structure before remove loadPrefix(true)
+      await loadPrefixRecieve();
+      //implement prefix structure before remove loadPrefix(true)
       await loadNationality();
       await loadDelivery();
       isLoading.value = false;
@@ -791,12 +788,23 @@ const loadPrefix = async (isPerson: boolean) => {
     } else {
       // data not found
     }
+    if (isPerson && response.apiResponse.Data) {
+      // Assigning values from response to data1
+      response.apiResponse.Data.forEach(item => {
+          data1.value.push({
+              value: item.ID,
+              label: item.Name
+          });
+      });
+
+    } 
   } else {
   }
 };
 const loadPrefixRecieve = async () => {
   const req: PrefixReq = {
-    IsPerson: true,
+    IsPerson: false,
+    //IsPerson: true,
   };
   const response = await useRepository().master.prefix(req);
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {
@@ -815,6 +823,16 @@ const loadPrefixRecieve = async () => {
       });
     } else {
       // data not found
+    }
+
+    if (response.apiResponse.Data) {
+      // Assigning values from response to data1
+      response.apiResponse.Data.forEach(item => {
+          data2.value.push({
+              value: item.ID,
+              label: item.Name
+          });
+      });
     }
   } else {
   }

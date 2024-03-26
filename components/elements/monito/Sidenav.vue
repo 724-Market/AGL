@@ -8,10 +8,10 @@
                         <i class="fa-duotone fa-house"></i><span class="nav-link-text">หน้าหลัก</span>
                     </NuxtLink>
                 </li>
-                <li class="nav-item" style="display: none">
-                    <a class="nav-link" href="#" title="แดชบอร์ด">
+                <li class="nav-item">
+                    <NuxtLink class="nav-link" to="/dashboard" title="แดชบอร์ด">
                         <i class="fa-duotone fa-chart-line"></i><span class="nav-link-text">แดชบอร์ด</span>
-                    </a>
+                    </NuxtLink>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#menu-order" title="แจ้งงาน" data-bs-toggle="collapse" role="button"
@@ -25,23 +25,28 @@
                                 </NuxtLink>
                             </li>
                             <li class="nav-item">
-                                <NuxtLink class="nav-link" to="/order/compulsory/create" title="ทำรายการใหม่">ทำรายการใหม่
+                                <NuxtLink class="nav-link" to="/order/compulsory/create" title="ทำรายการใหม่">
+                                    ทำรายการใหม่
                                 </NuxtLink>
                             </li>
                             <li class="nav-item" style="display: none">
-                                <NuxtLink class="nav-link" to="/order/compulsory/information" title="กรอกข้อมูล">กรอกข้อมูล
+                                <NuxtLink class="nav-link" to="/order/compulsory/information" title="กรอกข้อมูล">
+                                    กรอกข้อมูล
                                 </NuxtLink>
                             </li>
                             <li class="nav-item" style="display: none">
-                                <NuxtLink class="nav-link" to="/order/compulsory/packages" title="เลือกแพ็กเกจ">เลือกแพ็กเกจ
+                                <NuxtLink class="nav-link" to="/order/compulsory/packages" title="เลือกแพ็กเกจ">
+                                    เลือกแพ็กเกจ
                                 </NuxtLink>
                             </li>
                             <li class="nav-item" style="display: none">
-                                <NuxtLink class="nav-link" to="/order/compulsory/placeorder" title="คำสั่งซื้อ">คำสั่งซื้อ
+                                <NuxtLink class="nav-link" to="/order/compulsory/placeorder" title="คำสั่งซื้อ">
+                                    คำสั่งซื้อ
                                 </NuxtLink>
                             </li>
                             <li class="nav-item" style="display: none">
-                                <NuxtLink class="nav-link" to="/order/compulsory/payment" title="วิธีชำระเงิน">วิธีชำระเงิน
+                                <NuxtLink class="nav-link" to="/order/compulsory/payment" title="วิธีชำระเงิน">
+                                    วิธีชำระเงิน
                                 </NuxtLink>
                             </li>
                             <li class="nav-item" style="display: none">

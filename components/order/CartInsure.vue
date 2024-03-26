@@ -43,7 +43,9 @@ const props = defineProps({
   legalPersonProfile: Object,
   isPerson: Boolean,
   deliveryType: String,
+  companyType: Object
 });
+
 
 const onLoad = onMounted(async () => {
  await setInsureDetail();
@@ -54,11 +56,14 @@ const getFullName = (isPerson:boolean,personProfile:any,legalPersonProfile:any):
   if (isPerson && personProfile) {
     fullName = personProfile.FirstName + " " + personProfile.LastName;
   } else if (legalPersonProfile) {
-    fullName =
-      legalPersonProfile.ContactFirstName +
-      " " +
-      legalPersonProfile.ContactLastName;
-  }
+    const labelType = props.companyType?.value.find((item: any) => item.value === props.legalPersonProfile?.PrefixID)
+    //labelType.label = useUtility().getCompanyType(labelType);
+    if (labelType) { // Check if labelType is not undefined
+        fullName = useUtility().getCompanyType(labelType.label) + " " + legalPersonProfile.ContactFirstName;
+    } else {
+        fullName = legalPersonProfile?.PrefixID + " " + legalPersonProfile.ContactFirstName; // Fallback to PrefixID if labelType is undefined
+    }
+  } 
   return fullName
 }
 const getCustomerType = (isPerson:boolean,personProfile:any,legalPersonProfile:any):string=>{

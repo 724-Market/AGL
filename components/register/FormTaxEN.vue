@@ -2,20 +2,20 @@
     <h3>ชื่อผู้เอาประกันภัย (บุคคลธรรมดา : คนต่างชาติ)</h3>
     <div class="row">
         <div class="col-sm-4 col-lg-4">
-            <FormKit type="select" label="Prefix" name="TitlePerson" placeholder="คำนำหน้า"
-                :options="props.prefixData" v-model="profileData.PrefixID" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+            <FormKit type="select" label="Prefix" name="TitlePerson" placeholder="Prefix"
+                :options="props.prefixData" v-model="profileData.PrefixID" validation="required" :validation-messages="{ required: 'Can not empty!!!' }"
                  />
         </div>
         <div class="col-md-6">
             <FormKit type="text" label="Firstname" name="FirstName" v-model="profileData.FirstName"
-                placeholder="ระบุชื่อ" validation="required" :validation-messages="{
-                    required: 'กรุณาใส่ชื่อ'
+                placeholder="Firstname" validation="required" :validation-messages="{
+                    required: 'Can not empty!!!'
                 }" autocomplete="off" />
         </div>
         <div class="col-md-6">
             <FormKit type="text" label="Lastname" name="LastName" v-model="profileData.LastName"
-                placeholder="ระบุนามสกุล" validation="required" :validation-messages="{
-                    required: 'กรุณาใส่นามสกุล'
+                placeholder="Lastname" validation="required" :validation-messages="{
+                    required: 'Can not empty!!!'
                 }" autocomplete="off" />
         </div>
         <div class="col-md-6">
@@ -31,7 +31,21 @@
                           ></ElementsFormPhoneNumber>
         </div>
         <div class="col-6">
-            <ElementsFormIdCard label="Passport No." name="TaxID" v-model="profileData.TaxID" />
+            <!-- <ElementsFormIdCard label="Passport No." name="TaxID" v-model="profileData.TaxID" /> -->
+            <FormKit type="text" label="Passport No." name="TaxID"
+            placeholder="เลขประจำตัวผู้เสียภาษี" validation="required|number"
+            maxlength="13"
+            :validation-messages="{
+            required: 'กรุณาใส่ข้อมูล',
+            number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
+            }" autocomplete="off" v-model="profileData.TaxID"
+            />
+        </div>
+        <div class="col-md-12 col-lg-5">
+            <FormKit type="select" label="Nationality" name="Nationality" placeholder="Nationality"
+                :options="props.nationality" validation="required"
+                :validation-messages="{ required: 'Can not empty!!!' }" 
+            />
         </div>
         
         <div class="col-6">
@@ -45,5 +59,6 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps(['profileData', 'prefixData'])
+const props = defineProps(['profileData', 'prefixData', 'nationality'])
+
 </script>

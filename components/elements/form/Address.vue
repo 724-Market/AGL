@@ -10,7 +10,6 @@
         @keyup="handlerChangeFullAddress"
         :validation-rules="{ address_characters }"
         validation="required|address_characters"
-        validation-visibility="live"
         :validation-messages="{
           required: 'กรุณาใส่ข้อมูล',
           address_characters: 'กรุณากรอกรูปแบบบ้านเลขที่ให้ถูกต้อง',
@@ -72,7 +71,6 @@
         @change="handlerChangeProvince"
         :options="province"
         validation="required"
-        validation-visibility="live"
         v-model="ObjectAddress.ProvinceID"
         :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
       />
@@ -86,7 +84,6 @@
         :options="addrDistrict"
         @change="handlerChangeDistrict"
         validation="required"
-        validation-visibility="live"
         v-model="ObjectAddress.DistrictID"
         :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
       />
@@ -101,7 +98,6 @@
         :options="addrSubDistrict"
         @change="handlerChangeSubDistrict"
         validation="required"
-        validation-visibility="live"
         :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
       />
     </div>
@@ -115,7 +111,6 @@
         @input-raw="handlerChangeFullAddress"
         placeholder="รหัสไปรษณีย์"
         validation="required"
-        validation-visibility="live"
         :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
         autocomplete="off"
       />

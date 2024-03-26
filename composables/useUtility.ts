@@ -68,11 +68,11 @@ export default () => {
     const getCompanyType = (label: string | undefined): labelType => {
         switch (label) {
             case 'บริษัท':
-                return 'บมจ.';
+                return 'บจก.';
             case 'ห้างหุ้นส่วนจำกัด':
                 return 'หจก.';
             default:
-                return label; // Return undefined if statusCode doesn't match any case
+                return label; // Return undefined if label doesn't match any case
         }
     };
     const getTokenExpire = async(): Promise<string> => {

@@ -42,7 +42,7 @@
               <RegisterFormTaxTH v-if="InsuredClassifierText == 'thai'" 
               :profileData="profileDataArray" :prefixData="prefixPOption" />
               <RegisterFormTaxEN v-if="InsuredClassifierText == 'foreigner'" 
-              :profileData="profileDataArray" :prefixData="prefixPOption" />
+              :profileData="profileDataArray" :prefixData="prefixPOption" :nationality="props.nationality" />
             </aside>
             <aside class="company-classifier" v-else-if="props.addressType=='TAXINVOICE' && profileDataArray.ReceiverType == 'I'">
               <section>

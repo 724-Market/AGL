@@ -28,6 +28,9 @@
                 autocomplete="off" v-model="profileData.Email"
                 />
         </div>
+        <div class="col-6">
+            <FormKit type="hidden" name="BranchName" value="สำนักงานใหญ่" />
+        </div>
 
     </div>
 

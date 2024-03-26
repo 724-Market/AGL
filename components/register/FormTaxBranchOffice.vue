@@ -1,6 +1,5 @@
 <template>
     <h3>ชื่อผู้เอาประกันภัย (นิติบุคคล : สาขา)</h3>
-    <p>{{ profileData.Email }}</p>
     <div class="row">
         <!-- <div class="col-sm-4 col-lg-3">
             <FormKit type="select" label="ประเภทกิจการ" name="BranchCompanyType" placeholder="ประเภทกิจการ"

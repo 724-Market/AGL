@@ -47,7 +47,7 @@
             @change-sub-district="handlerChangeSubDistrictForTax" @change-province2="handlerChangeProvinceForTax2"
             @change-district2="handlerChangeDistrictForTax2" @change-sub-district2="handlerChangeSubDistrictForTax2"
             @new-tax-i-d="updateNewTaxID" @new-tax-address-i-d="updateNewTaxAddressID"
-            :insure-full-address="insureFullAddress" :prefix="prefix" :prefixData="{prefixData}" :delivery="delivery"
+            :insure-full-address="insureFullAddress" :prefix="prefixRecieve" :prefixData="{prefixData}" :delivery="delivery"
             :addr-province="addrProvinceForTax" :addr-district="addrDistrictForTax" :new-address-tax="newAddressTaxID"
             :addr-sub-district="addrSubDistrictForTax" :addr-zip-code="addrZipCodeForTax" :new-delivery-tax="newTaxDeliveryID"
             :addr-province2="addrProvinceForTax2" :addr-district2="addrDistrictForTax2" :nationality="nationality"
@@ -803,7 +803,7 @@ const loadPrefix = async (isPerson: boolean) => {
 };
 const loadPrefixRecieve = async () => {
   const req: PrefixReq = {
-    IsPerson: false,
+    IsPerson: true,
     //IsPerson: true,
   };
   const response = await useRepository().master.prefix(req);

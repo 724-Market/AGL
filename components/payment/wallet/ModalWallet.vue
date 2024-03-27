@@ -207,6 +207,9 @@ const feeMessage = ref("")
 const topupMessage = ref("")
 const paymentList: globalThis.Ref<CreditHistoryPaymentAdd | undefined> = ref()
 
+// Get `agentInfo` store
+const agentInfoStore = useAgentInfoStore()
+
 /////////////////////////////////////////
 // Button Loading
 const isLoading = ref(false)
@@ -308,8 +311,12 @@ watch(
           response.apiResponse.Status == "200" &&
           response.apiResponse.Data
         ) {
+
           paymentResponse.value = response.apiResponse.Data[0]
           handlerCheckPayment(paymentResponse.value)
+
+          await useAsyncData(agentInfoStore.getAll)
+
         }
         isLoading.value = false
       }

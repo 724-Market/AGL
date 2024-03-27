@@ -1,11 +1,13 @@
 export const useAgentInfoStore = defineStore('agentInfo', {
 
   state: () => ({
+    AMUserType: '', 
     AMType: '',
     AMId: '',
     AMNo: '',
     AMLevel: '',
     isAMAffiliate: '',
+    isAMPlan: '',
     AMPlanName: '',
     AMPlanExpire: '',
     AMAvailableBalance: '',
@@ -15,10 +17,36 @@ export const useAgentInfoStore = defineStore('agentInfo', {
   actions: {
 
     async getAll() {
-      
-      // await getProfile()
-      // await getPlan()
-      // await getPledgeBalance()
+    
+      await this.getUser()
+      await this.getProfile()
+      await this.getPlan()
+      await this.getPledgeBalance()
+      await this.getPaperCreditBalance()
+
+    },
+    
+    async refreshAll() {
+    
+      if(!this.AMUserType) {
+        await this.getUser()
+      }
+
+      if(!this.AMId) {
+        await this.getProfile()
+      }
+
+      if(!this.isAMPlan) {
+        await this.getPlan()
+      }
+
+      if(!this.AMAvailableBalance) {
+        await this.getPledgeBalance()
+      }
+
+      if(!this.AMCreditAvailable) {
+        await this.getPaperCreditBalance()
+      }
 
     },
     
@@ -34,6 +62,17 @@ export const useAgentInfoStore = defineStore('agentInfo', {
         this.AMLevel = 'ระดับ ' + res_profile.apiResponse.Data[0].ModelAgent
         this.isAMAffiliate = res_profile.apiResponse.Data[0].IsAffiliate
       }
+
+    },
+
+    // Get User
+    async getUser() {
+      const res_user = await useRepository().user.GetUser();
+      const resultCheck_user = useUtility().responseCheck(res_user)
+
+      if (resultCheck_user.status === 'pass') {
+        this.AMUserType = res_user.apiResponse.Data[0].UserType
+      }
     },
 
     // Get Plan
@@ -41,9 +80,19 @@ export const useAgentInfoStore = defineStore('agentInfo', {
       const res_plan = await useRepository().agent.getPlanProduct()
       const resultCheck_plan = useUtility().responseCheck(res_plan)
 
-      if (resultCheck_plan.status === 'pass') {
-        this.AMPlanName = res_plan.apiResponse.Data.Main[0].ProductPlanName
-        this.AMPlanExpire = res_plan.apiResponse.Data.Main[0].ExpireDate
+      if(resultCheck_plan.status === 'pass') {
+        if(res_plan.apiResponse.Data.Main.length > 0 && res_plan.apiResponse.Data.Main[0].ProductPlanName) {
+          this.AMPlanName = res_plan.apiResponse.Data.Main[0].ProductPlanName
+        }
+        if(res_plan.apiResponse.Data.Main.length > 0 && res_plan.apiResponse.Data.Main[0].ExpireDate) {
+          this.AMPlanExpire = res_plan.apiResponse.Data.Main[0].ExpireDate
+        }
+        if(res_plan.apiResponse.Data.Main.length > 0 && res_plan.apiResponse.Data.Main[0].ProductPlanName) {
+          this.isAMPlan = 'Yes'
+        }
+        else {
+          this.isAMPlan = 'No'
+        }
       }
     },
 
@@ -52,9 +101,12 @@ export const useAgentInfoStore = defineStore('agentInfo', {
       const res_pledge = await useRepository().pledge.getCreditBalance()
       const resultCheck_pledge = useUtility().responseCheck(res_pledge)
 
-      if (resultCheck_pledge.status === 'pass') {
-        this.AMAvailableBalance = res_pledge.apiResponse.Data[0].AvailableBalance
+      if(resultCheck_pledge.status === 'pass') {
+        if(res_pledge.apiResponse.Data.length > 0 && res_pledge.apiResponse.Data[0].AvailableBalance) {
+          this.AMAvailableBalance = res_pledge.apiResponse.Data[0].AvailableBalance
+        }
       }
+
     },
 
     // Get Pledge balance
@@ -62,36 +114,50 @@ export const useAgentInfoStore = defineStore('agentInfo', {
       const res_paper = await useRepository().paper.getPaperCreditBalance()
       const resultCheck_paper = useUtility().responseCheck(res_paper)
 
-      if (resultCheck_paper.status === 'pass') {
-        this.AMCreditAvailable = res_paper.apiResponse.Data[0].CreditAvailable
+      if(resultCheck_paper.status === 'pass') {
+        if(res_paper.apiResponse.Data.length > 0 && res_paper.apiResponse.Data[0].CreditAvailable) {
+          this.AMCreditAvailable = res_paper.apiResponse.Data[0].CreditAvailable
+        }
       }
+
+    },
+
+    async clearAgentInfo() {
+        this.$reset()
+        this.$dispose()
+        sessionStorage.removeItem('agentInfo')
     },
 
     // Reset store
     $reset() {
+      // this.AMUserType = ''
       // this.AMType = ''
       // this.AMId = ''
       // this.AMNo = ''
       // this.AMLevel = ''
       // this.isAMAffiliate = ''
+      // this.isAMPlan = ''
       // this.AMPlanName = ''
       // this.AMPlanExpire = ''
       // this.AMAvailableBalance = ''
-      sessionStorage.removeItem('agentInfo')
+      // sessionStorage.removeItem('agentInfo')
     },
 
     // Dispose store
     $dispose() {
+      // this.AMUserType = null 
       // this.AMType = null
       // this.AMId = null
       // this.AMNo = null
       // this.AMLevel = null
       // this.isAMAffiliate = null
+      // this.isAMPlan = null
       // this.AMPlanName = null
       // this.AMPlanExpire = null
       // this.AMAvailableBalance = null
-      sessionStorage.removeItem('agentInfo')
-    }
+      // sessionStorage.removeItem('agentInfo')
+    }, 
+
   },
 
   persist: {

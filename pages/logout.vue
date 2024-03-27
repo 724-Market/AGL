@@ -8,15 +8,14 @@
         <div class="card card-center">
 
           <div class="card-header">
-            <h1 class="title">Session Expired</h1>
-            <h2 class="subtitle">เซสชั่นหมดอายุ</h2>
+            <h1 class="title">Logout</h1>
+            <h2 class="subtitle">ออกจากระบบ</h2>
           </div>
 
           <div class="card-body">
             <div class="form-area">
 
-              <div class="notice-warning">มีการล็อกอินทิ้งไว้นานเกินเวลาที่กำหนด หรือมีการล็อกอินซ้อนจากเครื่องอื่น
-              </div>
+              <div class="notice-warning">ท่านทำการออกจากระบบ Agent Love เรียบร้อยแล้ว</div>
 
               <NuxtLink class="btn" @click="doLogout" title="กลับไปหน้าเข้าสู่ระบบ">เข้าสู่ระบบอีกครั้ง</NuxtLink>
 
@@ -69,9 +68,9 @@ const showPageHeader = false
 const showLogoHeader = false
 
 // Define page meta
-const pageTitle = 'Session Expired'
-const pageCategory = 'เซสชั่นหมดอายุ'
-const pageDescription = 'Session Expired เซสชั่นหมดอายุ'
+const pageTitle = 'Logout'
+const pageCategory = 'ออกจากระบบ'
+const pageDescription = 'Logout ออกจากระบบ'
 
 // Define meta seo
 useHead({

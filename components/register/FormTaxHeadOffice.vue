@@ -1,6 +1,5 @@
 <template>
     <h3>ชื่อผู้เอาประกันภัย (นิติบุคคล : สำนักงานใหญ่)</h3>
-    <p>{{ profileData.ReceiverType }}</p>
     <div class="row">
         <div class="col-sm-8 col-lg-5">
             <FormKit type="select" label="ประเภทกิจการ" name="CompanyType" placeholder="ประเภทกิจการ"
@@ -28,6 +27,9 @@
             <FormKit type="email" label="อีเมล" name="CompanyEmail" placeholder="xxxxxx@email.com"
                 autocomplete="off" v-model="profileData.Email"
                 />
+        </div>
+        <div class="col-6">
+            <FormKit type="hidden" name="BranchName" value="สำนักงานใหญ่" />
         </div>
 
     </div>

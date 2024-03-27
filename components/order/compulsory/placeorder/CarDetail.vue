@@ -33,7 +33,6 @@
                       v-model="carLicenseText"
                       @change="handleCarLicenseChange"
                       :validation="[['required'], ['length', 0, 7]]"
-                      validation-visibility="live"
                       :validation-messages="{
                         required: 'กรุณาใส่ข้อมูล',
                         length: 'ทะเบียนรถควรมีไม่เกิน 7 ตัว',
@@ -55,7 +54,6 @@
                         ['required'], 
                         ['length', 2, 3]
                       ]"
-                      validation-visibility="live"
                       :validation-messages="{
                         required: 'กรุณาใส่ข้อมูล',
                         length: 'ตัวอักษรควรมีอย่างน้อย 2 ตัว และไม่เกิน 3 ตัว',
@@ -77,7 +75,6 @@
                         ['length', 0, 4],
                         ['matches', /^[0-9]+$/]
                       ]"
-                      validation-visibility="live"
                       :validation-messages="{
                         required: 'กรุณาใส่ข้อมูล',
                         matches: 'เลขทะเบียนรถควรเป็นตัวเลขเท่านั้น',
@@ -369,8 +366,9 @@ const handleFileChange = async (event: any) => {
   if(base64FileString && base64FileString!="")
   {
     let uploadFileReq: UploadFileRequest = {
-    Base64: base64FileString,
-    FileNameWithExtension: file.name.toString()
+      UploadType: 'CarLicense',
+      Base64: base64FileString,
+      FileNameWithExtension: file.name.toString()
   }
   const response = await useRepository().file.upload(uploadFileReq)
   if (response.apiResponse.Status && response.apiResponse.Status == "200") {

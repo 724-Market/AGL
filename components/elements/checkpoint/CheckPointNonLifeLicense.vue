@@ -11,7 +11,7 @@
         <h5 class="topic">เพิ่มใบอนุญาตวินาศภัย</h5>
         <button v-if="!isHidden" class="btn-secondary" type="button"
           @click="openDialogNonLifeLicense">คลิกเพื่อเพิ่ม</button>
-        <span class="badge">เร็วๆ นี้</span>
+        <span v-else class="badge">เร็วๆ นี้</span>
       </div>
     </div>
   </div>
@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-const isHidden = ref(true)
+const isHidden = ref(false)
 
 /////////////////////////////////////////
 // Define emit function to emit events on all dialog

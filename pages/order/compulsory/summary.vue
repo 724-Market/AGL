@@ -341,7 +341,8 @@ const submitOrder = async (formData: any) => {
           orderid: paymentConfirmRes?.OrderNo ?? "",
           refno: paymentConfirmRes?.PaymentNo ?? "",
           amount: paymentConfirmRes?.GrandAmount ?? 0,
-          response_url: `${config.public.BaseUrlWeb}/order/compulsory/thanks?PaymentNo=${paymentConfirmRes?.PaymentNo}`,
+          response_url: `${config.public.BaseUrlWeb}/order/compulsory/thanks?${paymentConfirmRes?.PaymentNo}`,
+          //response_url: `${config.public.BaseUrlWeb}/order/compulsory/thanks?PaymentNo=${paymentConfirmRes?.PaymentNo}`,
         };
       }
 

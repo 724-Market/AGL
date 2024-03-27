@@ -90,6 +90,9 @@ const confirmText = ref('')
 const confirmButton = ref('')
 const confirmCancelButton = ref('')
 
+// Get `agentInfo` store
+const agentInfoStore = useAgentInfoStore()
+
 // Function to handle close confirm events
 const handleCloseConfirm = async () => {
   isShowConfirm.value = false
@@ -135,7 +138,7 @@ const handleAcceptConfirm = async () => {
 const getToken = async () => {
   const token = await useUtility().getToken()
   const expireTime = useTokenManage().getExpireSecondTime(token)
-console.log('expireTime',expireTime)
+  console.log('expireTime',expireTime)
   if (expireTime > 0) {
     const reduceTime = expireTime - (2 * 60 * 1000) // คำนวณ expire Date ของ token ก่อน 2 นาที
 
@@ -186,6 +189,7 @@ const props = defineProps({
 onMounted(async () => {
 
   await getToken()
+  await useAsyncData(agentInfoStore.refreshAll)
 
   // Close sidenav by default
   document.body.classList.remove('sidenav-show')

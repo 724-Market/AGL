@@ -81,7 +81,6 @@
                           :options="prefix"
                           validation="required"
                           v-model="taxInvoiceAddress.Prefix"
-                          validation-visibility="live"
                           :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
                         />
                       </div>
@@ -91,7 +90,6 @@
                           label="ชื่อผู้รับ"
                           name="NewFirstName"
                           placeholder="ชื่อ"
-                          validation-visibility="live"
                           validation="required"
                           :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
                           autocomplete="off"
@@ -105,7 +103,6 @@
                           label="นามสกุลผู้รับ"
                           name="NewLastName"
                           placeholder="นามสกุล"
-                          validation-visibility="live"
                           validation="required"
                           :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
                           autocomplete="off"
@@ -121,7 +118,6 @@
                           label="หมายเลขโทรศัพท์"
                           name="NewPhoneNumber"
                           placeholder="098765XXXX"
-                          validation-visibility="live"
                           validation="required"
                           :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
                           autocomplete="off"
@@ -140,7 +136,6 @@
                           placeholder="เลขบัตรประชาชน 13 หลัก"
                           v-model="taxInvoiceAddress.TaxID"
                           @keyup="handlerChangeTaxInvoice"
-                          validation-visibility="live"
                           validation="required|matches:/^[0-9]{13}$/"
                           :validation-messages="{
                             required: 'กรุณาใส่เลขบัตรประชาชน',
@@ -401,14 +396,13 @@
     v-if="isEditTaxAddress"
     :address-type="'TAXINVOICE'"
     :customer-i-d="stCustomerID"
-    :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID 
-    ?? props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
+    :address-i-d="props.newAddressTax ?? props.cacheOrderRequest?.Customer?.TaxInvoiceAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"
     :address-data-array="newTaxAddressUpdate"
     :profile-data-array="newTaxAddressUpdate"
     :prefix-p-option="prefixPOption"
     :prefix-i-option="prefixIOption"
-    :show="isEditTaxAddress"
+    :show="isEditTaxAddress" :nationality="props.nationality"
     @close-address="closeModalAddress"
     @on-edit-address="getAddressList"
   ></ElementsDialogEditAddress>
@@ -416,8 +410,7 @@
     v-if="isEditTaxDelivery"
     :address-type="'TAXINVOICE_DELIVERY'"
     :customer-i-d="stCustomerID"
-    :address-i-d="props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID 
-    ?? props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
+    :address-i-d="props.newDeliveryTax ?? props.cacheOrderRequest?.Customer?.TaxInvoiceDeliveryAddress?.AddressID"
     :address-default-i-d="props.addressDefaultID"
     :address-data-array="newTaxDeliveryAddressUpdate"
     :profile-data-array="newTaxDeliveryAddressUpdate"
@@ -440,12 +433,15 @@ const props = defineProps({
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
   addrZipCode: String,
+  nationality: Array<SelectOption>,
   addrProvince2: Array<SelectOption>,
   addrDistrict2: Array<SelectOption>,
   addrSubDistrict2: Array<SelectOption>,
   addrZipCode2: String,
   insureFullAddress: String,
   addressDefaultID: String,
+  newAddressTax: String,
+  newDeliveryTax: String,
   isIncludeTax: String,//1,0
   isTaxAddress: Boolean,
   isTaxDelivery: Boolean,

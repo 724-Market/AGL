@@ -29,7 +29,7 @@ export default () => {
 
     const getClassStatusParent = (indexStatus, indexCurrent) => {
         if (indexStatus === indexCurrent) {
-            return 'is-warning'
+            return 'is-success'
         } else if (indexStatus < indexCurrent) {
             return 'is-next'
         } else if (indexStatus > indexCurrent) {
@@ -51,7 +51,9 @@ export default () => {
             case 'Warning':
                 return { Class: "is-warning", Type: "warn" }
             default:
+
                 return { Class: "", Type: "" } // Return undefined if statusCode doesn't match any case
+
         }
     }
 
@@ -64,6 +66,17 @@ export default () => {
             return 'icon'
         }
     }
+
+    const getCompanyType = (label: string | undefined): labelType => {
+        switch (label) {
+            case 'บริษัท':
+                return 'บจก.';
+            case 'ห้างหุ้นส่วนจำกัด':
+                return 'หจก.';
+            default:
+                return label; // Return undefined if label doesn't match any case
+        }
+    };
     const getTokenExpire = async(): Promise<string> => {
         let refreshToken = "";
         const store = useStoreUserAuth()
@@ -507,10 +520,13 @@ export default () => {
     }
 
     return {
+
         getClassStatusParent,
         getClassStatusOrder,
+
         getIconFromStatusOrder,
         getCompanyImage,
+        getCompanyType,
         getCurrency,
         getTokenExpire,
         getToken,

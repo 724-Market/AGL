@@ -11,8 +11,8 @@
         <div class="card-body">
           <div class="row">
             <p>{{ props.addressType }}</p>
-            <!-- <p>{{ props.addressID }}</p>
-            <p>{{ props.addressDefaultID }}</p> -->
+            <!-- <p>addressID{{ props.addressID }}</p>
+            <p>addressDefaultID{{ props.addressDefaultID }}</p> -->
             <RegisterFormProfile v-if="props.addressType=='CURRENT'" :profileData="profileDataArray" />
             <RegisterFormDelivery v-if="props.addressType=='DELIVERY'" :profileData="profileDataArray" />
 
@@ -20,13 +20,11 @@
               <FormKit type="radio" label="ใบกำกับภาษี" name="InsuredType" :options="[
                     {
                       label: 'บุคคลธรรมดา',
-                      value: 'P',
-                      attrs: { disabled: IsDisablePersonType } 
+                      value: 'P'
                     },
                     {
                       label: 'นิติ',
-                      value: 'I',
-                      attrs: { disabled: IsDisableCompanyType } 
+                      value: 'I'
                     },
                   ]" v-model="profileDataArray.ReceiverType" validation="required"
                 :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block"
@@ -44,9 +42,10 @@
               <RegisterFormTaxTH v-if="InsuredClassifierText == 'thai'" 
               :profileData="profileDataArray" :prefixData="prefixPOption" />
               <RegisterFormTaxEN v-if="InsuredClassifierText == 'foreigner'" 
-              :profileData="profileDataArray" :prefixData="prefixPOption" />
+              :profileData="profileDataArray" :prefixData="prefixPOption" :nationality="props.nationality" />
             </aside>
-            <aside class="company-classifier" v-else>
+
+            <aside class="company-classifier" v-else-if="props.addressType=='TAXINVOICE' && profileDataArray.ReceiverType == 'I'">
               <section>
                 <FormKit type="radio" label="ลักษณะ" name="CompanyClassifier" :options="{
                   headoffice: 'สำนักงานใหญ่',
@@ -130,6 +129,7 @@ const props = defineProps({
   customerID: String,
   addressID: String,
   addressDefaultID: String,
+  nationality: Array<SelectOption>,
   addrProvince: Array<SelectOption>,
   addrDistrict: Array<SelectOption>,
   addrSubDistrict: Array<SelectOption>,
@@ -153,10 +153,10 @@ onMounted(async () => {
   if(props.profileDataArray.ReceiverType == 'I'){
     IsDisablePersonType.value = true
     IsDisableCompanyType.value = false
-    if(props.profileDataArray.BranchCode || props.profileDataArray.BranchName){
-      CompanyClassifierText.value = 'branch'
-    } else {
+    if(props.profileDataArray.BranchName == 'สำนักงานใหญ่'){
       CompanyClassifierText.value = 'headoffice'
+    } else {
+      CompanyClassifierText.value = 'branch'
     }
   }
   if(props.profileDataArray.ReceiverType == 'P'){
@@ -176,12 +176,12 @@ const submitEditAddress = async (formData: any) => {
       AddressID: props.addressID,
       Type: props.addressType,
       ReceiverType: formData.InsuredType,
-      PrefixID: formData.InsuredType == 'P' ? formData.TitlePerson : formData.CompanyType,
-      FirstName: formData.InsuredType == 'P' ? formData.FirstName : formData.CompanyName,
-      LastName: formData.InsuredType == 'P' ? formData.LastName : 'จำกัด',
-      Email: formData.InsuredType == 'P' ? formData.Email : formData.CompanyEmail,
-      PhoneNumber: formData.InsuredType == 'P' ? formData.PhoneNumber : formData.CompanyPhoneNumber,
-      TaxID: formData.InsuredType == 'P' ? formData.TaxID : formData.CompanyTaxId,
+      PrefixID: formData.InsuredType == 'I' ? formData.CompanyType : formData.TitlePerson,
+      FirstName: formData.InsuredType == 'I' ? formData.CompanyName : formData.FirstName,
+      LastName: formData.InsuredType == 'I' ? 'จำกัด' : formData.LastName,
+      Email: formData.InsuredType == 'I' ? formData.CompanyEmail : formData.Email,
+      PhoneNumber: formData.InsuredType == 'I' ? formData.CompanyPhoneNumber : formData.PhoneNumber,
+      TaxID: formData.InsuredType == 'I' ? formData.CompanyTaxId : formData.TaxID,
       BranchID: formData.BranchCode,
       BranchName: formData.BranchName,
       No: formData.No,
@@ -200,7 +200,7 @@ const submitEditAddress = async (formData: any) => {
     console.log(`${key}: ${reqSaveAddress[key]}`);
   }
   */
-  if(((props.addressID == props.addressDefaultID) || (props.addressID == null)) && props.addressType != 'CURRENT'){
+  if(((props.addressID == props.addressDefaultID) || (props.addressID == '')) && props.addressType != 'CURRENT'){
     const resCreate = await useRepository().customer.AddressCreate(reqSaveAddress);
     if (
       resCreate.apiResponse.Status &&

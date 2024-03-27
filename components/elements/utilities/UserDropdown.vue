@@ -70,24 +70,15 @@ const logout = (event) => {
   // Perform logout operations, clear tokens, user data, etc.
   // Reset Pinia store
   getActivePinia()._s.forEach(store => {
-    store.$reset() // Reset the store's state
-    store.$dispose() // Dispose of the store instance
-    sessionStorage.removeItem(store.$id) // Remove sessionStorage of the store instance
-
-    // Remove sessionStorage
-    sessionStorage.removeItem('useStoreNoticePayment')
-    sessionStorage.removeItem('useStorePayment')
-    sessionStorage.removeItem('useStorePackageList')
-    sessionStorage.removeItem('useStoreFeeLimit')
-    sessionStorage.removeItem('AgentInfo')
-    sessionStorage.removeItem('cachedAgentProfile')
-    sessionStorage.removeItem('agentProfile')
-
-    // Remove localStorage
-    localStorage.removeItem('useStoreInformation')
+    // store.$reset() // Reset the store's state
+    // store.$dispose() // Dispose of the store instance
+    // sessionStorage.removeItem(store.$id) // Remove sessionStorage of the store instance
+    // console.log(store.$id)
   })
 
   // Redirect to the login page after logout
-  router.push('/agent/login')
+  // router.push('/agent/login')
+  router.push('/logout')
+  
 }
 </script>

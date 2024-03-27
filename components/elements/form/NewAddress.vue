@@ -22,7 +22,6 @@
       @change="handleTitleChange"
       :options="prefix"
       validation="required"
-      validation-visibility="live"
       :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
     />
   </div>
@@ -35,7 +34,6 @@
       v-model="FirstNameText"
       @change="handleFirstNameChange"
       validation="required"
-      validation-visibility="live"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
       autocomplete="off"
     />
@@ -49,7 +47,6 @@
       v-model="LastNameText"
       @change="handleLastNameChange"
       validation="required"
-      validation-visibility="live"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล' }"
       autocomplete="off"
     />
@@ -65,7 +62,6 @@
       v-model="PhoneNumberText"
       @change="handlePhoneNumberChange"
       validation="required|matches:/^[0-9]{10}$/"
-      validation-visibility="live"
       :validation-messages="{ required: 'กรุณาใส่ข้อมูล', matches: 'หมายเลขโทรศัพท์ควรเป็นตัวเลข 10 หลัก' }"
       autocomplete="off"
     />

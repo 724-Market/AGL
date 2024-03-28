@@ -82,7 +82,7 @@
                 <OrderCartInsure v-if="insureDetail && insuranceRecieve"
                   :delivery-type="insuranceRecieve ? insuranceRecieve.ShippingPolicy : ''"
                   :is-person="insureDetail.IsPerson" v-model:person-profile.sync="personProfile"
-                  :company-type="prefixData.isNotPerson"
+                  :company-type="prefix"
                   v-model:legal-person-profile="legalPersonProfile"></OrderCartInsure>
               </div>
 
@@ -285,8 +285,8 @@ interface DataItem {
 }
 
 // Assuming you have IsPerson flag to differentiate between the two sets of data
-const data1 = ref<DataItem[]>([]);;
-const data2 = ref<DataItem[]>([]);;
+const data1 = ref<DataItem[]>([]);
+const data2 = ref<DataItem[]>([]);
 /*
 const data1 = [
     {
@@ -547,7 +547,18 @@ const submitOrder = async (formData: any) => {
         insureDetail.value.TaxInvoiceDeliveryAddress.AddressID = newTaxDeliveryID.value != null && newTaxDeliveryID.value != '' ? newTaxDeliveryID.value : insureDetail.value.TaxInvoiceDeliveryAddress.AddressID;
       }
     }
-    
+    // add logic check case switch customer type from is person clear data by nice 27/03/2024
+    if(insureDetail.value)
+    {
+      if(insureDetail.value.IsPerson==true)
+      { 
+        insureDetail.value.LegalPersonProfile = undefined
+      }
+      else{
+        insureDetail.value.PersonProfile = undefined
+      }
+    }
+
 
     const orderReq: PlaceOrderRequest = {
       OrderNo: orderNo ?? undefined,
@@ -769,73 +780,92 @@ const loadPrefix = async (isPerson: boolean) => {
   const req: PrefixReq = {
     IsPerson: isPerson,
   };
-  const response = await useRepository().master.prefix(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      prefix.value = response.apiResponse.Data.map((x) => {
-        const options: SelectOption = {
-          label: x.Name,
-          value: x.ID,
-        };
-        return options;
-      });
-      prefix.value.unshift({
+  const response = useRepository().master.prefixText(req)
+  if(response.length>0)
+  {
+    prefix.value = response;
+    prefix.value.unshift({
         label: "เลือกคำนำหน้า",
         value: "",
         attrs: { disabled: true },
       });
-      console.log("prefix.value", prefix.value);
-    } else {
-      // data not found
-    }
-    if (isPerson && response.apiResponse.Data) {
-      // Assigning values from response to data1
-      response.apiResponse.Data.forEach(item => {
-          data1.value.push({
-              value: item.ID,
-              label: item.Name
-          });
-      });
-
-    } 
-  } else {
   }
+  // const response = await useRepository().master.prefix(req);
+  // if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+  //   if (response.apiResponse.Data) {
+  //     prefix.value = response.apiResponse.Data.map((x) => {
+  //       const options: SelectOption = {
+  //         label: x.Name,
+  //         value: x.ID,
+  //       };
+  //       return options;
+  //     });
+  //     prefix.value.unshift({
+  //       label: "เลือกคำนำหน้า",
+  //       value: "",
+  //       attrs: { disabled: true },
+  //     });
+  //     console.log("prefix.value", prefix.value);
+  //   } else {
+  //     // data not found
+  //   }
+  //   if (isPerson && response.apiResponse.Data) {
+  //     // Assigning values from response to data1
+  //     response.apiResponse.Data.forEach(item => {
+  //         data1.value.push({
+  //             value: item.ID,
+  //             label: item.Name
+  //         });
+  //     });
+
+  //   } 
+  // } else {
+  // }
 };
 const loadPrefixRecieve = async () => {
   const req: PrefixReq = {
     IsPerson: true,
     //IsPerson: true,
   };
-  const response = await useRepository().master.prefix(req);
-  if (response.apiResponse.Status && response.apiResponse.Status == "200") {
-    if (response.apiResponse.Data) {
-      prefixRecieve.value = response.apiResponse.Data.map((x) => {
-        const options: SelectOption = {
-          label: x.Name,
-          value: x.ID,
-        };
-        return options;
-      });
-      prefixRecieve.value.unshift({
+  const response =  useRepository().master.prefixText(req);
+  if(response.length>0)
+  {
+    prefixRecieve.value = response;
+    prefixRecieve.value.unshift({
         label: "เลือกคำนำหน้า",
         value: "",
         attrs: { disabled: true },
       });
-    } else {
-      // data not found
-    }
-
-    if (response.apiResponse.Data) {
-      // Assigning values from response to data1
-      response.apiResponse.Data.forEach(item => {
-          data2.value.push({
-              value: item.ID,
-              label: item.Name
-          });
-      });
-    }
-  } else {
   }
+  // if (response.apiResponse.Status && response.apiResponse.Status == "200") {
+  //   if (response.apiResponse.Data) {
+  //     prefixRecieve.value = response.apiResponse.Data.map((x) => {
+  //       const options: SelectOption = {
+  //         label: x.Name,
+  //         value: x.ID,
+  //       };
+  //       return options;
+  //     });
+  //     prefixRecieve.value.unshift({
+  //       label: "เลือกคำนำหน้า",
+  //       value: "",
+  //       attrs: { disabled: true },
+  //     });
+  //   } else {
+  //     // data not found
+  //   }
+
+  //   if (response.apiResponse.Data) {
+  //     // Assigning values from response to data1
+  //     response.apiResponse.Data.forEach(item => {
+  //         data2.value.push({
+  //             value: item.ID,
+  //             label: item.Name
+  //         });
+  //     });
+  //   }
+  // } else {
+  // }
 };
 const loadPapeRonHand = async () => {
   if (PackageInfo.value && PackageInfo.value.Paper) {

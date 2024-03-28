@@ -1,5 +1,11 @@
 <template>
-  <div class="selected-item">
+  <div
+    class="selected-item"
+    v-if="
+      (props.isPerson == true && props.personProfile) ||
+      (props.isPerson == false && props.legalPersonProfile)
+    "
+  >
     <figure class="brand">
       <i class="fa-duotone fa-file-shield"></i>
     </figure>
@@ -7,16 +13,19 @@
     <div class="detail">
       <h4 class="topic">ผู้เอาประกันภัยและกรมธรรม์</h4>
       <div class="info">
-        <p class="description">{{ getFullName(props.isPerson,props.personProfile,props.legalPersonProfile) }}</p>
+        <p class="description">
+          {{ getFullName(props.isPerson, props.personProfile, props.legalPersonProfile) }}
+        </p>
       </div>
     </div>
     <div class="meta">
       <div class="tags">
-        <span class="badge"
-          >
-          <i class="fa-solid fa-people-simple" v-if="props.isPerson==true"></i>
+        <span class="badge">
+          <i class="fa-solid fa-people-simple" v-if="props.isPerson == true"></i>
           <i class="'fa-solid fa-buildings" v-else></i>
-          {{ getCustomerType(props.isPerson,props.personProfile,props.legalPersonProfile) }}</span
+          {{
+            getCustomerType(props.isPerson, props.personProfile, props.legalPersonProfile)
+          }}</span
         >
         <span class="badge-info"
           ><i :class="classNameDeliveryType"></i>{{ DeliveryType }}</span
@@ -26,12 +35,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import type {
-CustomerOrderRequest,
-PersonProfile,
-LegalPersonProfile,
-} from "~/shared/entities/placeorder-entity";
-
 const fullName = ref("");
 const CustomerType = ref("");
 const DeliveryType = ref("");
@@ -43,52 +46,71 @@ const props = defineProps({
   legalPersonProfile: Object,
   isPerson: Boolean,
   deliveryType: String,
-  companyType: Object
+  companyType: Object,
 });
-
 
 const onLoad = onMounted(async () => {
- await setInsureDetail();
+  await setInsureDetail();
 });
 
-const getFullName = (isPerson:boolean,personProfile:any,legalPersonProfile:any):string=>{
-  let fullName = ""
+const getFullName = (
+  isPerson: boolean,
+  personProfile: any,
+  legalPersonProfile: any
+): string => {
+  let fullName = "";
   if (isPerson && personProfile) {
-    fullName = personProfile.FirstName + " " + personProfile.LastName;
-  } else if (legalPersonProfile) {
-    const labelType = props.companyType?.value.find((item: any) => item.value === props.legalPersonProfile?.PrefixID)
-    //labelType.label = useUtility().getCompanyType(labelType);
-    if (labelType) { // Check if labelType is not undefined
-        fullName = useUtility().getCompanyType(labelType.label) + " " + legalPersonProfile.ContactFirstName;
+    const prefix = props.companyType?.find(
+      (item: any) => item.value === props.personProfile?.PrefixID
+    );
+    if (prefix) {
+      fullName =
+        prefix.label + " " + personProfile.FirstName + " " + personProfile.LastName;
     } else {
-        fullName = legalPersonProfile?.PrefixID + " " + legalPersonProfile.ContactFirstName; // Fallback to PrefixID if labelType is undefined
+      fullName = personProfile.FirstName + " " + personProfile.LastName;
     }
-  } 
-  return fullName
-}
-const getCustomerType = (isPerson:boolean,personProfile:any,legalPersonProfile:any):string=>{
-  let CustomerType = ""
-  if (isPerson && personProfile) {
-    CustomerType = "บุคคลธรรมดา";
   } else if (legalPersonProfile) {
+    const labelType = props.companyType?.find(
+      (item: any) => item.value === props.legalPersonProfile?.PrefixID
+    );
+    //labelType.label = useUtility().getCompanyType(labelType);
+    if (labelType) {
+      // Check if labelType is not undefined
+      fullName =
+        useUtility().getCompanyType(labelType.label) +
+        " " +
+        legalPersonProfile.ContactFirstName;
+    } else {
+      fullName = legalPersonProfile?.PrefixID + " " + legalPersonProfile.ContactFirstName; // Fallback to PrefixID if labelType is undefined
+    }
+  }
+  return fullName;
+};
+const getCustomerType = (
+  isPerson: boolean,
+  personProfile: any,
+  legalPersonProfile: any
+): string => {
+  let CustomerType = "";
+  if (isPerson == true) {
+    CustomerType = "บุคคลธรรมดา";
+  } else if (isPerson == false) {
     CustomerType = "นิติบุคคล";
   }
-  return CustomerType
-}
-const getCustomerTypeClass = (isPerson:boolean):boolean=>{
+  return CustomerType;
+};
+const getCustomerTypeClass = (isPerson: boolean): boolean => {
   if (isPerson) {
-    return true
-  } else{
-    return false
+    return true;
+  } else {
+    return false;
   }
-}
-const  setInsureDetail = async () => {
+};
+const setInsureDetail = async () => {
   CustomerType.value = "";
   DeliveryType.value = "";
   classNameCustomerType.value = "";
   classNameDeliveryType.value = "";
-
-  
 
   if (props.deliveryType) {
     if (props.deliveryType == "pdf") {

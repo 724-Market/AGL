@@ -140,7 +140,7 @@ const getToken = async () => {
   const expireTime = useTokenManage().getExpireSecondTime(token)
   console.log('expireTime',expireTime)
   if (expireTime > 0) {
-    const reduceTime = expireTime - (2 * 60 * 1000) // คำนวณ expire Date ของ token ก่อน 2 นาที
+    const reduceTime = expireTime - (10 * 60 * 1000) // คำนวณ expire Date ของ token ก่อน 2 นาที
 
     if (reduceTime > 0) {
       setTimeout(showModalConfirm, reduceTime)
@@ -157,7 +157,7 @@ const getToken = async () => {
 const showModalConfirm = () => {
   isShowConfirm.value = true
   confirmType.value = 'warning'
-  confirmTitle.value = 'เหลือเวลาการใช้งานระบบอีก 2 นาที'
+  confirmTitle.value = 'เหลือเวลาการใช้งานระบบอีก 10 นาที'
   confirmText.value = 'เนื่องด้วยเหตุผลด้านความปลอดภัย หากต้องการจะใช้งานระบบต่อ กรุณาคลิกที่ปุ่มใช้งานระบบต่อ'
   confirmButton.value = 'ใช้งานระบบต่อ'
   confirmCancelButton.value = 'ออกจากระบบ'

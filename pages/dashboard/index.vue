@@ -140,7 +140,7 @@
                             </div>
                             <div class="filter">
                                 <FormKit type="form" #default="{ value }" :actions="false">
-                                    <FormKit type="dropdown" name="saleChartFilter" :options="chartFilter"
+                                    <FormKit type="dropdown" name="saleChartFilter" :options="salesChartFilter"
                                         value="this-month" deselect="false" />
                                     <!-- <pre wrap>{{ value }}</pre> -->
                                 </FormKit>
@@ -148,7 +148,7 @@
                         </div>
                         <div class="card-body">
                             <div id="graph"></div>
-                            <v-chart class="chart" :option="dataSale" />
+                            <v-chart class="chart" :option="salesData" />
                         </div>
                     </div>
                 </div>
@@ -191,7 +191,7 @@ use([
 
 /////////////////////////////////////////
 // Sale chart
-const dataSale = ref({
+const salesData = ref({
     title: {},
     color: [
         'rgb(19, 133, 67)',
@@ -208,19 +208,13 @@ const dataSale = ref({
         textStyle: {
             color: 'rgba(25, 70, 88, 0.8)',
             fontWeight: 'bold',
-            fontSize: '14',
-            padding: [0, 15, 0, 0],
+            fontSize: '15',
         },
         icon: 'roundRect',
     },
     dataset: {
         dimensions: ['sales', 'พรบ', 'ประเภท', 'non-motor'],
-        source: [
-            { 'sales': 'Jan 2024', 'พรบ': 43.3, 'ประเภท': 85.8, 'non-motor': 93.7 },
-            { 'sales': 'Feb 2024', 'พรบ': 83.1, 'ประเภท': 73.4, 'non-motor': 55.1 },
-            { 'sales': 'Mar 2024', 'พรบ': 86.4, 'ประเภท': 65.2, 'non-motor': 82.5 },
-            { 'sales': 'Apr 2024', 'พรบ': 72.4, 'ประเภท': 53.9, 'non-motor': 39.1 }
-        ]
+        source: [],
     },
     xAxis: {
         type: 'category',
@@ -293,8 +287,8 @@ const dataSale = ref({
 })
 
 /////////////////////////////////////////
-// Chart filter
-const chartFilter = [
+// Sales chart filter
+const salesChartFilter = [
     { label: 'เดือนนี้', value: 'this-month' },
     { label: 'เดือนที่แล้ว', value: 'last-month' },
     { label: '3 เดือนล่าสุด', value: 'last-3-month' }
@@ -329,12 +323,21 @@ const handleCloseModal = async () => {
 // Mounted
 onMounted(async () => {
     openLoadingDialog(true)
-    // await loadAffiliateProductList()
+    await getSalesData()
     openLoadingDialog(false)
 })
 
 /////////////////////////////////////////
-
+// Function get `SalesData`
+const getSalesData = (async () => {
+    try {
+        const response = await fetch('/data/salesData.json')
+        const jsonData = await response.json()
+        salesData.value.dataset.source = jsonData
+    } catch (error) {
+        console.error('Error fetching or parsing JSON:', error)
+    }
+})
 
 /////////////////////////////////////////
 // Define layout

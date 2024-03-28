@@ -9,7 +9,7 @@
                 <div class="status-item text-info text-big">
                     <h5 class="topic">หมายเลขคำสั่งซื้อ</h5>
                     <!-- <p>{{ $props.paymentGet.PaymentNo }}</p> -->
-                    <p>{{ props.orderGet?.Order[0].OrderNo }}</p>
+                    <p>{{ props.orderGet }}</p>
                 </div>
                 <div class="status-item text-info text-big">
                     <h5 class="topic">หมายเลขอ้างอิง</h5>
@@ -37,7 +37,7 @@
                     </div>
                     <div class="status-action">
                         <a class="btn btn-outline-info" href="#" title="แชร์หน้านี้">แชร์หน้านี้</a>
-                        <NuxtLink class="btn btn-primary" :to="'/order/compulsory/status/'+$props.orderGet?.Order[0].OrderNo"
+                        <NuxtLink class="btn btn-primary" :to="'/order/compulsory/status/'+$props.orderGet"
                             title="ตรวจสอบสถานะสั่งซื้อ">ตรวจสอบสถานะสั่งซื้อ</NuxtLink>
                     </div>
                 </div>
@@ -57,7 +57,7 @@ const props = defineProps({
   paymentGet: {
     type: Object as () => PaymentGetResponse,
   },
-  orderGet: Object,
+  orderGet: String,
 })
 
 const onLoad = onMounted(async () => {

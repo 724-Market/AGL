@@ -78,6 +78,7 @@ const router = useRouter();
 
 const onLoad = onMounted(async () => {
   if (AuthenInfo.value) {
+    console.log("2222")
     isLoading.value = true;
     if (!OrderSummaryInfo.value) {
       router.push("/order");

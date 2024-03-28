@@ -52,7 +52,7 @@ export interface PersonProfile {
   PrefixID: string;
   FirstName: string;
   LastName: string;
-  BirthDate: string;
+  BirthDate: string|null;
   PersonalID: string;
   NationalityID: string;
   PhoneNumber: string;

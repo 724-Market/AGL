@@ -3,6 +3,7 @@ import type { DistrictReq, ICarColorReq, ICarColorResponse, INationalityResponse
 import type { IAPIResponse } from "../entities/useApi-response";
 import provinceData from  "~/shared/data/provinces-data";
 import districtData from  "~/shared/data/districts-data";
+import prefixData from  "~/shared/data/prefix-data"
 import type { SelectOption } from "../entities/select-option";
 
 class MasterModule {
@@ -32,7 +33,36 @@ class MasterModule {
     return filter[0]
   }
 
-
+   prefixText(req: PrefixReq):  SelectOption[] {
+    let filter = prefixData.isPerson.map(x=>{
+      const options: SelectOption = {
+        label: `${x.label}`,
+        value: x.value,
+      };
+      return options
+    })
+    if(req.IsPerson)
+    {
+    filter = prefixData.isPerson.map(x=>{
+      const options: SelectOption = {
+        label: `${x.label}`,
+        value: x.value,
+      };
+      return options
+    })
+  }
+  else{
+    filter = prefixData.isNotPerson.map(x=>{
+      const options: SelectOption = {
+        label: `${x.label}`,
+        value: x.value,
+      };
+      return options
+    })
+  }
+    filter.sort((a, b) => a.label.localeCompare(b.label, 'th', { sensitivity: 'base' }));
+    return filter
+  }
   async prefix(req: PrefixReq): Promise<IAPIResponse<MasterResponse[]>> {
     return await useCallApi().apiRepository<MasterResponse[]>(`${this.RESOURCE}/prefix/list`, req)
   }

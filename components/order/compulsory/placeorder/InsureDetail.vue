@@ -4,32 +4,56 @@
       <div class="accordion" id="accordion-insured-information">
         <div class="accordion-item">
           <h2 class="accordion-header">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-              data-bs-target="#collapse-insured-information" aria-expanded="true"
-              aria-controls="collapse-insured-information">
+            <button
+              class="accordion-button"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapse-insured-information"
+              aria-expanded="true"
+              aria-controls="collapse-insured-information"
+            >
               ข้อมูลผู้เอาประกันภัย
             </button>
           </h2>
-          <div id="collapse-insured-information" class="accordion-collapse collapse show"
-            data-bs-parent="#accordion-insured-information">
+          <div
+            id="collapse-insured-information"
+            class="accordion-collapse collapse show"
+            data-bs-parent="#accordion-insured-information"
+          >
             <div class="accordion-body">
               <div class="form-placeorder">
                 <section class="insured-type">
-                  <FormKit type="radio" label="ประเภทผู้เอาประกันภัย" name="InsuredType" :options="[
-                        {
-                          label: 'บุคคลธรรมดา',
-                          value: 'person',
-                          attrs: { disabled: props.cacheOrderRequest ? !props.cacheOrderRequest.Customer.IsPerson : false } 
+                  <FormKit
+                    type="radio"
+                    label="ประเภทผู้เอาประกันภัย"
+                    name="InsuredType"
+                    :options="[
+                      {
+                        label: 'บุคคลธรรมดา',
+                        value: 'person',
+                        attrs: {
+                          disabled: props.cacheOrderRequest
+                            ? !props.cacheOrderRequest.Customer?.IsPerson
+                            : false,
                         },
-                        {
-                          label: 'นิติ',
-                          value: 'company',
-                          attrs: { disabled: props.cacheOrderRequest ? props.cacheOrderRequest.Customer.IsPerson : false } 
+                      },
+                      {
+                        label: 'นิติ',
+                        value: 'company',
+                        attrs: {
+                          disabled: props.cacheOrderRequest
+                            ? props.cacheOrderRequest.Customer?.IsPerson
+                            : false,
                         },
-                      ]" v-model="InsuredTypeText" validation="required"
-                    :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block"
-                    />
-                    <!-- Old version: Delete after confirm new version is OK
+                      },
+                    ]"
+                    v-model="InsuredTypeText"
+                    validation="required"
+                    @input="handlerChangeCustomerType"
+                    :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                    options-class="option-block"
+                  />
+                  <!-- Old version: Delete after confirm new version is OK
                     <FormKit type="radio" label="ประเภทผู้เอาประกันภัย" name="InsuredType" :options="{
                     person: 'บุคคลธรรมดา',
                     company: 'นิติบุคคล',
@@ -39,40 +63,74 @@
 
                 <aside class="insured-classifier" v-if="InsuredTypeText == 'person'">
                   <section>
-                    <FormKit type="radio" label="ลักษณะ" name="InsuredClassifier" v-model="InsuredClassifierText"
+                    <FormKit
+                      type="radio"
+                      label="ลักษณะ"
+                      name="InsuredClassifier"
+                      v-model="InsuredClassifierText"
                       :options="{
                         thai: 'คนไทย',
                         foreigner: 'คนต่างชาติ',
-                      }" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                      options-class="option-block" />
+                      }"
+                      validation="required"
+                      :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                      options-class="option-block"
+                    />
                   </section>
                   <!-- - - - - - - บุคคลธรรมดา คนไทย - - - - - - -->
-                  <section class="insured-thai-information" v-if="InsuredClassifierText == 'thai'">
+                  <section
+                    class="insured-thai-information"
+                    v-if="InsuredClassifierText == 'thai'"
+                  >
                     <h3>ชื่อผู้เอาประกันภัย (บุคคลธรรมดา : คนไทย)</h3>
 
                     <div class="row">
                       <div class="col-sm-4 col-lg-3">
-                        <FormKit type="select" label="คำนำหน้า" name="TitleThaiPerson" placeholder="คำนำหน้า"
-                          :options="Prefix" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                          @change="handlerChangePersonalProfile" v-model="personProfile.PrefixID" />
+                        <FormKit
+                          type="select"
+                          label="คำนำหน้า"
+                          name="TitleThaiPerson"
+                          placeholder="คำนำหน้า"
+                          :options="Prefix"
+                          validation="required"
+                          :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                          @change="handlerChangePersonalProfile"
+                          v-model="personProfile.PrefixID"
+                        />
                       </div>
                       <div class="col-sm-8 col-lg-4">
-                        <FormKit type="text" label="ชื่อ" name="FirstName" placeholder="ชื่อ"
-                          v-model="personProfile.FirstName" @keyup="handlerChangePersonalProfile"
-                          :validation-rules="{ special_characters }" validation="required|special_characters"
+                        <FormKit
+                          type="text"
+                          label="ชื่อ"
+                          name="FirstName"
+                          placeholder="ชื่อ"
+                          v-model="personProfile.FirstName"
+                          @keyup="handlerChangePersonalProfile"
+                          :validation-rules="{ special_characters }"
+                          validation="required|special_characters"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="off" />
+                          }"
+                          autocomplete="off"
+                        />
                       </div>
                       <div class="col-md-12 col-lg-5">
-                        <FormKit type="text" label="นามสกุล" name="LastName" placeholder="นามสกุล"
-                          v-model="personProfile.LastName" @keyup="handlerChangePersonalProfile"
-                          :validation-rules="{ special_characters }" validation="required|special_characters"
+                        <FormKit
+                          type="text"
+                          label="นามสกุล"
+                          name="LastName"
+                          placeholder="นามสกุล"
+                          v-model="personProfile.LastName"
+                          @keyup="handlerChangePersonalProfile"
+                          :validation-rules="{ special_characters }"
+                          validation="required|special_characters"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="off" />
+                          }"
+                          autocomplete="off"
+                        />
                       </div>
                       <div class="col-6">
                         <FormKit
@@ -81,14 +139,15 @@
                           name="EffectiveDate"
                           :max-date="effectiveMinDate"
                           placeholder="วัน/เดือน/ปี ค.ศ."
-                          format="DD/MM/YYYY" value-format="YYYY-MM-DD"
+                          format="DD/MM/YYYY"
+                          value-format="YYYY-MM-DD"
                           picker-only
                           v-model="personProfile.BirthDate"
                           @change="handlerChangePersonalProfile"
                           validation="required"
                           :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
                         />
-                      <!--   The old version delete after the new version did not issue                     
+                        <!--   The old version delete after the new version did not issue                     
                         <FormKit type="date" label="วันเดือนปีเกิด" name="ฺBirthDate" :max="effectiveMinDate"
                           v-model="personProfile.BirthDate" @change="handlerChangePersonalProfile"
                           placeholder="วัน/เดือน/ปี" validation="required"
@@ -96,61 +155,104 @@
                            -->
                       </div>
                       <div class="col-6">
-                        <ElementsFormIdCard label="เลขบัตรประชาชน" name="idCard" v-model="personProfile.PersonalID" />
+                        <ElementsFormIdCard
+                          label="เลขบัตรประชาชน"
+                          name="idCard"
+                          v-model="personProfile.PersonalID"
+                        />
                       </div>
                       <div class="col-6">
-                        <ElementsFormPhoneNumber autocomplete="off" label="เบอร์มือถือ"  name="PhoneNumber" v-model="personProfile.PhoneNumber"
-                          @change="handlerChangePersonalProfile"></ElementsFormPhoneNumber>
+                        <ElementsFormPhoneNumber
+                          autocomplete="off"
+                          label="เบอร์มือถือ"
+                          name="PhoneNumber"
+                          v-model="personProfile.PhoneNumber"
+                          @change="handlerChangePersonalProfile"
+                        ></ElementsFormPhoneNumber>
                       </div>
                       <div class="col-6">
-                        <FormKit type="email" label="อีเมล" name="Email" placeholder="xxxxxx@email.com"
-                          autocomplete="off" v-model="personProfile.Email" @change="handlerChangePersonalProfile" />
+                        <FormKit
+                          type="email"
+                          label="อีเมล"
+                          name="Email"
+                          placeholder="xxxxxx@email.com"
+                          autocomplete="off"
+                          v-model="personProfile.Email"
+                          @change="handlerChangePersonalProfile"
+                        />
                       </div>
                     </div>
                   </section>
                   <!-- - - - - - - บุคคลธรรมดา ต่างชาติ - - - - - - -->
-                  <section class="insured-foreigner-information" v-if="InsuredClassifierText == 'foreigner'">
+                  <section
+                    class="insured-foreigner-information"
+                    v-if="InsuredClassifierText == 'foreigner'"
+                  >
                     <h3>ชื่อผู้เอาประกันภัย (บุคคลธรรมดา : คนต่างชาติ)</h3>
 
                     <div class="row">
                       <div class="col-sm-4 col-lg-3">
-                        <FormKit type="select" label="Title" name="Title" placeholder="Title"
-                          @change="handlerChangePersonalProfile" :options="Prefix" validation="required"
-                          :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" v-model="personProfile.PrefixID" />
+                        <FormKit
+                          type="select"
+                          label="Title"
+                          name="Title"
+                          placeholder="Title"
+                          @change="handlerChangePersonalProfile"
+                          :options="Prefix"
+                          validation="required"
+                          :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                          v-model="personProfile.PrefixID"
+                        />
                       </div>
                       <div class="col-sm-8 col-lg-4">
-                        <FormKit type="text" label="Firstname" name="FirstName" placeholder="Firstname"
-                          v-model="personProfile.FirstName" @keyup="handlerChangePersonalProfile"
-                          :validation-rules="{ special_characters }" validation="required|special_characters"
+                        <FormKit
+                          type="text"
+                          label="Firstname"
+                          name="FirstName"
+                          placeholder="Firstname"
+                          v-model="personProfile.FirstName"
+                          @keyup="handlerChangePersonalProfile"
+                          :validation-rules="{ special_characters }"
+                          validation="required|special_characters"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="off" />
+                          }"
+                          autocomplete="off"
+                        />
                       </div>
                       <div class="col-md-12 col-lg-5">
-                        <FormKit type="text" label="Lastname" name="LastName" v-model="personProfile.LastName"
-                          @keyup="handlerChangePersonalProfile" placeholder="Lastname"
-                          :validation-rules="{ special_characters }" validation="required|special_characters"
+                        <FormKit
+                          type="text"
+                          label="Lastname"
+                          name="LastName"
+                          v-model="personProfile.LastName"
+                          @keyup="handlerChangePersonalProfile"
+                          placeholder="Lastname"
+                          :validation-rules="{ special_characters }"
+                          validation="required|special_characters"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="off" />
+                          }"
+                          autocomplete="off"
+                        />
                       </div>
                       <div class="col-sm-4 col-lg-3">
                         <FormKit
-                            type="datepicker"
-                            label="Birthdate" 
-                            name="BirthDate"
-                            placeholder="ฺBirthdate"
-                            format="DD/MM/YYYY" 
-                            value-format="YYYY-MM-DD"
-                            picker-only
-                            v-model="personProfile.BirthDate" 
-                            @change="handlerChangePersonalProfile"
-                            validation="required"
-                            :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
-                          />
-                        
+                          type="datepicker"
+                          label="Birthdate"
+                          name="BirthDate"
+                          placeholder="ฺBirthdate"
+                          format="DD/MM/YYYY"
+                          value-format="YYYY-MM-DD"
+                          picker-only
+                          v-model="personProfile.BirthDate"
+                          @change="handlerChangePersonalProfile"
+                          validation="required"
+                          :validation-messages="{ required: 'กรุณากรอกข้อมูล' }"
+                        />
+
                         <!-- The old version delete after the new version did not issue  
                         <FormKit type="date" label="Birthdate" name="BirthDate" placeholder="ฺBirthdate"
                           v-model="personProfile.BirthDate" @change="handlerChangePersonalProfile" validation="required"
@@ -159,61 +261,114 @@
                            -->
                       </div>
                       <div class="col-sm-8 col-lg-4">
-                        <ElementsFormPassport v-model="personProfile.PersonalID" @change="handlerChangePersonalProfile"
+                        <ElementsFormPassport
+                          v-model="personProfile.PersonalID"
+                          @change="handlerChangePersonalProfile"
                           :validation-rules="{ special_characters }"
-                          validation="required|special_characters" :validation-messages="{
+                          validation="required|special_characters"
+                          :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" />
+                          }"
+                        />
                       </div>
                       <div class="col-md-12 col-lg-5">
-                        <FormKit type="select" label="Nationality" name="Nationality" placeholder="Nationality"
-                          :options="Nationality" validation="required"
-                          :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" v-model="personProfile.NationalityID"
-                          @change="handlerChangePersonalProfile" />
+                        <FormKit
+                          type="select"
+                          label="Nationality"
+                          name="Nationality"
+                          placeholder="Nationality"
+                          :options="Nationality"
+                          validation="required"
+                          :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                          v-model="personProfile.NationalityID"
+                          @change="handlerChangePersonalProfile"
+                        />
                       </div>
                       <div class="col-6">
-                        <ElementsFormPhoneNumber label="Tel" autocomplete="off" v-model="personProfile.PhoneNumber"
-                          @change="handlerChangePersonalProfile"></ElementsFormPhoneNumber>
-                       
+                        <ElementsFormPhoneNumber
+                          label="Tel"
+                          autocomplete="off"
+                          v-model="personProfile.PhoneNumber"
+                          @change="handlerChangePersonalProfile"
+                        ></ElementsFormPhoneNumber>
                       </div>
                       <div class="col-6">
-                        <FormKit type="email" label="Email" name="Email" placeholder="xxxxxx@email.com"
-                          autocomplete="off" v-model="personProfile.Email" @change="handlerChangePersonalProfile" />
+                        <FormKit
+                          type="email"
+                          label="Email"
+                          name="Email"
+                          placeholder="xxxxxx@email.com"
+                          autocomplete="off"
+                          v-model="personProfile.Email"
+                          @change="handlerChangePersonalProfile"
+                        />
                       </div>
                     </div>
                   </section>
                 </aside>
                 <aside class="company-classifier" v-if="InsuredTypeText == 'company'">
                   <section>
-                    <FormKit type="radio" label="ลักษณะ" name="CompanyClassifier" :options="{
-                      headoffice: 'สำนักงานใหญ่',
-                      branch: 'สาขา',
-                    }" v-model="CompanyClassifierText" validation="required"
-                      :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }" options-class="option-block" />
+                    <FormKit
+                      type="radio"
+                      label="ลักษณะ"
+                      name="CompanyClassifier"
+                      :options="{
+                        headoffice: 'สำนักงานใหญ่',
+                        branch: 'สาขา',
+                      }"
+                      v-model="CompanyClassifierText"
+                      validation="required"
+                      @input="handlerChangeCompanyClassifierText"
+                      :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                      options-class="option-block"
+                    />
                   </section>
                   <!-- - - - - - - นิติบุคคล สำนักงานใหญ่ - - - - - - -->
-                  <section class="insured-headoffice-information" v-if="CompanyClassifierText == 'headoffice'">
+                  <section
+                    class="insured-headoffice-information"
+                    v-if="CompanyClassifierText == 'headoffice'"
+                  >
                     <!-- //TODO : Bug Data Not Bliding -->
                     <h3>ชื่อผู้เอาประกันภัย (นิติบุคคล : สำนักงานใหญ่)</h3>
                     <div class="row">
                       <div class="col-sm-4 col-lg-3">
-                        <FormKit type="select" label="ประเภทกิจการ" name="CompanyType" placeholder="ประเภทกิจการ"
-                          :options="Prefix" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                          v-model="legalPersonProfile.PrefixID" @change="handlerChangeLegalPersonProfile" />
+                        <FormKit
+                          type="select"
+                          label="ประเภทกิจการ"
+                          name="CompanyType"
+                          placeholder="ประเภทกิจการ"
+                          :options="Prefix"
+                          validation="required"
+                          :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                          v-model="legalPersonProfile.PrefixID"
+                          @change="handlerChangeLegalPersonProfile"
+                        />
                       </div>
                       <div class="col-sm-8 col-lg-5">
-                        <FormKit type="text" label="ชื่อกิจการ" name="CompanyName" placeholder="ชื่อกิจการ"
-                          :validation-rules="{ special_characters }" validation="required|special_characters"
+                        <FormKit
+                          type="text"
+                          label="ชื่อกิจการ"
+                          name="CompanyName"
+                          placeholder="ชื่อกิจการ"
+                          :validation-rules="{ special_characters }"
+                          validation="required|special_characters"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="off" v-model="legalPersonProfile.Name"
-                          @change="handlerChangeLegalPersonProfile" />
+                          }"
+                          autocomplete="off"
+                          v-model="legalPersonProfile.Name"
+                          @change="handlerChangeLegalPersonProfile"
+                        />
                       </div>
                       <div class="col-md-12 col-lg-4">
-                        <ElementsFormIdCard label="เลขประจำตัวผู้เสียภาษี" name="CompanyTaxId" v-model="legalPersonProfile.TaxID" 
-                        @change="handlerChangeLegalPersonProfile" />
+                        <ElementsFormIdCard
+                          label="เลขประจำตัวผู้เสียภาษี"
+                          name="CompanyTaxId"
+                          v-model="legalPersonProfile.TaxID"
+                          @change="handlerChangeLegalPersonProfile"
+                        />
                         <!-- <FormKit type="text" label="เลขประจำตัวผู้เสียภาษี" name="CompanyTaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี" validation="required|length:13|number" maxlength="13"
                           :validation-messages="{
@@ -224,8 +379,13 @@
                           @change="handlerChangeLegalPersonProfile" /> -->
                       </div>
                       <div class="col-6">
-                        <ElementsFormPhoneNumber autocomplete="off" label="เบอร์มือถือ"  name="CompanyPhoneNumber" v-model="legalPersonProfile.ContactPhoneNumber"
-                        @change="handlerChangeLegalPersonProfile" ></ElementsFormPhoneNumber>
+                        <ElementsFormPhoneNumber
+                          autocomplete="off"
+                          label="เบอร์มือถือ"
+                          name="CompanyPhoneNumber"
+                          v-model="legalPersonProfile.ContactPhoneNumber"
+                          @change="handlerChangeLegalPersonProfile"
+                        ></ElementsFormPhoneNumber>
                         <!-- <FormKit type="text" label="หมายเลขโทรศัพท์" name="CompanyPhoneNumber" placeholder="098765XXXX"
                           validation="required|+length:10|number" :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
@@ -235,35 +395,64 @@
                           @change="handlerChangeLegalPersonProfile" /> -->
                       </div>
                       <div class="col-6">
-                        <FormKit type="email" label="อีเมล" name="CompanyEmail" placeholder="xxxxxx@email.com"
-                          autocomplete="off" v-model="legalPersonProfile.ContactEmail"
-                          @change="handlerChangeLegalPersonProfile" />
+                        <FormKit
+                          type="email"
+                          label="อีเมล"
+                          name="CompanyEmail"
+                          placeholder="xxxxxx@email.com"
+                          autocomplete="off"
+                          v-model="legalPersonProfile.ContactEmail"
+                          @change="handlerChangeLegalPersonProfile"
+                        />
                       </div>
                     </div>
                   </section>
 
                   <!-- - - - - - - นิติบุคคล สาขา - - - - - - -->
-                  <section class="insured-branch-information" v-if="CompanyClassifierText == 'branch'">
+                  <section
+                    class="insured-branch-information"
+                    v-if="CompanyClassifierText == 'branch'"
+                  >
                     <h3>ชื่อผู้เอาประกันภัย (นิติบุคคล : สาขา)</h3>
 
                     <div class="row">
                       <div class="col-sm-4 col-lg-3">
-                        <FormKit type="select" label="ประเภทกิจการ" name="BranchCompanyType" placeholder="ประเภทกิจการ"
-                          :options="Prefix" validation="required" :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
-                          v-model="legalPersonProfile.PrefixID" @change="handlerChangeLegalPersonProfile" />
+                        <FormKit
+                          type="select"
+                          label="ประเภทกิจการ"
+                          name="BranchCompanyType"
+                          placeholder="ประเภทกิจการ"
+                          :options="Prefix"
+                          validation="required"
+                          :validation-messages="{ required: 'กรุณาเลือกข้อมูล' }"
+                          v-model="legalPersonProfile.PrefixID"
+                          @change="handlerChangeLegalPersonProfile"
+                        />
                       </div>
                       <div class="col-sm-8 col-lg-5">
-                        <FormKit type="text" label="ชื่อกิจการ" name="BranchCompanyName" placeholder="ชื่อกิจการ"
-                          :validation-rules="{ special_characters }" validation="required|special_characters"
+                        <FormKit
+                          type="text"
+                          label="ชื่อกิจการ"
+                          name="BranchCompanyName"
+                          placeholder="ชื่อกิจการ"
+                          :validation-rules="{ special_characters }"
+                          validation="required|special_characters"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="off" v-model="legalPersonProfile.Name"
-                          @change="handlerChangeLegalPersonProfile" />
+                          }"
+                          autocomplete="off"
+                          v-model="legalPersonProfile.Name"
+                          @change="handlerChangeLegalPersonProfile"
+                        />
                       </div>
                       <div class="col-md-12 col-lg-4">
-                        <ElementsFormIdCard label="เลขประจำตัวผู้เสียภาษี" name="BranchTaxId" v-model="legalPersonProfile.TaxID" 
-                        @change="handlerChangeLegalPersonProfile" />
+                        <ElementsFormIdCard
+                          label="เลขประจำตัวผู้เสียภาษี"
+                          name="BranchTaxId"
+                          v-model="legalPersonProfile.TaxID"
+                          @change="handlerChangeLegalPersonProfile"
+                        />
                         <!-- <FormKit type="text" label="เลขประจำตัวผู้เสียภาษี" name="BranchTaxId"
                           placeholder="เลขประจำตัวผู้เสียภาษี" validation="required|length:13|number"
                           maxlength="13"
@@ -275,26 +464,47 @@
                           @change="handlerChangeLegalPersonProfile" /> -->
                       </div>
                       <div class="col-6">
-                        <FormKit type="text" label="รหัสสาขา" name="BranchCode" placeholder="รหัสสาขา"
-                          validation="required|+length:5|number" :validation-messages="{
+                        <FormKit
+                          type="text"
+                          label="รหัสสาขา"
+                          name="BranchCode"
+                          placeholder="รหัสสาขา"
+                          validation="required|+length:5|number"
+                          :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             length: 'กรุณาใส่ตัวเลขมากกว่าหรือน้อยกว่า 5 ตัว',
                             number: 'กรุณากรอกเฉพาะตัวเลขเท่านั้น',
-                          }" autocomplete="off" v-model="legalPersonProfile.BranchID"
-                          @change="handlerChangeLegalPersonProfile" />
+                          }"
+                          autocomplete="off"
+                          v-model="legalPersonProfile.BranchID"
+                          @change="handlerChangeLegalPersonProfile"
+                        />
                       </div>
                       <div class="col-6">
-                        <FormKit type="text" label="ชื่อสาขา" name="BranchName" placeholder="ชื่อสาขา"
-                          :validation-rules="{ special_characters }" validation="required|special_characters"
+                        <FormKit
+                          type="text"
+                          label="ชื่อสาขา"
+                          name="BranchName"
+                          placeholder="ชื่อสาขา"
+                          :validation-rules="{ special_characters }"
+                          validation="required|special_characters"
                           :validation-messages="{
                             required: 'กรุณาใส่ข้อมูล',
                             special_characters: 'ไม่ให้กรอกอักขระพิเศษ',
-                          }" autocomplete="off" v-model="legalPersonProfile.BranchName"
-                          @change="handlerChangeLegalPersonProfile" />
+                          }"
+                          autocomplete="off"
+                          v-model="legalPersonProfile.BranchName"
+                          @change="handlerChangeLegalPersonProfile"
+                        />
                       </div>
                       <div class="col-6">
-                        <ElementsFormPhoneNumber autocomplete="off" label="เบอร์มือถือ"  name="BranchPhoneNumber" v-model="legalPersonProfile.ContactPhoneNumber"
-                        @change="handlerChangeLegalPersonProfile" ></ElementsFormPhoneNumber>
+                        <ElementsFormPhoneNumber
+                          autocomplete="off"
+                          label="เบอร์มือถือ"
+                          name="BranchPhoneNumber"
+                          v-model="legalPersonProfile.ContactPhoneNumber"
+                          @change="handlerChangeLegalPersonProfile"
+                        ></ElementsFormPhoneNumber>
                         <!-- <FormKit type="text" label="หมายเลขโทรศัพท์" name="BranchPhoneNumber" placeholder="098765XXXX"
                           maxlength="10"
                           validation="required|+length:10|number" :validation-messages="{
@@ -305,9 +515,15 @@
                           @change="handlerChangeLegalPersonProfile" /> -->
                       </div>
                       <div class="col-6">
-                        <FormKit type="email" label="อีเมล" name="BranchEmail" placeholder="xxxxxx@email.com"
-                          autocomplete="off" v-model="legalPersonProfile.ContactEmail"
-                          @change="handlerChangeLegalPersonProfile" />
+                        <FormKit
+                          type="email"
+                          label="อีเมล"
+                          name="BranchEmail"
+                          placeholder="xxxxxx@email.com"
+                          autocomplete="off"
+                          v-model="legalPersonProfile.ContactEmail"
+                          @change="handlerChangeLegalPersonProfile"
+                        />
                       </div>
                     </div>
                   </section>
@@ -315,28 +531,48 @@
 
                 <section class="insured-address">
                   <h3>ที่อยู่ผู้เอาประกันภัย</h3>
-<!-- 
+                  <!-- 
                   <button type="button" v-show="props.cacheOrderRequest?.OrderNo != null" class="btn-gray btn-open-papers" @click="onModalEditAddress(true)"><i
                       class="fa-solid fa-layer-group"></i>Edit</button>
                        -->
-                  <FormKit type="button" v-show="props.cacheOrderRequest?.OrderNo != null" label="แก้ไขที่อยู่" name="customer-address" :classes="{
-                    input: 'btn-primary',
-                  }" @click="openDialogAddress" :disabled="isLoading" :loading="isLoading" />
+                  <FormKit
+                    type="button"
+                    v-show="props.cacheOrderRequest?.OrderNo != null"
+                    label="แก้ไขที่อยู่"
+                    name="customer-address"
+                    :classes="{
+                      input: 'btn-primary',
+                    }"
+                    @click="openDialogAddress"
+                    :disabled="isLoading"
+                    :loading="isLoading"
+                  />
 
-                  <div class="row" v-if="props.cacheOrderRequest?.OrderNo==null">
-                    <ElementsFormAddress element-key="insured" :order-No="props.cacheOrderRequest?.OrderNo"
-                      :addr-province="addrProvince" :addr-district="addrDistrict" :addr-sub-district="addrSubDistrict"
-                      :addr-zip-code="addrZipCode" :default-address-cache="defaultAddress"
-                      :default-address-customer="defaultAddressCustomer" @change-province="handlerChangeProvince"
-                      @change-district="handlerChangeDistrict" @change-sub-district="handlerChangeSubDistrict"
-                      @change-full-address="handlerChangeFullAddress" />
+                  <div class="row" v-if="props.cacheOrderRequest?.OrderNo == null">
+                    <ElementsFormAddress
+                      element-key="insured"
+                      :order-No="props.cacheOrderRequest?.OrderNo"
+                      :addr-province="addrProvince"
+                      :addr-district="addrDistrict"
+                      :addr-sub-district="addrSubDistrict"
+                      :addr-zip-code="addrZipCode"
+                      :default-address-cache="defaultAddress"
+                      :default-address-customer="defaultAddressCustomer"
+                      @change-province="handlerChangeProvince"
+                      @change-district="handlerChangeDistrict"
+                      @change-sub-district="handlerChangeSubDistrict"
+                      @change-full-address="handlerChangeFullAddress"
+                    />
                   </div>
                   <div class="row" v-else>
-                    <ElementsFormLabelDefaultAddress :label-address="isNewLabel 
-                    ? newAddressUpdate
-                    : props.cacheOrderRequest?.Customer?.DefaultAddress"/>
+                    <ElementsFormLabelDefaultAddress
+                      :label-address="
+                        isNewLabel
+                          ? newAddressUpdate
+                          : props.cacheOrderRequest?.Customer?.DefaultAddress
+                      "
+                    />
                   </div>
-
                 </section>
               </div>
             </div>
@@ -345,15 +581,18 @@
       </div>
     </div>
   </div>
-  
-  <ElementsDialogEditAddress v-if="isEditAddress" :address-type="props.cacheOrderRequest?.Customer?.DefaultAddress.Type"
-    :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID" 
-    :address-i-d="props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
-    :address-data-array="isNewLabel ? newAddressUpdate : addressDataArray" 
-    :profile-data-array="isNewLabel ? newAddressUpdate : profileDataArray" 
-    :show="isEditAddress" @close-address="closeModalAddress"
-    @on-edit-address="updateAddress"></ElementsDialogEditAddress> 
 
+  <ElementsDialogEditAddress
+    v-if="isEditAddress"
+    :address-type="props.cacheOrderRequest?.Customer?.DefaultAddress.Type"
+    :customer-i-d="props.cacheOrderRequest?.Customer?.PersonProfile?.CustomerID"
+    :address-i-d="props.cacheOrderRequest?.Customer?.DefaultAddress?.AddressID"
+    :address-data-array="isNewLabel ? newAddressUpdate : addressDataArray"
+    :profile-data-array="isNewLabel ? newAddressUpdate : profileDataArray"
+    :show="isEditAddress"
+    @close-address="closeModalAddress"
+    @on-edit-address="updateAddress"
+  ></ElementsDialogEditAddress>
 </template>
 <script setup lang="ts">
 import type { DefaultAddress, CustomerOrderRequest, LegalPersonProfile, PersonProfile, PlaceOrderRequest } from "~/shared/entities/placeorder-entity";
@@ -396,20 +635,22 @@ const legalPersonProfile: globalThis.Ref<LegalPersonProfile> = ref({
   Name: '',
   BranchName: '',
   TaxID: '',
+  FirstName: '',
   BranchID: '',
   ContactFirstName: '',
   ContactLastName: '',
   ContactPhoneNumber: '',
-  ContactEmail: '',
+  ContactEmail: ''
+
 })
 // const legalPersonProfile:globalThis.Ref<LegalPersonProfile|undefined> = ref()
 const defaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref()
 const newDefaultAddress: globalThis.Ref<DefaultAddress | undefined> = ref()
 const defaultAddressCustomer: globalThis.Ref<CustomerAddressListRes | undefined> = ref()
 
-const InsuredTypeText: globalThis.Ref<String> = ref('person')
-const InsuredClassifierText: globalThis.Ref<String> = ref('thai')
-const CompanyClassifierText: globalThis.Ref<String> = ref('')
+const InsuredTypeText: globalThis.Ref<string> = ref('person')
+const InsuredClassifierText: globalThis.Ref<string> = ref('thai')
+const CompanyClassifierText: globalThis.Ref<"headoffice" | "branch" | undefined> = ref('headoffice')
 const Prefix: globalThis.Ref<SelectOption[]> = ref([])
 const Nationality: globalThis.Ref<SelectOption[]> = ref([])
 const addrProvince: globalThis.Ref<SelectOption[]> = ref([])
@@ -649,10 +890,24 @@ const special_characters = function ({ value }) {
   })
 }
 // handler function for emit
-const handlerChangeCustomerType = (e: String) => {
-  if (e) {
+const handlerChangeCompanyClassifierText = (value:any)=>{
+  if (value) {
+    CompanyClassifierText.value = value
+    insureDetail.value.IsBranch = CompanyClassifierText.value == 'branch'
+    insureDetail.value.IsPerson = false
 
-    emit('changeCustomerType', e)
+    //clearData()
+  }
+
+}
+const handlerChangeCustomerType = (value: any) => {
+  if (value) {
+    InsuredTypeText.value = value
+    insureDetail.value.IsBranch = false
+    insureDetail.value.IsPerson = InsuredTypeText.value == 'person'
+    // clear data when change to customer type
+    //clearData()
+    emit('changeCustomerType', InsuredTypeText.value)
   }
 }
 const handlerChangeProvince = (e: string) => {
@@ -711,7 +966,7 @@ const handlerChangeLegalPersonProfile = () => {
   }
 
   insureDetail.value.LegalPersonProfile = legalPersonProfile.value
-  
+
   emit('updateEmail', legalPersonProfile.value.ContactEmail)
 
   handlerChangeInsureDetail()
@@ -751,7 +1006,7 @@ const clearData = () => {
     PrefixID: '',
     FirstName: '',
     LastName: '',
-    BirthDate: '',
+    BirthDate: null,
     PersonalID: '',
     NationalityID: '',
     PhoneNumber: '',
@@ -759,15 +1014,16 @@ const clearData = () => {
   }
   legalPersonProfile.value = {
     CustomerID: '',
-    PrefixID: '',
-    Name: '',
-    BranchName: '',
-    TaxID: '',
-    BranchID: '',
-    ContactFirstName: '',
-    ContactLastName: '',
-    ContactPhoneNumber: '',
-    ContactEmail: '',
+  PrefixID: '',
+  Name: '',
+  BranchName: '',
+  TaxID: '',
+  FirstName: '',
+  BranchID: '',
+  ContactFirstName: '',
+  ContactLastName: '',
+  ContactPhoneNumber: '',
+  ContactEmail: ''
   }
 }
 // watching data
@@ -839,29 +1095,18 @@ watch(InsuredTypeText, async (newInsuredTypeText) => {
 });
 */
 // watching data to Radio Formkit
-watch(
-  InsuredTypeText, (newInsuredTypeText:String) => {
-  if (newInsuredTypeText.length > 0) {
-    insureDetail.value.IsBranch = false
-    insureDetail.value.IsPerson = newInsuredTypeText == 'person'
-    // clear data when change to customer type
-    //clearData()
-    handlerChangeCustomerType(newInsuredTypeText)
-  }
+// watch(
+//   InsuredTypeText, (newInsuredTypeText:String) => {
+//   if (newInsuredTypeText.length > 0) {
+//     insureDetail.value.IsBranch = false
+//     insureDetail.value.IsPerson = newInsuredTypeText == 'person'
+//     // clear data when change to customer type
+//     //clearData()
+//     handlerChangeCustomerType(newInsuredTypeText)
+//   }
 
-});
-//CompanyClassifierText
-watch(CompanyClassifierText, (newCompanyClassifierText:String) => {
-  //headoffice: 'สำนักงานใหญ่',
-  //branch: 'สาขา',
+// });
 
-  if (newCompanyClassifierText.length > 0) {
-    insureDetail.value.IsBranch = newCompanyClassifierText == 'branch'
-    insureDetail.value.IsPerson = false
-
-    //clearData()
-  }
-});
 watch(() => props.cacheOrderRequest, (newValue) => {
   if (newValue) {
     const Customer = newValue.Customer
@@ -917,12 +1162,15 @@ watch(() => props.cacheOrderRequest, (newValue) => {
   display: none;
 }
 
-.insured-type:has(.formkit-input[value="person" i]:checked)~.insured-classifier,
-.insured-type:has(.formkit-input[value="company" i]:checked)~.company-classifier,
+.insured-type:has(.formkit-input[value="person" i]:checked) ~ .insured-classifier,
+.insured-type:has(.formkit-input[value="company" i]:checked) ~ .company-classifier,
 .insured-classifier:has(.formkit-input[value="thai" i]:checked) .insured-thai-information,
-.insured-classifier:has(.formkit-input[value="foreigner" i]:checked) .insured-foreigner-information,
-.company-classifier:has(.formkit-input[value="headoffice" i]:checked) .insured-headoffice-information,
-.company-classifier:has(.formkit-input[value="branch" i]:checked) .insured-branch-information {
+.insured-classifier:has(.formkit-input[value="foreigner" i]:checked)
+  .insured-foreigner-information,
+.company-classifier:has(.formkit-input[value="headoffice" i]:checked)
+  .insured-headoffice-information,
+.company-classifier:has(.formkit-input[value="branch" i]:checked)
+  .insured-branch-information {
   display: block;
 }
 </style>

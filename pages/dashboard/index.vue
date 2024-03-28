@@ -14,28 +14,31 @@
         { label: 'ทีมงาน', value: false },
     ]" enforced />
                             <div class="stats-date">
-                                <p>ข้อมูลเมื่อ 16/06/2024 - 31/07/2024</p>
+                                <p>ข้อมูล ณ 16/06/2024 - 31/07/2024</p>
                             </div>
                         </div>
 
                         <div class="option-stats-overview" v-if="overviewStats.isPersonalView === true">
 
                             <div class="card-stat">
-                                <div class="stat-wrapper">
+                                <div class="stat-wrapper has-info">
                                     <div class="stat-header">
                                         <h5 class="topic">ยอดขายส่วนตัว (บาท)</h5>
                                         <span class="value">477,546</span>
                                     </div>
                                     <div class="stat-action">
                                         <figure class="figure">
-                                            <i class="fa-duotone fa-sack-dollar fa-swap-opacity"></i>
+                                            <i class="fa-duotone fa-sack-dollar"></i>
                                         </figure>
+                                    </div>
+                                    <div class="stat-info">
+                                        <p class="is-down"><span>1.57%</span>เทียบกับ 30 วันล่าสุด</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="card-stat">
-                                <div class="stat-wrapper">
+                                <div class="stat-wrapper has-info">
                                     <div class="stat-header">
                                         <h5 class="topic">รายได้ส่วนตัว (บาท)</h5>
                                         <span class="value">56,243</span>
@@ -45,11 +48,14 @@
                                             <i class="fa-duotone fa-badge-percent"></i>
                                         </figure>
                                     </div>
+                                    <div class="stat-info">
+                                        <p class="is-up"><span>15.09%</span>เทียบกับ 30 วันล่าสุด</p>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="card-stat">
-                                <div class="stat-wrapper">
+                                <div class="stat-wrapper has-info">
                                     <div class="stat-header">
                                         <h5 class="topic">จำนวนผู้ช่วย</h5>
                                         <span class="value">3<small>/10</small></span>
@@ -59,6 +65,9 @@
                                             <i class="fa-duotone fa-users"></i>
                                         </figure>
                                     </div>
+                                    <div class="stat-info">
+                                        <p class="is-steady"><span>0.00%</span>เทียบกับ 30 วันล่าสุด</p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -67,7 +76,7 @@
                         <div class="option-stats-overview" v-else>
 
                             <div class="card-stat">
-                                <div class="stat-wrapper">
+                                <div class="stat-wrapper has-info">
                                     <div class="stat-header">
                                         <h5 class="topic">ยอดขายทีมงาน (บาท)</h5>
                                         <span class="value">1,342,378</span>
@@ -77,11 +86,14 @@
                                             <i class="fa-duotone fa-sack-dollar fa-swap-opacity"></i>
                                         </figure>
                                     </div>
+                                    <div class="stat-info">
+                                        <p class="is-up"><span>3.24%</span>เทียบกับ 30 วันล่าสุด</p>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="card-stat">
-                                <div class="stat-wrapper">
+                                <div class="stat-wrapper has-info">
                                     <div class="stat-header">
                                         <h5 class="topic">ค่าสายงาน (บาท)</h5>
                                         <span class="value">92,231</span>
@@ -91,11 +103,14 @@
                                             <i class="fa-duotone fa-hand-holding-circle-dollar"></i>
                                         </figure>
                                     </div>
+                                    <div class="stat-info">
+                                        <p class="is-up"><span>0.41%</span>เทียบกับ 30 วันล่าสุด</p>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="card-stat">
-                                <div class="stat-wrapper">
+                                <div class="stat-wrapper has-info">
                                     <div class="stat-header">
                                         <h5 class="topic">จำนวนสมาชิก</h5>
                                         <span class="value">256</span>
@@ -105,6 +120,9 @@
                                             <i class="fa-duotone fa-users-medical fa-swap-opacity"></i>
                                         </figure>
                                     </div>
+                                    <div class="stat-info">
+                                        <p class="is-up"><span>0.28%</span>เทียบกับ 30 วันล่าสุด</p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -113,15 +131,24 @@
                     </FormKit>
                 </div>
 
-                <div id="stats-level" class="stats-group">
+                <div id="stats-sales" class="stats-group">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Card title</h3>
-                            <h4 class="card-subtitle">Card subtitle</h4>
+                            <div class="header-group">
+                                <h3 class="card-title">ยอดขายทั้งหมด</h3>
+                                <h4 class="card-subtitle">แยกตามประเภทสินค้า</h4>
+                            </div>
+                            <div class="filter">
+                                <FormKit type="group" v-model="saleChartDataSet">
+                                    <FormKit type="dropdown" name="salesChartFilterSelect" :options="salesChartFilter"
+                                        v-model="salesChartFilterSelected" @click="salesClick" @change="salesChange"
+                                        deselect="false" />
+                                </FormKit>
+                            </div>
                         </div>
                         <div class="card-body">
-                            <p>Some quick example text to build on the card title and make up the bulk of the card's
-                                content. With supporting text below as a natural lead-in to additional content.</p>
+                            <div id="graph"></div>
+                            <v-chart class="chart" :option="salesData" autoresize />
                         </div>
                     </div>
                 </div>
@@ -138,7 +165,146 @@
 </template>
 
 <script setup lang="ts">
+/////////////////////////////////////////
+// Import
+import { use } from 'echarts/core'
+import { BarChart } from 'echarts/charts'
+import {
+    TitleComponent,
+    TooltipComponent,
+    LegendComponent,
+    GridComponent,
+    DatasetComponent
+} from 'echarts/components'
+import { SVGRenderer } from 'echarts/renderers'
+import VChart from 'vue-echarts'
+
+use([
+    BarChart,
+    SVGRenderer,
+    TitleComponent,
+    TooltipComponent,
+    LegendComponent,
+    GridComponent,
+    DatasetComponent
+])
+
+/////////////////////////////////////////
+// Sale chart
+const salesData = ref({
+    title: {},
+    color: [
+        'rgb(19, 133, 67)',
+        'rgb(143, 199, 66)',
+        'rgb(184, 233, 134)',
+    ],
+    grid: [
+        { left: '55', right: '20', top: '50', bottom: '20' }
+    ],
+    tooltip: {
+        className: 'chart-tooltip'
+    },
+    legend: {
+        textStyle: {
+            color: 'rgba(25, 70, 88, 0.8)',
+            fontWeight: 'bold',
+            fontSize: '15',
+        },
+        icon: 'roundRect',
+        itemGap: 20,
+    },
+    dataset: {
+        dimensions: ['sales', 'พรบ', 'ประเภท', 'non-motor'],
+        source: [],
+    },
+    xAxis: {
+        type: 'category',
+        axisLine: {
+            lineStyle: { color: 'rgba(25, 70, 88, 0.35)' }
+        },
+        axisLabel: {
+            color: 'rgba(25, 70, 88, 0.8)'
+        },
+    },
+    yAxis: {
+        name: 'จำนวนเงิน (บาท)',
+        nameTextStyle: {
+            color: 'rgba(25, 70, 88, 0.8)',
+            fontWeight: 'bold',
+            fontSize: '15',
+            lineHeight: '15'
+        },
+        axisLine: {
+            lineStyle: { color: 'rgba(25, 70, 88, 0.35)' }
+        },
+        axisLabel: {
+            color: 'rgba(25, 70, 88, 0.8)'
+        },
+        splitLine: {
+            lineStyle: {
+                type: 'dashed',
+                color: 'rgba(25, 70, 88, 0.1)'
+            }
+        },
+    },
+    series: [
+        {
+            type: 'bar',
+            barWidth: '30%',
+            barMinHeight: 10,
+            barMaxWidth: 50,
+            label: {
+                show: true,
+                position: 'top',
+                color: 'rgba(25, 70, 88, 0.9)'
+            },
+            itemStyle: {
+                borderRadius: [3, 3, 0, 0]
+            },
+        },
+        {
+            type: 'bar',
+            barWidth: '20%',
+            barMinHeight: 10,
+            barMaxWidth: 40,
+            label: {
+                show: true,
+                position: 'top',
+                color: 'rgba(25, 70, 88, 0.9)'
+            },
+            itemStyle: {
+                borderRadius: [3, 3, 0, 0]
+            },
+        },
+        {
+            type: 'bar',
+            barWidth: '15%',
+            barMinHeight: 10,
+            barMaxWidth: 30,
+            label: {
+                show: true,
+                position: 'top',
+                color: 'rgba(25, 70, 88, 0.9)'
+            },
+            itemStyle: {
+                borderRadius: [3, 3, 0, 0]
+            },
+        }
+    ]
+})
+
+/////////////////////////////////////////
+// Sales chart filter
+const salesChartFilter = [
+    { label: 'เดือนนี้', value: 'this-month' },
+    { label: 'เดือนที่แล้ว', value: 'last-month' },
+    { label: '3 เดือนล่าสุด', value: 'last-3-month' }
+]
+
+/////////////////////////////////////////
 const overviewStats = ref()
+const saleChartDataSet = ref('')
+const salesChartFilterSelected = ref('this-month')
 
 /////////////////////////////////////////
 // Modal Loading
@@ -161,17 +327,55 @@ const handleCloseModal = async () => {
 }
 
 /////////////////////////////////////////
-
-/////////////////////////////////////////
 // Mounted
 onMounted(async () => {
+    console.log('opened')
     openLoadingDialog(true)
-    // await loadAffiliateProductList()
+
+    console.log('Mounted: ' + saleChartDataSet.value.salesChartFilterSelect)
+    await getSalesData(salesChartFilterSelected.value)
+
     openLoadingDialog(false)
+    console.log('closed')
 })
 
 /////////////////////////////////////////
+// Function get `SalesData`
+const getSalesData = (async (selectedFilter) => {
 
+    console.log('Get: ' + selectedFilter)
+
+    try {
+        const response = await fetch(`/data/salesData@${selectedFilter}.json`)
+        const jsonData = await response.json()
+        salesData.value.dataset.source = jsonData
+    } catch (error) {
+        console.error('Error fetching or parsing JSON:', error)
+    }
+})
+
+/////////////////////////////////////////
+const salesClick = () => {
+    console.log('Click: ' + salesChartFilterSelected.value)
+    console.log('Group: ' + saleChartDataSet.value.salesChartFilterSelect)
+}
+
+const salesChange = () => {
+    console.log('Change: ' + salesChartFilterSelected.value)
+    console.log('Group: ' + saleChartDataSet.value.salesChartFilterSelect)
+}
+
+/////////////////////////////////////////
+// Watcher to detect changes in `salesChartFilterSelect`
+watch(
+    () => saleChartDataSet.value.salesChartFilterSelect,
+    (newValue, oldValue) => {
+        console.log('Watch: ' + saleChartDataSet.value.salesChartFilterSelect)
+        if (newValue !== oldValue) {
+            getSalesData(newValue)
+        }
+    }
+)
 
 /////////////////////////////////////////
 // Define layout

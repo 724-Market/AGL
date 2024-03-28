@@ -21,8 +21,8 @@
     <div class="meta">
       <div class="tags">
         <span class="badge">
-          <i class="fa-solid fa-people-simple" v-if="props.isPerson == true"></i>
-          <i class="'fa-solid fa-buildings" v-else></i>
+          <!-- <i class="fa-solid fa-people-simple" v-if="props.isPerson == true"></i>
+          <i class="fa-solid fa-buildings" v-else></i> -->
           {{
             getCustomerType(props.isPerson, props.personProfile, props.legalPersonProfile)
           }}</span

@@ -1236,7 +1236,7 @@ const handlerChangeInsureDetail = (InsureDetail: CustomerOrderRequest) => {
           insureDetail.value.PersonProfile.PrefixID.length > 0 &&
           insureDetail.value.PersonProfile.FirstName.length > 0 &&
           insureDetail.value.PersonProfile.LastName.length > 0 &&
-          insureDetail.value.PersonProfile.BirthDate.length > 0 &&
+          insureDetail.value.PersonProfile.BirthDate &&
           insureDetail.value.PersonProfile.PersonalID.length > 0 &&
           insureDetail.value.PersonProfile.PhoneNumber.length > 0 &&
           insureDetail.value.DefaultAddress.No.length > 0 &&

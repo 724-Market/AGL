@@ -623,7 +623,7 @@ const personProfile: globalThis.Ref<PersonProfile> = ref({
   PrefixID: '',
   FirstName: '',
   LastName: '',
-  BirthDate: null, // Format: YYYY-MM-DD
+  BirthDate: undefined, // Format: YYYY-MM-DD
   PersonalID: '',
   NationalityID: '',
   PhoneNumber: '',
@@ -906,7 +906,7 @@ const handlerChangeCustomerType = (value: any) => {
     insureDetail.value.IsBranch = false
     insureDetail.value.IsPerson = InsuredTypeText.value == 'person'
     // clear data when change to customer type
-    //clearData()
+    clearData()
     emit('changeCustomerType', InsuredTypeText.value)
   }
 }
@@ -1006,7 +1006,7 @@ const clearData = () => {
     PrefixID: '',
     FirstName: '',
     LastName: '',
-    BirthDate: null,
+    BirthDate: undefined,
     PersonalID: '',
     NationalityID: '',
     PhoneNumber: '',

@@ -139,16 +139,16 @@
                                 <h4 class="card-subtitle">แยกตามประเภทสินค้า</h4>
                             </div>
                             <div class="filter">
-                                <FormKit type="form" #default="{ value }" :actions="false">
-                                    <FormKit type="dropdown" name="saleChartFilter" :options="salesChartFilter"
-                                        value="this-month" deselect="false" />
-                                    <!-- <pre wrap>{{ value }}</pre> -->
+                                <FormKit type="group" v-model="saleChartDataSet">
+                                    <FormKit type="dropdown" name="salesChartFilterSelect" :options="salesChartFilter"
+                                        v-model="salesChartFilterSelected" @click="salesClick" @change="salesChange"
+                                        deselect="false" />
                                 </FormKit>
                             </div>
                         </div>
                         <div class="card-body">
                             <div id="graph"></div>
-                            <v-chart class="chart" :option="salesData" />
+                            <v-chart class="chart" :option="salesData" autoresize />
                         </div>
                     </div>
                 </div>
@@ -199,7 +199,7 @@ const salesData = ref({
         'rgb(184, 233, 134)',
     ],
     grid: [
-        { left: '50', right: '20', top: '50', bottom: '20' }
+        { left: '55', right: '20', top: '50', bottom: '20' }
     ],
     tooltip: {
         className: 'chart-tooltip'
@@ -211,6 +211,7 @@ const salesData = ref({
             fontSize: '15',
         },
         icon: 'roundRect',
+        itemGap: 20,
     },
     dataset: {
         dimensions: ['sales', 'พรบ', 'ประเภท', 'non-motor'],
@@ -226,12 +227,12 @@ const salesData = ref({
         },
     },
     yAxis: {
-        name: 'ยอดขาย (บาท)',
+        name: 'จำนวนเงิน (บาท)',
         nameTextStyle: {
             color: 'rgba(25, 70, 88, 0.8)',
             fontWeight: 'bold',
             fontSize: '15',
-            lineHeight: '50'
+            lineHeight: '15'
         },
         axisLine: {
             lineStyle: { color: 'rgba(25, 70, 88, 0.35)' }
@@ -249,7 +250,9 @@ const salesData = ref({
     series: [
         {
             type: 'bar',
-            barWidth: 30,
+            barWidth: '30%',
+            barMinHeight: 10,
+            barMaxWidth: 50,
             label: {
                 show: true,
                 position: 'top',
@@ -261,7 +264,9 @@ const salesData = ref({
         },
         {
             type: 'bar',
-            barWidth: 30,
+            barWidth: '20%',
+            barMinHeight: 10,
+            barMaxWidth: 40,
             label: {
                 show: true,
                 position: 'top',
@@ -273,7 +278,9 @@ const salesData = ref({
         },
         {
             type: 'bar',
-            barWidth: 30,
+            barWidth: '15%',
+            barMinHeight: 10,
+            barMaxWidth: 30,
             label: {
                 show: true,
                 position: 'top',
@@ -296,6 +303,8 @@ const salesChartFilter = [
 
 /////////////////////////////////////////
 const overviewStats = ref()
+const saleChartDataSet = ref('')
+const salesChartFilterSelected = ref('this-month')
 
 /////////////////////////////////////////
 // Modal Loading
@@ -318,26 +327,55 @@ const handleCloseModal = async () => {
 }
 
 /////////////////////////////////////////
-
-/////////////////////////////////////////
 // Mounted
 onMounted(async () => {
+    console.log('opened')
     openLoadingDialog(true)
-    await getSalesData()
+
+    console.log('Mounted: ' + saleChartDataSet.value.salesChartFilterSelect)
+    await getSalesData(salesChartFilterSelected.value)
+
     openLoadingDialog(false)
+    console.log('closed')
 })
 
 /////////////////////////////////////////
 // Function get `SalesData`
-const getSalesData = (async () => {
+const getSalesData = (async (selectedFilter) => {
+
+    console.log('Get: ' + selectedFilter)
+
     try {
-        const response = await fetch('/data/salesData.json')
+        const response = await fetch(`/data/salesData@${selectedFilter}.json`)
         const jsonData = await response.json()
         salesData.value.dataset.source = jsonData
     } catch (error) {
         console.error('Error fetching or parsing JSON:', error)
     }
 })
+
+/////////////////////////////////////////
+const salesClick = () => {
+    console.log('Click: ' + salesChartFilterSelected.value)
+    console.log('Group: ' + saleChartDataSet.value.salesChartFilterSelect)
+}
+
+const salesChange = () => {
+    console.log('Change: ' + salesChartFilterSelected.value)
+    console.log('Group: ' + saleChartDataSet.value.salesChartFilterSelect)
+}
+
+/////////////////////////////////////////
+// Watcher to detect changes in `salesChartFilterSelect`
+watch(
+    () => saleChartDataSet.value.salesChartFilterSelect,
+    (newValue, oldValue) => {
+        console.log('Watch: ' + saleChartDataSet.value.salesChartFilterSelect)
+        if (newValue !== oldValue) {
+            getSalesData(newValue)
+        }
+    }
+)
 
 /////////////////////////////////////////
 // Define layout

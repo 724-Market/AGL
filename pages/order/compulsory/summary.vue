@@ -304,6 +304,9 @@ const submitOrder = async (formData: any) => {
     IsConsent: isConsent.value,
     OrderNo: orderDetail.value?.OrderNo ?? "",
   };
+  if(setOrderNo.value == ""){
+    setOrderNo.value = orderDetail.value?.OrderNo || "";
+  }
 
   const response = await useRepository().payment.confirm(req);
   if (
@@ -341,7 +344,7 @@ const submitOrder = async (formData: any) => {
           orderid: paymentConfirmRes?.OrderNo ?? "",
           refno: paymentConfirmRes?.PaymentNo ?? "",
           amount: paymentConfirmRes?.GrandAmount ?? 0,
-          response_url: `${config.public.BaseUrlWeb}/order/compulsory/thanks?${paymentConfirmRes?.PaymentNo}`,
+          response_url: `${config.public.BaseUrlWeb}/order/compulsory/thanks/${paymentConfirmRes?.PaymentNo}`,
           //response_url: `${config.public.BaseUrlWeb}/order/compulsory/thanks?PaymentNo=${paymentConfirmRes?.PaymentNo}`,
         };
       }
@@ -381,7 +384,7 @@ const submitOrder = async (formData: any) => {
         responsePaymentGet.apiResponse.Data
       ) {
         await paymentGat.setPaymentGet(responsePaymentGet.apiResponse.Data.Payment[0]);
-        router.push("/order/compulsory/thanks");
+        router.push("/order/compulsory/thanks/"+paymentConfirmRes.PaymentNo);
       } else {
         if (responsePaymentGet.apiResponse.Message) {
           messageError.value = responsePaymentGet.apiResponse.Message;

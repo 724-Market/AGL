@@ -66,7 +66,7 @@ class PaymentNoticeService {
                 const response = await useRepository().payment.get(req);
                 if(response.apiResponse.Status &&  response.apiResponse.Status == "200" && response.apiResponse.Data) {
                     paymentGat.setPaymentGet(response.apiResponse.Data.Payment[0])
-                    this.router.push('/order/compulsory/thanks')
+                    this.router.push('/order/compulsory/thanks/'+res.PaymentNo)
                 }
             }
           }

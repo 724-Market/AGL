@@ -126,7 +126,7 @@ const checkPayment = async () => {
       response.apiResponse.Data
     ) {
       await paymentGat.setPaymentGet(response.apiResponse.Data.Payment[0])
-      router.push("/order/compulsory/thanks")
+      router.push("/order/compulsory/thanks/"+paymenGatewaytInfo.value?.refno2)
     }
   }
 }

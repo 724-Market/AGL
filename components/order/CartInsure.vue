@@ -61,7 +61,7 @@ const getFullName = (isPerson:boolean,personProfile:any,legalPersonProfile:any):
     if (labelType) { // Check if labelType is not undefined
         fullName = useUtility().getCompanyType(labelType.label) + " " + legalPersonProfile.ContactFirstName;
     } else {
-        fullName = legalPersonProfile?.PrefixID + " " + legalPersonProfile.ContactFirstName; // Fallback to PrefixID if labelType is undefined
+        fullName = " " + legalPersonProfile.ContactFirstName; // Fallback to PrefixID if labelType is undefined
     }
   } 
   return fullName

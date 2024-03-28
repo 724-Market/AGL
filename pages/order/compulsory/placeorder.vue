@@ -285,8 +285,8 @@ interface DataItem {
 }
 
 // Assuming you have IsPerson flag to differentiate between the two sets of data
-const data1 = ref<DataItem[]>([]);;
-const data2 = ref<DataItem[]>([]);;
+const data1 = ref<DataItem[]>([]);
+const data2 = ref<DataItem[]>([]);
 /*
 const data1 = [
     {
@@ -797,7 +797,15 @@ const loadPrefix = async (isPerson: boolean) => {
           });
       });
 
-    } 
+    } else if(response.apiResponse.Data) {
+      // Assigning values from response to data1
+      response.apiResponse.Data.forEach(item => {
+          data2.value.push({
+              value: item.ID,
+              label: item.Name
+          });
+      });
+    }
   } else {
   }
 };
@@ -825,15 +833,6 @@ const loadPrefixRecieve = async () => {
       // data not found
     }
 
-    if (response.apiResponse.Data) {
-      // Assigning values from response to data1
-      response.apiResponse.Data.forEach(item => {
-          data2.value.push({
-              value: item.ID,
-              label: item.Name
-          });
-      });
-    }
   } else {
   }
 };

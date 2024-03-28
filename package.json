@@ -39,10 +39,12 @@
     "datatables.net-bs5": "^1.13.6",
     "datatables.net-vue3": "^2.1.2",
     "dayjs": "^1.11.8",
+    "echarts": "^5.5.0",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "npm": "^9.6.2",
-    "pinia": "^2.1.7"
+    "pinia": "^2.1.7",
+    "vue-echarts": "^6.6.9"
   },
   "overrides": {
     "vue": "latest"
